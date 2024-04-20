@@ -1,0 +1,13 @@
+.header {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.header-item {
+  text-decoration: none;
+  text-transform: uppercase;
+  color: inherit;
+  font-weight: bold;
+}

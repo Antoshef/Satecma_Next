@@ -1,5 +1,4 @@
 import { MouseEvent } from "react";
-import { Order, StoreProductData } from "./types";
 import {
   Box,
   TableCell,
@@ -8,6 +7,7 @@ import {
   TableSortLabel,
 } from "@mui/material";
 import { visuallyHidden } from "@mui/utils";
+import { Order, StoreProductData } from "./types";
 
 export interface EnhancedTableHeadProps {
   headCells: readonly {

@@ -12,9 +12,7 @@ import Paper from "@mui/material/Paper";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
-import { Order, StoreProductData, StoreUnits } from "../components/store/types";
-import { createKey, unitsMapCyrilic } from "../components/store/utils";
-import { headCells } from "../components/store/constants";
+import { headCells } from "components/store/constants";
 import {
   Grid,
   Input,
@@ -22,10 +20,12 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import { ProductEditor } from "../components/store/productEditor";
-import { EnhancedTableToolbar } from "../components/store/enhancedTableToolbar";
-import { EnhancedTableHead } from "../components/store/enhancedTableHead";
-import { fetchStorageData } from "./api/utils";
+import { ProductEditor } from "components/store/productEditor";
+import { EnhancedTableToolbar } from "components/store/enhancedTableToolbar";
+import { EnhancedTableHead } from "components/store/enhancedTableHead";
+import { createKey, unitsMapCyrilic } from "components/store/utils";
+import { Order, StoreProductData, StoreUnits } from "@/components/store/types";
+import { fetchJson } from "@/utils/fetchJson";
 import "./store.css";
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -157,9 +157,9 @@ export default function Store() {
 
   useEffect(() => {
     setLoading(true);
-    fetchStorageData()
-      .then((data: StoreProductData[]) => {
-        setProducts(data || []);
+    fetchJson<StoreProductData[]>("/api/get-storage")
+      .then((data) => {
+        setProducts(data);
 
         const uniqueCategories = Array.from(
           new Set(data.map((p) => p.category))

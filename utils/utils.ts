@@ -27,7 +27,6 @@ export const writeDotEnv = () => {
   typeDefContent += `  }\n}\n`;
 
   fs.writeFileSync("env.d.ts", typeDefContent);
-  console.log("env.d.ts file written successfully");
 };
 
 export const createDir = (dirPath: string) => {

@@ -1,10 +1,7 @@
 import mysql from "mysql";
 
 const pool = mysql.createPool({
-  host:
-    process.env.NODE_ENV === "production"
-      ? "localhost"
-      : "samba.rdb.superhosting.bg",
+  host: process.env.HOST,
   user: process.env.DATABASE_USER,
   password: process.env.DATABASE_PASS,
   database: process.env.DATABASE,

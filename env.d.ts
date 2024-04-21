@@ -11,7 +11,6 @@ declare namespace NodeJS {
     TERM: string;
     npm_package_dependencies__emotion_styled: string;
     TMPDIR: string;
-    npm_package_devDependencies_eslint_config_next: string;
     npm_package_dependencies__mui_icons_material: string;
     npm_package_scripts_lint: string;
     npm_config_init_license: string;
@@ -33,7 +32,6 @@ declare namespace NodeJS {
     __CF_USER_TEXT_ENCODING: string;
     npm_package_devDependencies_postcss: string;
     npm_package_devDependencies_eslint: string;
-    npm_package_devDependencies__types_express: string;
     npm_execpath: string;
     npm_package_dependencies__mui_material: string;
     nvm_current_version: string;
@@ -78,7 +76,6 @@ declare namespace NodeJS {
     npm_config_user_agent: string;
     npm_package_devDependencies__types_node: string;
     npm_package_devDependencies__types_mysql: string;
-    npm_package_dependencies_express: string;
     npm_config_init_version: string;
     npm_config_ignore_optional: string;
     npm_package_devDependencies_nodemon: string;
@@ -93,6 +90,8 @@ declare namespace NodeJS {
     DATABASE: string;
     DATABASE_USER: string;
     DATABASE_PASS: string;
+    HOST: string;
+    HOSTNAME: string;
     PORT: string;
   }
 }

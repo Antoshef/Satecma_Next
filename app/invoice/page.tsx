@@ -45,7 +45,6 @@ export default function Invoice() {
   useEffect(() => {
     fetchJson<ProductData[]>("/api/get-prices")
       .then((data) => {
-        console.log(data.length, "DATA");
         setData(data.length ? data : []);
       })
       .catch((error) => {

@@ -1,7 +1,6 @@
 import { forwardRef, useEffect, useState } from "react";
-import { Item, ProductData, Providers } from "./types";
+import { Item, ProductData, Provider, Providers } from "./types";
 import { getBankDetailsFromIban } from "./utils";
-import "./invoiceBox.css";
 import { TextField } from "./TextField";
 import { SelectField } from "./SelectField";
 import { Button } from "./Button";
@@ -9,21 +8,34 @@ import { ECOHOME_COMPANY, SATECMA_COMPANY } from "./constants";
 import { StoreUnits } from "../store/types";
 import { unitsMapCyrilic } from "../store/utils";
 import { Input } from "../input/Input";
-import Image from "next/image";
+import "./invoiceBox.css";
 
 const logo =
   "https://satecma.bg/wp-content/uploads/2024/02/logo-satecma-industrias.png";
 
 interface InvoiceBoxProps {
+  provider: Provider;
   products: ProductData[];
   invoiceNumber: number;
   isFieldsDisabled: boolean;
   setEmail: (email: string) => void;
   setError: (error: boolean) => void;
+  setProvider: (provider: Provider) => void;
 }
 
 export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
-  ({ products, invoiceNumber, isFieldsDisabled, setEmail, setError }, ref) => {
+  (
+    {
+      provider,
+      products,
+      invoiceNumber,
+      isFieldsDisabled,
+      setEmail,
+      setError,
+      setProvider,
+    },
+    ref
+  ) => {
     const [selectedProduct, setSelectedProduct] = useState<ProductData | null>(
       null
     );
@@ -39,7 +51,6 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
     const [providerName, setProviderName] = useState<Providers>(
       Providers.Ecohome
     );
-    const [provider, setProvider] = useState(ECOHOME_COMPANY);
     const [receiver, setReceiver] = useState({
       email: "anton.stanev@satecma.bg",
       company: "ДЛВ ЕООД",
@@ -241,7 +252,7 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
                   <tbody>
                     <tr>
                       <td className="title">
-                        <Image
+                        <img
                           style={{ height: "auto", width: "auto" }}
                           src={logo}
                           alt="logo"

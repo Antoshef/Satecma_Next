@@ -24,3 +24,12 @@ export enum Providers {
   Satecma = "Сатекма ЕООД",
   Ecohome = "Еко Хоум Трейд ЕООД",
 }
+
+export interface Provider {
+  name: string;
+  eik: number;
+  VAT: string;
+  city: string;
+  address: string;
+  director: string;
+}

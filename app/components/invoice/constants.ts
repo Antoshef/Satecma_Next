@@ -1,4 +1,6 @@
-export const SATECMA_COMPANY = {
+import { Provider } from "./types";
+
+export const SATECMA_COMPANY: Provider = {
   name: "Сатекма ЕООД",
   eik: 207756461,
   VAT: "BG207756461",
@@ -7,7 +9,7 @@ export const SATECMA_COMPANY = {
   director: "Симеон Енев",
 };
 
-export const ECOHOME_COMPANY = {
+export const ECOHOME_COMPANY: Provider = {
   name: "Еко Хоум Трейд ЕООД",
   eik: 205711987,
   VAT: "BG205711987",

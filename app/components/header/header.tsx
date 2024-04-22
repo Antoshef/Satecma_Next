@@ -4,7 +4,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const tabsMap = {
   "/store": 0,
@@ -35,9 +35,15 @@ export function Header() {
   const [value, setValue] = useState(0);
 
   const handleChange = (value: string) => {
-    router.push(value);
     setValue(tabsMap[value as keyof typeof tabsMap] || 0);
+    router.push(value);
   };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setValue(tabsMap[window.location.pathname as keyof typeof tabsMap] || 0);
+    }
+  }, []);
 
   return (
     <Box sx={{ width: "100%" }}>

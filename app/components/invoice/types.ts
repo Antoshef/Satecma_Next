@@ -1,8 +1,9 @@
 import { StoreUnits } from "../store/types";
 
 export interface Item
-  extends Pick<ProductData, "name" | "code" | "price" | "unit" | "unit_price"> {
+  extends Pick<ProductData, "name" | "code" | "price" | "unit" | "packing"> {
   quantity: number;
+  currentPackage: string;
   totalPrice: string;
   VAT: string;
   discount: string;
@@ -15,8 +16,7 @@ export interface ProductData {
   unit: StoreUnits;
   color: string;
   percentage_increase: number;
-  price: number | null;
-  unit_price: number | null;
+  price: number;
   category: string;
 }
 

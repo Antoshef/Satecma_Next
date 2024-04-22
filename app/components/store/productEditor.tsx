@@ -48,19 +48,7 @@ export const ProductEditor = ({
     <Grid container columnSpacing={3} margin={2} alignItems="center">
       <Grid item>
         <Typography variant="subtitle1">Код</Typography>
-        {/* <Typography variant="subtitle1">{product?.code}</Typography> */}
-        <Input
-          name="code"
-          placeholder="Код"
-          type="number"
-          value={product?.code}
-          onChange={(e) =>
-            handleChange(
-              e.target.name as keyof StoreProductData,
-              e.target.value
-            )
-          }
-        />
+        <Typography variant="subtitle1">{product?.code}</Typography>
       </Grid>
       <Grid item>
         <Typography variant="subtitle1">Име</Typography>

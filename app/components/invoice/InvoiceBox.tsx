@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useState } from "react";
 import { Item, ProductData, Provider, Providers } from "./types";
-import { getBankDetailsFromIban } from "./utils";
+import { calculateItemPrice, getBankDetailsFromIban } from "./utils";
 import { TextField } from "./TextField";
 import { SelectField } from "./SelectField";
 import { Button } from "./Button";
@@ -21,6 +21,7 @@ interface InvoiceBoxProps {
   setEmail: (email: string) => void;
   setError: (error: boolean) => void;
   setProvider: (provider: Provider) => void;
+  submitItems: (items: Item[]) => void;
 }
 
 export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
@@ -33,6 +34,7 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
       setEmail,
       setError,
       setProvider,
+      submitItems,
     },
     ref
   ) => {
@@ -41,6 +43,8 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
     );
     const [wordPrice, setWordPrice] = useState("");
     const [reason, setReason] = useState("");
+    const [items, setItems] = useState<Item[]>([]);
+    const [services, setServices] = useState<Item[]>([]);
     const [bank, setBank] = useState({
       iban: "BG79FINV91501017339942",
       swift: "FINVBGSF",
@@ -66,8 +70,6 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
       VAT: 0,
       paid: 0,
     });
-    const [items, setItems] = useState<Item[]>([]);
-    const [services, setServices] = useState<Item[]>([]);
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setReceiver((state) => ({
@@ -84,22 +86,20 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
       );
       if (currentItem) {
         (currentItem as any)[name] = value;
-        currentItem.totalPrice = (
-          currentItem.quantity *
-          (currentItem.price || currentItem.unit_price || 0)
-        ).toFixed(2);
+        currentItem.totalPrice = calculateItemPrice(currentItem);
         setItems(newItems);
       }
     };
 
     const itemSelectHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      const { value, dataset } = e.target;
+      const { value, dataset, name } = e.target;
       const newItems = [...items];
       const currentItem = newItems.find(
         (item) => item.code === Number(dataset.code)
       );
       if (currentItem) {
-        currentItem.VAT = value;
+        (currentItem as any)[name] = value;
+        currentItem.totalPrice = calculateItemPrice(currentItem);
         setItems(newItems);
       }
     };
@@ -113,7 +113,7 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
       if (currentService) {
         (currentService as any)[name] = value;
         currentService.totalPrice = (
-          Number(currentService.quantity) * Number(currentService.price)
+          currentService.quantity * currentService.price
         ).toFixed(2);
         setServices(newServices);
       }
@@ -133,27 +133,23 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
 
     const addItem = () => {
       if (selectedProduct) {
-        const { unit, code, name, price, unit_price, percentage_increase } =
+        const { unit, code, name, price, packing, percentage_increase } =
           selectedProduct;
-        const unitSalePrice = unit_price
-          ? unit_price * percentage_increase
-          : null;
-        const salePrice = price ? price * percentage_increase : null;
+        const salePrice = price * percentage_increase;
         const VAT = "20";
-        const totalPrice = unitSalePrice
-          ? unitSalePrice.toFixed(2)
-          : salePrice?.toFixed(2) || "0.00";
         const newItem: Item = {
           code,
           name,
+          packing,
+          currentPackage: packing.split(", ")[0] || "",
           quantity: 1,
           unit,
-          unit_price: unitSalePrice,
           price: salePrice,
           discount: "0",
           VAT,
-          totalPrice,
+          totalPrice: "0",
         };
+        newItem.totalPrice = calculateItemPrice(newItem);
         setItems((state) => [...state, newItem]);
         setSelectedProduct(null);
       } else {
@@ -172,6 +168,8 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
         {
           code: state.length + 1,
           name: "",
+          packing: "",
+          currentPackage: "",
           unit: StoreUnits.pcs,
           quantity: 1,
           price: 0,
@@ -241,6 +239,10 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
         providerName === Providers.Ecohome ? ECOHOME_COMPANY : SATECMA_COMPANY
       );
     }, [providerName, provider]);
+
+    useEffect(() => {
+      submitItems([...items]);
+    }, [items, submitItems]);
 
     return (
       <div ref={ref} className="invoice-box">
@@ -328,6 +330,7 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
               <td>№</td>
               <td>Продукт</td>
               <td>Количество</td>
+              <td>Опаковка</td>
               <td>Ед. цена (без ДДС)</td>
               <td>Отстъпка (%)</td>
               <td>ДДС (%)</td>
@@ -339,10 +342,11 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
                 ({
                   code,
                   name,
+                  packing,
+                  currentPackage,
                   discount,
                   quantity,
                   price,
-                  unit_price,
                   totalPrice,
                   unit,
                 }) => (
@@ -356,40 +360,48 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
                     </td>
                     <td>{name}</td>
                     <td>
-                      <input
-                        className="invoiceBox__small-field"
+                      <TextField
+                        smallField
                         type="number"
                         name="quantity"
                         value={quantity}
                         data-code={code}
+                        isFieldsDisabled={isFieldsDisabled}
                         onChange={itemChangeHandler}
                       />
+                      {` ${unitsMapCyrilic[StoreUnits.pcs]}`}
+                    </td>
+                    <td>
+                      <SelectField
+                        name="currentPackage"
+                        data-code={code}
+                        isFieldsDisabled={isFieldsDisabled}
+                        value={currentPackage}
+                        values={packing.split(", ")}
+                        onChange={itemSelectHandler}
+                      />
                       {` ${
-                        unit_price
-                          ? unitsMapCyrilic[StoreUnits.pcs]
-                          : unitsMapCyrilic[unit]
+                        unit === StoreUnits.kg
+                          ? unitsMapCyrilic[unit]
+                          : unitsMapCyrilic[StoreUnits.l]
                       }`}
                     </td>
+
+                    <td>{`${price.toFixed(2)} лв.`}</td>
                     <td>
-                      {unit_price
-                        ? unit_price.toFixed(2)
-                        : price
-                        ? price?.toFixed(2)
-                        : "0.00"}{" "}
-                      лв.
-                    </td>
-                    <td>
-                      <input
-                        className="invoiceBox__small-field"
+                      <TextField
+                        smallField
                         type="number"
                         name="discount"
                         value={discount}
                         data-code={code}
+                        isFieldsDisabled={isFieldsDisabled}
                         onChange={itemChangeHandler}
                       />{" "}
                     </td>
                     <td>
                       <SelectField
+                        name="VAT"
                         data-code={code}
                         isFieldsDisabled={isFieldsDisabled}
                         value="20"
@@ -403,16 +415,7 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
               )}
 
             {services.map(
-              ({
-                name,
-                code,
-                discount,
-                quantity,
-                price,
-                unit_price,
-                totalPrice,
-                unit,
-              }) => (
+              ({ name, code, discount, quantity, price, totalPrice, unit }) => (
                 <tr className="service" key={code}>
                   <td>
                     <Button
@@ -422,42 +425,46 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
                     />
                   </td>
                   <td>
-                    <input
+                    <TextField
                       type="text"
                       name="name"
                       value={name}
                       data-code={code}
+                      isFieldsDisabled={isFieldsDisabled}
                       onChange={serviceChangeHandler}
                     />{" "}
                   </td>
                   <td>
-                    <input
-                      className="invoiceBox__small-field"
+                    <TextField
+                      smallField
                       type="number"
                       name="quantity"
                       value={quantity}
                       data-code={code}
+                      isFieldsDisabled={isFieldsDisabled}
                       onChange={serviceChangeHandler}
                     />
                     {` ${unitsMapCyrilic[unit]}`}
                   </td>
+                  <td></td>
                   <td>
                     <input
                       type="text"
                       name="price"
-                      value={unit_price || price || 0}
+                      value={price}
                       data-code={code}
                       onChange={serviceChangeHandler}
                     />
                     {" лв. "}
                   </td>
                   <td>
-                    <input
-                      className="invoiceBox__small-field"
+                    <TextField
+                      smallField
                       type="number"
                       name="discount"
                       value={discount}
                       data-code={code}
+                      isFieldsDisabled={isFieldsDisabled}
                       onChange={serviceChangeHandler}
                     />{" "}
                   </td>

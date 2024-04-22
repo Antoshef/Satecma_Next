@@ -1,7 +1,7 @@
 "use client";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { Button, Checkbox, Grid, Typography } from "@mui/material";
-import { ProductData } from "@/components/invoice/types";
+import { Item, ProductData } from "@/components/invoice/types";
 import { InvoiceBox } from "@/components/invoice/InvoiceBox";
 import { fetchJson } from "@/utils/fetchJson";
 import { ECOHOME_COMPANY } from "@/components/invoice/constants";
@@ -17,24 +17,28 @@ export default function Invoice() {
   const invoiceRef = useRef<HTMLTableElement>(null);
   const [isFieldsDisabled, setIsFieldsDisabled] = useState<boolean>(false);
   const [accountantCopy, setAccountantCopy] = useState<boolean>(false);
-  const [officeCopy, setOfficeCopy] = useState<boolean>(true);
+  const [officeCopy, setOfficeCopy] = useState<boolean>(false);
+  const [items, setItems] = useState<Item[]>([]);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsFieldsDisabled(true);
-    const bcc = [];
-    if (accountantCopy) {
-      bcc.push(
-        provider.name === "Сатекма ЕООД"
-          ? process.env.NEXT_PUBLIC_SATECMA_ACCOUNTANT_EMAIL
-          : provider.name === "Еко Хоум Трейд ЕООД"
-          ? process.env.NEXT_PUBLIC_ECO_HOME_ACCOUNTANT_EMAIL
-          : ""
-      );
-    }
-    if (officeCopy) {
-      bcc.push(process.env.NEXT_PUBLIC_OFFICE_EMAIL);
-    }
+    const bcc = (function () {
+      const bcc = [];
+      if (accountantCopy) {
+        bcc.push(
+          provider.name === "Сатекма ЕООД"
+            ? process.env.NEXT_PUBLIC_SATECMA_ACCOUNTANT_EMAIL
+            : provider.name === "Еко Хоум Трейд ЕООД"
+            ? process.env.NEXT_PUBLIC_ECO_HOME_ACCOUNTANT_EMAIL
+            : ""
+        );
+      }
+      if (officeCopy) {
+        bcc.push(process.env.NEXT_PUBLIC_OFFICE_EMAIL);
+      }
+      return bcc;
+    })();
     const css = await fetch("/invoiceBox.css").then((res) => res.text());
     fetch("/api/generate-invoice", {
       method: "POST",
@@ -59,6 +63,30 @@ export default function Invoice() {
       .finally(() => {
         // setIsFieldsDisabled(false);
       });
+
+    // fetch("/api/update-invoice-number", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({ invoiceNumber: invoiceNumber + 1 }),
+    // })
+    //   .then((response) => response.json())
+    //   .catch((error) => {
+    //     console.error("Error:", error);
+    //   });
+
+    fetch("/api/update-store", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ items }),
+    })
+      .then((response) => response.json())
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
 
   useEffect(() => {
@@ -82,6 +110,7 @@ export default function Invoice() {
         setEmail={setEmail}
         setError={setError}
         setProvider={setProvider}
+        submitItems={setItems}
       />
       <Grid container margin={2} justifyContent="center" alignItems="center">
         <Grid
@@ -94,7 +123,7 @@ export default function Invoice() {
             inputProps={{ "aria-label": "controlled" }}
           />
           <Typography component="span" variant="body2">
-            Изпрати копие до счетоводител
+            Копие до счетоводител
           </Typography>
         </Grid>
         <Grid
@@ -107,7 +136,7 @@ export default function Invoice() {
             inputProps={{ "aria-label": "controlled" }}
           />
           <Typography component="span" variant="body2">
-            Изпрати копие до офис
+            Копие до офис
           </Typography>
         </Grid>
       </Grid>

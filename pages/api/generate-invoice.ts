@@ -27,15 +27,15 @@ export default async function handler(
         port: 465,
         secure: true,
         auth: {
-          user: process.env.SALES_EMAIL || "",
-          pass: process.env.EMAIL_PASS || "",
+          user: process.env.SALES_EMAIL,
+          pass: process.env.EMAIL_PASS,
         },
       });
 
       await transporter.sendMail({
         from: process.env.SALES_EMAIL,
         to: email,
-        bcc: bcc || "",
+        bcc: bcc,
         subject: "Your Invoice",
         text: "Please find attached your invoice.",
         attachments: [

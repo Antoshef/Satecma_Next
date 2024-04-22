@@ -123,18 +123,22 @@ export default function Store() {
 
   const onEditSubmit = async (product: StoreProductData) => {
     try {
-      await fetch("/update-product", {
-        method: "POST",
+      await fetch("/api/get-storage", {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(product),
+        body: JSON.stringify({ product }),
+      }).then((response) => {
+        if (!response.ok) {
+          throw new Error("Error updating product");
+        }
+        const updatedProducts = products.map((p) =>
+          p.code === product.code && p.package === product.package ? product : p
+        );
+        setProducts(updatedProducts);
+        setSelected(undefined);
       });
-      const updatedProducts = products.map((p) =>
-        p.code === product.code && p.package === product.package ? product : p
-      );
-      setProducts(updatedProducts);
-      setSelected(undefined);
     } catch (error) {
       console.error("Error updating product: ", error);
     } finally {

@@ -1,11 +1,13 @@
 import { ChangeEvent } from "react";
+import "./invoiceBox.css";
 
 interface TextFieldProps {
   isFieldsDisabled: boolean;
   type: string;
-  placeholder: string;
-  value: string;
+  placeholder?: string;
+  value: string | number;
   name: string;
+  smallField?: boolean;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -15,13 +17,17 @@ export const TextField = ({
   type,
   placeholder,
   isFieldsDisabled,
+  smallField,
   onChange,
+  ...props
 }: TextFieldProps) => (
   <>
     {isFieldsDisabled ? (
       value
     ) : (
       <input
+        {...props}
+        className={smallField ? "invoiceBox__small-field" : ""}
         type={type}
         name={name}
         placeholder={placeholder}

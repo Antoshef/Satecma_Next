@@ -1,3 +1,6 @@
+import { StoreUnits } from "../store/types";
+import { Item } from "./types";
+
 const bankCodes = {
   STSA: { name: "Банка ДСК", swift: "STSABGSF" },
   BNPA: { name: "БНП Париба", swift: "BNPABGSF" },
@@ -27,3 +30,10 @@ export const getBankDetailsFromIban = (iban: string) => {
   };
 };
 
+export const calculateItemPrice = (item: Item) => {
+  const totalPrice =
+    item.unit === StoreUnits.pcs
+      ? item.price * item.quantity
+      : item.price * item.quantity * Number(item.currentPackage);
+  return totalPrice.toFixed(2);
+};

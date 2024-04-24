@@ -1,12 +1,11 @@
 "use client";
-import { FormEvent, useEffect, useRef, useState } from "react";
-import { Button, Checkbox, Grid, Typography } from "@mui/material";
-import { Item, ProductData } from "@/components/invoice/types";
-import { InvoiceBox } from "@/components/invoice/InvoiceBox";
+import { ECOHOME_COMPANY } from "@/components/invoiceBox/constants";
+import { InvoiceBox } from "@/components/invoiceBox/InvoiceBox";
+import { Item, ProductData } from "@/components/invoiceBox/types";
 import { fetchJson } from "@/utils/fetchJson";
-import { ECOHOME_COMPANY } from "@/components/invoice/constants";
-import "@/components/invoice/invoiceBox.css";
-import "./invoice.css";
+import { Button, Checkbox, Grid, Typography } from "@mui/material";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import "./styles.css";
 
 export default function Invoice() {
   const [data, setData] = useState<ProductData[]>([]);
@@ -100,7 +99,7 @@ export default function Invoice() {
   }, []);
 
   return (
-    <form onSubmit={onSubmit} id="invoiceForm">
+    <form onSubmit={onSubmit} id="invoice">
       <InvoiceBox
         provider={provider}
         products={data}
@@ -140,7 +139,7 @@ export default function Invoice() {
           </Typography>
         </Grid>
       </Grid>
-      <div className="invoiceForm__button">
+      <div className="invoice__button">
         <Button variant="contained" disabled={error} type="submit">
           Generate Invoice
         </Button>

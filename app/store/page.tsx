@@ -26,7 +26,7 @@ import { EnhancedTableHead } from "components/store/enhancedTableHead";
 import { createKey, unitsMapCyrilic } from "components/store/utils";
 import { Order, StoreProductData, StoreUnits } from "@/components/store/types";
 import { fetchJson } from "@/utils/fetchJson";
-import "./store.css";
+import "./styles.css";
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {

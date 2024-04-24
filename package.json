@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && cp app/components/invoice/invoiceBox.css public/invoiceBox.css",
-    "start": "next start",
+    "build": "next build && cp app/components/invoiceBox/styles.css public/invoiceBox.css",
+    "start": "next start -H 0.0.0.0 -p 3002",
     "lint": "next lint"
   },
   "dependencies": {

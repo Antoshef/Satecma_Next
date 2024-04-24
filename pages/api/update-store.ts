@@ -1,4 +1,4 @@
-import { Item } from "@/components/invoice/types";
+import { Item } from "@/components/invoiceBox/types";
 import { NextApiRequest, NextApiResponse } from "next";
 import { queryAsync } from "../../utils/db";
 
@@ -17,12 +17,16 @@ export default async function handler(
       const filteredItems = items.filter(
         (item) => item.quantity > 0 && item.code !== 0
       );
-      const query = `UPDATE products_storage SET quantity = quantity - ? WHERE code = ?`;
+      const query = `UPDATE products_storage SET quantity = quantity - ? WHERE code = ? AND package = ?`;
       for (const item of filteredItems) {
-        if (!item.quantity || !item.code) {
+        if (!item.quantity || !item.code || !item.currentPackage) {
           return res.status(400).json({ message: "Missing required fields" });
         }
-        await queryAsync(query, [item.quantity, item.code]);
+        await queryAsync(query, [
+          item.quantity,
+          item.code,
+          item.currentPackage,
+        ]);
       }
       return res.status(200).json({ message: "Store items updated" });
     } catch (error) {

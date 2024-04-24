@@ -2742,10 +2742,22 @@ next@14.2.2:
     "@next/swc-win32-ia32-msvc" "14.2.2"
     "@next/swc-win32-x64-msvc" "14.2.2"
 
+node-bin-setup@^1.0.0:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/node-bin-setup/-/node-bin-setup-1.1.3.tgz#d45d5220e3b2ecc3a94263a56116f727f6c1bb14"
+  integrity sha512-opgw9iSCAzT2+6wJOETCpeRYAQxSopqQ2z+N6BXwIMsQQ7Zj5M8MaafQY8JMlolRR6R1UXg2WmhKp0p9lSOivg==
+
 node-releases@^2.0.14:
   version "2.0.14"
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.14.tgz#2ffb053bceb8b2be8495ece1ab6ce600c4461b0b"
   integrity sha512-y10wOWt8yZpqXmOgRo77WaHEmhYQYGNA6y421PKsKYWEK8aW+cqAphborZDhqfyKrbZEN92CN1X2KbafY2s7Yw==
+
+node@^20.10.0:
+  version "20.12.2"
+  resolved "https://registry.yarnpkg.com/node/-/node-20.12.2.tgz#1089416979a4164009f45b097b77cd34402a1de9"
+  integrity sha512-9cHolaEZHSU7/VY7ri0onA3o1sQbjDL/HbRO14CJKosSL7JMlkkCywQZj8Tn8p633fC+l8a4CrnzWiH2B339tw==
+  dependencies:
+    node-bin-setup "^1.0.0"
 
 nodemailer@^6.9.13:
   version "6.9.13"

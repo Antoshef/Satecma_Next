@@ -1,14 +1,17 @@
 "use client";
-import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Button, Grid, Select } from "@mui/material";
+import "./styles.css";
+import { CompanySelectField } from "../companySelectField/CompanySelectField";
 
 const tabsMap = {
   "/store": 0,
   "/invoice": 1,
+  "/spedition": 2,
 };
 
 interface LinkTabProps {
@@ -46,15 +49,16 @@ export function Header() {
   }, []);
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Grid container sx={{ width: "100%" }}>
+      <Grid component="div" item style={{ flexGrow: 1 }} />
       <Tabs value={value} aria-label="nav tabs" role="navigation" centered>
-        <LinkTab label="Store" href="/store" onClick={handleChange} />
-        <LinkTab
-          label="Create Invoice"
-          href="/invoice"
-          onClick={handleChange}
-        />
+        <LinkTab label="Склад" href="/store" onClick={handleChange} />
+        <LinkTab label="Фактури" href="/invoice" onClick={handleChange} />
+        <LinkTab label="Логистика" href="/spedition" onClick={handleChange} />
       </Tabs>
-    </Box>
+      <Grid component="div" item className="header__company">
+        <CompanySelectField />
+      </Grid>
+    </Grid>
   );
 }

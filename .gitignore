@@ -8,6 +8,7 @@
 
 # testing
 /coverage
+/sent
 
 # next.js
 /.next/
@@ -15,7 +16,6 @@
 
 # production
 /dist
-/sent
 
 # misc
 .DS_Store

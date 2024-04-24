@@ -1,5 +1,5 @@
 import { ChangeEvent } from "react";
-import "./invoiceBox.css";
+import "./styles.css";
 
 interface TextFieldProps {
   isFieldsDisabled: boolean;
@@ -27,7 +27,7 @@ export const TextField = ({
     ) : (
       <input
         {...props}
-        className={smallField ? "invoiceBox__small-field" : ""}
+        className={smallField ? "small-field" : ""}
         type={type}
         name={name}
         placeholder={placeholder}

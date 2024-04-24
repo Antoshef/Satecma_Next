@@ -1,18 +1,22 @@
-import "./invoiceBox.css";
-
 interface ButtonProps {
   isFieldsDisabled: boolean;
   value: string | number;
+  className?: string;
   onClick: (value: string | number) => void;
 }
 
-export const Button = ({ isFieldsDisabled, value, onClick }: ButtonProps) => (
+export const Button = ({
+  isFieldsDisabled,
+  value,
+  className,
+  onClick,
+}: ButtonProps) => (
   <>
     {isFieldsDisabled ? (
       value
     ) : (
       <button
-        className="invoiceBox__button"
+        className={className}
         type="button"
         onClick={() => onClick(value)}
       >

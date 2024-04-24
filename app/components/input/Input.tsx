@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { ProductData } from "../invoice/types";
+import { ProductData } from "../invoiceBox/types";
 
 interface InputProps {
   products: ProductData[];

@@ -1,4 +1,4 @@
-import { ProductData } from "@/components/invoice/types";
+import { ProductData } from "@/components/invoiceBox/types";
 import { NextApiRequest, NextApiResponse } from "next";
 import { queryAsync } from "../../utils/db";
 

@@ -1,14 +1,14 @@
 import { forwardRef, useEffect, useState } from "react";
 import { Item, ProductData, Provider, Providers } from "./types";
 import { calculateItemPrice, getBankDetailsFromIban } from "./utils";
-import { TextField } from "./TextField";
-import { SelectField } from "./SelectField";
-import { Button } from "./Button";
+import { TextField } from "../textField/TextField";
+import { SelectField } from "../selectField/SelectField";
+import { Button } from "../button/Button";
 import { ECOHOME_COMPANY, SATECMA_COMPANY } from "./constants";
 import { StoreUnits } from "../store/types";
 import { unitsMapCyrilic } from "../store/utils";
 import { Input } from "../input/Input";
-import "./invoiceBox.css";
+import "./styles.css";
 
 const logo =
   "https://satecma.bg/wp-content/uploads/2024/02/logo-satecma-industrias.png";

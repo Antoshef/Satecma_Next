@@ -1,5 +1,12 @@
-import { forwardRef, useEffect, useState } from "react";
-import { Item, ProductData, Provider, Providers } from "./types";
+import {
+  Dispatch,
+  forwardRef,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { InvoiceData, Item, ProductData, Provider } from "./types";
 import { calculateItemPrice, getBankDetailsFromIban } from "./utils";
 import { TextField } from "../textField/TextField";
 import { SelectField } from "../selectField/SelectField";
@@ -9,6 +16,7 @@ import { StoreUnits } from "../store/types";
 import { unitsMapCyrilic } from "../store/utils";
 import { Input } from "../input/Input";
 import "./styles.css";
+import { Company, CompanyContext } from "../providers/companyProvider";
 
 const logo =
   "https://satecma.bg/wp-content/uploads/2024/02/logo-satecma-industrias.png";
@@ -18,10 +26,12 @@ interface InvoiceBoxProps {
   products: ProductData[];
   invoiceNumber: number;
   isFieldsDisabled: boolean;
+  invoiceData: InvoiceData;
   setEmail: (email: string) => void;
   setError: (error: boolean) => void;
   setProvider: (provider: Provider) => void;
   submitItems: (items: Item[]) => void;
+  setInvoiceData: Dispatch<SetStateAction<InvoiceData>>;
 }
 
 export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
@@ -31,10 +41,12 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
       products,
       invoiceNumber,
       isFieldsDisabled,
+      invoiceData,
       setEmail,
       setError,
       setProvider,
       submitItems,
+      setInvoiceData,
     },
     ref
   ) => {
@@ -52,9 +64,7 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
       error: false,
     });
     const [paymentMethod, setPaymentMethod] = useState("По Банка");
-    const [providerName, setProviderName] = useState<Providers>(
-      Providers.Ecohome
-    );
+    const { company } = useContext(CompanyContext);
     const [receiver, setReceiver] = useState({
       email: "anton.stanev@satecma.bg",
       company: "ДЛВ ЕООД",
@@ -236,13 +246,26 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
 
     useEffect(() => {
       setProvider(
-        providerName === Providers.Ecohome ? ECOHOME_COMPANY : SATECMA_COMPANY
+        company === Company.ekoHome ? ECOHOME_COMPANY : SATECMA_COMPANY
       );
-    }, [providerName, provider]);
+    }, [company]);
 
     useEffect(() => {
       submitItems([...items]);
     }, [items, submitItems]);
+
+    useEffect(() => {
+      setInvoiceData((state) => ({
+        ...state,
+        client: receiver.company,
+        eik: Number(receiver.EIK),
+        vat_number: receiver.VAT,
+        amount: total.amountWithoutDiscount,
+        vat: total.VAT,
+        total: total.paid,
+        id: invoiceNumber,
+      }));
+    }, [receiver, total, invoiceNumber]);
 
     return (
       <div ref={ref} className="invoice-box">
@@ -264,28 +287,12 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
                         <br />
                         <span>Фактура №: {invoiceNumber}</span>
                         <br />
-                        <span>
-                          Създадена:{" "}
-                          {new Date().toLocaleDateString("bg-BG", {
-                            year: "numeric",
-                            month: "numeric",
-                            day: "numeric",
-                            timeZone: "Europe/Sofia",
-                          })}
-                        </span>
+                        <span>Създадена: {invoiceData.date}</span>
                       </td>
 
                       <td>
                         Доставчик: <br />
-                        Фирма:{" "}
-                        <SelectField
-                          value={providerName}
-                          values={[Providers.Ecohome, Providers.Satecma]}
-                          isFieldsDisabled={isFieldsDisabled}
-                          onChange={(e) =>
-                            setProviderName(e.target.value as Providers)
-                          }
-                        />
+                        Фирма: {company}
                         <br />
                         ЕИК: {provider.eik}
                         <br />
@@ -319,6 +326,25 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
                         Начислен ДДС (20.00 %): {total.VAT.toFixed(2)} BGN
                         <br />
                         Сума за плащане: {total.paid.toFixed(2)} BGN
+                        <br />
+                        Словом:{" "}
+                        <TextField
+                          name="wordPrice"
+                          type="text"
+                          placeholder="Сума на думи"
+                          value={wordPrice}
+                          isFieldsDisabled={isFieldsDisabled}
+                          onChange={(e) => setWordPrice(e.target.value)}
+                        />
+                        {!wordPrice.length && (
+                          <>
+                            <br />
+                            <span className="invoiceBox__error">
+                              Полето не може да бъде празно
+                            </span>
+                          </>
+                        )}
+                        <br />
                       </td>
                     </tr>
                   </tbody>
@@ -331,7 +357,7 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
               <td>Продукт</td>
               <td>Количество</td>
               <td>Опаковка</td>
-              <td>Ед. цена (без ДДС)</td>
+              <td>Ед. цена</td>
               <td>Отстъпка (%)</td>
               <td>ДДС (%)</td>
               <td>Стойност (без ДДС)</td>
@@ -601,24 +627,6 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
                     <br />
                   </>
                 )}
-                Словом:{" "}
-                <TextField
-                  name="wordPrice"
-                  type="text"
-                  placeholder="Сума на думи"
-                  value={wordPrice}
-                  isFieldsDisabled={isFieldsDisabled}
-                  onChange={(e) => setWordPrice(e.target.value)}
-                />
-                {!wordPrice.length && (
-                  <>
-                    <br />
-                    <span className="invoiceBox__error">
-                      Полето не може да бъде празно
-                    </span>
-                  </>
-                )}
-                <br />
                 Основание на сделка по ЗДДС:
                 <br />
                 <TextField

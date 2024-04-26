@@ -1,13 +1,16 @@
 "use client";
-import { ECOHOME_COMPANY } from "@/components/invoiceBox/constants";
+import {
+  ECOHOME_COMPANY,
+  INVOICE_DATA_DEFAULT_VALUES,
+} from "@/components/invoiceBox/constants";
 import { InvoiceBox } from "@/components/invoiceBox/InvoiceBox";
-import { Item, ProductData } from "@/components/invoiceBox/types";
+import { InvoiceData, Item, ProductData } from "@/components/invoiceBox/types";
 import { fetchJson } from "@/utils/fetchJson";
 import { Button, Checkbox, Grid, Typography } from "@mui/material";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import "./styles.css";
 
-export default function Invoice() {
+export default function Page() {
   const [data, setData] = useState<ProductData[]>([]);
   const [email, setEmail] = useState("");
   const [error, setError] = useState<boolean>(true);
@@ -18,6 +21,9 @@ export default function Invoice() {
   const [accountantCopy, setAccountantCopy] = useState<boolean>(false);
   const [officeCopy, setOfficeCopy] = useState<boolean>(false);
   const [items, setItems] = useState<Item[]>([]);
+  const [invoiceData, setInvoiceData] = useState<InvoiceData>(
+    INVOICE_DATA_DEFAULT_VALUES
+  );
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -63,17 +69,17 @@ export default function Invoice() {
         // setIsFieldsDisabled(false);
       });
 
-    // fetch("/api/update-invoice-number", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({ invoiceNumber: invoiceNumber + 1 }),
-    // })
-    //   .then((response) => response.json())
-    //   .catch((error) => {
-    //     console.error("Error:", error);
-    //   });
+    fetch("/api/sent-invoice", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(invoiceData),
+    })
+      .then((response) => response.json())
+      .catch((error) => {
+        console.error("Error:", error);
+      });
 
     fetch("/api/update-store", {
       method: "PUT",
@@ -106,10 +112,12 @@ export default function Invoice() {
         invoiceNumber={invoiceNumber}
         ref={invoiceRef}
         isFieldsDisabled={isFieldsDisabled}
+        invoiceData={invoiceData}
         setEmail={setEmail}
         setError={setError}
         setProvider={setProvider}
         submitItems={setItems}
+        setInvoiceData={setInvoiceData}
       />
       <Grid container margin={2} justifyContent="center" alignItems="center">
         <Grid

@@ -17,3 +17,19 @@ export const ECOHOME_COMPANY: Provider = {
   address: "р-н Овча купел, ул.641-ва №2",
   director: "Атанас Караджов",
 };
+
+export const INVOICE_DATA_DEFAULT_VALUES = {
+  amount: 0,
+  client: "",
+  date: new Date().toLocaleDateString("bg-BG", {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    timeZone: "Europe/Sofia",
+  }),
+  eik: 0,
+  invoice_id: 0,
+  total: 0,
+  vat: 0,
+  vat_number: "",
+};

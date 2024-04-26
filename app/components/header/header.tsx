@@ -4,7 +4,7 @@ import Tab from "@mui/material/Tab";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Button, Grid, Select } from "@mui/material";
+import { Grid } from "@mui/material";
 import "./styles.css";
 import { CompanySelectField } from "../companySelectField/CompanySelectField";
 
@@ -56,7 +56,7 @@ export function Header() {
         <LinkTab label="Фактури" href="/invoice" onClick={handleChange} />
         <LinkTab label="Логистика" href="/spedition" onClick={handleChange} />
       </Tabs>
-      <Grid component="div" item className="header__company">
+      <Grid marginRight={2} component="div" item className="header__company">
         <CompanySelectField />
       </Grid>
     </Grid>

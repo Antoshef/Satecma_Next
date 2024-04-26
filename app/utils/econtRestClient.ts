@@ -10,11 +10,11 @@ const productionCredentials = {
   password: process.env.NEXT_PUBLIC_ECONT_PASS,
 };
 
-const credentials = demoCredentials;
 
 export class EcontRestClient {
   static async request(method: string, params = {}, timeout = 10000) {
-    const endpoint = demoEndpoint;
+    const endpoint = productionEndpoint;
+    const credentials = productionCredentials;
 
     const url = `${endpoint}/${method.replace(/\/+$/, "")}`; // Trim trailing slashes from method
     const headers = {

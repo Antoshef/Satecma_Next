@@ -20,11 +20,6 @@ export interface ProductData {
   category: string;
 }
 
-export enum Providers {
-  Satecma = "Сатекма ЕООД",
-  Ecohome = "Еко Хоум Трейд ЕООД",
-}
-
 export interface Provider {
   name: string;
   eik: number;
@@ -32,4 +27,15 @@ export interface Provider {
   city: string;
   address: string;
   director: string;
+}
+
+export interface InvoiceData {
+  client: string;
+  eik: number;
+  vat_number: string;
+  date: string;
+  invoice_id: number;
+  amount: number;
+  vat: number;
+  total: number;
 }

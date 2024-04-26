@@ -11,7 +11,6 @@ export default async function handler(
   const { method } = req;
   if (method === "POST") {
     const { email, bcc, invoiceNumber, html, css } = req.body;
-    console.log("Email:", email, "bcc:", bcc);
     const fileName = `invoice-${invoiceNumber}.pdf`;
 
     try {

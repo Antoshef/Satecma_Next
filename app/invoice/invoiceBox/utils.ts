@@ -1,4 +1,4 @@
-import { StoreUnits } from "../store/types";
+import { StoreUnits } from "../../components/store/types";
 import { Item } from "./types";
 
 const bankCodes = {

@@ -6,17 +6,24 @@ import {
   useEffect,
   useState,
 } from "react";
-import { InvoiceData, Item, ProductData, Provider } from "./types";
-import { calculateItemPrice, getBankDetailsFromIban } from "./utils";
-import { TextField } from "../textField/TextField";
-import { SelectField } from "../selectField/SelectField";
-import { Button } from "../button/Button";
-import { ECOHOME_COMPANY, SATECMA_COMPANY } from "./constants";
-import { StoreUnits } from "../store/types";
-import { unitsMapCyrilic } from "../store/utils";
-import { Input } from "../input/Input";
+import { Button } from "../../components/button/Button";
+import { Input } from "../../components/input/Input";
+import { CompanyContext } from "../../components/providers/companyProvider";
+import { SelectField } from "../../components/selectField/SelectField";
+import { StoreUnits } from "../../components/store/types";
+import { unitsMapCyrilic } from "../../components/store/utils";
+import { TextField } from "../../components/textField/TextField";
+import { Company, ECOHOME_COMPANY, SATECMA_COMPANY } from "./constants";
 import "./styles.css";
-import { Company, CompanyContext } from "../providers/companyProvider";
+import {
+  InvoiceData,
+  InvoiceType,
+  Item,
+  LatestInvoices,
+  ProductData,
+  Provider,
+} from "./types";
+import { calculateItemPrice, getBankDetailsFromIban } from "./utils";
 
 const logo =
   "https://satecma.bg/wp-content/uploads/2024/02/logo-satecma-industrias.png";
@@ -24,14 +31,17 @@ const logo =
 interface InvoiceBoxProps {
   provider: Provider;
   products: ProductData[];
-  invoiceNumber: number;
+  invoiceNumber: string;
   isFieldsDisabled: boolean;
   invoiceData: InvoiceData;
+  currentInvoiceType: InvoiceType;
   setEmail: (email: string) => void;
   setError: (error: boolean) => void;
   setProvider: (provider: Provider) => void;
   submitItems: (items: Item[]) => void;
   setInvoiceData: Dispatch<SetStateAction<InvoiceData>>;
+  setCurrentInvoiceType: Dispatch<SetStateAction<InvoiceType>>;
+  setLatestInvoiceNumbers: Dispatch<SetStateAction<LatestInvoices>>;
 }
 
 export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
@@ -42,11 +52,14 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
       invoiceNumber,
       isFieldsDisabled,
       invoiceData,
+      currentInvoiceType,
       setEmail,
       setError,
       setProvider,
       submitItems,
       setInvoiceData,
+      setCurrentInvoiceType,
+      setLatestInvoiceNumbers,
     },
     ref
   ) => {
@@ -207,8 +220,8 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
     }, [receiver.EIK]);
 
     useEffect(() => {
-      setError(!wordPrice.length);
-    }, [wordPrice, setError]);
+      setError(!wordPrice.length || invoiceNumber.length !== 10);
+    }, [wordPrice, invoiceNumber, setError]);
 
     useEffect(() => {
       setTotal(() => {
@@ -285,7 +298,54 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
                           height={95}
                         />
                         <br />
-                        <span>Фактура №: {invoiceNumber}</span>
+                        {!isFieldsDisabled && (
+                          <>
+                            <SelectField
+                              isFieldsDisabled={isFieldsDisabled}
+                              value={currentInvoiceType}
+                              values={[
+                                InvoiceType.current,
+                                InvoiceType.previous,
+                                InvoiceType.manual,
+                              ]}
+                              onChange={(e) =>
+                                setCurrentInvoiceType(
+                                  e.target.value as InvoiceType
+                                )
+                              }
+                            />
+                            <br />
+                          </>
+                        )}
+                        <span>
+                          Фактура №:{" "}
+                          {currentInvoiceType === InvoiceType.manual ? (
+                            <TextField
+                              name="invoiceNumber"
+                              type="text"
+                              placeholder="0000000001"
+                              value={invoiceNumber}
+                              isFieldsDisabled={isFieldsDisabled}
+                              maxLength={10}
+                              onChange={(e) =>
+                                setLatestInvoiceNumbers((state) => ({
+                                  ...state,
+                                  manual: e.target.value,
+                                }))
+                              }
+                            />
+                          ) : (
+                            invoiceNumber
+                          )}
+                          {invoiceNumber.length !== 10 && (
+                            <>
+                              <br />
+                              <span className="invoiceBox__error">
+                                Номера трябва да съдържа 10 символа
+                              </span>
+                            </>
+                          )}
+                        </span>
                         <br />
                         <span>Създадена: {invoiceData.date}</span>
                       </td>

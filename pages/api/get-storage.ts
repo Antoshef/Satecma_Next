@@ -26,7 +26,7 @@ export default async function handler(
     }
   } else if (method === "PUT") {
     const { product } = req.body as { product: StoreProductData };
-    if (!product.name || !product.code || !product.unit || !product.quantity) {
+    if (!product.name || !product.code || !product.unit) {
       return res
         .status(400)
         .json({ message: "Missing required product fields" });

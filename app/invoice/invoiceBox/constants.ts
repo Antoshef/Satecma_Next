@@ -1,7 +1,12 @@
-import { Provider } from "./types";
+import { InvoiceData, Provider } from "./types";
+
+export enum Company {
+  satecma = "Сатекма ЕООД",
+  ekoHome = "Еко Хоум Трейд ЕООД",
+}
 
 export const SATECMA_COMPANY: Provider = {
-  name: "Сатекма ЕООД",
+  name: Company.satecma,
   eik: 207756461,
   VAT: "BG207756461",
   city: "Ямбол, България",
@@ -10,7 +15,7 @@ export const SATECMA_COMPANY: Provider = {
 };
 
 export const ECOHOME_COMPANY: Provider = {
-  name: "Еко Хоум Трейд ЕООД",
+  name: Company.ekoHome,
   eik: 205711987,
   VAT: "BG205711987",
   city: "София, България",
@@ -18,7 +23,7 @@ export const ECOHOME_COMPANY: Provider = {
   director: "Атанас Караджов",
 };
 
-export const INVOICE_DATA_DEFAULT_VALUES = {
+export const INVOICE_DATA_DEFAULT_VALUES: InvoiceData = {
   amount: 0,
   client: "",
   date: new Date().toLocaleDateString("bg-BG", {
@@ -28,7 +33,7 @@ export const INVOICE_DATA_DEFAULT_VALUES = {
     timeZone: "Europe/Sofia",
   }),
   eik: 0,
-  invoice_id: 0,
+  invoice_id: "",
   total: 0,
   vat: 0,
   vat_number: "",

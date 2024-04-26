@@ -2,19 +2,40 @@
 import {
   ECOHOME_COMPANY,
   INVOICE_DATA_DEFAULT_VALUES,
-} from "@/components/invoiceBox/constants";
-import { InvoiceBox } from "@/components/invoiceBox/InvoiceBox";
-import { InvoiceData, Item, ProductData } from "@/components/invoiceBox/types";
+} from "@/invoice/invoiceBox/constants";
+import { InvoiceBox } from "@/invoice/invoiceBox";
+import {
+  InvoiceData,
+  InvoiceType,
+  Item,
+  LatestInvoices,
+  ProductData,
+} from "@/invoice/invoiceBox/types";
 import { fetchJson } from "@/utils/fetchJson";
 import { Button, Checkbox, Grid, Typography } from "@mui/material";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import "./styles.css";
+import {
+  generateBcc,
+  getInvoiceNumber,
+  POSTinvoiceData,
+  POSTinvoicePdf,
+  UPDATEstoreData,
+} from "./utils";
 
 export default function Page() {
   const [data, setData] = useState<ProductData[]>([]);
   const [email, setEmail] = useState("");
   const [error, setError] = useState<boolean>(true);
-  const [invoiceNumber, setInvoiceNumber] = useState<number>(500000001);
+  const [latestInvoiceNumbers, setLatestInvoiceNumbers] =
+    useState<LatestInvoices>({
+      current: "",
+      previous: "",
+      manual: "",
+    });
+  const [currentInvoiceType, setCurrentInvoiceType] = useState<InvoiceType>(
+    InvoiceType.current
+  );
   const [provider, setProvider] = useState(ECOHOME_COMPANY);
   const invoiceRef = useRef<HTMLTableElement>(null);
   const [isFieldsDisabled, setIsFieldsDisabled] = useState<boolean>(false);
@@ -25,79 +46,47 @@ export default function Page() {
     INVOICE_DATA_DEFAULT_VALUES
   );
 
+  const invoiceNumber = useMemo(() => {
+    return currentInvoiceType === InvoiceType.manual
+      ? latestInvoiceNumbers.manual || ""
+      : currentInvoiceType === InvoiceType.current
+      ? latestInvoiceNumbers.current
+      : latestInvoiceNumbers.previous;
+  }, [currentInvoiceType, latestInvoiceNumbers]);
+
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsFieldsDisabled(true);
-    const bcc = (function () {
-      const bcc = [];
-      if (accountantCopy) {
-        bcc.push(
-          provider.name === "Сатекма ЕООД"
-            ? process.env.NEXT_PUBLIC_SATECMA_ACCOUNTANT_EMAIL
-            : provider.name === "Еко Хоум Трейд ЕООД"
-            ? process.env.NEXT_PUBLIC_ECO_HOME_ACCOUNTANT_EMAIL
-            : ""
-        );
-      }
-      if (officeCopy) {
-        bcc.push(process.env.NEXT_PUBLIC_OFFICE_EMAIL);
-      }
-      return bcc;
-    })();
+    const bcc = generateBcc(accountantCopy, officeCopy, provider.name);
     const css = await fetch("/invoiceBox.css").then((res) => res.text());
-    fetch("/api/generate-invoice", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        bcc,
-        email,
-        invoiceNumber,
-        html: invoiceRef.current?.outerHTML,
-        css,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Success:", data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      })
-      .finally(() => {
-        // setIsFieldsDisabled(false);
-      });
-
-    fetch("/api/sent-invoice", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(invoiceData),
-    })
-      .then((response) => response.json())
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-
-    fetch("/api/update-store", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ items }),
-    })
-      .then((response) => response.json())
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    await POSTinvoicePdf(
+      bcc,
+      email,
+      invoiceNumber,
+      invoiceRef.current?.outerHTML,
+      css
+    );
+    await POSTinvoiceData(invoiceData);
+    await UPDATEstoreData(items);
   };
 
   useEffect(() => {
     fetchJson<ProductData[]>("/api/get-prices")
       .then((data) => {
         setData(data.length ? data : []);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+
+    fetchJson<InvoiceData[]>("/api/sent-invoice")
+      .then((data) => {
+        const { current, previous } = getInvoiceNumber(data);
+        setLatestInvoiceNumbers((prev) => ({
+          ...prev,
+          current,
+          previous,
+        }));
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -113,11 +102,14 @@ export default function Page() {
         ref={invoiceRef}
         isFieldsDisabled={isFieldsDisabled}
         invoiceData={invoiceData}
+        currentInvoiceType={currentInvoiceType}
         setEmail={setEmail}
         setError={setError}
         setProvider={setProvider}
         submitItems={setItems}
         setInvoiceData={setInvoiceData}
+        setCurrentInvoiceType={setCurrentInvoiceType}
+        setLatestInvoiceNumbers={setLatestInvoiceNumbers}
       />
       <Grid container margin={2} justifyContent="center" alignItems="center">
         <Grid

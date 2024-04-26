@@ -1,6 +1,7 @@
 import Image from "next/image";
-import { useRef, useContext } from "react";
-import { Company, CompanyContext } from "../providers/companyProvider";
+import { useContext, useRef } from "react";
+import { Company } from "../../invoice/invoiceBox/constants";
+import { CompanyContext } from "../providers/companyProvider";
 
 const satecma =
   "https://satecma.bg/wp-content/uploads/2024/04/favico-transparent.png";

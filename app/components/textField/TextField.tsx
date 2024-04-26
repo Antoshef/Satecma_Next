@@ -8,6 +8,7 @@ interface TextFieldProps {
   value: string | number;
   name: string;
   smallField?: boolean;
+  maxLength?: number;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -18,6 +19,7 @@ export const TextField = ({
   placeholder,
   isFieldsDisabled,
   smallField,
+  maxLength,
   onChange,
   ...props
 }: TextFieldProps) => (
@@ -32,6 +34,7 @@ export const TextField = ({
         name={name}
         placeholder={placeholder}
         value={value}
+        maxLength={maxLength}
         onChange={onChange}
       />
     )}

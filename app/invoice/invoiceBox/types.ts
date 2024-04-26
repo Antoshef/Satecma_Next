@@ -1,4 +1,5 @@
-import { StoreUnits } from "../store/types";
+import { StoreUnits } from "../../components/store/types";
+import { Company } from "./constants";
 
 export interface Item
   extends Pick<ProductData, "name" | "code" | "price" | "unit" | "packing"> {
@@ -21,7 +22,7 @@ export interface ProductData {
 }
 
 export interface Provider {
-  name: string;
+  name: Company;
   eik: number;
   VAT: string;
   city: string;
@@ -34,8 +35,20 @@ export interface InvoiceData {
   eik: number;
   vat_number: string;
   date: string;
-  invoice_id: number;
+  invoice_id: string;
   amount: number;
   vat: number;
   total: number;
+}
+
+export interface LatestInvoices {
+  current: string;
+  previous: string;
+  manual: string;
+}
+
+export enum InvoiceType {
+  current = "Текущ номер",
+  previous = "Предходен номер",
+  manual = "Въведи номер",
 }

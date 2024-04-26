@@ -7,11 +7,7 @@ import {
   useEffect,
   useState,
 } from "react";
-
-export enum Company {
-  satecma = "Сатекма ЕООД",
-  ekoHome = "Еко Хоум Трейд ЕООД",
-}
+import { Company } from "../../invoice/invoiceBox/constants";
 
 interface CompanyContextType {
   company?: Company;

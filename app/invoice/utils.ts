@@ -107,7 +107,7 @@ export const POSTinvoiceData = async (invoiceData: InvoiceData) =>
     });
 
 export const UPDATEstoreData = async (items: Item[]) =>
-  await fetch("/api/update-store", {
+  await fetch("/api/update-storage", {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

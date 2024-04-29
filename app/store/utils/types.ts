@@ -1,5 +1,7 @@
+import { ProductData } from "@/invoice/invoiceBox/types";
+
 export interface StoreProductData {
-  code: number;
+  code: string;
   category: string;
   name: string;
   quantity: number;
@@ -7,6 +9,10 @@ export interface StoreProductData {
   unit: StoreUnits;
   total: number;
 }
+
+export interface InvoiceProductData
+  extends Pick<StoreProductData, "code" | "package" | "quantity">,
+    Pick<ProductData, "price"> {}
 
 export enum StoreUnits {
   kg = "kg",
@@ -24,3 +30,10 @@ export interface HeadCell {
 }
 
 export type Order = "asc" | "desc";
+
+export interface ProductRowsData {
+  quantity: number;
+  price: number;
+  code: string;
+  package: number;
+}

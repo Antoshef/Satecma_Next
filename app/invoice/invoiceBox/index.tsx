@@ -105,7 +105,7 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
       const { name, value, dataset } = e.target;
       const newItems = [...items];
       const currentItem = newItems.find(
-        (item) => item.code === Number(dataset.code)
+        (item) => item.code === dataset.code
       );
       if (currentItem) {
         (currentItem as any)[name] = value;
@@ -118,7 +118,7 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
       const { value, dataset, name } = e.target;
       const newItems = [...items];
       const currentItem = newItems.find(
-        (item) => item.code === Number(dataset.code)
+        (item) => item.code === dataset.code
       );
       if (currentItem) {
         (currentItem as any)[name] = value;
@@ -131,7 +131,7 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
       const { name, value, dataset } = e.target;
       const newServices = [...services];
       const currentService = newServices.find(
-        (item) => item.code === Number(dataset.code)
+        (item) => item.code === dataset.code
       );
       if (currentService) {
         (currentService as any)[name] = value;
@@ -146,7 +146,7 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
       const { value, dataset } = e.target;
       const newServices = [...services];
       const currentService = newServices.find(
-        (item) => item.code === Number(dataset.code)
+        (item) => item.code === dataset.code
       );
       if (currentService) {
         currentService.VAT = value;
@@ -189,7 +189,7 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
       setServices((state) => [
         ...state,
         {
-          code: state.length + 1,
+          code: (state.length + 1).toString(),
           name: "",
           packing: "",
           currentPackage: "",

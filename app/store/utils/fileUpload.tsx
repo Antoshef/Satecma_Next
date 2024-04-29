@@ -1,7 +1,19 @@
-import { Button, Grid } from "@mui/material";
-import { ChangeEvent, DragEvent, useEffect, useState } from "react";
+import { Grid } from "@mui/material";
+import {
+  ChangeEvent,
+  Dispatch,
+  DragEvent,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
+import { InvoiceProductData } from "./types";
 
-const FileUpload = () => {
+interface FileUploadProps {
+  setData: Dispatch<SetStateAction<InvoiceProductData[] | null>>;
+}
+
+const FileUpload = ({ setData }: FileUploadProps) => {
   const [file, setFile] = useState<File | null>(null);
 
   const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
@@ -27,13 +39,14 @@ const FileUpload = () => {
     if (file && file.type === "text/plain") {
       const formData = new FormData();
       formData.append("file", file);
-      fetch("/api/parse-pdf", {
+      fetch("/api/parse-file", {
         method: "POST",
         body: formData,
       }).then(async (response) => {
         if (response.ok) {
-          const data = await response.json();
-          console.log(data, "DATA");
+          const { data }: { data: InvoiceProductData[] } =
+            await response.json();
+          setData(data);
         } else {
           console.error("Error parsing PDF");
         }
@@ -78,16 +91,6 @@ const FileUpload = () => {
 
       <Grid container spacing={2} marginTop={2} justifyContent="space-evenly">
         {file && <p>File selected: {file.name}</p>}
-        <Button
-          variant="contained"
-          color="primary"
-          disabled={!file}
-          onClick={() => {
-            // Handle file upload
-          }}
-        >
-          Upload
-        </Button>
       </Grid>
     </Grid>
   );

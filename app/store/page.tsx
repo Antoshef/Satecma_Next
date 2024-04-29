@@ -3,16 +3,28 @@ import { headCells } from "@/store/utils/constants";
 import { EnhancedTableHead } from "@/store/utils/enhancedTableHead";
 import { EnhancedTableToolbar } from "@/store/utils/enhancedTableToolbar";
 import { ProductEditor } from "@/store/utils/productEditor";
-import { Order, StoreProductData, StoreUnits } from "@/store/utils/types";
-import { createKey, unitsMapCyrilic } from "@/store/utils/utils";
+import {
+  InvoiceProductData,
+  Order,
+  StoreProductData,
+  StoreUnits,
+} from "@/store/utils/types";
+import { ADDStorage, createKey, unitsMapCyrilic } from "@/store/utils/utils";
 import { fetchJson } from "@/utils/fetchJson";
 import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Grid,
+  IconButton,
   Input,
   MenuItem,
   Select,
   SelectChangeEvent,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import Box from "@mui/material/Box";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -53,6 +65,9 @@ function getComparator<Key extends keyof any>(
 
 export default function Store() {
   const [products, setProducts] = useState<StoreProductData[]>([]);
+  const [productMap, setProductMap] = useState(
+    new Map<string, StoreProductData>()
+  );
   const [categories, setCategories] = useState<string[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<StoreProductData[]>(
     []
@@ -67,6 +82,10 @@ export default function Store() {
   const [dense, setDense] = useState(true);
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [editMode, setEditMode] = useState(false);
+  const [productsToUpdate, setProductsToUpdate] = useState<
+    InvoiceProductData[] | null
+  >(null);
+  const [openCheckProductsDialog, setOpenCheckProductsDialog] = useState(false);
 
   const handleRequestSort = (
     event: MouseEvent<unknown>,
@@ -103,7 +122,7 @@ export default function Store() {
     setFilteredProducts(sortedProducts);
   };
 
-  const isSelected = (code: number) => selected?.code === code;
+  const isSelected = (code: string) => selected?.code === code;
 
   const handleCategoryChange = (event: SelectChangeEvent<string>) => {
     const category = event.target.value;
@@ -160,6 +179,30 @@ export default function Store() {
     [order, orderBy, page, rowsPerPage, filteredProducts]
   );
 
+  const uploadProductsHandler = async () => {
+    if (productsToUpdate) {
+      const res = await ADDStorage(productsToUpdate);
+      if (!res.ok) {
+        console.error("Error adding products: ", res);
+        return;
+      }
+      const updatedProducts = products.map((product) => {
+        const updatedProduct = productsToUpdate.find(
+          (p) => p.code === product.code && p.package === product.package
+        );
+        if (updatedProduct) {
+          return {
+            ...product,
+            quantity: product.quantity + updatedProduct.quantity,
+          };
+        }
+        return product;
+      });
+      setProducts(updatedProducts);
+      setProductsToUpdate(null);
+    }
+  };
+
   useEffect(() => {
     setLoading(true);
     fetchJson<StoreProductData[]>("/api/get-storage")
@@ -183,8 +226,10 @@ export default function Store() {
   }, []);
 
   useEffect(() => {
+    const map = new Map<string, StoreProductData>();
     setFilteredProducts(() =>
       products.map((p) => {
+        setProductMap(map.set(`${p.code}-${p.package}`, p));
         return {
           ...p,
           total:
@@ -198,13 +243,70 @@ export default function Store() {
     setEditMode(!!selected);
   }, [selected]);
 
+  useEffect(() => {
+    if (productsToUpdate) {
+      setOpenCheckProductsDialog(true);
+    } else {
+      setOpenCheckProductsDialog(false);
+    }
+  }, [productsToUpdate]);
+
   return (
     <Box margin={2}>
       {loading ? (
         <Typography variant="h4">Loading...</Typography>
       ) : (
         <>
-          <FileUpload />
+          <Dialog
+            open={openCheckProductsDialog}
+            onClose={() => setOpenCheckProductsDialog(false)}
+          >
+            <DialogTitle marginRight={4}>Проверка на продуктите</DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={() => setOpenCheckProductsDialog(false)}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent>
+              <Grid container direction="column" alignItems="center">
+                {productsToUpdate?.map((updatedProduct) => {
+                  const key = `${updatedProduct.code}-${updatedProduct.package}`;
+                  const storeProduct = productMap.get(key);
+                  return (
+                    <DialogContentText key={updatedProduct.code} variant="h6">
+                      {storeProduct ? (
+                        <>
+                          Code: {storeProduct.code}, Name: {storeProduct.name} -{" "}
+                          {storeProduct.quantity} {"=>"}{" "}
+                          {storeProduct.quantity + updatedProduct.quantity}
+                        </>
+                      ) : (
+                        <>
+                          Code: {updatedProduct.code}, Quanity:{" "}
+                          {updatedProduct.quantity}
+                        </>
+                      )}
+                    </DialogContentText>
+                  );
+                })}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={uploadProductsHandler}
+                >
+                  Прибави продуктите
+                </Button>
+              </Grid>
+            </DialogContent>
+          </Dialog>
+          <FileUpload setData={setProductsToUpdate} />
           <Paper sx={{ width: "100%", mb: 2 }}>
             <EnhancedTableToolbar
               isSelected={!!selected}

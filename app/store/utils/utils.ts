@@ -1,4 +1,4 @@
-import { StoreProductData } from "./types";
+import { InvoiceProductData, StoreProductData } from "./types";
 
 export const createKey = (product: StoreProductData) =>
   `${product.code}-${product.name}-${product.package}`;
@@ -9,4 +9,24 @@ export const unitsMapCyrilic = {
   pcs: "бр.",
   m: "м.",
   sqm: "м2",
+};
+
+export const ADDStorage = async (items: InvoiceProductData[]) => {
+  try {
+    return await fetch("/api/add-storage", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ items }),
+    }).then((response) => {
+      if (!response.ok) {
+        throw new Error("Error updating products");
+      }
+      return response.json();
+    });
+  } catch (error) {
+    console.error("Error updating products: ", error);
+    throw new Error("Error updating products");
+  }
 };

@@ -11,7 +11,7 @@ export interface Item
 }
 
 export interface ProductData {
-  code: number;
+  code: string;
   name: string;
   packing: string;
   unit: StoreUnits;

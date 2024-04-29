@@ -17,7 +17,7 @@ export default async function handler(
           .json({ message: "No items provided", status: 400 });
       }
       const filteredItems = items.filter(
-        (item) => item.quantity > 0 && item.code !== 0
+        (item) => item.quantity > 0 && item.code !== '0'
       );
       const query = `UPDATE products_storage SET quantity = quantity - ? WHERE code = ? AND package = ?`;
       for (const item of filteredItems) {

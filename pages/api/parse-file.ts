@@ -1,6 +1,5 @@
 import { createRouter } from "next-connect";
 import multer from "multer";
-import PDFParser from "pdf2json";
 import { extractProductData } from "../../utils/extractProductData";
 
 interface FormDataFile {
@@ -15,19 +14,22 @@ interface FormDataFile {
 // Setup multer for handling file uploads
 const upload = multer({ storage: multer.memoryStorage() });
 
-// Create the router using next-connect
 const router = createRouter();
 
 // @ts-expect-error Some types are missing in the multer types
 router.use(upload.single("file"));
 
-router.post((req: any, res: any) => {
-  const file = req.file as FormDataFile;
-  if (!file) {
-    return res.status(400).json({ error: "No file uploaded" });
+router.post(async (req: any, res: any) => {
+  try {
+    const file = (await req.file) as FormDataFile;
+    if (!file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+    const text = file.buffer.toString("utf-8");
+    return res.json({ data: extractProductData(text) });
+  } catch {
+    return res.status(500).json({ error: "Error parsing file" });
   }
-  const text = file.buffer.toString("utf-8");
-  extractProductData(text);
 });
 
 export const config = {

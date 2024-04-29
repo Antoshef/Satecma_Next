@@ -1,5 +1,6 @@
 "use client";
 import { EcontRestClient } from "@/utils/econtRestClient";
+import { apiRequest } from "@/utils/speedyRestClient";
 import { useEffect } from "react";
 
 export default function Page() {
@@ -27,10 +28,14 @@ export default function Page() {
       .catch((error) => console.error(error));
   };
 
+  const getSpeedyOffices = async () => {
+    apiRequest("shipment")
+      .then((data) => console.log(data, "speedy"))
+      .catch((error) => console.error(error));
+  };
+
   useEffect(() => {
-    getOffices();
-    getClientProfiles();
-    getShipments();
+    getSpeedyOffices();
   }, []);
 
   return <h1>Spedition</h1>;

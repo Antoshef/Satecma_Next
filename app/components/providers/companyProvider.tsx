@@ -7,7 +7,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Company } from "../../invoice/invoiceBox/constants";
+import { Company } from "@/invoice/invoiceBox/constants";
 
 interface CompanyContextType {
   company?: Company;

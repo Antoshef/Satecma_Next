@@ -15,7 +15,7 @@ export default async function handler(
       if (!results || results.length === 0) {
         res.status(404).json({ message: "Not found" });
       }
-      res.json(results);
+      res.status(200).json({ data: results, status: 200 });
     } catch (error) {
       console.error("GET error:", error);
       return res.status(500).json({

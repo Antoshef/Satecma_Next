@@ -1,4 +1,4 @@
-import { StoreProductData } from "@/components/store/types";
+import { StoreProductData } from "@/store/utils/types";
 import { NextApiRequest, NextApiResponse } from "next";
 import { queryAsync } from "../../utils/db";
 
@@ -16,7 +16,7 @@ export default async function handler(
       if (!results || results.length === 0) {
         return res.status(404).json({ message: "Not found" });
       }
-      return res.json(results);
+      return res.json({ data: results });
     } catch (error) {
       console.error("GET error:", error);
       return res.status(500).json({

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useContext, useRef } from "react";
-import { Company } from "../../invoice/invoiceBox/constants";
+import { Company } from "@/invoice/invoiceBox/constants";
 import { CompanyContext } from "../providers/companyProvider";
 
 const satecma =

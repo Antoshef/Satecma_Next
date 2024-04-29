@@ -1,5 +1,5 @@
-import { Company } from "@/invoice/invoiceBox/constants";
-import { InvoiceData, Item } from "@/invoice/invoiceBox/types";
+import { Company } from "./invoiceBox/constants";
+import { InvoiceData, Item } from "./invoiceBox/types";
 
 export const getInvoiceNumber = (data: InvoiceData[]) => {
   const filteredCurrentInvoice = data.filter((d) =>
@@ -9,7 +9,7 @@ export const getInvoiceNumber = (data: InvoiceData[]) => {
   const latestCurrentInvoice = filteredCurrentInvoice.reduce(
     (acc, curr) =>
       Number(acc.invoice_id) > Number(curr.invoice_id) ? acc : curr,
-    { invoice_id: "0000100001" }
+    { invoice_id: "0000100000" }
   );
 
   const filteredPreviousInvoice = data.filter((d) =>
@@ -19,7 +19,7 @@ export const getInvoiceNumber = (data: InvoiceData[]) => {
   const latestPreviousInvoice = filteredPreviousInvoice.reduce(
     (acc, curr) =>
       Number(acc.invoice_id) > Number(curr.invoice_id) ? acc : curr,
-    { invoice_id: "0000000001" }
+    { invoice_id: "0000000000" }
   );
 
   const addZeros = (invoice: string) => {
@@ -90,7 +90,7 @@ export const POSTinvoicePdf = async (
       console.log("Success:", data);
     })
     .catch((error) => {
-      console.error("Error:", error);
+      throw new Error(error);
     });
 
 export const POSTinvoiceData = async (invoiceData: InvoiceData) =>
@@ -103,7 +103,7 @@ export const POSTinvoiceData = async (invoiceData: InvoiceData) =>
   })
     .then((response) => response.json())
     .catch((error) => {
-      console.error("Error:", error);
+      throw new Error(error);
     });
 
 export const UPDATEstoreData = async (items: Item[]) =>
@@ -116,5 +116,5 @@ export const UPDATEstoreData = async (items: Item[]) =>
   })
     .then((response) => response.json())
     .catch((error) => {
-      console.error("Error:", error);
+      throw new Error(error);
     });

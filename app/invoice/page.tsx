@@ -2,15 +2,15 @@
 import {
   ECOHOME_COMPANY,
   INVOICE_DATA_DEFAULT_VALUES,
-} from "@/invoice/invoiceBox/constants";
-import { InvoiceBox } from "@/invoice/invoiceBox";
+} from "./invoiceBox/constants";
+import { InvoiceBox } from "./invoiceBox";
 import {
   InvoiceData,
   InvoiceType,
   Item,
   LatestInvoices,
   ProductData,
-} from "@/invoice/invoiceBox/types";
+} from "./invoiceBox/types";
 import { fetchJson } from "@/utils/fetchJson";
 import { Button, Checkbox, Grid, Typography } from "@mui/material";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
@@ -29,8 +29,8 @@ export default function Page() {
   const [error, setError] = useState<boolean>(true);
   const [latestInvoiceNumbers, setLatestInvoiceNumbers] =
     useState<LatestInvoices>({
-      current: "",
-      previous: "",
+      current: "0000100000",
+      previous: "0000000000",
       manual: "",
     });
   const [currentInvoiceType, setCurrentInvoiceType] = useState<InvoiceType>(
@@ -59,6 +59,10 @@ export default function Page() {
     setIsFieldsDisabled(true);
     const bcc = generateBcc(accountantCopy, officeCopy, provider.name);
     const css = await fetch("/invoiceBox.css").then((res) => res.text());
+    const res = await POSTinvoiceData(invoiceData);
+    if (res.status !== 200) return;
+    const ress = await UPDATEstoreData(items);
+    if (ress.status !== 200) return;
     await POSTinvoicePdf(
       bcc,
       email,
@@ -66,22 +70,20 @@ export default function Page() {
       invoiceRef.current?.outerHTML,
       css
     );
-    await POSTinvoiceData(invoiceData);
-    await UPDATEstoreData(items);
   };
 
   useEffect(() => {
     fetchJson<ProductData[]>("/api/get-prices")
-      .then((data) => {
-        setData(data.length ? data : []);
+      .then((res) => {
+        setData(res.data.length ? res.data : []);
       })
       .catch((error) => {
         console.error("Error:", error);
       });
 
     fetchJson<InvoiceData[]>("/api/sent-invoice")
-      .then((data) => {
-        const { current, previous } = getInvoiceNumber(data);
+      .then((res) => {
+        const { current, previous } = getInvoiceNumber(res.data);
         setLatestInvoiceNumbers((prev) => ({
           ...prev,
           current,
@@ -140,7 +142,11 @@ export default function Page() {
         </Grid>
       </Grid>
       <div className="invoice__button">
-        <Button variant="contained" disabled={error} type="submit">
+        <Button
+          variant="contained"
+          disabled={error || isFieldsDisabled}
+          type="submit"
+        >
           Generate Invoice
         </Button>
       </div>

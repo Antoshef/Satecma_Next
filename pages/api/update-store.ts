@@ -12,7 +12,9 @@ export default async function handler(
 
     try {
       if (!items || items.length === 0) {
-        return res.status(400).json({ message: "No items provided" });
+        return res
+          .status(400)
+          .json({ message: "No items provided", status: 400 });
       }
       const filteredItems = items.filter(
         (item) => item.quantity > 0 && item.code !== 0
@@ -20,7 +22,9 @@ export default async function handler(
       const query = `UPDATE products_storage SET quantity = quantity - ? WHERE code = ? AND package = ?`;
       for (const item of filteredItems) {
         if (!item.quantity || !item.code || !item.currentPackage) {
-          return res.status(400).json({ message: "Missing required fields" });
+          return res
+            .status(400)
+            .json({ message: "Missing required fields", status: 400 });
         }
         await queryAsync(query, [
           item.quantity,
@@ -28,7 +32,9 @@ export default async function handler(
           item.currentPackage,
         ]);
       }
-      return res.status(200).json({ message: "Store items updated" });
+      return res
+        .status(200)
+        .json({ message: "Store items updated", status: 200 });
     } catch (error) {
       console.error("PUT error:", error);
       return res.status(500).json({

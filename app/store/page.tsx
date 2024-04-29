@@ -1,18 +1,11 @@
 "use client";
-import { useState, useMemo, ChangeEvent, MouseEvent, useEffect } from "react";
-import Box from "@mui/material/Box";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
-import Typography from "@mui/material/Typography";
-import Paper from "@mui/material/Paper";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Switch from "@mui/material/Switch";
-import { headCells } from "components/store/constants";
+import { headCells } from "@/store/utils/constants";
+import { EnhancedTableHead } from "@/store/utils/enhancedTableHead";
+import { EnhancedTableToolbar } from "@/store/utils/enhancedTableToolbar";
+import { ProductEditor } from "@/store/utils/productEditor";
+import { Order, StoreProductData, StoreUnits } from "@/store/utils/types";
+import { createKey, unitsMapCyrilic } from "@/store/utils/utils";
+import { fetchJson } from "@/utils/fetchJson";
 import {
   Grid,
   Input,
@@ -20,13 +13,21 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import { ProductEditor } from "components/store/productEditor";
-import { EnhancedTableToolbar } from "components/store/enhancedTableToolbar";
-import { EnhancedTableHead } from "components/store/enhancedTableHead";
-import { createKey, unitsMapCyrilic } from "components/store/utils";
-import { Order, StoreProductData, StoreUnits } from "@/components/store/types";
-import { fetchJson } from "@/utils/fetchJson";
+import Box from "@mui/material/Box";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Paper from "@mui/material/Paper";
+import Switch from "@mui/material/Switch";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TablePagination from "@mui/material/TablePagination";
+import TableRow from "@mui/material/TableRow";
+import Typography from "@mui/material/Typography";
+import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from "react";
 import "./styles.css";
+import FileUpload from "./utils/fileUpload";
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -162,7 +163,8 @@ export default function Store() {
   useEffect(() => {
     setLoading(true);
     fetchJson<StoreProductData[]>("/api/get-storage")
-      .then((data) => {
+      .then((res) => {
+        const { data } = res;
         setProducts(data);
 
         const uniqueCategories = Array.from(
@@ -202,6 +204,7 @@ export default function Store() {
         <Typography variant="h4">Loading...</Typography>
       ) : (
         <>
+          <FileUpload />
           <Paper sx={{ width: "100%", mb: 2 }}>
             <EnhancedTableToolbar
               isSelected={!!selected}

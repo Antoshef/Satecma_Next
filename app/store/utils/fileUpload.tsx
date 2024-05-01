@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import {
   ChangeEvent,
   Dispatch,
@@ -10,14 +10,16 @@ import {
 import { InvoiceProductData } from "./types";
 
 interface FileUploadProps {
+  data: InvoiceProductData[] | null;
   setData: Dispatch<SetStateAction<InvoiceProductData[] | null>>;
+  setOpenDialog: Dispatch<SetStateAction<boolean>>;
 }
 
-const FileUpload = ({ setData }: FileUploadProps) => {
+const FileUpload = ({ data, setData, setOpenDialog }: FileUploadProps) => {
   const [file, setFile] = useState<File | null>(null);
 
   const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
-    event.preventDefault(); // Prevent default behavior (Prevent file from being opened)
+    event.preventDefault();
   };
 
   const handleDrop = (event: DragEvent<HTMLDivElement>) => {
@@ -54,6 +56,12 @@ const FileUpload = ({ setData }: FileUploadProps) => {
     }
   }, [file]);
 
+  useEffect(() => {
+    if (!data) {
+      setFile(null);
+    }
+  }, [data]);
+
   return (
     <Grid container direction="column">
       {/* Drag and Drop area */}
@@ -89,9 +97,13 @@ const FileUpload = ({ setData }: FileUploadProps) => {
         Or click to select a file
       </label>
 
-      <Grid container spacing={2} marginTop={2} justifyContent="space-evenly">
-        {file && <p>File selected: {file.name}</p>}
-      </Grid>
+      {file && (
+        <Grid container spacing={2} marginTop={2} justifyContent="space-evenly">
+          <Button size="large" onClick={() => setOpenDialog(true)}>
+            Selected file: {file.name}
+          </Button>
+        </Grid>
+      )}
     </Grid>
   );
 };

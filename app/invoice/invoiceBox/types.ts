@@ -18,7 +18,7 @@ export interface ProductData {
   color: string;
   percentage_increase: number;
   price: number;
-  category: string;
+  category: string | null;
 }
 
 export interface Provider {

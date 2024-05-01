@@ -9,8 +9,9 @@ import {
   StoreProductData,
   StoreUnits,
 } from "@/store/utils/types";
-import { ADDStorage, createKey, unitsMapCyrilic } from "@/store/utils/utils";
+import { ADDStorage, createKey } from "@/store/utils/utils";
 import { fetchJson } from "@/utils/fetchJson";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   Button,
   Dialog,
@@ -24,7 +25,6 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 import Box from "@mui/material/Box";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -37,9 +37,18 @@ import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from "react";
+import {
+  ChangeEvent,
+  Fragment,
+  MouseEvent,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { Hourglass } from "react-loader-spinner";
 import "./styles.css";
 import FileUpload from "./utils/fileUpload";
+import useToast from "./utils/useToast";
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -74,6 +83,7 @@ export default function Store() {
   );
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [loading, setLoading] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [order, setOrder] = useState<Order>("asc");
   const [orderBy, setOrderBy] = useState<keyof StoreProductData>("name");
@@ -86,6 +96,7 @@ export default function Store() {
     InvoiceProductData[] | null
   >(null);
   const [openCheckProductsDialog, setOpenCheckProductsDialog] = useState(false);
+  const { Toast, setMessage } = useToast();
 
   const handleRequestSort = (
     event: MouseEvent<unknown>,
@@ -119,7 +130,12 @@ export default function Store() {
         (product) => product.category === category
       );
     }
-    setFilteredProducts(sortedProducts);
+    setFilteredProducts(() =>
+      sortedProducts.map((p) => ({
+        ...p,
+        total: p.unit === StoreUnits.pcs ? p.quantity : p.quantity * p.package,
+      }))
+    );
   };
 
   const isSelected = (code: string) => selected?.code === code;
@@ -130,7 +146,7 @@ export default function Store() {
     sortAndFilterProducts(products, category);
   };
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearch = function (e: React.ChangeEvent<HTMLInputElement>) {
     setSelectedCategory("all");
     setPage(0);
     const _searchTerm = e.target.value.toLowerCase();
@@ -138,7 +154,12 @@ export default function Store() {
     const filtered = products.filter((product) =>
       product.name.toLowerCase().includes(_searchTerm.toLowerCase())
     );
-    setFilteredProducts(filtered);
+    setFilteredProducts(() =>
+      filtered.map((p) => ({
+        ...p,
+        total: p.unit === StoreUnits.pcs ? p.quantity : p.quantity * p.package,
+      }))
+    );
   };
 
   const onEditSubmit = async (product: StoreProductData) => {
@@ -150,17 +171,16 @@ export default function Store() {
         },
         body: JSON.stringify({ product }),
       }).then((response) => {
-        if (!response.ok) {
-          throw new Error("Error updating product");
-        }
+        if (!response.ok) return;
         const updatedProducts = products.map((p) =>
           p.code === product.code && p.package === product.package ? product : p
         );
         setProducts(updatedProducts);
         setSelected(undefined);
+        setMessage({ severity: "success", text: "Product updated" });
       });
     } catch (error) {
-      console.error("Error updating product: ", error);
+      setMessage({ severity: "error", text: "Error updating product" });
     } finally {
     }
   };
@@ -178,28 +198,44 @@ export default function Store() {
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
     [order, orderBy, page, rowsPerPage, filteredProducts]
   );
-
   const uploadProductsHandler = async () => {
-    if (productsToUpdate) {
+    if (!productsToUpdate) return;
+    setIsFetching(true);
+
+    try {
       const res = await ADDStorage(productsToUpdate);
+
       if (!res.ok) {
-        console.error("Error adding products: ", res);
+        setMessage({ text: "Error adding products", severity: "error" });
+        setIsFetching(false);
         return;
       }
-      const updatedProducts = products.map((product) => {
-        const updatedProduct = productsToUpdate.find(
-          (p) => p.code === product.code && p.package === product.package
-        );
-        if (updatedProduct) {
-          return {
-            ...product,
-            quantity: product.quantity + updatedProduct.quantity,
-          };
-        }
-        return product;
+
+      const products = await fetchJson<StoreProductData[]>("/api/get-storage");
+      if (!products.data) {
+        setMessage({
+          text: "Error fetching products: No data returned",
+          severity: "error",
+        });
+        setIsFetching(false);
+        return;
+      }
+
+      setProducts(products.data);
+      const uniqueCategories = Array.from(
+        new Set(products.data.map((p) => p.category))
+      );
+      setCategories(uniqueCategories);
+      setMessage({
+        text: `${productsToUpdate.length} products added successfully`,
+        severity: "success",
       });
-      setProducts(updatedProducts);
+    } catch (error) {
+      setMessage({ text: "Error updating products", severity: "error" });
+    } finally {
       setProductsToUpdate(null);
+      setOpenCheckProductsDialog(false);
+      setIsFetching(false);
     }
   };
 
@@ -214,11 +250,10 @@ export default function Store() {
           new Set(data.map((p) => p.category))
         );
         setCategories(uniqueCategories);
-
         sortAndFilterProducts(data, "all");
       })
-      .catch((error) => {
-        console.error("Error fetching storage data: ", error);
+      .catch(() => {
+        setMessage({ text: "Error fetching storage data", severity: "error" });
       })
       .finally(() => {
         setLoading(false);
@@ -257,56 +292,122 @@ export default function Store() {
         <Typography variant="h4">Loading...</Typography>
       ) : (
         <>
+          <Toast />
           <Dialog
             open={openCheckProductsDialog}
             onClose={() => setOpenCheckProductsDialog(false)}
+            fullWidth
+            maxWidth="md"
           >
-            <DialogTitle marginRight={4}>Проверка на продуктите</DialogTitle>
-            <IconButton
-              aria-label="close"
-              onClick={() => setOpenCheckProductsDialog(false)}
-              sx={{
-                position: "absolute",
-                right: 8,
-                top: 8,
-                color: (theme) => theme.palette.grey[500],
-              }}
-            >
-              <CloseIcon />
-            </IconButton>
-            <DialogContent>
-              <Grid container direction="column" alignItems="center">
-                {productsToUpdate?.map((updatedProduct) => {
-                  const key = `${updatedProduct.code}-${updatedProduct.package}`;
-                  const storeProduct = productMap.get(key);
-                  return (
-                    <DialogContentText key={updatedProduct.code} variant="h6">
-                      {storeProduct ? (
-                        <>
-                          Code: {storeProduct.code}, Name: {storeProduct.name} -{" "}
-                          {storeProduct.quantity} {"=>"}{" "}
-                          {storeProduct.quantity + updatedProduct.quantity}
-                        </>
-                      ) : (
-                        <>
-                          Code: {updatedProduct.code}, Quanity:{" "}
-                          {updatedProduct.quantity}
-                        </>
-                      )}
-                    </DialogContentText>
-                  );
-                })}
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={uploadProductsHandler}
+            {isFetching ? (
+              <DialogTitle marginRight={4}>Обновяване на склада...</DialogTitle>
+            ) : (
+              <>
+                <DialogTitle marginRight={4}>
+                  Проверка на продуктите
+                </DialogTitle>
+                <IconButton
+                  aria-label="close"
+                  onClick={() => setOpenCheckProductsDialog(false)}
+                  sx={{
+                    position: "absolute",
+                    right: 8,
+                    top: 8,
+                    color: (theme) => theme.palette.grey[500],
+                  }}
                 >
-                  Прибави продуктите
-                </Button>
-              </Grid>
+                  <CloseIcon />
+                </IconButton>
+              </>
+            )}
+            <DialogContent>
+              {isFetching ? (
+                <Grid className="store__hourglass-wrapper" container>
+                  <Hourglass
+                    visible={true}
+                    height="80"
+                    width="80"
+                    ariaLabel="hourglass-loading"
+                    colors={["#306cce", "#72a1ed"]}
+                  />
+                </Grid>
+              ) : (
+                <Grid container direction="column" alignItems="center">
+                  <DialogContentText variant="h5">
+                    Брой продукти за добавяне: {productsToUpdate?.length}
+                  </DialogContentText>
+                  {productsToUpdate?.map((updatedProduct) => {
+                    const key = `${updatedProduct.code}-${updatedProduct.package}`;
+                    const storeProduct = productMap.get(key);
+                    return (
+                      <Fragment key={updatedProduct.code}>
+                        <DialogContentText variant="h6">
+                          {storeProduct ? (
+                            <>
+                              Код: {storeProduct.code}, Име: {storeProduct.name}
+                              , Опаковка: {storeProduct.package}{" "}
+                              {storeProduct.unit} - Количество:{" "}
+                              <Typography
+                                fontSize="1.25rem"
+                                component="span"
+                                className="text-blue-500"
+                              >
+                                {updatedProduct.quantity}
+                              </Typography>
+                              , Промяна:{" "}
+                              <Typography
+                                fontSize="1.25rem"
+                                component="span"
+                                className="text-red-500"
+                              >
+                                {storeProduct.quantity}
+                              </Typography>{" "}
+                              {"=>"}{" "}
+                              <Typography
+                                fontSize="1.25rem"
+                                component="span"
+                                className="text-green-500"
+                              >
+                                {storeProduct.quantity +
+                                  updatedProduct.quantity}{" "}
+                                {StoreUnits.pcs}
+                              </Typography>
+                            </>
+                          ) : (
+                            <>
+                              Код: {updatedProduct.code}, Име:{" "}
+                              {updatedProduct.description}, Опаковка:{" "}
+                              {updatedProduct.package} {updatedProduct.unit},
+                              Количество:{" "}
+                              <Typography
+                                fontSize="1.25rem"
+                                component="span"
+                                className="text-blue-500"
+                              >
+                                {updatedProduct.quantity} {StoreUnits.pcs}
+                              </Typography>
+                            </>
+                          )}
+                        </DialogContentText>
+                      </Fragment>
+                    );
+                  })}
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={uploadProductsHandler}
+                  >
+                    Прибави продуктите
+                  </Button>
+                </Grid>
+              )}
             </DialogContent>
           </Dialog>
-          <FileUpload setData={setProductsToUpdate} />
+          <FileUpload
+            data={productsToUpdate}
+            setData={setProductsToUpdate}
+            setOpenDialog={setOpenCheckProductsDialog}
+          />
           <Paper sx={{ width: "100%", mb: 2 }}>
             <EnhancedTableToolbar
               isSelected={!!selected}
@@ -406,11 +507,11 @@ export default function Store() {
                           {row.name}
                         </TableCell>
                         <TableCell align="right">
-                          {row.package} {unitsMapCyrilic[row.unit]}
+                          {row.package} {row.unit}
                         </TableCell>
                         <TableCell align="right">{row.quantity}</TableCell>
                         <TableCell align="right">
-                          {row.total} {unitsMapCyrilic[row.unit]}
+                          {row.total} {row.unit}
                         </TableCell>
                       </TableRow>
                     );

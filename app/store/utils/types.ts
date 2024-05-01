@@ -1,4 +1,5 @@
 import { ProductData } from "@/invoice/invoiceBox/types";
+import { AlertProps } from "@mui/material";
 
 export interface StoreProductData {
   code: string;
@@ -10,16 +11,23 @@ export interface StoreProductData {
   total: number;
 }
 
+export interface ToastMessage {
+  severity: AlertProps["severity"];
+  text?: string;
+}
+
 export interface InvoiceProductData
-  extends Pick<StoreProductData, "code" | "package" | "quantity">,
-    Pick<ProductData, "price"> {}
+  extends Pick<StoreProductData, "code" | "package" | "quantity" | "unit">,
+    Pick<ProductData, "price"> {
+  totalQuantity: number;
+  totalPrice: number;
+  description: string;
+}
 
 export enum StoreUnits {
-  kg = "kg",
-  l = "l",
-  pcs = "pcs",
-  m = "m",
-  sqm = "sqm",
+  kg = "кг.",
+  l = "л.",
+  pcs = "бр.",
 }
 
 export interface HeadCell {
@@ -31,9 +39,8 @@ export interface HeadCell {
 
 export type Order = "asc" | "desc";
 
-export interface ProductRowsData {
-  quantity: number;
-  price: number;
-  code: string;
-  package: number;
+export enum SpanishUnits {
+  LITER = "L",
+  KILOGRAM = "K",
+  UNIT = "U",
 }

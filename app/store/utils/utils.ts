@@ -3,12 +3,10 @@ import { InvoiceProductData, StoreProductData } from "./types";
 export const createKey = (product: StoreProductData) =>
   `${product.code}-${product.name}-${product.package}`;
 
-export const unitsMapCyrilic = {
-  kg: "кг.",
-  l: "л.",
-  pcs: "бр.",
-  m: "м.",
-  sqm: "м2",
+export const spanishUnitsMap = {
+  L: "л.",
+  K: "кг.",
+  U: "бр.",
 };
 
 export const ADDStorage = async (items: InvoiceProductData[]) => {
@@ -23,7 +21,7 @@ export const ADDStorage = async (items: InvoiceProductData[]) => {
       if (!response.ok) {
         throw new Error("Error updating products");
       }
-      return response.json();
+      return { ok: response.ok, data: response.json() };
     });
   } catch (error) {
     console.error("Error updating products: ", error);

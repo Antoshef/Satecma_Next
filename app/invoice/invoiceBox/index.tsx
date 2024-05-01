@@ -12,7 +12,6 @@ import { CompanyContext } from "../../components/providers/companyProvider";
 import { SelectField } from "../../components/selectField/SelectField";
 import { TextField } from "../../components/textField/TextField";
 import { StoreUnits } from "../../store/utils/types";
-import { unitsMapCyrilic } from "../../store/utils/utils";
 import { Company, ECOHOME_COMPANY, SATECMA_COMPANY } from "./constants";
 import "./styles.css";
 import {
@@ -104,9 +103,7 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
     const itemChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value, dataset } = e.target;
       const newItems = [...items];
-      const currentItem = newItems.find(
-        (item) => item.code === dataset.code
-      );
+      const currentItem = newItems.find((item) => item.code === dataset.code);
       if (currentItem) {
         (currentItem as any)[name] = value;
         currentItem.totalPrice = calculateItemPrice(currentItem);
@@ -117,9 +114,7 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
     const itemSelectHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
       const { value, dataset, name } = e.target;
       const newItems = [...items];
-      const currentItem = newItems.find(
-        (item) => item.code === dataset.code
-      );
+      const currentItem = newItems.find((item) => item.code === dataset.code);
       if (currentItem) {
         (currentItem as any)[name] = value;
         currentItem.totalPrice = calculateItemPrice(currentItem);
@@ -161,7 +156,7 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
         const salePrice = price * percentage_increase;
         const VAT = "20";
         const newItem: Item = {
-          code,
+          code: code || (items.length + services.length + 8000).toString(),
           name,
           packing,
           currentPackage: packing.split(", ")[0] || "",
@@ -189,7 +184,7 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
       setServices((state) => [
         ...state,
         {
-          code: (state.length + 1).toString(),
+          code: (items.length + services.length + 9000).toString(),
           name: "",
           packing: "",
           currentPackage: "",
@@ -455,7 +450,7 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
                         isFieldsDisabled={isFieldsDisabled}
                         onChange={itemChangeHandler}
                       />
-                      {` ${unitsMapCyrilic[StoreUnits.pcs]}`}
+                      {` ${StoreUnits.pcs}`}
                     </td>
                     <td>
                       <SelectField
@@ -466,11 +461,7 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
                         values={packing.split(", ")}
                         onChange={itemSelectHandler}
                       />
-                      {` ${
-                        unit === StoreUnits.kg
-                          ? unitsMapCyrilic[unit]
-                          : unitsMapCyrilic[StoreUnits.l]
-                      }`}
+                      {` ${unit}`}
                     </td>
 
                     <td>{`${price.toFixed(2)} лв.`}</td>
@@ -495,7 +486,13 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
                         onChange={itemSelectHandler}
                       />
                     </td>
-                    <td>{totalPrice} лв.</td>
+                    <td
+                      className={
+                        !Number(totalPrice) ? "invoiceBox__zero-amount" : ""
+                      }
+                    >
+                      {totalPrice} лв.
+                    </td>
                   </tr>
                 )
               )}
@@ -530,7 +527,7 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
                       isFieldsDisabled={isFieldsDisabled}
                       onChange={serviceChangeHandler}
                     />
-                    {` ${unitsMapCyrilic[unit]}`}
+                    {` ${unit}`}
                   </td>
                   <td></td>
                   <td>

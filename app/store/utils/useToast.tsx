@@ -22,6 +22,7 @@ const useToast = () => {
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
       open={!!message}
       autoHideDuration={HIDE_TIMEOUT}
+      className="mt-12"
     >
       <Alert
         severity={message?.severity}

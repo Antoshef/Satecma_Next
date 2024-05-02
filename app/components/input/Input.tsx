@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { ProductData } from "../../invoice/invoiceBox/types";
+import { ProductData } from "../../create/invoice/types";
 
 interface InputProps {
   products: ProductData[];
@@ -75,6 +75,7 @@ export const Input = ({
         type="text"
         value={input}
         autoComplete="off"
+        className="input-field"
         onFocus={() => setShowSuggestions(true)}
         onChange={onChange}
       />

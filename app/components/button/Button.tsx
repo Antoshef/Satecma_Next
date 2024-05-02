@@ -1,3 +1,5 @@
+import { classNames } from "../header/header";
+
 interface ButtonProps {
   isFieldsDisabled: boolean;
   value: string | number;
@@ -10,18 +12,21 @@ export const Button = ({
   value,
   className,
   onClick,
-}: ButtonProps) => (
-  <>
-    {isFieldsDisabled ? (
-      value
-    ) : (
-      <button
-        className={className}
-        type="button"
-        onClick={() => onClick(value)}
-      >
-        {value}
-      </button>
-    )}
-  </>
-);
+}: ButtonProps) => {
+  const classes = classNames([!!className ? className : "", "button"]);
+  return (
+    <>
+      {isFieldsDisabled ? (
+        value
+      ) : (
+        <button
+          className={classes}
+          type="button"
+          onClick={() => onClick(value)}
+        >
+          {value}
+        </button>
+      )}
+    </>
+  );
+};

@@ -1,20 +1,15 @@
-"use client";
-import {
-  ECOHOME_COMPANY,
-  INVOICE_DATA_DEFAULT_VALUES,
-} from "./invoiceBox/constants";
-import { InvoiceBox } from "./invoiceBox";
+import { fetchJson } from "@/utils/fetchJson";
+import { Button, Checkbox, Grid, Typography } from "@mui/material";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { InvoiceBox } from ".";
+import { ECOHOME_COMPANY, INVOICE_DATA_DEFAULT_VALUES } from "./constants";
 import {
   InvoiceData,
   InvoiceType,
   Item,
   LatestInvoices,
   ProductData,
-} from "./invoiceBox/types";
-import { fetchJson } from "@/utils/fetchJson";
-import { Button, Checkbox, Grid, Typography } from "@mui/material";
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
-import "./styles.css";
+} from "./types";
 import {
   generateBcc,
   getInvoiceNumber,
@@ -23,8 +18,11 @@ import {
   UPDATEstoreData,
 } from "./utils";
 
-export default function Page() {
-  const [data, setData] = useState<ProductData[]>([]);
+interface InvoiceWrapperProps {
+  data: ProductData[];
+}
+
+export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState<boolean>(true);
   const [latestInvoiceNumbers, setLatestInvoiceNumbers] =
@@ -73,14 +71,6 @@ export default function Page() {
   };
 
   useEffect(() => {
-    fetchJson<ProductData[]>("/api/get-prices")
-      .then((res) => {
-        setData(res.data.length ? res.data : []);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-
     fetchJson<InvoiceData[]>("/api/sent-invoice")
       .then((res) => {
         const { current, previous } = getInvoiceNumber(res.data);
@@ -96,7 +86,7 @@ export default function Page() {
   }, []);
 
   return (
-    <form onSubmit={onSubmit} id="invoice">
+    <form className="p-4" onSubmit={onSubmit} id="invoice">
       <InvoiceBox
         provider={provider}
         products={data}
@@ -147,9 +137,9 @@ export default function Page() {
           disabled={error || isFieldsDisabled}
           type="submit"
         >
-          Generate Invoice
+          Създай фактура
         </Button>
       </div>
     </form>
   );
-}
+};

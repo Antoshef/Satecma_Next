@@ -20,7 +20,13 @@ export const SelectField = ({
     {isFieldsDisabled ? (
       <span>&nbsp;{value}</span>
     ) : (
-      <select {...props} name={name} value={value} onChange={onChange}>
+      <select
+        {...props}
+        className="input-field"
+        name={name}
+        value={value}
+        onChange={onChange}
+      >
         {values.map((v) => (
           <option key={v} value={v}>
             {v}

@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { Header } from "./components/header/header";
 import dynamic from "next/dynamic";
+import { Inter } from "next/font/google";
+import Header from "./components/header/header";
 import "./globals.css";
 
 const CompanyProvider = dynamic(
   () => import("./components/providers/companyProvider"),
   {
     ssr: false,
-    loading: () => <p>Loading...</p>,
   }
 );
 

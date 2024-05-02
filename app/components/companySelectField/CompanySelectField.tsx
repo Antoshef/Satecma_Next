@@ -1,6 +1,8 @@
+import { Company } from "@/create/invoice/constants";
+import { Menu, Transition } from "@headlessui/react";
 import Image from "next/image";
-import { useContext, useRef } from "react";
-import { Company } from "@/invoice/invoiceBox/constants";
+import { Fragment, useContext, useRef } from "react";
+import { classNames } from "../header/header";
 import { CompanyContext } from "../providers/companyProvider";
 
 const satecma =
@@ -17,39 +19,68 @@ export const CompanySelectField = () => {
     selectRef.current?.click();
   };
 
-  const changeHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setCompany(e.target.value as Company);
-    localStorage.setItem("company", JSON.stringify(e.target.value));
+  const changeHandler = (value: Company) => {
+    setCompany(value);
+    localStorage.setItem("company", JSON.stringify(value));
   };
 
   return (
-    <div id="company-select" style={{ position: "relative" }}>
-      <Image
-        width={40}
-        height={40}
-        alt={`${company}-logo`}
-        src={company === Company.satecma ? satecma : eko}
-        onClick={handleClickLogo}
-        style={{ cursor: "pointer" }}
-      />
-      <select
-        ref={selectRef}
-        value={company}
-        onChange={changeHandler}
-        style={{
-          opacity: 0,
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-          top: 0,
-          left: 0,
-          cursor: "pointer",
-          paddingTop: 150,
-        }}
+    <Menu as="div" className="relative ml-3">
+      <div>
+        <Menu.Button className="overflow-hidden relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+          <span className="absolute -inset-1.5" />
+          <span className="sr-only">Open company menu</span>
+          <Image
+            width={40}
+            height={40}
+            alt={`${company}-logo`}
+            src={company === Company.satecma ? satecma : eko}
+            onClick={handleClickLogo}
+            className="w-full h-full object-contain"
+          />
+        </Menu.Button>
+      </div>
+      <Transition
+        as={Fragment}
+        enter="transition ease-out duration-100"
+        enterFrom="transform opacity-0 scale-95"
+        enterTo="transform opacity-100 scale-100"
+        leave="transition ease-in duration-75"
+        leaveFrom="transform opacity-100 scale-100"
+        leaveTo="transform opacity-0 scale-95"
       >
-        <option value={Company.satecma}>Satecma</option>
-        <option value={Company.ekoHome}>Eko Home</option>
-      </select>
-    </div>
+        <Menu.Items
+          defaultValue={company}
+          className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+        >
+          <Menu.Item>
+            {({ active }) => (
+              <span
+                className={classNames([
+                  active ? "bg-gray-100" : "",
+                  "block px-4 py-2 text-sm text-gray-700",
+                ])}
+                onClick={() => changeHandler(Company.satecma)}
+              >
+                Satecma
+              </span>
+            )}
+          </Menu.Item>
+          <Menu.Item>
+            {({ active }) => (
+              <span
+                className={classNames([
+                  active ? "bg-gray-100" : "",
+                  "block px-4 py-2 text-sm text-gray-700",
+                ])}
+                onClick={() => changeHandler(Company.ekoHome)}
+              >
+                Eko Home
+              </span>
+            )}
+          </Menu.Item>
+        </Menu.Items>
+      </Transition>
+    </Menu>
   );
 };

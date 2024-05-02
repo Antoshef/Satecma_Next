@@ -13,7 +13,6 @@ import { SelectField } from "../../components/selectField/SelectField";
 import { TextField } from "../../components/textField/TextField";
 import { StoreUnits } from "../../store/utils/types";
 import { Company, ECOHOME_COMPANY, SATECMA_COMPANY } from "./constants";
-import "./styles.css";
 import {
   InvoiceData,
   InvoiceType,
@@ -536,6 +535,7 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
                       name="price"
                       value={price}
                       data-code={code}
+                      className="input-field max-w-16"
                       onChange={serviceChangeHandler}
                     />
                     {" лв. "}
@@ -575,7 +575,11 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
                   />
                 </td>
                 <td colSpan={1}>
-                  <button type="button" onClick={addItem}>
+                  <button
+                    className="button"
+                    type="button"
+                    onClick={addItem}
+                  >
                     Добави
                   </button>
                 </td>

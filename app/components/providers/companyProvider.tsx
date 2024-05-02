@@ -1,4 +1,5 @@
 "use client";
+import { Company } from "@/create/invoice/constants";
 import {
   createContext,
   Dispatch,
@@ -7,7 +8,6 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Company } from "@/invoice/invoiceBox/constants";
 
 interface CompanyContextType {
   company?: Company;

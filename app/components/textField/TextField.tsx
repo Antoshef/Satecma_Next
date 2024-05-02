@@ -1,5 +1,5 @@
 import { ChangeEvent } from "react";
-import "./styles.css";
+import { classNames } from "../header/header";
 
 interface TextFieldProps {
   isFieldsDisabled: boolean;
@@ -22,21 +22,25 @@ export const TextField = ({
   maxLength,
   onChange,
   ...props
-}: TextFieldProps) => (
-  <>
-    {isFieldsDisabled ? (
-      value
-    ) : (
-      <input
-        {...props}
-        className={smallField ? "small-field" : ""}
-        type={type}
-        name={name}
-        placeholder={placeholder}
-        value={value}
-        maxLength={maxLength}
-        onChange={onChange}
-      />
-    )}
-  </>
-);
+}: TextFieldProps) => {
+  const classes = classNames([!!smallField ? "max-w-12" : "", "input-field"]);
+
+  return (
+    <>
+      {isFieldsDisabled ? (
+        value
+      ) : (
+        <input
+          {...props}
+          className={classes}
+          type={type}
+          name={name}
+          placeholder={placeholder}
+          value={value}
+          maxLength={maxLength}
+          onChange={onChange}
+        />
+      )}
+    </>
+  );
+};

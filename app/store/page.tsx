@@ -46,7 +46,6 @@ import {
   useState,
 } from "react";
 import { Hourglass } from "react-loader-spinner";
-import "./styles.css";
 import FileUpload from "./utils/fileUpload";
 import useToast from "./utils/useToast";
 
@@ -322,7 +321,7 @@ export default function Store() {
             )}
             <DialogContent>
               {isFetching ? (
-                <Grid className="store__hourglass-wrapper" container>
+                <Grid className="justify-center" container>
                   <Hourglass
                     visible={true}
                     height="80"
@@ -448,7 +447,7 @@ export default function Store() {
                 placeholder="Търси по име"
                 value={searchTerm}
                 onChange={handleSearch}
-                className="store__search-input"
+                className="ml-4"
               />
             </Grid>
             <TableContainer>

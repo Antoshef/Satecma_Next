@@ -85,6 +85,10 @@ body {
   text-align: center;
 }
 
+.invoiceBox__zero-amount {
+  color: red;
+}
+
 p,
 td {
   cursor: default;

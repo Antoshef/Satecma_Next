@@ -10,7 +10,6 @@ export default async function handler(
 
   if (method === "GET") {
     try {
-      throw new Error("Not implemented");
       const results = await queryAsync<StoreProductData[]>(
         "SELECT * FROM products_storage"
       );

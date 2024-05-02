@@ -1,4 +1,4 @@
-import { ProductData } from "@/invoice/invoiceBox/types";
+import { ProductData } from "@/create/invoice/types";
 import { AlertProps } from "@mui/material";
 
 export interface StoreProductData {

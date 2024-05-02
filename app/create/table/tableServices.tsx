@@ -1,11 +1,12 @@
 import { Button } from "@/components/button/Button";
-import { Item } from "./types";
-import { TextField } from "@/components/textField/TextField";
 import { SelectField } from "@/components/selectField/SelectField";
+import { TextField } from "@/components/textField/TextField";
+import { Item } from "../invoice/types";
 
 interface TableServicesProps {
   services: Item[];
   isFieldsDisabled: boolean;
+  className?: string;
   serviceChangeHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
   serviceSelectHandler: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   removeItem: (code: string | number | null) => void;
@@ -14,13 +15,14 @@ interface TableServicesProps {
 export const TableServices = ({
   services,
   isFieldsDisabled,
+  className,
   serviceChangeHandler,
   serviceSelectHandler,
   removeItem,
 }: TableServicesProps) => {
   return services.map(
     ({ name, code, discount, quantity, price, totalPrice, unit }) => (
-      <tr className="service" key={code}>
+      <tr className={className} key={code}>
         <td>
           <Button
             isFieldsDisabled={isFieldsDisabled}

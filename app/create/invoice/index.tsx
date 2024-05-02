@@ -1,3 +1,4 @@
+import { InputWrapper } from "@/components/input/wrapper";
 import {
   Dispatch,
   forwardRef,
@@ -5,13 +6,11 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Input } from "../../components/input";
 import { SelectField } from "../../components/selectField/SelectField";
 import { TextField } from "../../components/textField/TextField";
-import { StoreUnits } from "../../store/utils/types";
+import { TableItems } from "../table/tableItems";
+import { TableServices } from "../table/tableServices";
 import { SATECMA_LOGO } from "./constants";
-import { TableItems } from "./tableItems";
-import { TableServices } from "./tableServices";
 import {
   InvoiceData,
   InvoiceType,
@@ -20,8 +19,8 @@ import {
   ProductData,
   Provider,
 } from "./types";
-import { calculateItemPrice, getBankDetailsFromIban } from "./utils";
-import { InputWrapper } from "@/components/input/wrapper";
+import { getBankDetailsFromIban } from "./utils";
+import { useTableItems } from "../table/useTableItems";
 
 interface InvoiceBoxProps {
   provider: Provider;
@@ -61,8 +60,6 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
     );
     const [wordPrice, setWordPrice] = useState("");
     const [reason, setReason] = useState("");
-    const [items, setItems] = useState<Item[]>([]);
-    const [services, setServices] = useState<Item[]>([]);
     const [bank, setBank] = useState({
       iban: "BG79FINV91501017339942",
       swift: "FINVBGSF",
@@ -78,118 +75,24 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
       EIK: "123456789",
       VAT: "BG123456789",
     });
-    const [total, setTotal] = useState({
-      amountWithoutDiscount: 0,
-      discount: 0,
-      netAmount: 0,
-      VAT: 0,
-      paid: 0,
-    });
+
+    const {
+      items,
+      services,
+      total,
+      addItem,
+      itemChangeHandler,
+      itemSelectHandler,
+      removeItem,
+      serviceChangeHandler,
+      serviceSelectHandler,
+    } = useTableItems({ selectedProduct, setSelectedProduct });
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setReceiver((state) => ({
         ...state,
         [e.target.name]: e.target.value,
       }));
-    };
-
-    const itemChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value, dataset } = e.target;
-      const newItems = [...items];
-      const currentItem = newItems.find((item) => item.code === dataset.code);
-      if (currentItem) {
-        (currentItem as any)[name] = value;
-        currentItem.totalPrice = calculateItemPrice(currentItem);
-        setItems(newItems);
-      }
-    };
-
-    const itemSelectHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      const { value, dataset, name } = e.target;
-      const newItems = [...items];
-      const currentItem = newItems.find((item) => item.code === dataset.code);
-      if (currentItem) {
-        (currentItem as any)[name] = value;
-        currentItem.totalPrice = calculateItemPrice(currentItem);
-        setItems(newItems);
-      }
-    };
-
-    const serviceChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value, dataset } = e.target;
-      const newServices = [...services];
-      const currentService = newServices.find(
-        (item) => item.code === dataset.code
-      );
-      if (currentService) {
-        (currentService as any)[name] = value;
-        currentService.totalPrice = (
-          currentService.quantity * currentService.price
-        ).toFixed(2);
-        setServices(newServices);
-      }
-    };
-
-    const serviceSelectHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      const { value, dataset } = e.target;
-      const newServices = [...services];
-      const currentService = newServices.find(
-        (item) => item.code === dataset.code
-      );
-      if (currentService) {
-        currentService.VAT = value;
-        setServices(newServices);
-      }
-    };
-
-    const addItem = () => {
-      if (selectedProduct) {
-        const { unit, code, name, price, packing, percentage_increase } =
-          selectedProduct;
-        const salePrice = price * percentage_increase;
-        const VAT = "20";
-        const newItem: Item = {
-          code: code || (items.length + services.length + 8000).toString(),
-          name,
-          packing,
-          currentPackage: packing.split(", ")[0] || "",
-          quantity: 1,
-          unit,
-          price: salePrice,
-          discount: "0",
-          VAT,
-          totalPrice: "0",
-        };
-        newItem.totalPrice = calculateItemPrice(newItem);
-        setItems((state) => [...state, newItem]);
-        setSelectedProduct(null);
-      } else {
-        addService();
-      }
-    };
-
-    const removeItem = (code: string | number | null) => {
-      setItems((state) => state.filter((item) => item.code !== code));
-      setServices((state) => state.filter((item) => item.code !== code));
-    };
-
-    const addService = () => {
-      setServices((state) => [
-        ...state,
-        {
-          code: (items.length + services.length + 9000).toString(),
-          name: "",
-          packing: "",
-          currentPackage: "",
-          unit: StoreUnits.pcs,
-          quantity: 1,
-          price: 0,
-          unit_price: 0,
-          discount: "0",
-          totalPrice: "0",
-          VAT: "0",
-        },
-      ]);
     };
 
     const paymentMethodHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -210,40 +113,6 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
     useEffect(() => {
       setError(!wordPrice.length || invoiceNumber.length !== 10);
     }, [wordPrice, invoiceNumber, setError]);
-
-    useEffect(() => {
-      setTotal(() => {
-        let amountWithoutDiscount = items.reduce(
-          (acc, item) => acc + Number(item.totalPrice),
-          0
-        );
-        amountWithoutDiscount += services.reduce(
-          (acc, item) => acc + Number(item.totalPrice),
-          0
-        );
-        let discount = items.reduce(
-          (acc, item) =>
-            acc + (Number(item.discount) / 100) * Number(item.totalPrice),
-          0
-        );
-        discount += services.reduce(
-          (acc, item) =>
-            acc + (Number(item.discount) / 100) * Number(item.totalPrice),
-          0
-        );
-        const netAmount = amountWithoutDiscount - discount;
-        const VAT = 0.2 * netAmount;
-        const paid = netAmount + VAT;
-
-        return {
-          amountWithoutDiscount,
-          discount,
-          netAmount,
-          VAT,
-          paid,
-        };
-      });
-    }, [items, services]);
 
     useEffect(() => {
       submitItems([...items]);
@@ -280,25 +149,19 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
                           height={95}
                         />
                         <br />
-                        {!isFieldsDisabled && (
-                          <>
-                            <SelectField
-                              isFieldsDisabled={isFieldsDisabled}
-                              value={currentInvoiceType}
-                              values={[
-                                InvoiceType.current,
-                                InvoiceType.previous,
-                                InvoiceType.manual,
-                              ]}
-                              onChange={(e) =>
-                                setCurrentInvoiceType(
-                                  e.target.value as InvoiceType
-                                )
-                              }
-                            />
-                            <br />
-                          </>
-                        )}
+                        <SelectField
+                          isFieldsDisabled={isFieldsDisabled}
+                          value={currentInvoiceType}
+                          values={[
+                            InvoiceType.current,
+                            InvoiceType.previous,
+                            InvoiceType.manual,
+                          ]}
+                          onChange={(e) =>
+                            setCurrentInvoiceType(e.target.value as InvoiceType)
+                          }
+                        />
+                        <br />
                         <span>
                           Фактура №:{" "}
                           {currentInvoiceType === InvoiceType.manual ? (

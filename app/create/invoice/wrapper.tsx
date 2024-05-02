@@ -38,7 +38,7 @@ interface InvoiceWrapperProps {
 
 export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
   const [email, setEmail] = useState("");
-  const [error, setError] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
   const [latestInvoiceNumbers, setLatestInvoiceNumbers] =
     useState<LatestInvoices>({
       current: "0000100000",
@@ -75,7 +75,7 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
       officeCopy,
       providerName: provider.name,
     });
-    const css = await fetch("/invoiceBox.css").then((res) => res.text());
+    const css = await fetch("/globals.css").then((res) => res.text());
     const res = await POSTinvoiceData(invoiceData);
     if (res.status !== 200) return;
     const ress = await UPDATEstoreData(items);
@@ -161,7 +161,7 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
           disabled={error || isFieldsDisabled}
           type="submit"
         >
-          Създай фактура
+          Създай
         </Button>
       </div>
     </form>

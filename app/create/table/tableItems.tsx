@@ -1,12 +1,13 @@
 import { Button } from "@/components/button/Button";
-import { Item } from "./types";
-import { TextField } from "@/components/textField/TextField";
 import { SelectField } from "@/components/selectField/SelectField";
+import { TextField } from "@/components/textField/TextField";
 import { StoreUnits } from "@/store/utils/types";
+import { Item } from "../invoice/types";
 
 interface TableItemsProps {
   items: Item[];
   isFieldsDisabled: boolean;
+  className?: string;
   itemChangeHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
   itemSelectHandler: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   removeItem: (code: string | number | null) => void;
@@ -15,6 +16,7 @@ interface TableItemsProps {
 export const TableItems = ({
   items,
   isFieldsDisabled,
+  className,
   itemChangeHandler,
   itemSelectHandler,
   removeItem,
@@ -31,7 +33,7 @@ export const TableItems = ({
       totalPrice,
       unit,
     }) => (
-      <tr className="item" key={code}>
+      <tr className={className} key={code}>
         <td>
           <Button
             isFieldsDisabled={isFieldsDisabled}

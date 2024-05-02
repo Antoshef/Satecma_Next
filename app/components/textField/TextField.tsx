@@ -9,6 +9,8 @@ interface TextFieldProps {
   name: string;
   smallField?: boolean;
   maxLength?: number;
+  className?: string;
+  textClass?: string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -20,15 +22,21 @@ export const TextField = ({
   isFieldsDisabled,
   smallField,
   maxLength,
+  className,
+  textClass,
   onChange,
   ...props
 }: TextFieldProps) => {
-  const classes = classNames([!!smallField ? "max-w-12" : "", "input-field"]);
+  const classes = classNames([
+    !!smallField ? "max-w-12" : "",
+    "input-field",
+    className || "",
+  ]);
 
   return (
     <>
       {isFieldsDisabled ? (
-        value
+        <span className={textClass}>{value}</span>
       ) : (
         <input
           {...props}

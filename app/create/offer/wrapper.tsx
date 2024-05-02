@@ -16,7 +16,7 @@ interface OfferWrapperProps {
 
 export const OfferWrapper = ({ data }: OfferWrapperProps) => {
   const [email, setEmail] = useState("");
-  const [error, setError] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
   const [provider, setProvider] = useState(ECOHOME_COMPANY);
   const offerRef = useRef<HTMLTableElement>(null);
   const [isFieldsDisabled, setIsFieldsDisabled] = useState<boolean>(false);
@@ -40,7 +40,12 @@ export const OfferWrapper = ({ data }: OfferWrapperProps) => {
 
   return (
     <form className="p-4" onSubmit={onSubmit} id="offer">
-      <OfferBox provider={provider} ref={offerRef} />
+      <OfferBox
+        isFieldsDisabled={isFieldsDisabled}
+        products={data}
+        provider={provider}
+        ref={offerRef}
+      />
       <Grid container margin={2} justifyContent="center" alignItems="center">
         <Grid
           item
@@ -62,7 +67,7 @@ export const OfferWrapper = ({ data }: OfferWrapperProps) => {
           disabled={error || isFieldsDisabled}
           type="submit"
         >
-          Създай оферта
+          Създай
         </Button>
       </div>
     </form>

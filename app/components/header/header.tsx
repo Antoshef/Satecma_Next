@@ -78,9 +78,9 @@ export default function Header() {
                           href={item.href}
                           className={classNames([
                             value === item.href
-                              ? "bg-gray-900 text-white"
+                              ? "bg-gray-900 text-white uppercase"
                               : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                            "rounded-md px-3 py-2 text-sm font-medium cursor-pointer",
+                            "rounded-md px-3 py-2 text-sm font-medium cursor-pointer uppercase",
                           ])}
                           aria-current={
                             value === item.href ? "page" : undefined
@@ -147,9 +147,9 @@ export default function Header() {
                       href={subitem.href}
                       className={classNames([
                         value === subitem.href
-                          ? "bg-gray-900 text-white"
+                          ? "bg-gray-900 text-white uppercase"
                           : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                        "block rounded-md px-3 py-2 text-base font-medium",
+                        "block rounded-md px-3 py-2 text-base font-medium uppercase",
                       ])}
                       aria-current={value === subitem.href ? "page" : undefined}
                       onClick={() => subitem.href && handleChange(subitem.href)}
@@ -164,9 +164,9 @@ export default function Header() {
                     href={item.href}
                     className={classNames([
                       value === item.href
-                        ? "bg-gray-900 text-white"
+                        ? "bg-gray-900 text-white uppercase"
                         : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                      "block rounded-md px-3 py-2 text-base font-medium",
+                      "block rounded-md px-3 py-2 text-base font-medium uppercase",
                     ])}
                     aria-current={value === item.href ? "page" : undefined}
                     onClick={() => item.href && handleChange(item.href)}

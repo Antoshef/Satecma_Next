@@ -1,14 +1,27 @@
 import { fetchJson } from "@/utils/fetchJson";
 import { Button, Checkbox, Grid, Typography } from "@mui/material";
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import {
+  FormEvent,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { InvoiceBox } from ".";
-import { ECOHOME_COMPANY, INVOICE_DATA_DEFAULT_VALUES } from "./constants";
+import {
+  Company,
+  ECOHOME_COMPANY,
+  INVOICE_DATA_DEFAULT_VALUES,
+  SATECMA_COMPANY,
+} from "./constants";
 import {
   InvoiceData,
   InvoiceType,
   Item,
   LatestInvoices,
   ProductData,
+  Provider,
 } from "./types";
 import {
   generateBcc,
@@ -17,6 +30,7 @@ import {
   POSTinvoicePdf,
   UPDATEstoreData,
 } from "./utils";
+import { CompanyContext } from "@/components/providers/companyProvider";
 
 interface InvoiceWrapperProps {
   data: ProductData[];
@@ -34,7 +48,7 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
   const [currentInvoiceType, setCurrentInvoiceType] = useState<InvoiceType>(
     InvoiceType.current
   );
-  const [provider, setProvider] = useState(ECOHOME_COMPANY);
+  const [provider, setProvider] = useState<Provider>(ECOHOME_COMPANY);
   const invoiceRef = useRef<HTMLTableElement>(null);
   const [isFieldsDisabled, setIsFieldsDisabled] = useState<boolean>(false);
   const [accountantCopy, setAccountantCopy] = useState<boolean>(false);
@@ -43,6 +57,7 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
   const [invoiceData, setInvoiceData] = useState<InvoiceData>(
     INVOICE_DATA_DEFAULT_VALUES
   );
+  const { company } = useContext(CompanyContext);
 
   const invoiceNumber = useMemo(() => {
     return currentInvoiceType === InvoiceType.manual
@@ -55,7 +70,11 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsFieldsDisabled(true);
-    const bcc = generateBcc(accountantCopy, officeCopy, provider.name);
+    const bcc = generateBcc({
+      accountantCopy,
+      officeCopy,
+      providerName: provider.name,
+    });
     const css = await fetch("/invoiceBox.css").then((res) => res.text());
     const res = await POSTinvoiceData(invoiceData);
     if (res.status !== 200) return;
@@ -85,6 +104,12 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
       });
   }, []);
 
+  useEffect(() => {
+    setProvider(
+      company === Company.ekoHome ? ECOHOME_COMPANY : SATECMA_COMPANY
+    );
+  }, [company]);
+
   return (
     <form className="p-4" onSubmit={onSubmit} id="invoice">
       <InvoiceBox
@@ -97,7 +122,6 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
         currentInvoiceType={currentInvoiceType}
         setEmail={setEmail}
         setError={setError}
-        setProvider={setProvider}
         submitItems={setItems}
         setInvoiceData={setInvoiceData}
         setCurrentInvoiceType={setCurrentInvoiceType}

@@ -28,6 +28,7 @@ export interface Provider {
   city: string;
   address: string;
   director: string;
+  phone: string;
 }
 
 export interface InvoiceData {

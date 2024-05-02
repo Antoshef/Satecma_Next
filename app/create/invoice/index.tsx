@@ -2,17 +2,16 @@ import {
   Dispatch,
   forwardRef,
   SetStateAction,
-  useContext,
   useEffect,
   useState,
 } from "react";
-import { Button } from "../../components/button/Button";
-import { Input } from "../../components/input/Input";
-import { CompanyContext } from "../../components/providers/companyProvider";
+import { Input } from "../../components/input";
 import { SelectField } from "../../components/selectField/SelectField";
 import { TextField } from "../../components/textField/TextField";
 import { StoreUnits } from "../../store/utils/types";
-import { Company, ECOHOME_COMPANY, SATECMA_COMPANY } from "./constants";
+import { SATECMA_LOGO } from "./constants";
+import { TableItems } from "./tableItems";
+import { TableServices } from "./tableServices";
 import {
   InvoiceData,
   InvoiceType,
@@ -22,9 +21,7 @@ import {
   Provider,
 } from "./types";
 import { calculateItemPrice, getBankDetailsFromIban } from "./utils";
-
-const logo =
-  "https://satecma.bg/wp-content/uploads/2024/02/logo-satecma-industrias.png";
+import { InputWrapper } from "@/components/input/wrapper";
 
 interface InvoiceBoxProps {
   provider: Provider;
@@ -35,14 +32,13 @@ interface InvoiceBoxProps {
   currentInvoiceType: InvoiceType;
   setEmail: (email: string) => void;
   setError: (error: boolean) => void;
-  setProvider: (provider: Provider) => void;
   submitItems: (items: Item[]) => void;
   setInvoiceData: Dispatch<SetStateAction<InvoiceData>>;
   setCurrentInvoiceType: Dispatch<SetStateAction<InvoiceType>>;
   setLatestInvoiceNumbers: Dispatch<SetStateAction<LatestInvoices>>;
 }
 
-export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
+export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
   (
     {
       provider,
@@ -53,7 +49,6 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
       currentInvoiceType,
       setEmail,
       setError,
-      setProvider,
       submitItems,
       setInvoiceData,
       setCurrentInvoiceType,
@@ -75,7 +70,6 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
       error: false,
     });
     const [paymentMethod, setPaymentMethod] = useState("По Банка");
-    const { company } = useContext(CompanyContext);
     const [receiver, setReceiver] = useState({
       email: "anton.stanev@satecma.bg",
       company: "ДЛВ ЕООД",
@@ -252,12 +246,6 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
     }, [items, services]);
 
     useEffect(() => {
-      setProvider(
-        company === Company.ekoHome ? ECOHOME_COMPANY : SATECMA_COMPANY
-      );
-    }, [company]);
-
-    useEffect(() => {
       submitItems([...items]);
     }, [items, submitItems]);
 
@@ -286,8 +274,8 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
                       <td className="title">
                         <img
                           style={{ height: "auto", width: "auto" }}
-                          src={logo}
-                          alt="logo"
+                          src={SATECMA_LOGO}
+                          alt="Satecma logo"
                           width={420}
                           height={95}
                         />
@@ -346,7 +334,7 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
 
                       <td>
                         Доставчик: <br />
-                        Фирма: {company}
+                        Фирма: {provider.name}
                         <br />
                         ЕИК: {provider.eik}
                         <br />
@@ -357,6 +345,8 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
                         Адрес: {provider.address}
                         <br />
                         МОЛ: {provider.director}
+                        <br />
+                        Телефон: {provider.phone}
                       </td>
                     </tr>
                   </tbody>
@@ -417,174 +407,30 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
               <td>Стойност (без ДДС)</td>
             </tr>
 
-            {items &&
-              items.map(
-                ({
-                  code,
-                  name,
-                  packing,
-                  currentPackage,
-                  discount,
-                  quantity,
-                  price,
-                  totalPrice,
-                  unit,
-                }) => (
-                  <tr className="item" key={code}>
-                    <td>
-                      <Button
-                        isFieldsDisabled={isFieldsDisabled}
-                        value={code}
-                        onClick={removeItem}
-                      />
-                    </td>
-                    <td>{name}</td>
-                    <td>
-                      <TextField
-                        smallField
-                        type="number"
-                        name="quantity"
-                        value={quantity}
-                        data-code={code}
-                        isFieldsDisabled={isFieldsDisabled}
-                        onChange={itemChangeHandler}
-                      />
-                      {` ${StoreUnits.pcs}`}
-                    </td>
-                    <td>
-                      <SelectField
-                        name="currentPackage"
-                        data-code={code}
-                        isFieldsDisabled={isFieldsDisabled}
-                        value={currentPackage}
-                        values={packing.split(", ")}
-                        onChange={itemSelectHandler}
-                      />
-                      {` ${unit}`}
-                    </td>
+            <TableItems
+              items={items}
+              isFieldsDisabled={isFieldsDisabled}
+              itemChangeHandler={itemChangeHandler}
+              itemSelectHandler={itemSelectHandler}
+              removeItem={removeItem}
+            />
 
-                    <td>{`${price.toFixed(2)} лв.`}</td>
-                    <td>
-                      <TextField
-                        smallField
-                        type="number"
-                        name="discount"
-                        value={discount}
-                        data-code={code}
-                        isFieldsDisabled={isFieldsDisabled}
-                        onChange={itemChangeHandler}
-                      />{" "}
-                    </td>
-                    <td>
-                      <SelectField
-                        name="VAT"
-                        data-code={code}
-                        isFieldsDisabled={isFieldsDisabled}
-                        value="20"
-                        values={["20"]}
-                        onChange={itemSelectHandler}
-                      />
-                    </td>
-                    <td
-                      className={
-                        !Number(totalPrice) ? "invoiceBox__zero-amount" : ""
-                      }
-                    >
-                      {totalPrice} лв.
-                    </td>
-                  </tr>
-                )
-              )}
+            <TableServices
+              services={services}
+              isFieldsDisabled={isFieldsDisabled}
+              serviceChangeHandler={serviceChangeHandler}
+              serviceSelectHandler={serviceSelectHandler}
+              removeItem={removeItem}
+            />
 
-            {services.map(
-              ({ name, code, discount, quantity, price, totalPrice, unit }) => (
-                <tr className="service" key={code}>
-                  <td>
-                    <Button
-                      isFieldsDisabled={isFieldsDisabled}
-                      value={code}
-                      onClick={removeItem}
-                    />
-                  </td>
-                  <td>
-                    <TextField
-                      type="text"
-                      name="name"
-                      value={name}
-                      data-code={code}
-                      isFieldsDisabled={isFieldsDisabled}
-                      onChange={serviceChangeHandler}
-                    />{" "}
-                  </td>
-                  <td>
-                    <TextField
-                      smallField
-                      type="number"
-                      name="quantity"
-                      value={quantity}
-                      data-code={code}
-                      isFieldsDisabled={isFieldsDisabled}
-                      onChange={serviceChangeHandler}
-                    />
-                    {` ${unit}`}
-                  </td>
-                  <td></td>
-                  <td>
-                    <input
-                      type="text"
-                      name="price"
-                      value={price}
-                      data-code={code}
-                      className="input-field max-w-16"
-                      onChange={serviceChangeHandler}
-                    />
-                    {" лв. "}
-                  </td>
-                  <td>
-                    <TextField
-                      smallField
-                      type="number"
-                      name="discount"
-                      value={discount}
-                      data-code={code}
-                      isFieldsDisabled={isFieldsDisabled}
-                      onChange={serviceChangeHandler}
-                    />{" "}
-                  </td>
-                  <td>
-                    <SelectField
-                      data-code={code}
-                      isFieldsDisabled={isFieldsDisabled}
-                      value="20"
-                      values={["20"]}
-                      onChange={serviceSelectHandler}
-                    />
-                  </td>
-                  <td>{totalPrice} лв.</td>
-                </tr>
-              )
-            )}
-            {!isFieldsDisabled && (
-              <tr>
-                <td></td>
-                <td colSpan={1}>
-                  <Input
-                    products={products}
-                    selectedProduct={selectedProduct}
-                    setSelectedProduct={setSelectedProduct}
-                  />
-                </td>
-                <td colSpan={1}>
-                  <button
-                    className="button"
-                    type="button"
-                    onClick={addItem}
-                  >
-                    Добави
-                  </button>
-                </td>
-              </tr>
-            )}
+            <InputWrapper
+              products={products}
+              isFieldsDisabled={isFieldsDisabled}
+              selectedProduct={selectedProduct}
+              onSubmit={addItem}
+              setSelectedProduct={setSelectedProduct}
+            />
+
             <tr className="invoiceBox__companyData">
               <td colSpan={4}>
                 Получател:
@@ -706,5 +552,3 @@ export const InvoiceBox = forwardRef<HTMLTableElement, InvoiceBoxProps>(
     );
   }
 );
-
-InvoiceBox.displayName = "InvoiceBox";

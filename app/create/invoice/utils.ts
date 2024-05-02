@@ -82,11 +82,15 @@ export const getInvoiceNumber = (data: InvoiceData[]) => {
   };
 };
 
-export const generateBcc = (
-  accountantCopy: boolean,
-  officeCopy: boolean,
-  providerName: Company
-) => {
+export const generateBcc = ({
+  accountantCopy,
+  officeCopy,
+  providerName,
+}: {
+  accountantCopy?: boolean;
+  officeCopy?: boolean;
+  providerName?: Company;
+}) => {
   const bcc = [];
   if (accountantCopy) {
     bcc.push(

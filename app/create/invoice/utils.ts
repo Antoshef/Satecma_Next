@@ -135,6 +135,34 @@ export const POSTinvoicePdf = async (
       throw new Error(error);
     });
 
+export const POSTofferPdf = async (
+  bcc: string[],
+  email: string,
+  name: string,
+  html: string | undefined,
+  css: string
+) =>
+  await fetch("/api/generate-offer", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      bcc,
+      email,
+      name,
+      html,
+      css,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Success:", data);
+    })
+    .catch((error) => {
+      throw new Error(error);
+    });
+
 export const POSTinvoiceData = async (invoiceData: InvoiceData) =>
   await fetch("/api/sent-invoice", {
     method: "POST",

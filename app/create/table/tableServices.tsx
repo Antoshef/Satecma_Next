@@ -54,12 +54,13 @@ export const TableServices = ({
         </td>
         <td></td>
         <td>
-          <input
-            type="text"
+          <TextField
+            type="number"
             name="price"
             value={price}
             data-code={code}
             className="input-field max-w-16"
+            isFieldsDisabled={isFieldsDisabled}
             onChange={serviceChangeHandler}
           />
           {" лв. "}
@@ -73,7 +74,8 @@ export const TableServices = ({
             data-code={code}
             isFieldsDisabled={isFieldsDisabled}
             onChange={serviceChangeHandler}
-          />{" "}
+          />
+          {" %"}
         </td>
         <td>
           <SelectField
@@ -83,6 +85,7 @@ export const TableServices = ({
             values={["20"]}
             onChange={serviceSelectHandler}
           />
+          {" %"}
         </td>
         <td>{totalPrice} лв.</td>
       </tr>

@@ -1,5 +1,5 @@
 import { InputWrapper } from "@/components/input/wrapper";
-import { forwardRef, useState } from "react";
+import { Dispatch, forwardRef, SetStateAction, useState } from "react";
 import { SATECMA_LOGO } from "../invoice/constants";
 import { ProductData, Provider } from "../invoice/types";
 import { TableItems } from "../table/tableItems";
@@ -11,15 +11,22 @@ interface OfferBoxProps {
   provider: Provider;
   isFieldsDisabled: boolean;
   products: ProductData[];
+  recipient: {
+    name: string;
+    phone: string;
+    email: string;
+  };
+  setRecipient: Dispatch<
+    SetStateAction<{
+      name: string;
+      phone: string;
+      email: string;
+    }>
+  >;
 }
 
 export const OfferBox = forwardRef<HTMLDivElement, OfferBoxProps>(
-  ({ provider, isFieldsDisabled, products }, ref) => {
-    const [recipient, setRecipient] = useState({
-      name: "",
-      phone: "",
-      email: "",
-    });
+  ({ provider, isFieldsDisabled, products, recipient, setRecipient }, ref) => {
     const [heading, setHeading] = useState("Заглавие на офертата");
     const [selectedProduct, setSelectedProduct] = useState<ProductData | null>(
       null
@@ -42,7 +49,7 @@ export const OfferBox = forwardRef<HTMLDivElement, OfferBoxProps>(
     } = useTableItems({ selectedProduct, setSelectedProduct });
 
     return (
-      <div ref={ref} className="invoice-box">
+      <div ref={ref} className="send-box">
         <table>
           <tbody>
             <tr className="top">
@@ -90,12 +97,12 @@ export const OfferBox = forwardRef<HTMLDivElement, OfferBoxProps>(
                           name="email"
                           value={recipient.email}
                           isFieldsDisabled={isFieldsDisabled}
-                          onChange={(e) =>
+                          onChange={(e) => {
                             setRecipient({
                               ...recipient,
                               email: e.target.value,
-                            })
-                          }
+                            });
+                          }}
                         />
                       </td>
                       <td>
@@ -117,7 +124,7 @@ export const OfferBox = forwardRef<HTMLDivElement, OfferBoxProps>(
             </tr>
             <tr>
               <td colSpan={8}>
-                <h1 className="text-center text-4xl text-stone-800 font-bold p-8">
+                <h1 className="text-center text-2xl text-stone-800 font-bold p-4">
                   ОФЕРТА
                 </h1>
               </td>
@@ -128,27 +135,27 @@ export const OfferBox = forwardRef<HTMLDivElement, OfferBoxProps>(
                   type="text"
                   name="offerNumber"
                   value={heading}
-                  className="text-xl font-bold max-w-3xl w-full uppercase text-center"
-                  textClass="text-xl font-bold uppercase"
+                  className="text-md font-bold max-w-2xl w-full uppercase text-center"
+                  textClass="text-md font-bold uppercase"
                   isFieldsDisabled={isFieldsDisabled}
                   onChange={(e) => setHeading(e.target.value)}
                 />
               </td>
             </tr>
-            <tr className="heading offer-table">
+            <tr className="bg-gray-700 text-white">
               <td>№</td>
-              <td>Продукт</td>
+              <td>Продукт / Услуга</td>
               <td>Количество</td>
               <td>Опаковка</td>
               <td>Ед. цена</td>
-              <td>Отстъпка (%)</td>
-              <td>ДДС (%)</td>
+              <td>Отстъпка</td>
+              <td>ДДС</td>
               <td>Стойност (без ДДС)</td>
             </tr>
             <TableItems
               items={items}
               isFieldsDisabled={isFieldsDisabled}
-              className="offer__items"
+              className="border-gray-800 border-b text-right"
               itemChangeHandler={itemChangeHandler}
               itemSelectHandler={itemSelectHandler}
               removeItem={removeItem}
@@ -156,7 +163,7 @@ export const OfferBox = forwardRef<HTMLDivElement, OfferBoxProps>(
             <TableServices
               services={services}
               isFieldsDisabled={isFieldsDisabled}
-              className="offer__items"
+              className="border-gray-800 border-b text-right"
               serviceChangeHandler={serviceChangeHandler}
               serviceSelectHandler={serviceSelectHandler}
               removeItem={removeItem}
@@ -170,25 +177,34 @@ export const OfferBox = forwardRef<HTMLDivElement, OfferBoxProps>(
               setSelectedProduct={setSelectedProduct}
             />
 
-            <tr className="heading offer-prices">
+            <tr className="border-gray-800 border-b text-right bg-gray-700 text-white">
               <td colSpan={2}></td>
-              <td colSpan={2}>
-                Данъчна основа
-                <br /> без отстъпка
-              </td>
+              <td colSpan={2}>Данъчна основа</td>
               <td>Отстъпка</td>
               <td>Общо НЕТО</td>
               <td>ДДС</td>
               <td>Сума за плащане</td>
             </tr>
 
-            <tr className="offer-prices">
-              <td colSpan={2}>ОБЩО</td>
-              <td colSpan={2}>{total.amountWithoutDiscount.toFixed(2)} лв.</td>
-              <td>{total.discount.toFixed(2)} лв.</td>
-              <td>{total.netAmount.toFixed(2)} лв.</td>
-              <td>{total.VAT.toFixed(2)} лв.</td>
-              <td>{total.paid.toFixed(2)} лв.</td>
+            <tr>
+              <td className="border-gray-800 border-b text-right" colSpan={2}>
+                ОБЩО
+              </td>
+              <td className="border-gray-800 border-b text-right" colSpan={2}>
+                {total.amountWithoutDiscount.toFixed(2)} лв.
+              </td>
+              <td className="border-gray-800 border-b text-right">
+                {total.discount.toFixed(2)} лв.
+              </td>
+              <td className="border-gray-800 border-b text-right">
+                {total.netAmount.toFixed(2)} лв.
+              </td>
+              <td className="border-gray-800 border-b text-right">
+                {total.VAT.toFixed(2)} лв.
+              </td>
+              <td className="border-gray-800 border-b text-right">
+                {total.paid.toFixed(2)} лв.
+              </td>
             </tr>
           </tbody>
         </table>
@@ -210,8 +226,8 @@ export const OfferBox = forwardRef<HTMLDivElement, OfferBoxProps>(
             <>
               <p>Валидност на офертата: 30 дни</p>
               <p>
-                Начин на плащане: По Договор 50% - АВАНСОВО, 30% междинно
-                плащане и 20% при издаване на обекта;
+                Начин на плащане: По Договор 50% - АВАНСОВО,
+                <br /> 30% междинно плащане и 20% при издаване на обекта;
               </p>
               <p>
                 Срок на изпълнение: до{" "}
@@ -250,8 +266,8 @@ export const OfferBox = forwardRef<HTMLDivElement, OfferBoxProps>(
             </>
           )}
         </div>
-        <div className="flex justify-between mt-6 mb-2 font-bold">
-          <span>гр. {provider.city}</span>
+        <div className="flex flex-col text-end mt-6 mb-2">
+          <span className="red-span">гр. {provider.city.split(",")[0]}</span>
           <span>
             Дата:{" "}
             {new Date().toLocaleDateString("bg-BG", {

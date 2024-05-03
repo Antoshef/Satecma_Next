@@ -132,7 +132,7 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
     }, [receiver, total, invoiceNumber]);
 
     return (
-      <div ref={ref} className="invoice-box">
+      <div ref={ref} className="send-box">
         <table cellPadding="0" cellSpacing="0">
           <tbody>
             <tr className="top">
@@ -261,12 +261,12 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
 
             <tr className="heading">
               <td>№</td>
-              <td>Продукт</td>
+              <td>Продукт / Услуга</td>
               <td>Количество</td>
               <td>Опаковка</td>
               <td>Ед. цена</td>
-              <td>Отстъпка (%)</td>
-              <td>ДДС (%)</td>
+              <td>Отстъпка</td>
+              <td>ДДС</td>
               <td>Стойност (без ДДС)</td>
             </tr>
 

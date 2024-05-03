@@ -76,7 +76,7 @@ export const TableItems = ({
             data-code={code}
             isFieldsDisabled={isFieldsDisabled}
             onChange={itemChangeHandler}
-          />{" "}
+          />{"  %"}
         </td>
         <td>
           <SelectField
@@ -86,7 +86,7 @@ export const TableItems = ({
             value="20"
             values={["20"]}
             onChange={itemSelectHandler}
-          />
+          />{" %"}
         </td>
         <td className={!Number(totalPrice) ? "invoiceBox__zero-amount" : ""}>
           {totalPrice} лв.

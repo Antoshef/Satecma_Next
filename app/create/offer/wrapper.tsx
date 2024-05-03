@@ -1,6 +1,6 @@
 import { FormEvent, useContext, useEffect, useRef, useState } from "react";
-import { Item, ProductData } from "../invoice/types";
-import { generateBcc, POSTinvoicePdf } from "../invoice/utils";
+import { ProductData } from "../invoice/types";
+import { generateBcc, POSTofferPdf } from "../invoice/utils";
 import {
   Company,
   ECOHOME_COMPANY,
@@ -15,21 +15,30 @@ interface OfferWrapperProps {
 }
 
 export const OfferWrapper = ({ data }: OfferWrapperProps) => {
-  const [email, setEmail] = useState("");
   const [error, setError] = useState<boolean>(false);
   const [provider, setProvider] = useState(ECOHOME_COMPANY);
   const offerRef = useRef<HTMLTableElement>(null);
   const [isFieldsDisabled, setIsFieldsDisabled] = useState<boolean>(false);
   const [officeCopy, setOfficeCopy] = useState<boolean>(false);
-  const [items, setItems] = useState<Item[]>([]);
   const { company } = useContext(CompanyContext);
+  const [recipient, setRecipient] = useState({
+    name: "Станев",
+    phone: "",
+    email: "anton.stanev@satecma.bg",
+  });
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsFieldsDisabled(true);
     const bcc = generateBcc({ officeCopy });
-    const css = await fetch("/invoiceBox.css").then((res) => res.text());
-    await POSTinvoicePdf(bcc, email, "0", offerRef.current?.outerHTML, css);
+    const css = await fetch("/globals.css").then((res) => res.text());
+    await POSTofferPdf(
+      bcc,
+      recipient.email,
+      recipient.name,
+      offerRef.current?.outerHTML,
+      css
+    );
   };
 
   useEffect(() => {
@@ -45,6 +54,8 @@ export const OfferWrapper = ({ data }: OfferWrapperProps) => {
         products={data}
         provider={provider}
         ref={offerRef}
+        recipient={recipient}
+        setRecipient={setRecipient}
       />
       <Grid container margin={2} justifyContent="center" alignItems="center">
         <Grid

@@ -15,7 +15,7 @@ export const SATECMA_COMPANY: Provider = {
   city: "Ямбол, България",
   address: "ул. Феризович №17",
   director: "Антон Станев",
-  phone: "+359 886 858 601",
+  phone: "0886 858 601",
 };
 
 export const ECOHOME_COMPANY: Provider = {
@@ -25,7 +25,7 @@ export const ECOHOME_COMPANY: Provider = {
   city: "София, България",
   address: "р-н Овча купел, ул.641-ва №2",
   director: "Атанас Караджов",
-  phone: "+359 882 347 253",
+  phone: "0882 347 253",
 };
 
 export const INVOICE_DATA_DEFAULT_VALUES: InvoiceData = {

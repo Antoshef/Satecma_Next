@@ -17,6 +17,9 @@ const config: Config = {
       fontFamily: {
         sans: ["Inter var", ...defaultTheme.fontFamily.sans],
       },
+      colors: {
+        darkGrey: "rgb(31 41 55 / 0.9)",
+      },
     },
   },
   plugins: [],

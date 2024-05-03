@@ -6,15 +6,22 @@ if (typeof globalThis.ReadableStream === "undefined") {
   (globalThis as any).ReadableStream = PolyfillReadableStream;
 }
 
-export const convertHTMLToPDF = async (html: string) => {
+export const convertHTMLToPDF = async (html: string, css: string) => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
-  await page.setContent(html);
-  const pdfBuffer = await page.pdf({ format: "A4" });
-
-  await browser.close();
-  return pdfBuffer;
+  try {
+    await page.setContent(html);
+    await page.addStyleTag({ content: css });
+    await page.emulateMediaType("screen");
+    const pdfBuffer = await page.pdf({ format: "A4", printBackground: true });
+    return pdfBuffer;
+  } catch (error) {
+    console.error("Error in offer generation or sending email:", error);
+    return null;
+  } finally {
+    await browser.close();
+  }
 };
 
 export const addTextToPDF = async (pdfBuffer: Buffer) => {

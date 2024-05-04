@@ -20,10 +20,7 @@ export default function Page() {
   };
 
   const getShipments = async () => {
-    EcontRestClient.request("Shipments/ShipmentService.getMyAWB.json", {
-      dateFrom: "2024-04-01",
-      dateTo: "2024-04-25",
-    })
+    EcontRestClient.request("Shipments/ShipmentService.getMyAWB.json")
       .then((data) => console.log(data))
       .catch((error) => console.error(error));
   };
@@ -35,7 +32,10 @@ export default function Page() {
   };
 
   useEffect(() => {
-    getSpeedyOffices();
+    // getOffices();
+    // getClientProfiles();
+    // getShipments();
+    // getSpeedyOffices();
   }, []);
 
   return <h1>Spedition</h1>;

@@ -259,7 +259,7 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
               </td>
             </tr>
 
-            <tr className="heading">
+            <tr className="bg-gray-700 text-white">
               <td>№</td>
               <td>Продукт / Услуга</td>
               <td>Количество</td>
@@ -272,6 +272,7 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
 
             <TableItems
               items={items}
+              className="border-gray-800 border-b text-right"
               isFieldsDisabled={isFieldsDisabled}
               itemChangeHandler={itemChangeHandler}
               itemSelectHandler={itemSelectHandler}
@@ -280,6 +281,7 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
 
             <TableServices
               services={services}
+              className="border-gray-800 border-b text-right"
               isFieldsDisabled={isFieldsDisabled}
               serviceChangeHandler={serviceChangeHandler}
               serviceSelectHandler={serviceSelectHandler}

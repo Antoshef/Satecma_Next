@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
@@ -34,6 +34,16 @@ export default function Header() {
   const router = useRouter();
   const [value, setValue] = useState<string>("/store");
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
+      setOpenDropdown(null);
+    }
+  };
 
   const toggleDropdown = (name: string) => {
     setOpenDropdown(openDropdown === name ? null : name);
@@ -49,6 +59,11 @@ export default function Header() {
     if (typeof window !== "undefined") {
       setValue(window.location.pathname);
     }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
@@ -93,7 +108,10 @@ export default function Header() {
                           {item.name}
                         </a>
                         {openDropdown === item.name && item.subItems && (
-                          <div className="absolute left-0 mt-1 rounded-md shadow-lg bg-white">
+                          <div
+                            ref={dropdownRef}
+                            className="absolute left-0 mt-1 rounded-md shadow-lg bg-white"
+                          >
                             <div className="py-1">
                               {item.subItems.map((subItem) => (
                                 <a

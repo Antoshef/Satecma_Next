@@ -11,7 +11,7 @@ export const spanishUnitsMap = {
 
 export const ADDStorage = async (items: InvoiceProductData[]) => {
   try {
-    return await fetch("/api/add-storage", {
+    return await fetch("/api/storage/add", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

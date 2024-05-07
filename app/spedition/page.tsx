@@ -32,10 +32,10 @@ export default function Page() {
   };
 
   useEffect(() => {
-    // getOffices();
-    // getClientProfiles();
-    // getShipments();
-    // getSpeedyOffices();
+    getOffices();
+    getClientProfiles();
+    getShipments();
+    getSpeedyOffices();
   }, []);
 
   return <h1>Spedition</h1>;

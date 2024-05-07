@@ -114,7 +114,7 @@ export const POSTinvoicePdf = async (
   html: string | undefined,
   css: string
 ) =>
-  await fetch("/api/generate-invoice", {
+  await fetch("/api/create/invoice", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -142,7 +142,7 @@ export const POSTofferPdf = async (
   html: string | undefined,
   css: string
 ) =>
-  await fetch("/api/generate-offer", {
+  await fetch("/api/create/offer", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -164,7 +164,7 @@ export const POSTofferPdf = async (
     });
 
 export const POSTinvoiceData = async (invoiceData: InvoiceData) =>
-  await fetch("/api/sent-invoice", {
+  await fetch("/api/create/invoice-sent", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -177,7 +177,7 @@ export const POSTinvoiceData = async (invoiceData: InvoiceData) =>
     });
 
 export const UPDATEstoreData = async (items: Item[]) =>
-  await fetch("/api/update-storage", {
+  await fetch("/api/storage/update", {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

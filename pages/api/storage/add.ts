@@ -1,7 +1,7 @@
 import { ProductData } from "@/create/invoice/types";
 import { InvoiceProductData, StoreProductData } from "@/store/utils/types";
 import { NextApiRequest, NextApiResponse } from "next";
-import { queryAsync } from "../../utils/db";
+import { queryAsync } from "../../../utils/db";
 
 const COURSE_EVRO_LEVA = 2;
 

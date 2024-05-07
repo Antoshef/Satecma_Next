@@ -90,7 +90,7 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
   };
 
   useEffect(() => {
-    fetchJson<InvoiceData[]>("/api/sent-invoice")
+    fetchJson<InvoiceData[]>("/api/create/invoice-sent")
       .then((res) => {
         const { current, previous } = getInvoiceNumber(res.data);
         setLatestInvoiceNumbers((prev) => ({

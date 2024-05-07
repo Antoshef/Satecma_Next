@@ -1,6 +1,6 @@
 import { Item } from "@/create/invoice/types";
 import { NextApiRequest, NextApiResponse } from "next";
-import { queryAsync } from "../../utils/db";
+import { queryAsync } from "../../../utils/db";
 
 export default async function handler(
   req: NextApiRequest,

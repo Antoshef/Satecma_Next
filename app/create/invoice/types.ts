@@ -29,6 +29,13 @@ export interface Provider {
   address: string;
   director: string;
   phone: string;
+  bankDetails: BankDetails;
+}
+
+interface BankDetails {
+  iban: string;
+  swift: string;
+  name: string;
 }
 
 export interface InvoiceData {

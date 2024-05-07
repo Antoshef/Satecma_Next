@@ -16,6 +16,11 @@ export const SATECMA_COMPANY: Provider = {
   address: "ул. Феризович №17",
   director: "Антон Станев",
   phone: "0886 858 601",
+  bankDetails: {
+    iban: "BG16BPBI79341038837501",
+    swift: "BPBIBGSF",
+    name: "Юробанк България АД",
+  },
 };
 
 export const ECOHOME_COMPANY: Provider = {
@@ -26,6 +31,11 @@ export const ECOHOME_COMPANY: Provider = {
   address: "р-н Овча купел, ул.641-ва №2",
   director: "Атанас Караджов",
   phone: "0882 347 253",
+  bankDetails: {
+    iban: "BG79FINV91501017339942",
+    swift: "FINVBGSF",
+    name: "Първа Инвестиционна Банка",
+  },
 };
 
 export const INVOICE_DATA_DEFAULT_VALUES: InvoiceData = {

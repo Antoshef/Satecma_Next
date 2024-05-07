@@ -60,12 +60,6 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
     );
     const [wordPrice, setWordPrice] = useState("");
     const [reason, setReason] = useState("");
-    const [bank, setBank] = useState({
-      iban: "BG79FINV91501017339942",
-      swift: "FINVBGSF",
-      name: "Първа Инвестиционна Банка",
-      error: false,
-    });
     const [paymentMethod, setPaymentMethod] = useState("По Банка");
     const [receiver, setReceiver] = useState({
       email: "anton.stanev@satecma.bg",
@@ -124,7 +118,7 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
         client: receiver.company,
         eik: Number(receiver.EIK),
         vat_number: receiver.VAT,
-        amount: total.amountWithoutDiscount,
+        amount: total.netAmount,
         vat: total.VAT,
         total: total.paid,
         invoice_id: invoiceNumber,
@@ -371,31 +365,11 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
                 <br />
                 {paymentMethod === "По Банка" && (
                   <>
-                    Банкови реквизити: {bank.name}
+                    Банкови реквизити: {provider.bankDetails.name}
                     <br />
-                    BIC: {bank.swift}
+                    BIC: {provider.bankDetails.swift}
                     <br />
-                    IBAN:{" "}
-                    <TextField
-                      name="iban"
-                      type="text"
-                      placeholder="IBAN"
-                      value={bank.iban}
-                      isFieldsDisabled={isFieldsDisabled}
-                      onChange={(e) =>
-                        setBank({
-                          ...getBankDetailsFromIban(e.target.value),
-                        })
-                      }
-                    />
-                    {bank.error && (
-                      <>
-                        <br />
-                        <span className="invoiceBox__error">
-                          IBAN-a трябва да съдържа 22 символа
-                        </span>
-                      </>
-                    )}
+                    IBAN: {provider.bankDetails.iban}
                     <br />
                   </>
                 )}

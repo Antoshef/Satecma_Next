@@ -95,16 +95,16 @@ export const generateBcc = ({
   if (accountantCopy) {
     bcc.push(
       providerName === Company.satecma
-        ? process.env.NEXT_PUBLIC_SATECMA_ACCOUNTANT_EMAIL
+        ? process.env.NEXT_PUBLIC_SATECMA_ACCOUNTANT_EMAIL || ""
         : providerName === Company.ekoHome
-        ? process.env.NEXT_PUBLIC_ECO_HOME_ACCOUNTANT_EMAIL
+        ? process.env.NEXT_PUBLIC_ECO_HOME_ACCOUNTANT_EMAIL || ""
         : ""
     );
   }
   if (officeCopy) {
-    bcc.push(process.env.NEXT_PUBLIC_OFFICE_EMAIL);
+    bcc.push(process.env.NEXT_PUBLIC_OFFICE_EMAIL || "");
   }
-  return bcc;
+  return bcc.filter((email) => email !== "");
 };
 
 export const POSTinvoicePdf = async (

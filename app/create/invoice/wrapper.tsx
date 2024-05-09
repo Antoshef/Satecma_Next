@@ -17,6 +17,7 @@ import {
 } from "./constants";
 import {
   InvoiceData,
+  InvoiceIdType,
   InvoiceType,
   Item,
   LatestInvoices,
@@ -45,8 +46,11 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
       previous: "0000000000",
       manual: "",
     });
-  const [currentInvoiceType, setCurrentInvoiceType] = useState<InvoiceType>(
-    InvoiceType.current
+  const [invoiceIdType, setInvoiceIdType] = useState<InvoiceIdType>(
+    InvoiceIdType.current
+  );
+  const [invoiceType, setInvoiceType] = useState<InvoiceType>(
+    InvoiceType.proforma
   );
   const [provider, setProvider] = useState<Provider>(ECOHOME_COMPANY);
   const invoiceRef = useRef<HTMLTableElement>(null);
@@ -60,12 +64,12 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
   const { company } = useContext(CompanyContext);
 
   const invoiceNumber = useMemo(() => {
-    return currentInvoiceType === InvoiceType.manual
+    return invoiceIdType === InvoiceIdType.manual
       ? latestInvoiceNumbers.manual || ""
-      : currentInvoiceType === InvoiceType.current
+      : invoiceIdType === InvoiceIdType.current
       ? latestInvoiceNumbers.current
       : latestInvoiceNumbers.previous;
-  }, [currentInvoiceType, latestInvoiceNumbers]);
+  }, [invoiceIdType, latestInvoiceNumbers]);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -119,12 +123,14 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
         ref={invoiceRef}
         isFieldsDisabled={isFieldsDisabled}
         invoiceData={invoiceData}
-        currentInvoiceType={currentInvoiceType}
+        invoiceIdType={invoiceIdType}
+        invoiceType={invoiceType}
         setEmail={setEmail}
         setError={setError}
         submitItems={setItems}
         setInvoiceData={setInvoiceData}
-        setCurrentInvoiceType={setCurrentInvoiceType}
+        setInvoiceType={setInvoiceType}
+        setInvoiceIdType={setInvoiceIdType}
         setLatestInvoiceNumbers={setLatestInvoiceNumbers}
       />
       <Grid container margin={2} justifyContent="center" alignItems="center">

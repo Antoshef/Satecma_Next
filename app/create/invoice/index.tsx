@@ -13,6 +13,7 @@ import { TableServices } from "../table/tableServices";
 import { SATECMA_LOGO } from "./constants";
 import {
   InvoiceData,
+  InvoiceIdType,
   InvoiceType,
   Item,
   LatestInvoices,
@@ -28,13 +29,15 @@ interface InvoiceBoxProps {
   invoiceNumber: string;
   isFieldsDisabled: boolean;
   invoiceData: InvoiceData;
-  currentInvoiceType: InvoiceType;
+  invoiceIdType: InvoiceIdType;
+  invoiceType: InvoiceType;
   setEmail: (email: string) => void;
   setError: (error: boolean) => void;
   submitItems: (items: Item[]) => void;
   setInvoiceData: Dispatch<SetStateAction<InvoiceData>>;
-  setCurrentInvoiceType: Dispatch<SetStateAction<InvoiceType>>;
+  setInvoiceIdType: Dispatch<SetStateAction<InvoiceIdType>>;
   setLatestInvoiceNumbers: Dispatch<SetStateAction<LatestInvoices>>;
+  setInvoiceType: Dispatch<SetStateAction<InvoiceType>>;
 }
 
 export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
@@ -45,12 +48,14 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
       invoiceNumber,
       isFieldsDisabled,
       invoiceData,
-      currentInvoiceType,
+      invoiceIdType,
+      invoiceType,
       setEmail,
       setError,
       submitItems,
+      setInvoiceType,
       setInvoiceData,
-      setCurrentInvoiceType,
+      setInvoiceIdType,
       setLatestInvoiceNumbers,
     },
     ref
@@ -145,20 +150,30 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
                         <br />
                         <SelectField
                           isFieldsDisabled={isFieldsDisabled}
-                          value={currentInvoiceType}
+                          value={invoiceType}
+                          values={[InvoiceType.invoice, InvoiceType.proforma]}
+                          className="text-3xl mb-2"
+                          onChange={(e) =>
+                            setInvoiceType(e.target.value as InvoiceType)
+                          }
+                        />
+                        <br />
+                        <SelectField
+                          isFieldsDisabled={isFieldsDisabled}
+                          value={invoiceIdType}
                           values={[
-                            InvoiceType.current,
-                            InvoiceType.previous,
-                            InvoiceType.manual,
+                            InvoiceIdType.current,
+                            InvoiceIdType.previous,
+                            InvoiceIdType.manual,
                           ]}
                           onChange={(e) =>
-                            setCurrentInvoiceType(e.target.value as InvoiceType)
+                            setInvoiceIdType(e.target.value as InvoiceIdType)
                           }
                         />
                         <br />
                         <span>
                           Фактура №:{" "}
-                          {currentInvoiceType === InvoiceType.manual ? (
+                          {invoiceIdType === InvoiceIdType.manual ? (
                             <TextField
                               name="invoiceNumber"
                               type="text"

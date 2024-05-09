@@ -1,9 +1,25 @@
 "use client";
 import { EcontRestClient } from "@/utils/econtRestClient";
 import { apiRequest } from "@/utils/speedyRestClient";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
+interface EcontShipment {
+  shipmentNumber: string;
+  senderName: string;
+  status: string;
+  createdDate: number;
+  acceptedDate: number;
+  cdAmount: number;
+  courierServiceAmount: number;
+  courierServiceMasterPayer: string;
+  receiverPhone: string;
+  cdCurrency: string;
+  courierServiceCurrency: string;
+}
 
 export default function Page() {
+  const [econtShipments, setEcontShipments] = useState<EcontShipment[]>([]);
+
   const getOffices = async () => {
     EcontRestClient.request(
       "Nomenclatures/NomenclaturesService.getOffices.json",
@@ -21,22 +37,65 @@ export default function Page() {
 
   const getShipments = async () => {
     EcontRestClient.request("Shipments/ShipmentService.getMyAWB.json")
-      .then((data) => console.log(data))
+      .then((data) => setEcontShipments(data.results as EcontShipment[]))
       .catch((error) => console.error(error));
   };
 
   const getSpeedyOffices = async () => {
     apiRequest("shipment")
-      .then((data) => console.log(data, "speedy"))
+      .then((data) => console.log(data, "DATA"))
+      .catch((error) => console.error(error));
+  };
+
+  const getPaymentReportService = async () => {
+    EcontRestClient.request(
+      "PaymentReport/PaymentReportService.PaymentReport.json",
+      {
+        dateFrom: "2024-05-01",
+        dateTo: "2024-05-15",
+        paymentType: "CASH",
+      }
+    )
+      .then((data) => console.log(data))
+      .catch((error) => console.error(error));
+  };
+
+  const getShipmentStatuses = async () => {
+    EcontRestClient.request(
+      "Shipments/ShipmentService.getShipmentStatuses.json",
+      {}
+    )
+      .then((data) => console.log(data))
       .catch((error) => console.error(error));
   };
 
   useEffect(() => {
-    getOffices();
-    getClientProfiles();
+    // getOffices();
+    // getClientProfiles();
     getShipments();
-    getSpeedyOffices();
+    // getSpeedyOffices();
+    // getPaymentReportService();
+    getShipmentStatuses();
   }, []);
 
-  return <h1>Spedition</h1>;
+  return (
+    <article>
+      <h1>Spedition</h1>
+      {econtShipments.map((shipment) => (
+        <div key={shipment.shipmentNumber}>
+          <p>{shipment.shipmentNumber}</p>
+          <p>{shipment.senderName}</p>
+          <p>{shipment.status}</p>
+          <p>{shipment.createdDate}</p>
+          <p>{shipment.acceptedDate}</p>
+          <p>{shipment.cdAmount}</p>
+          <p>{shipment.courierServiceAmount}</p>
+          <p>{shipment.courierServiceMasterPayer}</p>
+          <p>{shipment.receiverPhone}</p>
+          <p>{shipment.cdCurrency}</p>
+          <p>{shipment.courierServiceCurrency}</p>
+        </div>
+      ))}
+    </article>
+  );
 }

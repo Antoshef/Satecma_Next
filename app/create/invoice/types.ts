@@ -55,8 +55,13 @@ export interface LatestInvoices {
   manual: string;
 }
 
-export enum InvoiceType {
+export enum InvoiceIdType {
   current = "Текущ номер",
   previous = "Предходен номер",
   manual = "Въведи номер",
+}
+
+export enum InvoiceType {
+  invoice = "Фактура",
+  proforma = "Проформа фактура",
 }

@@ -2,6 +2,7 @@ import { Button } from "@/components/button/Button";
 import { SelectField } from "@/components/selectField/SelectField";
 import { TextField } from "@/components/textField/TextField";
 import { Item } from "../invoice/types";
+import { useState } from "react";
 
 interface TableServicesProps {
   services: Item[];
@@ -20,8 +21,28 @@ export const TableServices = ({
   serviceSelectHandler,
   removeItem,
 }: TableServicesProps) => {
+  const [unit, setUnit] = useState<{ code: string; unit: string }[]>([]);
+
+  const unitChangeHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    if (unit.find((u) => u.code === event.target.dataset.code)) {
+      setUnit((prev) =>
+        prev.map((u) =>
+          u.code === event.target.dataset.code
+            ? { code: u.code, unit: event.target.value }
+            : u
+        )
+      );
+      return;
+    } else {
+      setUnit((prev) => [
+        ...prev,
+        { code: event.target.dataset.code || "", unit: event.target.value },
+      ]);
+    }
+  };
+
   return services.map(
-    ({ name, code, discount, quantity, price, totalPrice, unit }) => (
+    ({ name, code, discount, quantity, price, totalPrice }) => (
       <tr className={className} key={code}>
         <td>
           <Button
@@ -49,8 +70,14 @@ export const TableServices = ({
             data-code={code}
             isFieldsDisabled={isFieldsDisabled}
             onChange={serviceChangeHandler}
+          />{" "}
+          <SelectField
+            data-code={code}
+            isFieldsDisabled={isFieldsDisabled}
+            value={unit.find((u) => u.code === code)?.unit || "бр."}
+            values={["бр.", "кг.", "л.", "л.м", "м2"]}
+            onChange={unitChangeHandler}
           />
-          {` ${unit}`}
         </td>
         <td></td>
         <td>

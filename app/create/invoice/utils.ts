@@ -107,13 +107,21 @@ export const generateBcc = ({
   return bcc.filter((email) => email !== "");
 };
 
-export const POSTinvoicePdf = async (
-  bcc: string[],
-  email: string,
-  invoiceNumber: string,
-  html: string | undefined,
-  css: string
-) =>
+export const POSTinvoicePdf = async ({
+  bcc,
+  css,
+  email,
+  html,
+  invoiceNumber,
+  sendMailToRecepient,
+}: {
+  bcc: string[];
+  email: string;
+  invoiceNumber: string;
+  html: string | undefined;
+  css: string;
+  sendMailToRecepient: boolean;
+}) =>
   await fetch("/api/create/invoice", {
     method: "POST",
     headers: {
@@ -125,6 +133,7 @@ export const POSTinvoicePdf = async (
       invoiceNumber,
       html,
       css,
+      sendMailToRecepient
     }),
   })
     .then((response) => response.json())

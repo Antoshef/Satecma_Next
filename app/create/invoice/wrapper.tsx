@@ -39,6 +39,7 @@ interface InvoiceWrapperProps {
 
 export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
   const [email, setEmail] = useState("");
+  const [sendMailToRecepient, setSendMailToRecepient] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
   const [latestInvoiceNumbers, setLatestInvoiceNumbers] =
     useState<LatestInvoices>({
@@ -82,15 +83,15 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
     const css = await fetch("/globals.css").then((res) => res.text());
     const res = await POSTinvoiceData(invoiceData);
     if (res.status !== 200) return;
-    const ress = await UPDATEstoreData(items);
-    if (ress.status !== 200) return;
-    await POSTinvoicePdf(
+    items.length && await UPDATEstoreData(items);
+    await POSTinvoicePdf({
       bcc,
       email,
       invoiceNumber,
-      invoiceRef.current?.outerHTML,
-      css
-    );
+      html: invoiceRef.current?.outerHTML,
+      css,
+      sendMailToRecepient,
+    });
   };
 
   useEffect(() => {
@@ -134,6 +135,19 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
         setLatestInvoiceNumbers={setLatestInvoiceNumbers}
       />
       <Grid container margin={2} justifyContent="center" alignItems="center">
+        <Grid
+          item
+          className="invoice__item"
+          onClick={() => setSendMailToRecepient(!sendMailToRecepient)}
+        >
+          <Checkbox
+            checked={sendMailToRecepient}
+            inputProps={{ "aria-label": "controlled" }}
+          />
+          <Typography component="span" variant="body2">
+            Изпрати до получател
+          </Typography>
+        </Grid>
         <Grid
           item
           className="invoice__item"

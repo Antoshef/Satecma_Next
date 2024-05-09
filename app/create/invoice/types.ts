@@ -62,6 +62,6 @@ export enum InvoiceIdType {
 }
 
 export enum InvoiceType {
-  invoice = "Фактура",
+  invoice = "Фактура Оригинал",
   proforma = "Проформа фактура",
 }

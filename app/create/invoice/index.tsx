@@ -20,7 +20,6 @@ import {
   ProductData,
   Provider,
 } from "./types";
-import { getBankDetailsFromIban } from "./utils";
 import { useTableItems } from "../table/useTableItems";
 
 interface InvoiceBoxProps {
@@ -152,13 +151,13 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
                           isFieldsDisabled={isFieldsDisabled}
                           value={invoiceType}
                           values={[InvoiceType.invoice, InvoiceType.proforma]}
-                          className="text-3xl mb-2"
+                          className="text-3xl mb"
                           onChange={(e) =>
                             setInvoiceType(e.target.value as InvoiceType)
                           }
                         />
                         <br />
-                        <SelectField
+                        {!isFieldsDisabled && <SelectField
                           isFieldsDisabled={isFieldsDisabled}
                           value={invoiceIdType}
                           values={[
@@ -169,7 +168,7 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
                           onChange={(e) =>
                             setInvoiceIdType(e.target.value as InvoiceIdType)
                           }
-                        />
+                        />}
                         <br />
                         <span>
                           Фактура №:{" "}

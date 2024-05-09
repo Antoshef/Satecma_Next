@@ -36,7 +36,9 @@ export const TextField = ({
   return (
     <>
       {isFieldsDisabled ? (
-        <span className={textClass}>{value}</span>
+        <span className={textClass}>
+          {type === "number" ? Number(value).toFixed(2) : value}
+        </span>
       ) : (
         <input
           {...props}

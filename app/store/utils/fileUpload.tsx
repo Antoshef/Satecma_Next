@@ -7,7 +7,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { InvoiceProductData } from "./types";
+import { InvoiceProductData, StoreUnits } from "./types";
 
 interface FileUploadProps {
   data: InvoiceProductData[] | null;
@@ -48,7 +48,17 @@ const FileUpload = ({ data, setData, setOpenDialog }: FileUploadProps) => {
         if (response.ok) {
           const { data }: { data: InvoiceProductData[] } =
             await response.json();
-          setData(data);
+          const updatedProducts = data.map((product) => {
+            if (product.unit === StoreUnits.pcs) {
+              return {
+                ...product,
+                quantity: product.totalQuantity,
+                package: 1,
+              };
+            }
+            return product;
+          });
+          setData(updatedProducts);
         } else {
           console.error("Error parsing PDF");
         }

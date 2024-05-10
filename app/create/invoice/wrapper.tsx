@@ -83,7 +83,7 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
     const css = await fetch("/globals.css").then((res) => res.text());
     const res = await POSTinvoiceData(invoiceData);
     if (res.status !== 200) return;
-    items.length && await UPDATEstoreData(items);
+    items.length && (await UPDATEstoreData(items));
     await POSTinvoicePdf({
       bcc,
       email,

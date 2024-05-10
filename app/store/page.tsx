@@ -18,6 +18,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Divider,
   Grid,
   IconButton,
   Input,
@@ -332,62 +333,72 @@ export default function Store() {
                 </Grid>
               ) : (
                 <Grid container direction="column" alignItems="center">
-                  <DialogContentText variant="h5">
+                  <DialogContentText className="p-4" variant="h5">
                     Брой продукти за добавяне: {productsToUpdate?.length}
                   </DialogContentText>
-                  {productsToUpdate?.map((updatedProduct) => {
-                    const key = `${updatedProduct.code}-${updatedProduct.package}`;
+                  {productsToUpdate?.map((incomingProduct) => {
+                    const key = `${incomingProduct.code}-${incomingProduct.package}`;
                     const storeProduct = productMap.get(key);
                     return (
-                      <Fragment key={updatedProduct.code}>
-                        <DialogContentText variant="h6">
-                          {storeProduct ? (
-                            <>
-                              Код: {storeProduct.code}, Име: {storeProduct.name}
-                              , Опаковка: {storeProduct.package}{" "}
-                              {storeProduct.unit} - Количество:{" "}
-                              <Typography
-                                fontSize="1.25rem"
-                                component="span"
-                                className="text-blue-500"
-                              >
-                                {updatedProduct.quantity}
-                              </Typography>
-                              , Промяна:{" "}
-                              <Typography
-                                fontSize="1.25rem"
-                                component="span"
-                                className="text-red-500"
-                              >
-                                {storeProduct.quantity}
-                              </Typography>{" "}
-                              {"=>"}{" "}
-                              <Typography
-                                fontSize="1.25rem"
-                                component="span"
-                                className="text-green-500"
-                              >
-                                {storeProduct.quantity +
-                                  updatedProduct.quantity}{" "}
-                                {StoreUnits.pcs}
-                              </Typography>
-                            </>
-                          ) : (
-                            <>
-                              Код: {updatedProduct.code}, Име:{" "}
-                              {updatedProduct.description}, Опаковка:{" "}
-                              {updatedProduct.package} {updatedProduct.unit},
-                              Количество:{" "}
-                              <Typography
-                                fontSize="1.25rem"
-                                component="span"
-                                className="text-blue-500"
-                              >
-                                {updatedProduct.quantity} {StoreUnits.pcs}
-                              </Typography>
-                            </>
-                          )}
-                        </DialogContentText>
+                      <Fragment key={incomingProduct.code}>
+                        <Grid className="mb-4" container>
+                          <DialogContentText variant="body1">
+                            {storeProduct ? (
+                              <>
+                                <Divider />
+                                Код: {storeProduct.code}, Име:{" "}
+                                {storeProduct.name}, Опаковка:{" "}
+                                {storeProduct.package} {storeProduct.unit} -
+                                Текущо количество:{" "}
+                                <Typography
+                                  fontSize="1.25rem"
+                                  component="span"
+                                  className="text-red-500"
+                                >
+                                  {storeProduct.quantity}
+                                </Typography>
+                                , Приходящо количество:{" "}
+                                <Typography
+                                  fontSize="1.25rem"
+                                  component="span"
+                                  className="text-blue-500"
+                                >
+                                  {incomingProduct.unit === StoreUnits.pcs
+                                    ? incomingProduct.totalQuantity
+                                    : incomingProduct.quantity}{" "}
+                                </Typography>{" "}
+                                {"=>"} ,Общо:{" "}
+                                <Typography
+                                  fontSize="1.25rem"
+                                  component="span"
+                                  className="text-green-500"
+                                >
+                                  {storeProduct.quantity +
+                                    incomingProduct.quantity}{" "}
+                                  {StoreUnits.pcs}
+                                </Typography>
+                              </>
+                            ) : (
+                              <>
+                                <Divider />
+                                Код: {incomingProduct.code}, Име:{" "}
+                                {incomingProduct.description}, Опаковка:{" "}
+                                {incomingProduct.package} {incomingProduct.unit}
+                                , Приходящо количество:{" "}
+                                <Typography
+                                  fontSize="1.25rem"
+                                  component="span"
+                                  className="text-blue-500"
+                                >
+                                  {incomingProduct.unit === StoreUnits.pcs
+                                    ? incomingProduct.totalQuantity
+                                    : incomingProduct.quantity}{" "}
+                                  {StoreUnits.pcs}
+                                </Typography>
+                              </>
+                            )}
+                          </DialogContentText>
+                        </Grid>
                       </Fragment>
                     );
                   })}

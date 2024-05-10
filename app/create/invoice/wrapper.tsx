@@ -81,9 +81,11 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
       providerName: provider.name,
     });
     const css = await fetch("/globals.css").then((res) => res.text());
-    const res = await POSTinvoiceData(invoiceData);
-    if (res.status !== 200) return;
-    items.length && (await UPDATEstoreData(items));
+    if (invoiceType === InvoiceType.invoice) {
+      const res = await POSTinvoiceData(invoiceData);
+      if (res.status !== 200) return;
+      items.length && (await UPDATEstoreData(items));
+    }
     await POSTinvoicePdf({
       bcc,
       email,
@@ -91,6 +93,8 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
       html: invoiceRef.current?.outerHTML,
       css,
       sendMailToRecepient,
+      invoiceType,
+      providerName: provider.name,
     });
   };
 
@@ -148,19 +152,21 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
             Изпрати до получател
           </Typography>
         </Grid>
-        <Grid
-          item
-          className="invoice__item"
-          onClick={() => setAccountantCopy(!accountantCopy)}
-        >
-          <Checkbox
-            checked={accountantCopy}
-            inputProps={{ "aria-label": "controlled" }}
-          />
-          <Typography component="span" variant="body2">
-            Копие до счетоводител
-          </Typography>
-        </Grid>
+        {invoiceType === InvoiceType.invoice && (
+          <Grid
+            item
+            className="invoice__item"
+            onClick={() => setAccountantCopy(!accountantCopy)}
+          >
+            <Checkbox
+              checked={accountantCopy}
+              inputProps={{ "aria-label": "controlled" }}
+            />
+            <Typography component="span" variant="body2">
+              Копие до счетоводител
+            </Typography>
+          </Grid>
+        )}
         <Grid
           item
           className="invoice__item"

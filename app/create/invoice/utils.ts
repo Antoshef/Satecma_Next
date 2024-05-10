@@ -1,6 +1,6 @@
 import { StoreUnits } from "../../store/utils/types";
 import { Company } from "./constants";
-import { InvoiceData, Item } from "./types";
+import { InvoiceData, InvoiceType, Item } from "./types";
 
 const bankCodes = {
   STSA: { name: "Банка ДСК", swift: "STSABGSF" },
@@ -114,6 +114,8 @@ export const POSTinvoicePdf = async ({
   html,
   invoiceNumber,
   sendMailToRecepient,
+  invoiceType,
+  providerName,
 }: {
   bcc: string[];
   email: string;
@@ -121,6 +123,8 @@ export const POSTinvoicePdf = async ({
   html: string | undefined;
   css: string;
   sendMailToRecepient: boolean;
+  invoiceType: InvoiceType;
+  providerName: Company;
 }) =>
   await fetch("/api/create/invoice", {
     method: "POST",
@@ -133,7 +137,9 @@ export const POSTinvoicePdf = async ({
       invoiceNumber,
       html,
       css,
-      sendMailToRecepient
+      sendMailToRecepient,
+      invoiceType,
+      providerName,
     }),
   })
     .then((response) => response.json())

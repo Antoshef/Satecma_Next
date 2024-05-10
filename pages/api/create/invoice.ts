@@ -7,6 +7,8 @@ import {
   convertHTMLToPDF,
 } from "../../../utils/createPdfFromHtml";
 import { createDir } from "../../../utils/utils";
+import { InvoiceType } from "@/create/invoice/types";
+import { Company } from "@/create/invoice/constants";
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,20 +16,51 @@ export default async function handler(
 ) {
   const { method } = req;
   if (method === "POST") {
-    const { email, bcc, invoiceNumber, html, css, sendMailToRecepient } =
-      req.body;
-    const fileName = `invoice-${invoiceNumber}.pdf`;
+    const {
+      email,
+      bcc,
+      invoiceNumber,
+      html,
+      css,
+      sendMailToRecepient,
+      invoiceType,
+      providerName,
+    } = req.body;
+    const fileType = InvoiceType.invoice ? "фактура" : "проформа-фактура";
+    const fileName = `${fileType}-${invoiceNumber}.pdf`;
+    const invoiceFolder =
+      invoiceType === InvoiceType.invoice ? "фактури" : "проформа-фактури";
+    const companyFolder =
+      providerName === Company.ekoHome
+        ? "Еко Хоум"
+        : Company.satecma
+        ? "Сатекма"
+        : "";
+    const currentMonth = new Date().toLocaleString("default", {
+      month: "long",
+    });
+    const currentYear = new Date().getFullYear();
 
     try {
-      const currentMonth = new Date().toLocaleString("default", {
-        month: "long",
-      });
+      if (!providerName) throw new Error("Provider name is missing.");
+      createDir(`/Users/antoshef/Satecma/фактури/${companyFolder}`);
+      createDir(`/Users/antoshef/Satecma/фактури/${companyFolder}/Издадени`);
+      createDir(
+        `/Users/antoshef/Satecma/фактури/${companyFolder}/Издадени/${invoiceFolder}`
+      );
+      createDir(
+        `/Users/antoshef/Satecma/фактури/${companyFolder}/Издадени/${invoiceFolder}/${currentYear}`
+      );
+      createDir(
+        `/Users/antoshef/Satecma/фактури/${companyFolder}/Издадени/${invoiceFolder}/${currentYear}/${currentMonth}`
+      );
+      const localFilePath = `/Users/antoshef/Satecma/фактури/${companyFolder}/Издадени/${invoiceFolder}/${currentYear}/${currentMonth}/${fileName}`;
       createDir("sent");
-      createDir("sent/invoices");
-      createDir(`sent/invoices/${currentMonth}`);
+      createDir(`sent/${invoiceFolder}`);
+      createDir(`sent/${invoiceFolder}/${currentMonth}`);
       const filePath = path.join(
         "./",
-        `sent/invoices/${currentMonth}`,
+        `sent/${invoiceFolder}/${currentMonth}`,
         fileName
       );
       const pdfBuffer = await convertHTMLToPDF(html, css);
@@ -35,6 +68,8 @@ export default async function handler(
 
       modifiedPdfBuffer &&
         (await fs.promises.writeFile(filePath, modifiedPdfBuffer));
+      modifiedPdfBuffer &&
+        (await fs.promises.writeFile(localFilePath, modifiedPdfBuffer));
 
       let transporter = nodemailer.createTransport({
         host: process.env.IMAP_HOST,

@@ -1,18 +1,22 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { ProductData } from "../../create/invoice/types";
+import { TextField } from "@mui/material";
 
-interface InputProps {
-  products: ProductData[];
-  selectedProduct: ProductData | null;
+export interface InputProps {
+  label?: string;
+  required?: boolean;
+  data: { name: string }[];
+  selectedItem: { name: string } | null;
   className?: string;
-  setSelectedProduct: (product: ProductData | null) => void;
+  setSelectedItem: (name: string) => void;
 }
 
 export const Input = ({
-  products,
-  selectedProduct,
+  label,
+  required,
+  data,
+  selectedItem,
   className,
-  setSelectedProduct,
+  setSelectedItem,
 }: InputProps) => {
   const [input, setInput] = useState("");
   const [uniqueNames, setUniqueNames] = useState<string[]>([]);
@@ -35,11 +39,11 @@ export const Input = ({
     }
   };
 
-  const selectProduct = (product: ProductData | null) => {
-    setSelectedProduct(product);
+  const selectItem = (name: string) => {
+    setSelectedItem(name);
     setSuggestions([]);
     setShowSuggestions(false);
-    setInput(product ? product.name : "");
+    setInput(name);
   };
 
   useEffect(() => {
@@ -55,7 +59,7 @@ export const Input = ({
   }, [inputRef]);
 
   useEffect(() => {
-    const names = products.reduce((acc: string[], arr) => {
+    const names = data.reduce((acc: string[], arr) => {
       if (!acc.includes(arr.name)) {
         acc.push(arr.name);
       }
@@ -63,17 +67,19 @@ export const Input = ({
     }, []);
 
     setUniqueNames(names);
-  }, [products]);
+  }, [data]);
 
   useEffect(() => {
-    setInput(selectedProduct ? selectedProduct.name : "");
-  }, [selectedProduct]);
+    setInput(selectedItem ? selectedItem.name : "");
+  }, [selectedItem]);
 
   return (
     <div className={className} style={{ position: "relative" }} ref={inputRef}>
-      <input
+      <TextField
+        label={label}
         type="text"
         value={input}
+        required={required}
         autoComplete="off"
         className="input-field"
         onFocus={() => setShowSuggestions(true)}
@@ -100,12 +106,12 @@ export const Input = ({
               margin: "0",
             }}
           >
-            {suggestions.map((product, index) => (
+            {suggestions.map((name, index) => (
               <li
                 key={index}
                 onClick={() =>
-                  selectProduct(
-                    products.find((item) => item.name === product) || null
+                  selectItem(
+                    data.find((item) => item.name === name)?.name || ""
                   )
                 }
                 style={{
@@ -115,7 +121,7 @@ export const Input = ({
                   backgroundColor: index % 2 ? "white" : "#f6f6f6", // Zebra striping
                 }}
               >
-                {product}
+                {name}
               </li>
             ))}
           </ul>

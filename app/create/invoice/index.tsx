@@ -86,6 +86,12 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
       serviceSelectHandler,
     } = useTableItems({ selectedProduct, setSelectedProduct });
 
+    const productChangeHandler = (name: string | null) => {
+      setSelectedProduct(
+        products.find((product) => product.name === name) || null
+      );
+    };
+
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setReceiver((state) => ({
         ...state,
@@ -157,18 +163,20 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
                           }
                         />
                         <br />
-                        {!isFieldsDisabled && <SelectField
-                          isFieldsDisabled={isFieldsDisabled}
-                          value={invoiceIdType}
-                          values={[
-                            InvoiceIdType.current,
-                            InvoiceIdType.previous,
-                            InvoiceIdType.manual,
-                          ]}
-                          onChange={(e) =>
-                            setInvoiceIdType(e.target.value as InvoiceIdType)
-                          }
-                        />}
+                        {!isFieldsDisabled && (
+                          <SelectField
+                            isFieldsDisabled={isFieldsDisabled}
+                            value={invoiceIdType}
+                            values={[
+                              InvoiceIdType.current,
+                              InvoiceIdType.previous,
+                              InvoiceIdType.manual,
+                            ]}
+                            onChange={(e) =>
+                              setInvoiceIdType(e.target.value as InvoiceIdType)
+                            }
+                          />
+                        )}
                         <br />
                         <span>
                           Фактура №:{" "}
@@ -297,11 +305,11 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
             />
 
             <InputWrapper
-              products={products}
+              data={products}
               isFieldsDisabled={isFieldsDisabled}
-              selectedProduct={selectedProduct}
+              selectedItem={selectedProduct}
               onSubmit={addItem}
-              setSelectedProduct={setSelectedProduct}
+              setSelectedItem={productChangeHandler}
             />
 
             <tr className="invoiceBox__companyData">

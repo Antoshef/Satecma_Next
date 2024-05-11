@@ -1,20 +1,19 @@
-import { Item, ProductData } from "@/create/invoice/types";
 import { Input } from ".";
 
 interface InputWrapperProps {
-  products: ProductData[];
-  selectedProduct: ProductData | null;
+  data: { name: string }[];
+  selectedItem: { name: string } | null;
   isFieldsDisabled: boolean;
-  setSelectedProduct: (product: ProductData | null) => void;
+  setSelectedItem: (name: string) => void;
   onSubmit: () => void;
 }
 
 export const InputWrapper = ({
   isFieldsDisabled,
-  products,
-  selectedProduct,
+  data,
+  selectedItem,
   onSubmit,
-  setSelectedProduct,
+  setSelectedItem,
 }: InputWrapperProps) => {
   return (
     !isFieldsDisabled && (
@@ -22,9 +21,9 @@ export const InputWrapper = ({
         <td></td>
         <td colSpan={1}>
           <Input
-            products={products}
-            selectedProduct={selectedProduct}
-            setSelectedProduct={setSelectedProduct}
+            data={data}
+            selectedItem={selectedItem}
+            setSelectedItem={setSelectedItem}
           />
         </td>
         <td colSpan={1}>

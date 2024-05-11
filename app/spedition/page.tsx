@@ -1,7 +1,10 @@
 "use client";
 import { EcontRestClient } from "@/utils/econtRestClient";
 import { apiRequest } from "@/utils/speedyRestClient";
+import { Grid, MenuItem, Select } from "@mui/material";
 import { useEffect, useState } from "react";
+import { CreateEcontPackage } from "./create/econt";
+import { CreateSpeedyPackage } from "./create/speedy";
 
 interface EcontShipment {
   shipmentNumber: string;
@@ -18,6 +21,7 @@ interface EcontShipment {
 }
 
 export default function Page() {
+  const [spedition, setSpedition] = useState<string>("Econt");
   const [econtShipments, setEcontShipments] = useState<EcontShipment[]>([]);
 
   const getOffices = async () => {
@@ -72,30 +76,25 @@ export default function Page() {
   useEffect(() => {
     // getOffices();
     // getClientProfiles();
-    getShipments();
+    // getShipments();
     // getSpeedyOffices();
     // getPaymentReportService();
-    getShipmentStatuses();
+    // getShipmentStatuses();
   }, []);
 
   return (
-    <article>
-      <h1>Spedition</h1>
-      {econtShipments.map((shipment) => (
-        <div key={shipment.shipmentNumber}>
-          <p>{shipment.shipmentNumber}</p>
-          <p>{shipment.senderName}</p>
-          <p>{shipment.status}</p>
-          <p>{shipment.createdDate}</p>
-          <p>{shipment.acceptedDate}</p>
-          <p>{shipment.cdAmount}</p>
-          <p>{shipment.courierServiceAmount}</p>
-          <p>{shipment.courierServiceMasterPayer}</p>
-          <p>{shipment.receiverPhone}</p>
-          <p>{shipment.cdCurrency}</p>
-          <p>{shipment.courierServiceCurrency}</p>
-        </div>
-      ))}
-    </article>
+    <main className="flex flex-col justify-center align-middle m-auto max-w-screen-lg">
+      <Select
+        id="spedition"
+        value={spedition}
+        className="w-44 mb-4"
+        onChange={(e) => setSpedition(e.target.value)}
+      >
+        <MenuItem value="Econt">Econt</MenuItem>
+        <MenuItem value="Speedy">Speedy</MenuItem>
+      </Select>
+      {spedition === "Econt" && <CreateEcontPackage />}
+      {spedition === "Speedy" && <CreateSpeedyPackage />}
+    </main>
   );
 }

@@ -1,4 +1,4 @@
-import { City, Office } from "./services/shipments/types";
+import { Address, City, Office } from "./services/shipments/types";
 
 export interface Receiver {
   name: string;
@@ -7,6 +7,7 @@ export interface Receiver {
   city: City;
   email: string;
   office: Office;
+  address?: Address;
 }
 
 export interface Package {

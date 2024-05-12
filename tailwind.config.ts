@@ -20,6 +20,16 @@ const config: Config = {
       colors: {
         darkGrey: "rgb(31 41 55 / 0.9)",
       },
+      transitionProperty: {
+        height: "height",
+        spacing: "margin, padding",
+      },
+    },
+  },
+  variants: {
+    extend: {
+      opacity: ["responsive", "hover", "focus", "group-hover"],
+      display: ["responsive", "group-hover"],
     },
   },
   plugins: [],

@@ -83,10 +83,6 @@ td {
   text-overflow: ellipsis;
 }
 
-.invoice__item {
-  cursor: pointer;
-}
-
 .invoice__button {
   margin-top: 2rem;
   width: 100%;
@@ -193,6 +189,28 @@ input:checked + .slider:before {
   background-color: white;
   -webkit-transition: 0.4s;
   transition: 0.4s;
+}
+.address-enter {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 300ms, max-height 300ms ease-in-out;
+}
+.address-enter-active {
+  opacity: 1;
+  max-height: 500px; /* Adjust this value based on the maximum expected height */
+  transition: opacity 300ms, max-height 300ms ease-in-out;
+}
+.address-exit {
+  opacity: 1;
+  max-height: 500px;
+  transition: opacity 300ms, max-height 300ms ease-in-out;
+}
+.address-exit-active {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 300ms, max-height 300ms ease-in-out;
 }
 
 @layer utilities {

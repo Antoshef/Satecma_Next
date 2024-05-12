@@ -17,6 +17,7 @@ export const useCreateEcontPackage = () => {
     city: {},
     email: "",
     office: {},
+    address: undefined,
   });
   const [packageData, setPackageData] = useState<Package>({
     quantity: 1,

@@ -161,7 +161,7 @@ export const PackageDataFields = () => {
         <div className="flex flex-col gap-4">
           <Grid
             item
-            className="invoice__item"
+            className="cursor-pointer"
             onClick={() =>
               setPackageData((state) => ({
                 ...state,
@@ -179,7 +179,7 @@ export const PackageDataFields = () => {
           </Grid>
           <Grid
             item
-            className="invoice__item"
+            className="cursor-pointer"
             onClick={() =>
               setPackageData((state) => ({
                 ...state,

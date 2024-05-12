@@ -60,7 +60,7 @@ export const OfferWrapper = ({ data }: OfferWrapperProps) => {
       <Grid container margin={2} justifyContent="center" alignItems="center">
         <Grid
           item
-          className="invoice__item"
+          className="cursor-pointer"
           onClick={() => setOfficeCopy(!officeCopy)}
         >
           <Checkbox

@@ -79,7 +79,7 @@ export const AdditionalServices = () => {
           />
           <Grid
             item
-            className="invoice__item"
+            className="cursor-pointer"
             onClick={() =>
               setAdditionalServices((state) => ({
                 ...state,
@@ -88,7 +88,7 @@ export const AdditionalServices = () => {
             }
           >
             <Typography component="span" variant="body2">
-              Пратката ми е чуплива
+              SMS известяване
             </Typography>
             <Checkbox
               checked={SMSNotification}

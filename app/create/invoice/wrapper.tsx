@@ -141,7 +141,7 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
       <Grid container margin={2} justifyContent="center" alignItems="center">
         <Grid
           item
-          className="invoice__item"
+          className="cursor-pointer"
           onClick={() => setSendMailToRecepient(!sendMailToRecepient)}
         >
           <Checkbox
@@ -155,7 +155,7 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
         {invoiceType === InvoiceType.invoice && (
           <Grid
             item
-            className="invoice__item"
+            className="cursor-pointer"
             onClick={() => setAccountantCopy(!accountantCopy)}
           >
             <Checkbox
@@ -169,7 +169,7 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
         )}
         <Grid
           item
-          className="invoice__item"
+          className="cursor-pointer"
           onClick={() => setOfficeCopy(!officeCopy)}
         >
           <Checkbox

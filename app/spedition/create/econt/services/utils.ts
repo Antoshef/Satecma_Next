@@ -1,6 +1,7 @@
 import { apiRequest } from "@/utils/speedyRestClient";
 import { EcontRestClient } from "../econtRestClient";
-import { City, Office, Shipment } from "./shipments/types";
+import { City, Office, Shipment, ShippingLabel } from "./shipments/types";
+import { Receiver } from "../types";
 
 export const getCities = async () =>
   EcontRestClient.request("Nomenclatures/NomenclaturesService.getCities.json", {
@@ -59,4 +60,34 @@ export const getShipmentStatuses = async () => {
   )
     .then((data) => console.log(data))
     .catch((error) => console.error(error));
+};
+
+const validateAddress = async (receiver: Receiver) => {
+  const isAddressValid = EcontRestClient.request(
+    "Nomenclatures/AddressService.validateAddress.json"
+    // { city: receiver.city, street: receiver.address, num: receiver.num }
+  );
+  return isAddressValid;
+};
+
+export const createLabel = async (receiver: Receiver) => {
+  const label = EcontRestClient.request<{ label: ShippingLabel }>(
+    "Shipments/LabelService.createLabel.json",
+    {
+      label: {
+        receiverClient: {
+          name: receiver.name,
+          phones: [receiver.phone],
+          email: receiver.email,
+        },
+        receiverAddress: {
+          city: receiver.city,
+          // street: receiver.address,
+          // num: receiver.num,
+        },
+        receiverOfficeCode: receiver.office.code,
+      },
+    }
+  );
+  return label;
 };

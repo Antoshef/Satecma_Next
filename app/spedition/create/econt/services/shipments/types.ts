@@ -20,7 +20,7 @@ interface ClientProfile {
   molIDNum?: string;
 }
 
-interface Address {
+export interface Address {
   id?: number;
   city?: City;
   fullAddress?: string;
@@ -89,9 +89,9 @@ export interface ShippingLabel {
   receiverProviderID?: number;
   receiverBIC?: string;
   receiverIBAN?: string;
-  envelopeNumbers: string[];
+  envelopeNumbers?: string[];
   packCount?: number;
-  packs: PackElement[];
+  packs?: PackElement[];
   shipmentType?: ShipmentType;
   weight?: number;
   sizeUnder60cm?: boolean;
@@ -104,11 +104,11 @@ export interface ShippingLabel {
   holidayDeliveryDay?: string;
   keepUpright?: boolean;
   services?: ShippingLabelServices;
-  instructions: Instruction[];
+  instructions?: Instruction[];
   payAfterAccept?: boolean;
   payAfterTest?: boolean;
   packingListType?: string;
-  packingList: PackingListElement[];
+  packingList?: PackingListElement[]; 
   partialDelivery?: boolean;
   paymentSenderMethod?: string;
   paymentReceiverMethod?: string;
@@ -119,7 +119,7 @@ export interface ShippingLabel {
   paymentOtherAmountIsPercent?: boolean;
   mediator?: string;
   paymentToken?: string;
-  customsList: CustomsListElement[];
+  customsList?: CustomsListElement[];
   customsInvoice?: string;
 }
 

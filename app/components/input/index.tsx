@@ -4,8 +4,8 @@ import { TextField } from "@mui/material";
 export interface InputProps {
   label?: string;
   required?: boolean;
-  data: { name: string }[];
-  selectedItem: { name: string } | null;
+  data: { name?: string }[];
+  selectedItem: { name?: string } | null;
   className?: string;
   setSelectedItem: (name: string) => void;
 }
@@ -60,8 +60,8 @@ export const Input = ({
 
   useEffect(() => {
     const names = data.reduce((acc: string[], arr) => {
-      if (!acc.includes(arr.name)) {
-        acc.push(arr.name);
+      if (arr.name && !acc.includes(arr.name)) {
+        acc.push(arr?.name);
       }
       return acc;
     }, []);
@@ -70,7 +70,7 @@ export const Input = ({
   }, [data]);
 
   useEffect(() => {
-    setInput(selectedItem ? selectedItem.name : "");
+    setInput(selectedItem?.name ? selectedItem.name : "");
   }, [selectedItem]);
 
   return (

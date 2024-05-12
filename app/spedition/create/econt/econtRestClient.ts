@@ -10,9 +10,8 @@ const productionCredentials = {
   password: process.env.NEXT_PUBLIC_ECONT_PASS,
 };
 
-
 export class EcontRestClient {
-  static async request(method: string, params = {}, timeout = 10000) {
+  static async request<T>(method: string, params?: T, timeout = 10000) {
     const endpoint = productionEndpoint;
     const credentials = productionCredentials;
 

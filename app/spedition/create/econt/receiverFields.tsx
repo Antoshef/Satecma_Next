@@ -1,17 +1,17 @@
+import { Input } from "@/components/input";
 import { Grid, TextField, Typography } from "@mui/material";
 import { useCreateEcontPackage } from "./useCreateEcontPackage";
-import { Input } from "@/components/input";
 
 export const ReceiverFields = () => {
   const {
-    receiver: { name, phone, country, city, email, zipCode, office },
+    receiver: { name, phone, email, country, city, office },
     currentCityOffices: offices,
     cities,
-    setReceiver,
-    selectedOffice,
-    setSelectedOffice,
     selectedCity,
+    selectedOffice,
+    setReceiver,
     setSelectedCity,
+    setSelectedOffice,
   } = useCreateEcontPackage();
 
   const filteredOffices = offices?.filter(
@@ -104,14 +104,14 @@ export const ReceiverFields = () => {
             }
           />
           <TextField
-            id="zipCode"
+            id="postCode"
             label="Пощенски код"
             type="number"
-            value={zipCode}
+            value={selectedCity?.postCode || ""}
             onChange={(e) =>
               setReceiver((state) => ({
                 ...state,
-                zipCode: +e.target.value,
+                postCode: +e.target.value,
               }))
             }
           />

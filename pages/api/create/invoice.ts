@@ -115,7 +115,7 @@ export default async function handler(
         console.log("Email sent to bcc");
       }
 
-      res.json({ message: "Invoice generated and sent!" });
+      res.status(200).json({ message: "Invoice generated and sent!" });
     } catch (error) {
       console.error("Error in invoice generation or sending email:", error);
       res.status(500).json({ message: "Error generating or sending invoice." });

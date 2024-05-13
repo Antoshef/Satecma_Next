@@ -1,16 +1,16 @@
 "use client";
+import { fetchData } from "@/utils/fetchData";
 import { useEffect, useMemo, useState } from "react";
+import { ProductData } from "./invoice/types";
 import { InvoiceWrapper } from "./invoice/wrapper";
 import { OfferWrapper } from "./offer/wrapper";
-import { ProductData } from "./invoice/types";
-import { fetchJson } from "@/utils/fetchJson";
 
 export default function Page() {
   const [data, setData] = useState<ProductData[]>([]);
   const [currentHash, setCurrentHash] = useState<string>(window.location.hash);
 
   useEffect(() => {
-    fetchJson<ProductData[]>("/api/get-prices")
+    fetchData<ProductData[]>("/api/get-prices")
       .then((res) => {
         setData(res.data.length ? res.data : []);
       })

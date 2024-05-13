@@ -1,4 +1,6 @@
-import { fetchJson } from "@/utils/fetchJson";
+import { CompanyContext } from "@/components/providers/companyProvider";
+import useToast from "@/store/utils/useToast";
+import { fetchData } from "@/utils/fetchData";
 import { Button, Checkbox, Grid, Typography } from "@mui/material";
 import {
   FormEvent,
@@ -24,14 +26,7 @@ import {
   ProductData,
   Provider,
 } from "./types";
-import {
-  generateBcc,
-  getInvoiceNumber,
-  POSTinvoiceData,
-  POSTinvoicePdf,
-  UPDATEstoreData,
-} from "./utils";
-import { CompanyContext } from "@/components/providers/companyProvider";
+import { generateBcc, getInvoiceNumber } from "./utils";
 
 interface InvoiceWrapperProps {
   data: ProductData[];
@@ -62,6 +57,7 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
   const [invoiceData, setInvoiceData] = useState<InvoiceData>(
     INVOICE_DATA_DEFAULT_VALUES
   );
+  const { Toast, setMessage } = useToast();
   const { company } = useContext(CompanyContext);
 
   const invoiceNumber = useMemo(() => {
@@ -81,27 +77,51 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
       providerName: provider.name,
     });
     const css = await fetch("/globals.css").then((res) => res.text());
-    if (invoiceType === InvoiceType.invoice) {
-      const res = await POSTinvoiceData(invoiceData);
-      if (res.status !== 200) return;
-      items.length && (await UPDATEstoreData(items));
+
+    try {
+      if (invoiceType === InvoiceType.invoice && items.length) {
+        await fetchData("/api/create/invoice-sent", {
+          method: "POST",
+          body: JSON.stringify(invoiceData),
+        });
+
+        await fetchData("/api/storage/update", {
+          method: "PUT",
+          body: JSON.stringify({ items }),
+        });
+      }
+
+      await fetchData("/api/create/invoice", {
+        method: "POST",
+        body: JSON.stringify({
+          bcc,
+          email,
+          invoiceNumber,
+          html: invoiceRef.current?.outerHTML,
+          css,
+          sendMailToRecepient,
+          invoiceType,
+          providerName: provider.name,
+        }),
+      });
+
+      setMessage({
+        text: "Фактурата е създадена успешно!",
+        severity: "success",
+      });
+    } catch (error) {
+      setMessage({
+        text: "Възникна грешка при създаването на фактурата.",
+        severity: "error",
+      });
+      setIsFieldsDisabled(false);
     }
-    await POSTinvoicePdf({
-      bcc,
-      email,
-      invoiceNumber,
-      html: invoiceRef.current?.outerHTML,
-      css,
-      sendMailToRecepient,
-      invoiceType,
-      providerName: provider.name,
-    });
   };
 
   useEffect(() => {
-    fetchJson<InvoiceData[]>("/api/create/invoice-sent")
-      .then((res) => {
-        const { current, previous } = getInvoiceNumber(res.data);
+    fetchData<InvoiceData[]>("/api/create/invoice-sent")
+      .then((data) => {
+        const { current, previous } = getInvoiceNumber(data.data);
         setLatestInvoiceNumbers((prev) => ({
           ...prev,
           current,
@@ -121,6 +141,7 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
 
   return (
     <form className="p-4" onSubmit={onSubmit} id="invoice">
+      <Toast />
       <InvoiceBox
         provider={provider}
         products={data}

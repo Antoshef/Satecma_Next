@@ -1,3 +1,4 @@
+import { RequestInit } from "next/dist/server/web/spec-extension/request";
 import { StoreUnits } from "../../store/utils/types";
 import { Company } from "./constants";
 import { InvoiceData, InvoiceType, Item } from "./types";
@@ -107,48 +108,6 @@ export const generateBcc = ({
   return bcc.filter((email) => email !== "");
 };
 
-export const POSTinvoicePdf = async ({
-  bcc,
-  css,
-  email,
-  html,
-  invoiceNumber,
-  sendMailToRecepient,
-  invoiceType,
-  providerName,
-}: {
-  bcc: string[];
-  email: string;
-  invoiceNumber: string;
-  html: string | undefined;
-  css: string;
-  sendMailToRecepient: boolean;
-  invoiceType: InvoiceType;
-  providerName: Company;
-}) =>
-  await fetch("/api/create/invoice", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      bcc,
-      email,
-      invoiceNumber,
-      html,
-      css,
-      sendMailToRecepient,
-      invoiceType,
-      providerName,
-    }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Success:", data);
-    })
-    .catch((error) => {
-      throw new Error(error);
-    });
 
 export const POSTofferPdf = async (
   bcc: string[],
@@ -156,50 +115,39 @@ export const POSTofferPdf = async (
   name: string,
   html: string | undefined,
   css: string
-) =>
-  await fetch("/api/create/offer", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      bcc,
-      email,
-      name,
-      html,
-      css,
-    }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Success:", data);
-    })
-    .catch((error) => {
-      throw new Error(error);
+) => {
+  try {
+    const response = await fetch("/api/create/offer", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        bcc,
+        email,
+        name,
+        html,
+        css,
+      }),
     });
 
-export const POSTinvoiceData = async (invoiceData: InvoiceData) =>
-  await fetch("/api/create/invoice-sent", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(invoiceData),
-  })
-    .then((response) => response.json())
-    .catch((error) => {
-      throw new Error(error);
-    });
+    if (!response.ok) {
+      // Check if the response status is not in the success range
+      const errorData = await response.json(); // Assuming the server sends back a JSON with error info
+      const errorMessage = errorData.message || "Something went wrong";
+      throw new Error(errorMessage + ` (Status ${response.status})`);
+    }
 
-export const UPDATEstoreData = async (items: Item[]) =>
-  await fetch("/api/storage/update", {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ items }),
-  })
-    .then((response) => response.json())
-    .catch((error) => {
-      throw new Error(error);
-    });
+    // If the response is okay, parse it as JSON
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    // In real-world applications, you might want to handle this differently
+    // For example, you might log these errors or show user-friendly messages
+    throw new Error(
+      `Failed to post offer PDF: ${
+        (error as any).message || (error as any).toString()
+      }`
+    );
+  }
+};

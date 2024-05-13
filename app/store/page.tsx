@@ -10,7 +10,7 @@ import {
   StoreUnits,
 } from "@/store/utils/types";
 import { ADDStorage, createKey } from "@/store/utils/utils";
-import { fetchJson } from "@/utils/fetchJson";
+import { fetchData } from "@/utils/fetchData";
 import CloseIcon from "@mui/icons-material/Close";
 import {
   Button,
@@ -211,7 +211,7 @@ export default function Store() {
         return;
       }
 
-      const products = await fetchJson<StoreProductData[]>("/api/storage/get");
+      const products = await fetchData<StoreProductData[]>("/api/storage/get");
       if (!products.data) {
         setMessage({
           text: "Error fetching products: No data returned",
@@ -241,7 +241,7 @@ export default function Store() {
 
   useEffect(() => {
     setLoading(true);
-    fetchJson<StoreProductData[]>("/api/storage/get")
+    fetchData<StoreProductData[]>("/api/storage/get")
       .then((res) => {
         const { data } = res;
         setProducts(data);

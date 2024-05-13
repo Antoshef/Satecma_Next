@@ -52,7 +52,7 @@ export default async function handler(
           },
         ],
       });
-      res.json({ message: "Offer generated and sent!" });
+      res.status(200).json({ message: "Offer generated and sent!" });
     } catch (error) {
       console.error("Error in offer generation or sending email:", error);
       res.status(500).json({ message: "Error generating or sending offer." });

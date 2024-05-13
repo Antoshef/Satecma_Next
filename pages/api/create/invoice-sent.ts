@@ -16,12 +16,11 @@ export default async function handler(
       if (!results) {
         return res.status(404).json({ message: "Invoices not found" });
       }
-      return res.status(200).json({ data: results, status: 200 });
+      return res.status(200).json({ data: results });
     } catch (error) {
       console.error("GET error:", error);
       return res.status(500).json({
         message: "Internal server error",
-        error: (error as any).message,
       });
     }
   }
@@ -40,13 +39,10 @@ export default async function handler(
         !vat ||
         !total
       ) {
-        return res
-          .status(400)
-          .json({ message: "Missing required fields", status: 400 });
+        return res.status(400).json({ message: "Missing required fields" });
       } else if (invoice_id.length !== 10) {
         return res.status(400).json({
           message: "Invoice number must be 10 characters long",
-          status: 400,
         });
       }
       const results = await queryAsync(
@@ -57,17 +53,13 @@ export default async function handler(
         [client, eik, vat_number, date, invoice_id, amount, vat, total]
       );
       if (!results) {
-        return res
-          .status(500)
-          .json({ message: "Invoice not sent", status: 500 });
+        return res.status(500).json({ message: "Invoice not sent" });
       }
-      return res.status(200).json({ message: "Invoice sent", status: 200 });
+      return res.status(200).json({ message: "Invoice sent" });
     } catch (error) {
       console.error("POST error:", error);
       return res.status(500).json({
         message: "Internal server error",
-        error: (error as any).message,
-        status: 500,
       });
     }
   }

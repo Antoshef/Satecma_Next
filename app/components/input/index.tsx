@@ -1,6 +1,27 @@
-import { ChangeEvent, forwardRef, useEffect, useRef, useState } from "react";
-import { TextField } from "@mui/material";
+import {
+  ChangeEvent,
+  forwardRef,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+  Dispatch,
+} from "react";
+import { TextField, TextFieldVariants } from "@mui/material";
 import { useMergedRef } from "../useMergedRefs/useMergedRefs";
+
+export function itemHandler<T, K extends keyof T>(
+  name: string,
+  items: Array<{ name?: string }>,
+  stateProperty: K,
+  handler: Dispatch<SetStateAction<T>>
+): void {
+  const selected = items.find((item) => item.name === name);
+  handler((prevState) => ({
+    ...prevState,
+    [stateProperty]: selected || {},
+  }));
+}
 
 export interface InputProps {
   label?: string;
@@ -8,12 +29,23 @@ export interface InputProps {
   data: { name?: string }[];
   selectedItem: { name?: string } | null;
   className?: string;
+  variant?: TextFieldVariants;
+  size?: "small" | "medium";
   setSelectedItem: (name: string) => void;
 }
 
 export const Input = forwardRef<{}, InputProps>(
   (
-    { label, required, data, selectedItem, className, setSelectedItem },
+    {
+      label,
+      required,
+      data,
+      selectedItem,
+      className,
+      size,
+      variant,
+      setSelectedItem,
+    },
     ref
   ) => {
     const [input, setInput] = useState("");
@@ -84,6 +116,8 @@ export const Input = forwardRef<{}, InputProps>(
           type="text"
           value={input}
           required={required}
+          size={size}
+          variant={variant}
           autoComplete="off"
           className="input-field"
           onFocus={() => setShowSuggestions(true)}

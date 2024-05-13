@@ -1,5 +1,12 @@
 import { Address, City, Office } from "./services/shipments/types";
 
+export interface Sender {
+  name: string;
+  city: City;
+  office: Office;
+  currentCityOffices: Office[];
+}
+
 export interface Receiver {
   name: string;
   phone: string;
@@ -8,6 +15,7 @@ export interface Receiver {
   email: string;
   office: Office;
   address?: Address;
+  currentCityOffices: Office[];
 }
 
 export interface Package {
@@ -41,4 +49,3 @@ export interface AdditionalServices {
   borrowPallet: boolean;
   stretchFoilPacking: boolean;
 }
-

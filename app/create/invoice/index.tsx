@@ -305,6 +305,8 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
             />
 
             <InputWrapper
+              size="small"
+              variant="standard"
               data={products}
               isFieldsDisabled={isFieldsDisabled}
               selectedItem={selectedProduct}

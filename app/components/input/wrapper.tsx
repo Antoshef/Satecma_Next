@@ -1,6 +1,6 @@
-import { Input } from ".";
+import { Input, InputProps } from ".";
 
-interface InputWrapperProps {
+interface InputWrapperProps extends InputProps {
   data: { name: string }[];
   selectedItem: { name: string } | null;
   isFieldsDisabled: boolean;
@@ -12,6 +12,10 @@ export const InputWrapper = ({
   isFieldsDisabled,
   data,
   selectedItem,
+  size,
+  variant,
+  label,
+  required,
   onSubmit,
   setSelectedItem,
 }: InputWrapperProps) => {
@@ -21,6 +25,10 @@ export const InputWrapper = ({
         <td></td>
         <td colSpan={1}>
           <Input
+            size={size}
+            variant={variant}
+            label={label}
+            required={required}
             data={data}
             selectedItem={selectedItem}
             setSelectedItem={setSelectedItem}

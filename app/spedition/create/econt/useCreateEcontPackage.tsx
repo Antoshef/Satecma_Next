@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
-import { AdditionalServices, Package, Receiver } from "./types";
-import { City, Office } from "./services/shipments/types";
+import { AdditionalServices, Package, Receiver, Sender } from "./types";
+import { Office } from "./services/shipments/types";
 import { useAppSelector } from "../../../../lib/hooks";
 
 export const useCreateEcontPackage = () => {
-  const [currentCityOffices, setCurrentCityOffices] = useState<Office[]>([]);
-  const [selectedOffice, setSelectedOffice] = useState<Office | null>(null);
-  const [selectedCity, setSelectedCity] = useState<City | null>(null);
   const cities = useAppSelector((state) => state.econt.cities);
   const offices = useAppSelector((state) => state.econt.offices);
 
+  const [sender, setSender] = useState<Sender>({
+    name: "",
+    city: {},
+    office: {},
+    currentCityOffices: [],
+  });
   const [receiver, setReceiver] = useState<Receiver>({
     name: "",
     phone: "",
@@ -18,6 +21,7 @@ export const useCreateEcontPackage = () => {
     email: "",
     office: {},
     address: undefined,
+    currentCityOffices: [],
   });
   const [packageData, setPackageData] = useState<Package>({
     quantity: 1,
@@ -51,39 +55,69 @@ export const useCreateEcontPackage = () => {
       stretchFoilPacking: false,
     });
 
+  const senderCityHandler = (name: string) => {
+    const city = cities.find((c) => c.name === name);
+    setSender((state) => ({
+      ...state,
+      city: city || {},
+    }));
+  };
+
+  const senderOfficeHandler = (name: string) => {
+    const office = offices.find((o) => o.name === name);
+    setSender((state) => ({
+      ...state,
+      office: office || {},
+    }));
+  };
+
+  const receiverCityHandler = (name: string) => {
+    const city = cities.find((c) => c.name === name);
+    setReceiver((state) => ({
+      ...state,
+      city: city || {},
+    }));
+  };
+
+  const receiverOfficeHandler = (name: string) => {
+    const office = offices.find((o) => o.name === name);
+    setReceiver((state) => ({
+      ...state,
+      office: office || {},
+    }));
+  };
+
   useEffect(() => {
-    setCurrentCityOffices(
-      offices.filter((office) => office?.address?.city?.id === selectedCity?.id)
-    );
-  }, [selectedCity]);
+    setSender((state) => ({
+      ...state,
+      currentCityOffices: offices.filter(
+        (office) => office?.address?.city?.id === sender.city?.id
+      ),
+    }));
+  }, [sender.city]);
 
   useEffect(() => {
     setReceiver((state) => ({
       ...state,
-      office: selectedOffice || {},
+      currentCityOffices: offices.filter(
+        (office) => office?.address?.city?.id === receiver.city?.id
+      ),
     }));
-  }, [selectedOffice]);
-
-  useEffect(() => {
-    setReceiver((state) => ({
-      ...state,
-      city: selectedCity || {},
-      postCode: selectedCity?.postCode,
-    }));
-  }, [selectedCity]);
+  }, [receiver.city]);
 
   return {
-    currentCityOffices,
+    sender,
     cities,
     receiver,
-    setReceiver,
     packageData,
-    setPackageData,
     additionalServices,
+    setSender,
+    setReceiver,
+    setPackageData,
     setAdditionalServices,
-    selectedOffice,
-    setSelectedOffice,
-    selectedCity,
-    setSelectedCity,
+    senderCityHandler,
+    senderOfficeHandler,
+    receiverCityHandler,
+    receiverOfficeHandler,
   };
 };

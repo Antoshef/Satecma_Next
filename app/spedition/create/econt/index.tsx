@@ -5,18 +5,16 @@ import { Button } from "@mui/material";
 import { FormEvent, useState } from "react";
 import { useCreateEcontPackage } from "./useCreateEcontPackage";
 import { createLabel } from "./services/utils";
+import { SenderFields } from "./senderFields";
 
 export const CreateEcontPackage = () => {
   const [isAddressUsed, setIsAddressUsed] = useState(false);
   const {
+    sender,
     receiver,
-    currentCityOffices: offices,
     cities,
-    selectedCity,
-    selectedOffice,
+    setSender,
     setReceiver,
-    setSelectedCity,
-    setSelectedOffice,
   } = useCreateEcontPackage();
 
   const submitHandler = (e: FormEvent<HTMLElement>) => {
@@ -35,17 +33,13 @@ export const CreateEcontPackage = () => {
       onSubmit={submitHandler}
       className="flex flex-col gap-4 justify-center align-middle"
     >
+      <SenderFields {...sender} cities={cities} setSender={setSender} />
       <ReceiverFields
         {...receiver}
         cities={cities}
-        offices={offices}
-        selectedCity={selectedCity}
-        selectedOffice={selectedOffice}
         isAddressUsed={isAddressUsed}
         setIsAddressUsed={setIsAddressUsed}
         setReceiver={setReceiver}
-        setSelectedCity={setSelectedCity}
-        setSelectedOffice={setSelectedOffice}
       />
       <PackageDataFields />
       <AdditionalServices />

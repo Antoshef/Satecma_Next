@@ -1,25 +1,15 @@
-import { Input } from "@/components/input";
+import { Input, itemHandler } from "@/components/input";
 import { Checkbox, Grid, TextField, Typography } from "@mui/material";
 import { Address, City, Office } from "./services/shipments/types";
 import { Receiver } from "./types";
 import { CSSTransition } from "react-transition-group";
 import { useRef } from "react";
 
-interface Props {
-  name: string;
-  phone: string;
-  email: string;
+interface Props extends Receiver {
   cities: City[];
-  offices: Office[];
-  country: string;
-  address?: Address;
-  selectedCity: City | null;
-  selectedOffice: Office | null;
   isAddressUsed: boolean;
   setIsAddressUsed: React.Dispatch<React.SetStateAction<boolean>>;
   setReceiver: React.Dispatch<React.SetStateAction<Receiver>>;
-  setSelectedCity: React.Dispatch<React.SetStateAction<City | null>>;
-  setSelectedOffice: React.Dispatch<React.SetStateAction<Office | null>>;
 }
 
 export const ReceiverFields = ({
@@ -28,27 +18,16 @@ export const ReceiverFields = ({
   email,
   phone,
   cities,
-  offices,
+  city,
+  office,
   address,
-  selectedCity,
-  selectedOffice,
   isAddressUsed,
+  currentCityOffices,
   setIsAddressUsed,
   setReceiver,
-  setSelectedCity,
-  setSelectedOffice,
 }: Props) => {
   const addressRef = useRef<HTMLDivElement>(null);
   const officeRef = useRef<HTMLDivElement>(null);
-  const cityHandler = (name: string) => {
-    const selected = cities.find((city) => city.name === name);
-    setSelectedCity(selected || null);
-  };
-
-  const officeHandler = (name: string) => {
-    const selected = offices.find((office) => office.name === name);
-    setSelectedOffice(selected || null);
-  };
 
   return (
     <article className="flex flex-col gap-4">
@@ -125,14 +104,16 @@ export const ReceiverFields = ({
             label="Град"
             required
             data={cities}
-            selectedItem={selectedCity}
-            setSelectedItem={cityHandler}
+            selectedItem={city}
+            setSelectedItem={(name) =>
+              itemHandler(name, cities, "city", setReceiver)
+            }
           />
           <TextField
             id="postCode"
             label="Пощенски код"
             type="number"
-            value={selectedCity?.postCode || ""}
+            value={city?.postCode || ""}
             onChange={(e) =>
               setReceiver((state) => ({
                 ...state,
@@ -150,10 +131,12 @@ export const ReceiverFields = ({
             <Input
               label="Офис"
               required
-              data={offices}
+              data={currentCityOffices}
               ref={officeRef}
-              selectedItem={selectedOffice}
-              setSelectedItem={officeHandler}
+              selectedItem={office}
+              setSelectedItem={(name) =>
+                itemHandler(name, currentCityOffices, "office", setReceiver)
+              }
             />
           </CSSTransition>
         </div>

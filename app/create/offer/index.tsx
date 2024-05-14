@@ -6,6 +6,7 @@ import { TableItems } from "../table/tableItems";
 import { TableServices } from "../table/tableServices";
 import { useTableItems } from "../table/useTableItems";
 import { TextField } from "@/components/textField/TextField";
+import { Typography } from "@mui/material";
 
 interface OfferBoxProps {
   provider: Provider;
@@ -285,6 +286,10 @@ export const OfferBox = forwardRef<HTMLDivElement, OfferBoxProps>(
               </p>
             </>
           )}
+          <Typography variant="body1" className="pt-4">
+            За информация относно продуктите и услугите, <br />
+            моля свържете се с нас на телефон: {provider.phone}
+          </Typography>
         </div>
         <div className="flex flex-col text-end mt-6 mb-2">
           <span className="red-span">гр. {provider.city.split(",")[0]}</span>

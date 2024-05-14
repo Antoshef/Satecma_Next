@@ -1,4 +1,4 @@
-import { Button } from "@/components/button/Button";
+import { Button } from "@/components/button";
 import { SelectField } from "@/components/selectField/SelectField";
 import { TextField } from "@/components/textField/TextField";
 import { StoreUnits } from "@/store/utils/types";
@@ -76,7 +76,8 @@ export const TableItems = ({
             data-code={code}
             isFieldsDisabled={isFieldsDisabled}
             onChange={itemChangeHandler}
-          />{"  %"}
+          />
+          {"  %"}
         </td>
         <td>
           <SelectField
@@ -86,7 +87,8 @@ export const TableItems = ({
             value="20"
             values={["20"]}
             onChange={itemSelectHandler}
-          />{" %"}
+          />
+          {" %"}
         </td>
         <td className={!Number(totalPrice) ? "invoiceBox__zero-amount" : ""}>
           {totalPrice} лв.

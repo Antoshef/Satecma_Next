@@ -1,15 +1,8 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 import { Inter } from "next/font/google";
-import Header from "./components/header/header";
+import Header from "./components/header";
+import CompanyProvider from "./components/providers/companyProvider";
 import "./globals.css";
-
-const CompanyProvider = dynamic(
-  () => import("./components/providers/companyProvider"),
-  {
-    ssr: false,
-  }
-);
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,8 +21,8 @@ export default function RootLayout({
       <body className={inter.className}>
         <CompanyProvider>
           <Header />
-          {children}
         </CompanyProvider>
+        {children}
       </body>
     </html>
   );

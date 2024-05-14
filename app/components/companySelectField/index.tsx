@@ -2,7 +2,7 @@ import { Company } from "@/create/invoice/constants";
 import { Menu, Transition } from "@headlessui/react";
 import Image from "next/image";
 import { Fragment, useContext, useRef } from "react";
-import { classNames } from "../header/header";
+import { classNames } from "../header";
 import { CompanyContext } from "../providers/companyProvider";
 
 const satecma =

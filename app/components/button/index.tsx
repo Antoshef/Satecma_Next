@@ -1,4 +1,4 @@
-import { classNames } from "../header/header";
+import { classNames } from "../header";
 
 interface ButtonProps {
   isFieldsDisabled: boolean;

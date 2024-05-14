@@ -1,5 +1,5 @@
 import { ChangeEvent } from "react";
-import { classNames } from "../header/header";
+import { classNames } from "../header";
 
 interface TextFieldProps {
   isFieldsDisabled: boolean;

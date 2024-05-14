@@ -24,9 +24,9 @@ export const OfferWrapper = ({ data }: OfferWrapperProps) => {
   const { company } = useContext(CompanyContext);
   const { Toast, setMessage } = useToast();
   const [recipient, setRecipient] = useState({
-    name: "Станев",
+    name: "",
     phone: "",
-    email: "anton.stanev@satecma.bg",
+    email: "",
   });
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {

@@ -9,7 +9,7 @@ import {
   StoreProductData,
   StoreUnits,
 } from "@/store/utils/types";
-import { ADDStorage, createKey } from "@/store/utils/utils";
+import { createKey } from "@/store/utils/utils";
 import { fetchData } from "@/utils/fetchData";
 import CloseIcon from "@mui/icons-material/Close";
 import {
@@ -72,8 +72,12 @@ function getComparator<Key extends keyof any>(
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-export default function Store() {
-  const [products, setProducts] = useState<StoreProductData[]>([]);
+interface Props {
+  data: StoreProductData[];
+}
+
+export default function Store({ data }: Props) {
+  const [products, setProducts] = useState<StoreProductData[]>(data);
   const [productMap, setProductMap] = useState(
     new Map<string, StoreProductData>()
   );
@@ -82,7 +86,6 @@ export default function Store() {
     []
   );
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [loading, setLoading] = useState(true);
   const [isFetching, setIsFetching] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [order, setOrder] = useState<Order>("asc");
@@ -164,21 +167,16 @@ export default function Store() {
 
   const onEditSubmit = async (product: StoreProductData) => {
     try {
-      await fetch("/api/storage/get", {
+      await fetchData("/api/storage/get", {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({ product }),
-      }).then((response) => {
-        if (!response.ok) return;
-        const updatedProducts = products.map((p) =>
-          p.code === product.code && p.package === product.package ? product : p
-        );
-        setProducts(updatedProducts);
-        setSelected(undefined);
-        setMessage({ severity: "success", text: "Product updated" });
       });
+      const updatedProducts = products.map((p) =>
+        p.code === product.code && p.package === product.package ? product : p
+      );
+      setProducts(updatedProducts);
+      setSelected(undefined);
+      setMessage({ severity: "success", text: "Product updated" });
     } catch (error) {
       setMessage({ severity: "error", text: "Error updating product" });
     } finally {
@@ -198,33 +196,18 @@ export default function Store() {
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
     [order, orderBy, page, rowsPerPage, filteredProducts]
   );
+
   const uploadProductsHandler = async () => {
     if (!productsToUpdate) return;
     setIsFetching(true);
-
     try {
-      const res = await ADDStorage(productsToUpdate);
-
-      if (!res.ok) {
-        setMessage({ text: "Error adding products", severity: "error" });
-        setIsFetching(false);
-        return;
-      }
-
-      const products = await fetchData<StoreProductData[]>("/api/storage/get");
-      if (!products.data) {
-        setMessage({
-          text: "Error fetching products: No data returned",
-          severity: "error",
-        });
-        setIsFetching(false);
-        return;
-      }
-
-      setProducts(products.data);
-      const uniqueCategories = Array.from(
-        new Set(products.data.map((p) => p.category))
-      );
+      await fetchData("/api/storage/add", {
+        method: "PUT",
+        body: JSON.stringify({ items: productsToUpdate }),
+      });
+      const { data } = await fetchData<StoreProductData[]>("/api/storage/get");
+      setProducts(data);
+      const uniqueCategories = Array.from(new Set(data.map((p) => p.category)));
       setCategories(uniqueCategories);
       setMessage({
         text: `${productsToUpdate.length} products added successfully`,
@@ -240,25 +223,10 @@ export default function Store() {
   };
 
   useEffect(() => {
-    setLoading(true);
-    fetchData<StoreProductData[]>("/api/storage/get")
-      .then((res) => {
-        const { data } = res;
-        setProducts(data);
-
-        const uniqueCategories = Array.from(
-          new Set(data.map((p) => p.category))
-        );
-        setCategories(uniqueCategories);
-        sortAndFilterProducts(data, "all");
-      })
-      .catch(() => {
-        setMessage({ text: "Error fetching storage data", severity: "error" });
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+    const uniqueCategories = Array.from(new Set(data.map((p) => p.category)));
+    setCategories(uniqueCategories);
+    sortAndFilterProducts(data, "all");
+  }, [products]);
 
   useEffect(() => {
     const map = new Map<string, StoreProductData>();
@@ -288,272 +256,262 @@ export default function Store() {
 
   return (
     <Box margin={2}>
-      {loading ? (
-        <Typography variant="h4">Loading...</Typography>
-      ) : (
-        <>
-          <Toast />
-          <Dialog
-            open={openCheckProductsDialog}
-            onClose={() => setOpenCheckProductsDialog(false)}
-            fullWidth
-            maxWidth="md"
-          >
+      <>
+        <Toast />
+        <Dialog
+          open={openCheckProductsDialog}
+          onClose={() => setOpenCheckProductsDialog(false)}
+          fullWidth
+          maxWidth="md"
+        >
+          {isFetching ? (
+            <DialogTitle marginRight={4}>Обновяване на склада...</DialogTitle>
+          ) : (
+            <>
+              <DialogTitle marginRight={4}>Проверка на продуктите</DialogTitle>
+              <IconButton
+                aria-label="close"
+                onClick={() => setOpenCheckProductsDialog(false)}
+                sx={{
+                  position: "absolute",
+                  right: 8,
+                  top: 8,
+                  color: (theme) => theme.palette.grey[500],
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+            </>
+          )}
+          <DialogContent>
             {isFetching ? (
-              <DialogTitle marginRight={4}>Обновяване на склада...</DialogTitle>
-            ) : (
-              <>
-                <DialogTitle marginRight={4}>
-                  Проверка на продуктите
-                </DialogTitle>
-                <IconButton
-                  aria-label="close"
-                  onClick={() => setOpenCheckProductsDialog(false)}
-                  sx={{
-                    position: "absolute",
-                    right: 8,
-                    top: 8,
-                    color: (theme) => theme.palette.grey[500],
-                  }}
-                >
-                  <CloseIcon />
-                </IconButton>
-              </>
-            )}
-            <DialogContent>
-              {isFetching ? (
-                <Grid className="justify-center" container>
-                  <Hourglass
-                    visible={true}
-                    height="80"
-                    width="80"
-                    ariaLabel="hourglass-loading"
-                    colors={["#306cce", "#72a1ed"]}
-                  />
-                </Grid>
-              ) : (
-                <Grid container direction="column" alignItems="center">
-                  <DialogContentText className="p-4" variant="h5">
-                    Брой продукти за добавяне: {productsToUpdate?.length}
-                  </DialogContentText>
-                  {productsToUpdate?.map((incomingProduct) => {
-                    const key = `${incomingProduct.code}-${incomingProduct.package}`;
-                    const storeProduct = productMap.get(key);
-                    return (
-                      <Fragment key={incomingProduct.code}>
-                        <Grid className="mb-4" container>
-                          <DialogContentText variant="body1">
-                            {storeProduct ? (
-                              <>
-                                <Divider />
-                                Код: {storeProduct.code}, Име:{" "}
-                                {storeProduct.name}, Опаковка:{" "}
-                                {storeProduct.package} {storeProduct.unit} -
-                                Текущо количество:{" "}
-                                <Typography
-                                  fontSize="1.25rem"
-                                  component="span"
-                                  className="text-red-500"
-                                >
-                                  {storeProduct.quantity}
-                                </Typography>
-                                , Приходящо количество:{" "}
-                                <Typography
-                                  fontSize="1.25rem"
-                                  component="span"
-                                  className="text-blue-500"
-                                >
-                                  {incomingProduct.unit === StoreUnits.pcs
-                                    ? incomingProduct.totalQuantity
-                                    : incomingProduct.quantity}{" "}
-                                </Typography>{" "}
-                                {"=>"} ,Общо:{" "}
-                                <Typography
-                                  fontSize="1.25rem"
-                                  component="span"
-                                  className="text-green-500"
-                                >
-                                  {storeProduct.quantity +
-                                    incomingProduct.quantity}{" "}
-                                  {StoreUnits.pcs}
-                                </Typography>
-                              </>
-                            ) : (
-                              <>
-                                <Divider />
-                                Код: {incomingProduct.code}, Име:{" "}
-                                {incomingProduct.description}, Опаковка:{" "}
-                                {incomingProduct.package} {incomingProduct.unit}
-                                , Приходящо количество:{" "}
-                                <Typography
-                                  fontSize="1.25rem"
-                                  component="span"
-                                  className="text-blue-500"
-                                >
-                                  {incomingProduct.unit === StoreUnits.pcs
-                                    ? incomingProduct.totalQuantity
-                                    : incomingProduct.quantity}{" "}
-                                  {StoreUnits.pcs}
-                                </Typography>
-                              </>
-                            )}
-                          </DialogContentText>
-                        </Grid>
-                      </Fragment>
-                    );
-                  })}
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={uploadProductsHandler}
-                  >
-                    Прибави продуктите
-                  </Button>
-                </Grid>
-              )}
-            </DialogContent>
-          </Dialog>
-          <FileUpload
-            data={productsToUpdate}
-            setData={setProductsToUpdate}
-            setOpenDialog={setOpenCheckProductsDialog}
-          />
-          <Paper sx={{ width: "100%", mb: 2 }}>
-            <EnhancedTableToolbar
-              isSelected={!!selected}
-              onEdit={setEditMode}
-            />
-            <ProductEditor
-              editMode={editMode}
-              selected={selected}
-              setEditMode={setEditMode}
-              onSubmit={onEditSubmit}
-            />
-            <Grid container alignItems="baseline">
-              <Typography
-                variant="body1"
-                component="span"
-                marginRight={2}
-                marginLeft={2}
-              >
-                Избери категория:
-              </Typography>
-              <Select
-                id="category-select"
-                onChange={handleCategoryChange}
-                value={selectedCategory}
-                variant="filled"
-              >
-                <MenuItem key="all" value="all">
-                  Всички
-                </MenuItem>
-                {categories.map((category) => (
-                  <MenuItem key={category} value={category}>
-                    {category}
-                  </MenuItem>
-                ))}
-              </Select>
-              <Input
-                type="text"
-                placeholder="Търси по име"
-                value={searchTerm}
-                onChange={handleSearch}
-                className="ml-4"
-              />
-            </Grid>
-            <TableContainer>
-              <Table
-                sx={{ minWidth: 750 }}
-                aria-labelledby="tableTitle"
-                size={dense ? "small" : "medium"}
-              >
-                <EnhancedTableHead
-                  headCells={headCells}
-                  order={order}
-                  orderBy={orderBy}
-                  onRequestSort={handleRequestSort}
+              <Grid className="justify-center" container>
+                <Hourglass
+                  visible={true}
+                  height="80"
+                  width="80"
+                  ariaLabel="hourglass-loading"
+                  colors={["#306cce", "#72a1ed"]}
                 />
-                <TableBody>
-                  {visibleRows.map((row, index) => {
-                    const isItemSelected = isSelected(row.code);
-                    const labelId = `enhanced-table-checkbox-${index}`;
-
-                    return (
-                      <TableRow
-                        hover
-                        onClick={() =>
-                          setSelected((state) => {
-                            if (state === row) {
-                              setEditMode(false);
-                              return undefined;
-                            } else {
-                              return row;
-                            }
-                          })
-                        }
-                        role="checkbox"
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={createKey(row)}
-                        selected={isItemSelected}
-                        sx={{ cursor: "pointer" }}
-                      >
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            color="primary"
-                            checked={isItemSelected}
-                            inputProps={{
-                              "aria-labelledby": labelId,
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell align="right">{row.code}</TableCell>
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          padding="none"
-                        >
-                          {row.name}
-                        </TableCell>
-                        <TableCell align="right">
-                          {row.package} {row.unit}
-                        </TableCell>
-                        <TableCell align="right">{row.quantity}</TableCell>
-                        <TableCell align="right">
-                          {row.total} {row.unit}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                  {emptyRows > 0 && (
-                    <TableRow
-                      style={{
-                        height: (dense ? 33 : 53) * emptyRows,
-                      }}
-                    >
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              component="div"
-              count={filteredProducts.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </Paper>
-          <FormControlLabel
-            control={<Switch checked={dense} onChange={handleChangeDense} />}
-            label="Dense padding"
+              </Grid>
+            ) : (
+              <Grid container direction="column" alignItems="center">
+                <DialogContentText className="p-4" variant="h5">
+                  Брой продукти за добавяне: {productsToUpdate?.length}
+                </DialogContentText>
+                {productsToUpdate?.map((incomingProduct) => {
+                  const key = `${incomingProduct.code}-${incomingProduct.package}`;
+                  const storeProduct = productMap.get(key);
+                  return (
+                    <Fragment key={incomingProduct.code}>
+                      <Grid className="mb-4" container>
+                        <DialogContentText variant="body1">
+                          {storeProduct ? (
+                            <>
+                              <Divider />
+                              Код: {storeProduct.code}, Име: {storeProduct.name}
+                              , Опаковка: {storeProduct.package}{" "}
+                              {storeProduct.unit} - Текущо количество:{" "}
+                              <Typography
+                                fontSize="1.25rem"
+                                component="span"
+                                className="text-red-500"
+                              >
+                                {storeProduct.quantity}
+                              </Typography>
+                              , Приходящо количество:{" "}
+                              <Typography
+                                fontSize="1.25rem"
+                                component="span"
+                                className="text-blue-500"
+                              >
+                                {incomingProduct.unit === StoreUnits.pcs
+                                  ? incomingProduct.totalQuantity
+                                  : incomingProduct.quantity}{" "}
+                              </Typography>{" "}
+                              {"=>"} ,Общо:{" "}
+                              <Typography
+                                fontSize="1.25rem"
+                                component="span"
+                                className="text-green-500"
+                              >
+                                {storeProduct.quantity +
+                                  incomingProduct.quantity}{" "}
+                                {StoreUnits.pcs}
+                              </Typography>
+                            </>
+                          ) : (
+                            <>
+                              <Divider />
+                              Код: {incomingProduct.code}, Име:{" "}
+                              {incomingProduct.description}, Опаковка:{" "}
+                              {incomingProduct.package} {incomingProduct.unit},
+                              Приходящо количество:{" "}
+                              <Typography
+                                fontSize="1.25rem"
+                                component="span"
+                                className="text-blue-500"
+                              >
+                                {incomingProduct.unit === StoreUnits.pcs
+                                  ? incomingProduct.totalQuantity
+                                  : incomingProduct.quantity}{" "}
+                                {StoreUnits.pcs}
+                              </Typography>
+                            </>
+                          )}
+                        </DialogContentText>
+                      </Grid>
+                    </Fragment>
+                  );
+                })}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={uploadProductsHandler}
+                >
+                  Прибави продуктите
+                </Button>
+              </Grid>
+            )}
+          </DialogContent>
+        </Dialog>
+        <FileUpload
+          data={productsToUpdate}
+          setData={setProductsToUpdate}
+          setOpenDialog={setOpenCheckProductsDialog}
+        />
+        <Paper sx={{ width: "100%", mb: 2 }}>
+          <EnhancedTableToolbar isSelected={!!selected} onEdit={setEditMode} />
+          <ProductEditor
+            editMode={editMode}
+            selected={selected}
+            setEditMode={setEditMode}
+            onSubmit={onEditSubmit}
           />
-        </>
-      )}
+          <Grid container alignItems="baseline">
+            <Typography
+              variant="body1"
+              component="span"
+              marginRight={2}
+              marginLeft={2}
+            >
+              Избери категория:
+            </Typography>
+            <Select
+              id="category-select"
+              onChange={handleCategoryChange}
+              value={selectedCategory}
+              variant="filled"
+            >
+              <MenuItem key="all" value="all">
+                Всички
+              </MenuItem>
+              {categories.map((category) => (
+                <MenuItem key={category} value={category}>
+                  {category}
+                </MenuItem>
+              ))}
+            </Select>
+            <Input
+              type="text"
+              placeholder="Търси по име"
+              value={searchTerm}
+              onChange={handleSearch}
+              className="ml-4"
+            />
+          </Grid>
+          <TableContainer>
+            <Table
+              sx={{ minWidth: 750 }}
+              aria-labelledby="tableTitle"
+              size={dense ? "small" : "medium"}
+            >
+              <EnhancedTableHead
+                headCells={headCells}
+                order={order}
+                orderBy={orderBy}
+                onRequestSort={handleRequestSort}
+              />
+              <TableBody>
+                {visibleRows.map((row, index) => {
+                  const isItemSelected = isSelected(row.code);
+                  const labelId = `enhanced-table-checkbox-${index}`;
+
+                  return (
+                    <TableRow
+                      hover
+                      onClick={() =>
+                        setSelected((state) => {
+                          if (state === row) {
+                            setEditMode(false);
+                            return undefined;
+                          } else {
+                            return row;
+                          }
+                        })
+                      }
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={createKey(row)}
+                      selected={isItemSelected}
+                      sx={{ cursor: "pointer" }}
+                    >
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          color="primary"
+                          checked={isItemSelected}
+                          inputProps={{
+                            "aria-labelledby": labelId,
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell align="right">{row.code}</TableCell>
+                      <TableCell
+                        component="th"
+                        id={labelId}
+                        scope="row"
+                        padding="none"
+                      >
+                        {row.name}
+                      </TableCell>
+                      <TableCell align="right">
+                        {row.package} {row.unit}
+                      </TableCell>
+                      <TableCell align="right">{row.quantity}</TableCell>
+                      <TableCell align="right">
+                        {row.total} {row.unit}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+                {emptyRows > 0 && (
+                  <TableRow
+                    style={{
+                      height: (dense ? 33 : 53) * emptyRows,
+                    }}
+                  >
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={filteredProducts.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Paper>
+        <FormControlLabel
+          control={<Switch checked={dense} onChange={handleChangeDense} />}
+          label="Dense padding"
+        />
+      </>
     </Box>
   );
 }

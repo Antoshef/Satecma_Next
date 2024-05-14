@@ -1,8 +1,8 @@
-import { Button } from "@/components/button/Button";
+import { Button } from "@/components/button";
 import { SelectField } from "@/components/selectField/SelectField";
 import { TextField } from "@/components/textField/TextField";
-import { Item } from "../invoice/types";
 import { useState } from "react";
+import { Item } from "../invoice/types";
 
 interface TableServicesProps {
   services: Item[];

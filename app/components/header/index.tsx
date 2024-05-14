@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
-import { CompanySelectField } from "../companySelectField/CompanySelectField";
+import Link from "next/link";
+import { CompanySelectField } from "../companySelectField";
 
 export function classNames(classes: string[]) {
   return [...(classes || "")].filter(Boolean).join(" ");
@@ -89,10 +90,12 @@ export default function Header() {
                   <div role="navigation" className="flex space-x-4">
                     {navigation.map((item) => (
                       <div key={item.name} className="relative">
-                        <a
-                          href={item.href}
+                        <Link
+                          href={item.href || "#"}
                           className={classNames([
-                            value === item.href
+                            value === item.href ||
+                            (value.includes("/create") &&
+                              item.name === "Създай")
                               ? "bg-gray-900 text-white uppercase"
                               : "text-gray-300 hover:bg-gray-700 hover:text-white",
                             "rounded-md px-3 py-2 text-sm font-medium cursor-pointer uppercase",
@@ -106,7 +109,7 @@ export default function Header() {
                           }}
                         >
                           {item.name}
-                        </a>
+                        </Link>
                         {openDropdown === item.name && item.subItems && (
                           <div
                             ref={dropdownRef}
@@ -114,9 +117,9 @@ export default function Header() {
                           >
                             <div className="py-1">
                               {item.subItems.map((subItem) => (
-                                <a
+                                <Link
                                   key={subItem.name}
-                                  href={subItem.href}
+                                  href={subItem.href || "#"}
                                   className={classNames([
                                     value === subItem.href
                                       ? "bg-gray-200"
@@ -128,7 +131,7 @@ export default function Header() {
                                   }}
                                 >
                                   {subItem.name}
-                                </a>
+                                </Link>
                               ))}
                             </div>
                           </div>

@@ -18,16 +18,16 @@ export default async function handler(
   if (method === "POST") {
     const {
       email,
-      bcc,
       invoiceNumber,
       html,
       css,
       sendMailToRecepient,
       invoiceType,
       providerName,
+      client,
     } = req.body;
     const fileType = InvoiceType.invoice ? "фактура" : "проформа-фактура";
-    const fileName = `${fileType}-${invoiceNumber}.pdf`;
+    const fileName = `${fileType}-${client}-${invoiceNumber}.pdf`;
     const invoiceFolder =
       invoiceType === InvoiceType.invoice ? "фактури" : "проформа-фактури";
     const companyFolder =
@@ -55,9 +55,6 @@ export default async function handler(
         `/Users/antoshef/Satecma/фактури/${companyFolder}/Издадени/${invoiceFolder}/${currentYear}/${currentMonth}`
       );
       const localFilePath = `/Users/antoshef/Satecma/фактури/${companyFolder}/Издадени/${invoiceFolder}/${currentYear}/${currentMonth}/${fileName}`;
-      createDir("sent");
-      createDir(`sent/${invoiceFolder}`);
-      createDir(`sent/${invoiceFolder}/${currentMonth}`);
 
       const pdfBuffer = await convertHTMLToPDF(html, css);
       const modifiedPdfBuffer = pdfBuffer && (await addTextToPDF(pdfBuffer));
@@ -79,7 +76,6 @@ export default async function handler(
         const mailOptions = {
           from: process.env.NEXT_PUBLIC_OFFICE_EMAIL,
           to: email,
-          bcc: bcc,
           subject: "Your Invoice",
           text: "Please find attached your invoice.",
           attachments: [

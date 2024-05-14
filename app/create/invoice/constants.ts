@@ -1,4 +1,4 @@
-import { InvoiceData, Provider } from "./types";
+import { InvoiceData, InvoiceReceiver, Provider } from "./types";
 
 export const SATECMA_LOGO =
   "https://satecma.bg/wp-content/uploads/2024/02/logo-satecma-industrias.png";
@@ -52,4 +52,14 @@ export const INVOICE_DATA_DEFAULT_VALUES: InvoiceData = {
   total: 0,
   vat: 0,
   vat_number: "",
+};
+
+export const INIT_RECEIVER: InvoiceReceiver = {
+  email: "",
+  company: "",
+  city: "",
+  address: "",
+  EIK: "",
+  VAT: "",
+  director: "",
 };

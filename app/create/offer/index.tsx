@@ -6,12 +6,12 @@ import { TableItems } from "../table/tableItems";
 import { TableServices } from "../table/tableServices";
 import { useTableItems } from "../table/useTableItems";
 import { TextField } from "@/components/textField/TextField";
-import { itemHandler } from "@/components/input";
 
 interface OfferBoxProps {
   provider: Provider;
   isFieldsDisabled: boolean;
   products: ProductData[];
+  heading: string;
   recipient: {
     name: string;
     phone: string;
@@ -24,11 +24,22 @@ interface OfferBoxProps {
       email: string;
     }>
   >;
+  setHeading: Dispatch<SetStateAction<string>>;
 }
 
 export const OfferBox = forwardRef<HTMLDivElement, OfferBoxProps>(
-  ({ provider, isFieldsDisabled, products, recipient, setRecipient }, ref) => {
-    const [heading, setHeading] = useState("Заглавие на офертата");
+  (
+    {
+      provider,
+      isFieldsDisabled,
+      products,
+      recipient,
+      heading,
+      setHeading,
+      setRecipient,
+    },
+    ref
+  ) => {
     const [selectedProduct, setSelectedProduct] = useState<ProductData | null>(
       null
     );

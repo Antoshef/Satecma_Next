@@ -15,8 +15,8 @@ export default async function handler(
 ) {
   const { method } = req;
   if (method === "POST") {
-    const { email, bcc, name, html, css, providerName } = req.body;
-    const fileName = `оферта-${name}.pdf`;
+    const { email, name, html, css, providerName, heading } = req.body;
+    const fileName = `оферта-${heading}-${name}.pdf`;
     const offerFolder = "оферти";
     const companyFolder =
       providerName === Company.ekoHome
@@ -61,7 +61,6 @@ export default async function handler(
       const mailOptions = {
         from: process.env.NEXT_PUBLIC_OFFICE_EMAIL,
         to: email,
-        bcc: bcc,
         subject: "Your Offer",
         text: "Please find attached your offer.",
         attachments: [

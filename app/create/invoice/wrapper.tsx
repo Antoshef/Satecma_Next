@@ -26,7 +26,7 @@ import {
   ProductData,
   Provider,
 } from "./types";
-import { generateBcc, getInvoiceNumber } from "./utils";
+import { getInvoiceNumber } from "./utils";
 
 interface InvoiceWrapperProps {
   data: ProductData[];
@@ -51,8 +51,6 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
   const [provider, setProvider] = useState<Provider>(ECOHOME_COMPANY);
   const invoiceRef = useRef<HTMLTableElement>(null);
   const [isFieldsDisabled, setIsFieldsDisabled] = useState<boolean>(false);
-  const [accountantCopy, setAccountantCopy] = useState<boolean>(false);
-  const [officeCopy, setOfficeCopy] = useState<boolean>(false);
   const [items, setItems] = useState<Item[]>([]);
   const [invoiceData, setInvoiceData] = useState<InvoiceData>(
     INVOICE_DATA_DEFAULT_VALUES
@@ -71,11 +69,6 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsFieldsDisabled(true);
-    const bcc = generateBcc({
-      accountantCopy,
-      officeCopy,
-      providerName: provider.name,
-    });
     const css = await fetch("/globals.css").then((res) => res.text());
 
     try {
@@ -94,7 +87,6 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
       await fetchData("/api/create/invoice", {
         method: "POST",
         body: JSON.stringify({
-          bcc,
           email,
           invoiceNumber,
           html: invoiceRef.current?.outerHTML,
@@ -102,6 +94,7 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
           sendMailToRecepient,
           invoiceType,
           providerName: provider.name,
+          client: invoiceData.client,
         }),
       });
 
@@ -171,34 +164,6 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
           />
           <Typography component="span" variant="body2">
             Изпрати до получател
-          </Typography>
-        </Grid>
-        {invoiceType === InvoiceType.invoice && (
-          <Grid
-            item
-            className="cursor-pointer"
-            onClick={() => setAccountantCopy(!accountantCopy)}
-          >
-            <Checkbox
-              checked={accountantCopy}
-              inputProps={{ "aria-label": "controlled" }}
-            />
-            <Typography component="span" variant="body2">
-              Копие до счетоводител
-            </Typography>
-          </Grid>
-        )}
-        <Grid
-          item
-          className="cursor-pointer"
-          onClick={() => setOfficeCopy(!officeCopy)}
-        >
-          <Checkbox
-            checked={officeCopy}
-            inputProps={{ "aria-label": "controlled" }}
-          />
-          <Typography component="span" variant="body2">
-            Копие до офис
           </Typography>
         </Grid>
       </Grid>

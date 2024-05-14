@@ -10,10 +10,11 @@ import { SelectField } from "../../components/selectField/SelectField";
 import { TextField } from "../../components/textField/TextField";
 import { TableItems } from "../table/tableItems";
 import { TableServices } from "../table/tableServices";
-import { SATECMA_LOGO } from "./constants";
+import { INIT_RECEIVER, SATECMA_LOGO } from "./constants";
 import {
   InvoiceData,
   InvoiceIdType,
+  InvoiceReceiver,
   InvoiceType,
   Item,
   LatestInvoices,
@@ -65,14 +66,7 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
     const [wordPrice, setWordPrice] = useState("");
     const [reason, setReason] = useState("");
     const [paymentMethod, setPaymentMethod] = useState("По Банка");
-    const [receiver, setReceiver] = useState({
-      email: "anton.stanev@satecma.bg",
-      company: "ДЛВ ЕООД",
-      city: "София",
-      address: "бул. България 69",
-      EIK: "123456789",
-      VAT: "BG123456789",
-    });
+    const [receiver, setReceiver] = useState<InvoiceReceiver>(INIT_RECEIVER);
 
     const {
       items,
@@ -364,6 +358,16 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
                   type="text"
                   placeholder="ДДС №"
                   value={receiver.VAT}
+                  isFieldsDisabled={isFieldsDisabled}
+                  onChange={onChange}
+                />
+                <br />
+                МОЛ:{" "}
+                <TextField
+                  name="director"
+                  type="text"
+                  placeholder="МОЛ"
+                  value={receiver.director}
                   isFieldsDisabled={isFieldsDisabled}
                   onChange={onChange}
                 />

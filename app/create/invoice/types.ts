@@ -32,6 +32,16 @@ export interface Provider {
   bankDetails: BankDetails;
 }
 
+export interface InvoiceReceiver {
+  email: string;
+  company: string;
+  city: string;
+  address: string;
+  EIK: string;
+  VAT: string;
+  director: string;
+}
+
 interface BankDetails {
   iban: string;
   swift: string;

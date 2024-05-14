@@ -32,13 +32,14 @@ export const OfferWrapper = ({ data }: OfferWrapperProps) => {
     setIsFieldsDisabled(true);
     const bcc = generateBcc({ officeCopy });
     const css = await fetch("/globals.css").then((res) => res.text());
-    await POSTofferPdf(
+    await POSTofferPdf({
       bcc,
-      recipient.email,
-      recipient.name,
-      offerRef.current?.outerHTML,
-      css
-    );
+      email: recipient.email,
+      name: recipient.name,
+      html: offerRef.current?.outerHTML,
+      css,
+      providerName: provider.name,
+    });
   };
 
   useEffect(() => {

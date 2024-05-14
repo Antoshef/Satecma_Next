@@ -6,6 +6,7 @@ import { TableItems } from "../table/tableItems";
 import { TableServices } from "../table/tableServices";
 import { useTableItems } from "../table/useTableItems";
 import { TextField } from "@/components/textField/TextField";
+import { itemHandler } from "@/components/input";
 
 interface OfferBoxProps {
   provider: Provider;
@@ -47,6 +48,12 @@ export const OfferBox = forwardRef<HTMLDivElement, OfferBoxProps>(
       serviceChangeHandler,
       serviceSelectHandler,
     } = useTableItems({ selectedProduct, setSelectedProduct });
+
+    const productChangeHandler = (name: string | null) => {
+      setSelectedProduct(
+        products.find((product) => product.name === name) || null
+      );
+    };
 
     return (
       <div ref={ref} className="send-box">
@@ -170,11 +177,13 @@ export const OfferBox = forwardRef<HTMLDivElement, OfferBoxProps>(
             />
 
             <InputWrapper
+              size="small"
+              variant="standard"
               isFieldsDisabled={isFieldsDisabled}
-              products={products}
-              selectedProduct={selectedProduct}
+              data={products}
+              selectedItem={selectedProduct}
               onSubmit={addItem}
-              setSelectedProduct={setSelectedProduct}
+              setSelectedItem={productChangeHandler}
             />
 
             <tr className="border-gray-800 border-b text-right bg-gray-700 text-white">

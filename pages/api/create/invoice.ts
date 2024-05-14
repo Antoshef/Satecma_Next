@@ -1,5 +1,5 @@
 import fs from "fs";
-import path from "path";
+import Imap from "imap";
 import nodemailer from "nodemailer";
 import { NextApiRequest, NextApiResponse } from "next";
 import {
@@ -58,31 +58,26 @@ export default async function handler(
       createDir("sent");
       createDir(`sent/${invoiceFolder}`);
       createDir(`sent/${invoiceFolder}/${currentMonth}`);
-      const filePath = path.join(
-        "./",
-        `sent/${invoiceFolder}/${currentMonth}`,
-        fileName
-      );
+
       const pdfBuffer = await convertHTMLToPDF(html, css);
       const modifiedPdfBuffer = pdfBuffer && (await addTextToPDF(pdfBuffer));
 
       modifiedPdfBuffer &&
-        (await fs.promises.writeFile(filePath, modifiedPdfBuffer));
-      modifiedPdfBuffer &&
         (await fs.promises.writeFile(localFilePath, modifiedPdfBuffer));
 
-      let transporter = nodemailer.createTransport({
-        host: process.env.IMAP_HOST,
-        port: 465,
-        secure: true,
-        auth: {
-          user: process.env.SALES_EMAIL,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
       if (sendMailToRecepient) {
-        await transporter.sendMail({
-          from: process.env.SALES_EMAIL,
+        let transporter = nodemailer.createTransport({
+          host: process.env.IMAP_HOST,
+          port: 465,
+          secure: true,
+          auth: {
+            user: process.env.NEXT_PUBLIC_OFFICE_EMAIL,
+            pass: process.env.EMAIL_PASS,
+          },
+        });
+
+        const mailOptions = {
+          from: process.env.NEXT_PUBLIC_OFFICE_EMAIL,
           to: email,
           bcc: bcc,
           subject: "Your Invoice",
@@ -90,29 +85,91 @@ export default async function handler(
           attachments: [
             {
               filename: fileName,
-              path: filePath,
+              path: localFilePath,
               contentType: "application/pdf",
             },
           ],
+        };
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.log("Error occurred: " + error.message);
+            return;
+          }
+
+          console.log("Message sent: %s", info.messageId);
+
+          const imapConfig = {
+            user: process.env.NEXT_PUBLIC_OFFICE_EMAIL,
+            password: process.env.EMAIL_PASS,
+            host: process.env.IMAP_HOST,
+            port: 993,
+            tls: true,
+            tlsOptions: { rejectUnauthorized: false },
+          };
+
+          const imap = new Imap(imapConfig);
+
+          imap.once("ready", () => {
+            imap.openBox("INBOX", false, (err, box) => {
+              if (err) {
+                console.error("Error opening inbox:", err);
+                imap.end();
+                return;
+              }
+
+              const message = [
+                `From: ${mailOptions.from}`,
+                `To: ${mailOptions.to}`,
+                `Subject: ${mailOptions.subject}`,
+                `MIME-Version: 1.0`,
+                `Content-Type: multipart/mixed; boundary="boundary"`,
+                ``,
+                `--boundary`,
+                `Content-Type: text/plain; charset=utf-8`,
+                ``,
+                mailOptions.text,
+                ``,
+                `--boundary`,
+                `Content-Type: application/pdf; name="${mailOptions.attachments[0].filename}"`,
+                `Content-Disposition: attachment; filename="${mailOptions.attachments[0].filename}"`,
+                `Content-Transfer-Encoding: base64`,
+                ``,
+                fs
+                  .readFileSync(mailOptions.attachments[0].path)
+                  .toString("base64"),
+                ``,
+                `--boundary--`,
+                ``,
+              ].join("\r\n");
+
+              // Append the raw message to the Sent folder
+              imap.append(
+                message,
+                { mailbox: "INBOX.Sent", flags: ["\\Seen"] },
+                (err) => {
+                  if (err) {
+                    console.error("Error saving to Sent folder:", err);
+                  } else {
+                    console.log("Message saved to Sent folder");
+                  }
+                  imap.end();
+                }
+              );
+            });
+          });
+
+          imap.once("error", (err: any) => {
+            console.error("IMAP error:", err);
+          });
+
+          imap.once("end", () => {
+            console.log("IMAP connection ended");
+          });
+
+          imap.connect();
         });
 
         console.log("Email sent");
-      } else if (bcc.length) {
-        await transporter.sendMail({
-          from: process.env.SALES_EMAIL,
-          to: bcc,
-          subject: "Invoice",
-          text: "Please find attached the invoice.",
-          attachments: [
-            {
-              filename: fileName,
-              path: filePath,
-              contentType: "application/pdf",
-            },
-          ],
-        });
-
-        console.log("Email sent to bcc");
       }
 
       res.status(200).json({ message: "Invoice generated and sent!" });

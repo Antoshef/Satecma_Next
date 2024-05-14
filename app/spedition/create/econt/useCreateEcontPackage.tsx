@@ -1,59 +1,21 @@
 import { useEffect, useState } from "react";
 import { AdditionalServices, Package, Receiver, Sender } from "./types";
-import { Office } from "./services/shipments/types";
 import { useAppSelector } from "../../../../lib/hooks";
+import {
+  INIT_SENDER,
+  INIT_RECEIVER,
+  INIT_PACKAGE,
+  INIT_ADDITIONAL_SERVICES,
+} from "./constants";
 
 export const useCreateEcontPackage = () => {
   const cities = useAppSelector((state) => state.econt.cities);
   const offices = useAppSelector((state) => state.econt.offices);
-
-  const [sender, setSender] = useState<Sender>({
-    name: "",
-    city: {},
-    office: {},
-    currentCityOffices: [],
-  });
-  const [receiver, setReceiver] = useState<Receiver>({
-    name: "",
-    phone: "",
-    country: "България",
-    city: {},
-    email: "",
-    office: {},
-    address: undefined,
-    currentCityOffices: [],
-  });
-  const [packageData, setPackageData] = useState<Package>({
-    quantity: 1,
-    weight: "",
-    type: "Писмо",
-    dimensions: {
-      width: "",
-      height: "",
-      length: "",
-    },
-    description: "",
-    id: "",
-    isFragile: false,
-    isLessThan60cm: false,
-    volume: "",
-  });
+  const [sender, setSender] = useState<Sender>(INIT_SENDER);
+  const [receiver, setReceiver] = useState<Receiver>(INIT_RECEIVER);
+  const [packageData, setPackageData] = useState<Package>(INIT_PACKAGE);
   const [additionalServices, setAdditionalServices] =
-    useState<AdditionalServices>({
-      price: "",
-      cashOnDelivery: {
-        payer: "",
-        amount: "",
-      },
-      paymentType: "",
-      twoWayDelivery: false,
-      SMSNotification: false,
-      coolingBag: false,
-      invoiceId: "",
-      stretchFoil: false,
-      borrowPallet: false,
-      stretchFoilPacking: false,
-    });
+    useState<AdditionalServices>(INIT_ADDITIONAL_SERVICES);
 
   const senderCityHandler = (name: string) => {
     const city = cities.find((c) => c.name === name);

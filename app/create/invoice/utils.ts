@@ -108,14 +108,21 @@ export const generateBcc = ({
   return bcc.filter((email) => email !== "");
 };
 
-
-export const POSTofferPdf = async (
-  bcc: string[],
-  email: string,
-  name: string,
-  html: string | undefined,
-  css: string
-) => {
+export const POSTofferPdf = async ({
+  bcc,
+  css,
+  email,
+  html,
+  name,
+  providerName,
+}: {
+  bcc: string[];
+  email: string;
+  name: string;
+  html: string | undefined;
+  css: string;
+  providerName: string;
+}) => {
   try {
     const response = await fetch("/api/create/offer", {
       method: "POST",
@@ -128,6 +135,7 @@ export const POSTofferPdf = async (
         name,
         html,
         css,
+        providerName,
       }),
     });
 

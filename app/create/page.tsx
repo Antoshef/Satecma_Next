@@ -1,34 +1,30 @@
 "use client";
-import { fetchData } from "@/utils/fetchData";
 import { useEffect, useMemo, useState } from "react";
 import { ProductData } from "./invoice/types";
 import { InvoiceWrapper } from "./invoice/wrapper";
 import { OfferWrapper } from "./offer/wrapper";
 
-export default function Page() {
-  const [data, setData] = useState<ProductData[]>([]);
-  const [currentHash, setCurrentHash] = useState<string>(window.location.hash);
+interface Props {
+  data: ProductData[];
+  invoiceIds: {
+    current: string;
+    previous: string;
+  };
+}
 
-  useEffect(() => {
-    fetchData<ProductData[]>("/api/get-prices")
-      .then((res) => {
-        setData(res.data.length ? res.data : []);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }, []);
+export default function CreatePage({ data, invoiceIds }: Props) {
+  const [currentHash, setCurrentHash] = useState<string>(window.location.hash);
 
   const Component = useMemo(() => {
     switch (currentHash) {
       case "#invoice":
-        return <InvoiceWrapper data={data} />;
+        return <InvoiceWrapper data={data} invoiceIds={invoiceIds} />;
       case "#offer":
         return <OfferWrapper data={data} />;
       default:
-        return <OfferWrapper data={data} />;
+        return <InvoiceWrapper data={data} invoiceIds={invoiceIds} />;
     }
-  }, [currentHash, data]);
+  }, [currentHash, data, invoiceIds]);
 
   useEffect(() => {
     window.addEventListener("hashchange", () => {

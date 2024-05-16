@@ -1,3 +1,3 @@
-export default function Home({ children }: { children: React.ReactNode }) {
-  return <main>{children}</main>;
+export default function HomePage({ children }: { children: React.ReactNode }) {
+  return <div>{children}</div>;
 }

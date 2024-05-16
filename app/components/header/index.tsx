@@ -2,8 +2,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { CompanySelectField } from "../companySelectField";
 
 export function classNames(classes: string[]) {
@@ -32,9 +30,8 @@ const navigation: NavigationItem[] = [
 ];
 
 export default function Header() {
-  const router = useRouter();
   const [value, setValue] = useState<string>("/store");
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [openDropdown, setOpenDropdown] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -42,18 +39,13 @@ export default function Header() {
       dropdownRef.current &&
       !dropdownRef.current.contains(event.target as Node)
     ) {
-      setOpenDropdown(null);
+      setOpenDropdown(false);
     }
-  };
-
-  const toggleDropdown = (name: string) => {
-    setOpenDropdown(openDropdown === name ? null : name);
   };
 
   const handleChange = (path: string) => {
     setValue(path);
-    router.push(path);
-    setOpenDropdown(null);
+    setOpenDropdown(false);
   };
 
   useEffect(() => {
@@ -90,8 +82,8 @@ export default function Header() {
                   <div role="navigation" className="flex space-x-4">
                     {navigation.map((item) => (
                       <div key={item.name} className="relative">
-                        <Link
-                          href={item.href || "#"}
+                        <a
+                          href={item.href}
                           className={classNames([
                             value === item.href ||
                             (value.includes("/create") &&
@@ -104,22 +96,25 @@ export default function Header() {
                             value === item.href ? "page" : undefined
                           }
                           onClick={() => {
-                            item.href && handleChange(item.href);
-                            toggleDropdown(item.name);
+                            if (item.href) {
+                              item.href && handleChange(item.href);
+                            } else {
+                              setOpenDropdown(true);
+                            }
                           }}
                         >
                           {item.name}
-                        </Link>
-                        {openDropdown === item.name && item.subItems && (
+                        </a>
+                        {openDropdown && item.subItems && (
                           <div
                             ref={dropdownRef}
                             className="absolute left-0 mt-1 rounded-md shadow-lg bg-white"
                           >
                             <div className="py-1">
                               {item.subItems.map((subItem) => (
-                                <Link
+                                <a
                                   key={subItem.name}
-                                  href={subItem.href || "#"}
+                                  href={subItem.href}
                                   className={classNames([
                                     value === subItem.href
                                       ? "bg-gray-200"
@@ -131,7 +126,7 @@ export default function Header() {
                                   }}
                                 >
                                   {subItem.name}
-                                </Link>
+                                </a>
                               ))}
                             </div>
                           </div>

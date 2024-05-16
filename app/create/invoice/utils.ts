@@ -57,7 +57,7 @@ export const getInvoiceNumber = (data: InvoiceData[]) => {
   const latestPreviousInvoice = filteredPreviousInvoice.reduce(
     (acc, curr) =>
       Number(acc.invoice_id) > Number(curr.invoice_id) ? acc : curr,
-    { invoice_id: "0000000000" }
+    { invoice_id: "0000500000" }
   );
 
   const addZeros = (invoice: string) => {

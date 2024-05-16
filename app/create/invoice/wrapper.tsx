@@ -26,20 +26,22 @@ import {
   ProductData,
   Provider,
 } from "./types";
-import { getInvoiceNumber } from "./utils";
 
 interface InvoiceWrapperProps {
   data: ProductData[];
+  invoiceIds: {
+    current: string;
+    previous: string;
+  };
 }
 
-export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
+export const InvoiceWrapper = ({ data, invoiceIds }: InvoiceWrapperProps) => {
   const [email, setEmail] = useState("");
   const [sendMailToRecepient, setSendMailToRecepient] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
   const [latestInvoiceNumbers, setLatestInvoiceNumbers] =
     useState<LatestInvoices>({
-      current: "0000100000",
-      previous: "0000000000",
+      ...invoiceIds,
       manual: "",
     });
   const [invoiceIdType, setInvoiceIdType] = useState<InvoiceIdType>(
@@ -110,21 +112,6 @@ export const InvoiceWrapper = ({ data }: InvoiceWrapperProps) => {
       setIsFieldsDisabled(false);
     }
   };
-
-  useEffect(() => {
-    fetchData<InvoiceData[]>("/api/create/invoice-sent")
-      .then((data) => {
-        const { current, previous } = getInvoiceNumber(data.data);
-        setLatestInvoiceNumbers((prev) => ({
-          ...prev,
-          current,
-          previous,
-        }));
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }, []);
 
   useEffect(() => {
     setProvider(

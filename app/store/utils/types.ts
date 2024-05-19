@@ -1,24 +1,24 @@
-import { ProductData } from "@/create/invoice/types";
+import { Product } from "@/create/invoice/types";
 import { AlertProps } from "@mui/material";
-
-export interface StoreProductData {
-  code: string;
-  category: string;
-  name: string;
-  quantity: number;
-  package: number;
-  unit: StoreUnits;
-  total: number;
-}
 
 export interface ToastMessage {
   severity: AlertProps["severity"];
   text?: string;
 }
 
+export type StoreProduct = {
+  code: string;
+  package: number;
+  quantity: number;
+  totalQuantity: number;
+} & Pick<
+  Product,
+  "category" | "color" | "name" | "percentage_increase" | "price" | "unit"
+>;
+
 export interface InvoiceProductData
-  extends Pick<StoreProductData, "code" | "package" | "quantity" | "unit">,
-    Pick<ProductData, "price"> {
+  extends Pick<StoreProduct, "code" | "package" | "quantity" | "unit">,
+    Pick<Product, "price"> {
   totalQuantity: number;
   totalPrice: number;
   description: string;
@@ -32,7 +32,7 @@ export enum StoreUnits {
 
 export interface HeadCell {
   disablePadding: boolean;
-  id: keyof StoreProductData;
+  id: keyof StoreProduct;
   label: string;
   numeric: boolean;
 }

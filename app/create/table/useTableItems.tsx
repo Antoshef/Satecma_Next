@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useState } from "react";
-import { calculateItemPrice } from "../invoice/utils";
-import { Item, ProductData } from "../invoice/types";
 import { StoreUnits } from "@/store/utils/types";
+import { useCallback, useEffect, useState } from "react";
+import { Item, Product } from "../invoice/types";
+import { calculateItemPrice } from "../invoice/utils";
 
 interface TableItemsProps {
-  selectedProduct: ProductData | null;
-  setSelectedProduct: React.Dispatch<React.SetStateAction<ProductData | null>>;
+  selectedProduct: Product | null;
+  setSelectedProduct: React.Dispatch<React.SetStateAction<Product | null>>;
 }
 
 export const useTableItems = ({
@@ -48,7 +48,7 @@ export const useTableItems = ({
     const { name, value, dataset } = e.target;
     const newServices = [...services];
     const currentService = newServices.find(
-      (item) => item.code === dataset.code
+      (item) => item.code === dataset.code,
     );
     if (currentService) {
       (currentService as any)[name] = value;
@@ -63,7 +63,7 @@ export const useTableItems = ({
     const { value, dataset } = e.target;
     const newServices = [...services];
     const currentService = newServices.find(
-      (item) => item.code === dataset.code
+      (item) => item.code === dataset.code,
     );
     if (currentService) {
       currentService.VAT = value;
@@ -125,21 +125,21 @@ export const useTableItems = ({
     setTotal(() => {
       let amountWithoutDiscount = items.reduce(
         (acc, item) => acc + Number(item.totalPrice),
-        0
+        0,
       );
       amountWithoutDiscount += services.reduce(
         (acc, item) => acc + Number(item.totalPrice),
-        0
+        0,
       );
       let discount = items.reduce(
         (acc, item) =>
           acc + (Number(item.discount) / 100) * Number(item.totalPrice),
-        0
+        0,
       );
       discount += services.reduce(
         (acc, item) =>
           acc + (Number(item.discount) / 100) * Number(item.totalPrice),
-        0
+        0,
       );
       const netAmount = amountWithoutDiscount - discount;
       const VAT = 0.2 * netAmount;

@@ -1,15 +1,14 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Header from "./components/header";
 import "./globals.css";
 import dynamic from "next/dynamic";
+import StoreProvider from "./StoreProvider";
+import { fetchData } from "./utils/fetchData";
+import { Product } from "./create/invoice/types";
 
-const CompanyProvider = dynamic(
-  () => import("./components/providers/companyProvider"),
-  {
-    ssr: false,
-  }
-);
+const HeaderWrapper = dynamic(() => import("./components/header/wrapper"), {
+  ssr: false,
+});
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +17,7 @@ export const metadata: Metadata = {
   description: "The storage app",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -26,10 +25,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <CompanyProvider>
-          <Header />
-        </CompanyProvider>
-        {children}
+        <StoreProvider>
+          <HeaderWrapper />
+          {children}
+        </StoreProvider>
       </body>
     </html>
   );

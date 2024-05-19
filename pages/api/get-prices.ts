@@ -1,16 +1,16 @@
-import { ProductData } from "@/create/invoice/types";
+import { Product } from "@/create/invoice/types";
 import { NextApiRequest, NextApiResponse } from "next";
 import { queryAsync } from "../../utils/db";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const { method } = req;
   if (method === "GET") {
     try {
-      const results = await queryAsync<ProductData[]>(
-        "SELECT * FROM product_prices"
+      const results = await queryAsync<Product[]>(
+        "SELECT * FROM product_prices",
       );
       if (!results || results.length === 0) {
         res.status(404).json({ message: "Not found" });

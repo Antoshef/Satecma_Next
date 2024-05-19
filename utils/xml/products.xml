@@ -32,10 +32,11 @@
         </pma:database>
     </pma:structure_schemas>
 
-<database name="ecohomeg_storage">
+    <database name="ecohomeg_storage">
         <!-- Table products -->
+        
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMADRY WHITE</column>
             <column name="packing">25</column>
             <column name="unit">кг.</column>
@@ -46,7 +47,7 @@
             <column name="quantity">0</column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMADRY GREY</column>
             <column name="packing">25</column>
             <column name="unit">кг.</column>
@@ -79,7 +80,7 @@
             <column name="quantity">31</column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMADRY SR</column>
             <column name="packing">25</column>
             <column name="unit">кг.</column>
@@ -135,7 +136,7 @@
             <column name="quantity">0</column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMADRY ELAST BLUE</column>
             <column name="packing">30</column>
             <column name="unit">кг.</column>
@@ -146,7 +147,7 @@
             <column name="quantity">0</column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMADRY MILENIUM WHITE</column>
             <column name="packing">25</column>
             <column name="unit">кг.</column>
@@ -168,7 +169,7 @@
             <column name="quantity">25</column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMADRY FLEX 2C GREY</column>
             <column name="packing">25</column>
             <column name="unit">кг.</column>
@@ -179,7 +180,7 @@
             <column name="quantity">0</column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMADRY FLEX 2C WHITE</column>
             <column name="packing">25</column>
             <column name="unit">кг.</column>
@@ -209,9 +210,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">1.84</column>
             <column name="category">Ремонтни замазки</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">PREMHOR R</column>
             <column name="packing">25</column>
             <column name="unit">кг.</column>
@@ -219,7 +221,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">1.98</column>
             <column name="category">Ремонтни замазки</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">3163</column>
             <column name="name">PREMHOR COSMETICO</column>
@@ -232,7 +235,7 @@
             <column name="quantity">0</column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">PREMHOR GROUT</column>
             <column name="packing">25</column>
             <column name="unit">кг.</column>
@@ -240,7 +243,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">1.58</column>
             <column name="category">Ремонтни замазки</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">3176</column>
             <column name="name">PREMHOR STREET</column>
@@ -253,7 +257,7 @@
             <column name="quantity">25</column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA PAINT MRRE</column>
             <column name="packing">5</column>
             <column name="unit">кг.</column>
@@ -261,9 +265,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">12.60</column>
             <column name="category">Ремонтни замазки</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA MORTAR CAL</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -271,9 +276,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">1.98</column>
             <column name="category">Ремонтни замазки</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA MORTAR CAL SMOOTH</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -281,7 +287,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">2.40</column>
             <column name="category">Ремонтни замазки</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">3104</column>
             <column name="name">PROQUICK</column>
@@ -291,9 +298,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">3.20</column>
             <column name="category">Продукти за спиране на течове</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">PROQUICK PLUS</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -301,9 +309,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">3.62</column>
             <column name="category">Продукти за спиране на течове</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA METAL PASTY - цена за брой</column>
             <column name="packing">2.5</column>
             <column name="unit">кг.</column>
@@ -311,9 +320,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">0.00</column>
             <column name="category">Продукти за спиране на течове</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">QUICK</column>
             <column name="packing">0.35</column>
             <column name="unit">л.</column>
@@ -321,7 +331,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">0.00</column>
             <column name="category">Продукти за спиране на течове</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">1901</column>
             <column name="name">STOP LIQUID 7.5L</column>
@@ -334,7 +345,7 @@
             <column name="quantity">0</column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMACOL FLEX</column>
             <column name="packing">25</column>
             <column name="unit">кг.</column>
@@ -342,7 +353,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">2.54</column>
             <column name="category">Лепила на циментова основа</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">4108</column>
             <column name="name">TECMA PAINT BITUM CAUCHO</column>
@@ -363,9 +375,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">3.82</column>
             <column name="category">Катранни и асфалтови продукти</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA PAINT BTA</column>
             <column name="packing">25</column>
             <column name="unit">л.</column>
@@ -373,9 +386,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">7.86</column>
             <column name="category">Катранни и асфалтови продукти</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA PAINT TAR E</column>
             <column name="packing">34</column>
             <column name="unit">кг.</column>
@@ -383,7 +397,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">13.80</column>
             <column name="category">Катранни и асфалтови продукти</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">1521</column>
             <column name="name">SATECMA ELASTIC PM 33 BLACK 0.33L</column>
@@ -393,7 +408,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">11.86</column>
             <column name="category">Уплътнители</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">1525</column>
             <column name="name">SATECMA ELASTIC PM 33 BROWN 0.33L</column>
@@ -403,7 +419,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">11.86</column>
             <column name="category">Уплътнители</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">1591</column>
             <column name="name">SATECMA ELASTIC H2O GREY 0.33L</column>
@@ -413,7 +430,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">12.04</column>
             <column name="category">Уплътнители</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">1553</column>
             <column name="name">SATECMA ELASTIC S 600 GREY 0.6L</column>
@@ -423,7 +441,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">14.32</column>
             <column name="category">Уплътнители</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">3139</column>
             <column name="name">SAT KLEBEN 0.33L</column>
@@ -433,9 +452,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">27.10</column>
             <column name="category">Уплътнители</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">PRIMER 1833</column>
             <column name="packing">0.5, 1</column>
             <column name="unit">л.</column>
@@ -443,9 +463,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">10.34</column>
             <column name="category">Уплътнители</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">FONDO DE JUNTAS</column>
             <column name="packing">0.01</column>
             <column name="unit">бр.</column>
@@ -453,9 +474,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">0.64</column>
             <column name="category">Уплътнители</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">FONDO DE JUNTAS</column>
             <column name="packing">0.015</column>
             <column name="unit">бр.</column>
@@ -463,9 +485,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">0.84</column>
             <column name="category">Уплътнители</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">FONDO DE JUNTAS</column>
             <column name="packing">0.02</column>
             <column name="unit">бр.</column>
@@ -473,9 +496,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">0.98</column>
             <column name="category">Уплътнители</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">FONDO DE JUNTAS</column>
             <column name="packing">0.03</column>
             <column name="unit">бр.</column>
@@ -483,9 +507,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">1.60</column>
             <column name="category">Уплътнители</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">FONDO DE JUNTAS</column>
             <column name="packing">0.05</column>
             <column name="unit">бр.</column>
@@ -493,9 +518,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">2.60</column>
             <column name="category">Уплътнители</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">SATECMA BAND AD08-7.5cm</column>
             <column name="packing">20</column>
             <column name="unit">бр.</column>
@@ -503,7 +529,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">0.00</column>
             <column name="category">Уплътнители</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">1493</column>
             <column name="name">SATECMA BAND AD08-10cm</column>
@@ -513,9 +540,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">32.04</column>
             <column name="category">Уплътнители</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">SATECMA BAND AD08-15cm</column>
             <column name="packing">20</column>
             <column name="unit">бр.</column>
@@ -523,9 +551,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">0.00</column>
             <column name="category">Уплътнители</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA INVYEC AQUA</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -533,9 +562,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">20.56</column>
             <column name="category">Уплътнители</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">BENTONITA GB 0.2x0.25</column>
             <column name="packing">5</column>
             <column name="unit">бр.</column>
@@ -543,9 +573,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">11.24</column>
             <column name="category">Уплътнители</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">DECAPA SCM</column>
             <column name="packing">1, 5</column>
             <column name="unit">кг.</column>
@@ -553,7 +584,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">20.58</column>
             <column name="category">Антиграфити</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0</column>
+        </table>
         <table name="products">
             <column name="code">3190</column>
             <column name="name">DECAPA SCM GEL</column>
@@ -566,7 +598,7 @@
             <column name="quantity">, , ,</column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">DECAPA GRAFFIT</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -574,7 +606,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">12.46</column>
             <column name="category">Антиграфити</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">4005</column>
             <column name="name">BRUTUS GEL</column>
@@ -595,7 +628,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">19.96</column>
             <column name="category">Антиграфити</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">4006</column>
             <column name="name">BRUTUS FLUIDO 0.5L</column>
@@ -608,7 +642,7 @@
             <column name="quantity">1</column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">PROQUIL PRB</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -616,7 +650,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">16.08</column>
             <column name="category">Антиграфити</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">1071</column>
             <column name="name">AER. JV-CLEAN 0.65L</column>
@@ -659,9 +694,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">30.08</column>
             <column name="category">Антиграфити</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">ANTIGRAFFITI PRIMER</column>
             <column name="packing">10</column>
             <column name="unit">л.</column>
@@ -669,7 +705,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">25.38</column>
             <column name="category">Антиграфити</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">4131</column>
             <column name="name">IMPRIMACION A</column>
@@ -682,7 +719,7 @@
             <column name="quantity">1, 1, </column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">DESCOF ECO</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -690,9 +727,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">4.52</column>
             <column name="category">Средства за освобождаване на кофражи</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">DESCOF - A</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -700,9 +738,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">9.34</column>
             <column name="category">Средства за освобождаване на кофражи</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">PLASTICONS</column>
             <column name="packing">5, 10, 25</column>
             <column name="unit">л.</column>
@@ -710,9 +749,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">5.02</column>
             <column name="category">Примеси за хоросан и бетон</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">ANTICONGELANTE - HM</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -720,9 +760,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">4.60</column>
             <column name="category">Примеси за хоросан и бетон</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">ACELCONS</column>
             <column name="packing">6, 12, 30</column>
             <column name="unit">кг.</column>
@@ -730,9 +771,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">6.08</column>
             <column name="category">Примеси за хоросан и бетон</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">HIDROFUGO 2000</column>
             <column name="packing">5, 10, 25</column>
             <column name="unit">кг.</column>
@@ -740,9 +782,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">3.16</column>
             <column name="category">Примеси за хоросан и бетон</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">RETARDADOR - FH</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -750,9 +793,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">7.22</column>
             <column name="category">Примеси за хоросан и бетон</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">SATECMACAL</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -760,9 +804,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">4.98</column>
             <column name="category">Примеси за хоросан и бетон</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMACONS - SF20</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -770,7 +815,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">5.88</column>
             <column name="category">Примеси за хоросан и бетон</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">3164</column>
             <column name="name">TECMA ADMIX CRYSTAL</column>
@@ -791,10 +837,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">5.66</column>
             <column name="category">Примеси за хоросан и бетон</column>
-             <column name="quantity">, , 1</column>
+            <column name="quantity">, , 1</column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA - HMF</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -802,7 +848,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">2.82</column>
             <column name="category">Примеси за хоросан и бетон</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">1459</column>
             <column name="name">B STRATOS 6</column>
@@ -812,7 +859,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">17.48</column>
             <column name="category">Фибри от полипропилен</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">1456</column>
             <column name="name">B STRATOS 20</column>
@@ -822,9 +870,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">28.60</column>
             <column name="category">Фибри от полипропилен</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">FIBERMESH 6130 - цена на торба</column>
             <column name="packing">0.9</column>
             <column name="unit">кг.</column>
@@ -832,9 +881,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">11.95</column>
             <column name="category">Примеси за хоросан и бетон</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">SAT -FIBER - цена на торба</column>
             <column name="packing">0.75</column>
             <column name="unit">кг.</column>
@@ -842,9 +892,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">14.80</column>
             <column name="category">Примеси за хоросан и бетон</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">SAT -FILS - цена на торба</column>
             <column name="packing">0.6</column>
             <column name="unit">кг.</column>
@@ -852,9 +903,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">9.28</column>
             <column name="category">Примеси за хоросан и бетон</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">SATECMA -FIBERS - цена на торба</column>
             <column name="packing">0.6</column>
             <column name="unit">кг.</column>
@@ -862,9 +914,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">3.26</column>
             <column name="category">Примеси за хоросан и бетон</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">SATECMACONS AAJ</column>
             <column name="packing">10, 25</column>
             <column name="unit">л.</column>
@@ -872,9 +925,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">7.02</column>
             <column name="category">Продукти против покачваща влага</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">SATECMACONS V</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -882,9 +936,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">47.58</column>
             <column name="category">Примеси за хоросан и бетон</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA -ANTISAL</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -892,7 +947,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">6.06</column>
             <column name="category">Примеси за хоросан и бетон</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">3150</column>
             <column name="name">HIDROTECMA</column>
@@ -905,7 +961,7 @@
             <column name="quantity">1, , </column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA SOL E</column>
             <column name="packing">5, 10, 25</column>
             <column name="unit">кг.</column>
@@ -913,7 +969,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">5.90</column>
             <column name="category">Разтворители</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
             <column name="code">1759</column>
             <column name="name">TECMA SOL C</column>
@@ -926,7 +983,7 @@
             <column name="quantity">2, , </column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA SOL D</column>
             <column name="packing">5, 10, 25</column>
             <column name="unit">кг.</column>
@@ -934,9 +991,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">8.62</column>
             <column name="category">Разтворители</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA SOL U</column>
             <column name="packing">5, 10, 25</column>
             <column name="unit">кг.</column>
@@ -944,9 +1002,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">7.24</column>
             <column name="category">Разтворители</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA SOL UP</column>
             <column name="packing">5, 10, 25</column>
             <column name="unit">кг.</column>
@@ -954,9 +1013,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">8.54</column>
             <column name="category">Разтворители</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA SOL BTA</column>
             <column name="packing">5, 10, 25</column>
             <column name="unit">кг.</column>
@@ -964,7 +1024,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">5.30</column>
             <column name="category">Разтворители</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
             <column name="code">1771</column>
             <column name="name">TECMA SOL AP</column>
@@ -985,7 +1046,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">5.88</column>
             <column name="category">Разтворители</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
             <column name="code">1755</column>
             <column name="name">TECMA PAINT R</column>
@@ -995,9 +1057,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">37.98</column>
             <column name="category">Свързващи пълнители от смоли</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA PAINT AD</column>
             <column name="packing">1, 2, 5</column>
             <column name="unit">кг.</column>
@@ -1005,9 +1068,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">36.72</column>
             <column name="category">Свързващи пълнители от смоли</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA ADH</column>
             <column name="packing">5, 10, 25</column>
             <column name="unit">л.</column>
@@ -1015,7 +1079,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">6.68</column>
             <column name="category">Свързващи пълнители от смоли</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
             <column name="code">1908</column>
             <column name="name">TECMA OXID ND</column>
@@ -1039,7 +1104,7 @@
             <column name="quantity">, 7</column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA PAINT OP YELLOW</column>
             <column name="packing">5, 10</column>
             <column name="unit">кг.</column>
@@ -1047,9 +1112,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">22.16</column>
             <column name="category">Специални бои</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA PAINT OP RED</column>
             <column name="packing">5, 10</column>
             <column name="unit">кг.</column>
@@ -1057,7 +1123,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">19.04</column>
             <column name="category">Специални бои</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0</column>
+        </table>
         <table name="products">
             <column name="code">1745</column>
             <column name="name">TECMA PAINT HS BLUE</column>
@@ -1070,7 +1137,7 @@
             <column name="quantity">2, 5, </column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA PAINT OP-D</column>
             <column name="packing">5, 10</column>
             <column name="unit">кг.</column>
@@ -1078,7 +1145,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">13.46</column>
             <column name="category">Специални бои</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0</column>
+        </table>
         <table name="products">
             <column name="code">1730</column>
             <column name="name">TECMA PAINT OPS WHITE</column>
@@ -1088,9 +1156,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">12.40</column>
             <column name="category">Специални бои</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA PAINT P</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -1098,9 +1167,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">20.64</column>
             <column name="category">Специални бои</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">DECAOX SP</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -1108,7 +1178,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">12.54</column>
             <column name="category">Специални бои</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">4538</column>
             <column name="name">TECMA PAINT NO FROST</column>
@@ -1132,7 +1203,7 @@
             <column name="quantity">1</column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA INOX SPRAY (AEROSOL)</column>
             <column name="packing">1</column>
             <column name="unit">бр.</column>
@@ -1140,9 +1211,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">24.64</column>
             <column name="category">Специални бои</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">AEROSOL SENAL PAINT OP</column>
             <column name="packing">1</column>
             <column name="unit">бр.</column>
@@ -1150,9 +1222,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">23.82</column>
             <column name="category">Специални бои</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA PAINT EI</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -1160,7 +1233,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">22.94</column>
             <column name="category">Епоксидни бои</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">4109</column>
             <column name="name">TECMA PAINT AH</column>
@@ -1173,7 +1247,7 @@
             <column name="quantity">6</column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">IMPRIMACION E-2 EPOXIDICA</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -1181,7 +1255,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">11.50</column>
             <column name="category">Епоксидни бои</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">4156</column>
             <column name="name">TECMA PAINT ECOTRANS</column>
@@ -1191,7 +1266,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">18.64</column>
             <column name="category">Епоксидни бои</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">1779</column>
             <column name="name">TECMA PAINT ECOPOX WHITE</column>
@@ -1212,10 +1288,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">23.34</column>
             <column name="category">Епоксидни бои</column>
-             <column name="quantity">2</column>
+            <column name="quantity">2</column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA PAINT AUTONIVEL. GREY (with sand)</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -1223,7 +1299,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">9.04</column>
             <column name="category">Епоксидни бои</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">1914</column>
             <column name="name">TECMA PAINT AUTONIVEL. GREY (concentrate)</column>
@@ -1233,9 +1310,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">21.58</column>
             <column name="category">Епоксидни бои</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">HIDROTECMA SP</column>
             <column name="packing">25</column>
             <column name="unit">л.</column>
@@ -1243,9 +1321,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">9.92</column>
             <column name="category">Обработка на подове и настилки</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">OLEOREPELENTE BS</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -1253,9 +1332,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">31.56</column>
             <column name="category">Обработка на подове и настилки</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA GEM AEROSOL</column>
             <column name="packing">1</column>
             <column name="unit">бр.</column>
@@ -1263,7 +1343,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">10.30</column>
             <column name="category">Обработка на подове и настилки</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">1940</column>
             <column name="name">TECMA PAINT PU-EXT GREY</column>
@@ -1295,9 +1376,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">26.18</column>
             <column name="category">Обработка на подове и настилки</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA RSE</column>
             <column name="packing">5</column>
             <column name="unit">кг.</column>
@@ -1305,9 +1387,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">20.62</column>
             <column name="category">Обработка на подове и настилки</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA PAV 13</column>
             <column name="packing">5</column>
             <column name="unit">кг.</column>
@@ -1315,9 +1398,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">4.74</column>
             <column name="category">Обработка на подове и настилки</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">LICOGLAS</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -1325,9 +1409,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">5.22</column>
             <column name="category">Обработка на подове и настилки</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA SEC ABS</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -1335,9 +1420,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">3.44</column>
             <column name="category">Обработка на подове и настилки</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA ABSORB +</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -1345,9 +1431,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">0.00</column>
             <column name="category">Обработка на подове и настилки</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">KIT DE ABSORCION S</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -1355,9 +1442,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">48.74</column>
             <column name="category">Обработка на подове и настилки</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA AGLOMER</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -1365,9 +1453,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">13.10</column>
             <column name="category">Обработка на подове и настилки</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA AGLOMER PUR</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -1375,9 +1464,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">18.30</column>
             <column name="category">Обработка на подове и настилки</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA AGLOMER PUR AL</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -1385,9 +1475,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">22.88</column>
             <column name="category">Обработка на подове и настилки</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA SUELOS WAX</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -1395,9 +1486,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">3.02</column>
             <column name="category">Обработка на подове и настилки</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA MOP</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -1405,7 +1497,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">6.54</column>
             <column name="category">Обработка на подове и настилки</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">1645</column>
             <column name="name">TECMA AGLO STONE</column>
@@ -1418,7 +1511,7 @@
             <column name="quantity">, 61</column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA AGLO STONE PA</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -1426,7 +1519,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">22.92</column>
             <column name="category">Обработка на подове и настилки</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">1417</column>
             <column name="name">TECMA ANTIDESLIZANTE</column>
@@ -1447,9 +1541,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">2.26</column>
             <column name="category">Цименто-почистващи препарати</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">DESCA 2F/P</column>
             <column name="packing">5, 10, 25</column>
             <column name="unit">л.</column>
@@ -1457,7 +1552,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">2.96</column>
             <column name="category">Цименто-почистващи препарати</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
             <column name="code">1437</column>
             <column name="name">DESCA 100</column>
@@ -1489,7 +1585,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">10.66</column>
             <column name="category">Цименто-почистващи препарати</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
             <column name="code">4132</column>
             <column name="name">SUPER DESCA STONE</column>
@@ -1499,7 +1596,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">10.30</column>
             <column name="category">Цименто-почистващи препарати</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
             <column name="code">1401</column>
             <column name="name">DESCA HOR</column>
@@ -1509,7 +1607,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">2.54</column>
             <column name="category">Цименто-почистващи препарати</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
             <column name="code">1440</column>
             <column name="name">DESCA S</column>
@@ -1521,7 +1620,7 @@
             <column name="category">Цименто-почистващи препарати</column>
             <column name="quantity">2, , </column>
         </table>
-         <table name="products">
+        <table name="products">
             <column name="code">1031</column>
             <column name="name">TECMA GUARD GRD</column>
             <column name="package">5</column>
@@ -1541,9 +1640,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">7.74</column>
             <column name="category">Общопочистващи препарати</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">PROQUIL B</column>
             <column name="packing">5, 10, 25</column>
             <column name="unit">л.</column>
@@ -1551,9 +1651,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">7.02</column>
             <column name="category">Общопочистващи препарати</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">PROQUIL CRISTAL</column>
             <column name="packing">5, 10, 25</column>
             <column name="unit">л.</column>
@@ -1561,7 +1662,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">5.76</column>
             <column name="category">Общопочистващи препарати</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
             <column name="code">1347</column>
             <column name="name">PROQUIL AL</column>
@@ -1571,7 +1673,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">7.08</column>
             <column name="category">Общопочистващи препарати</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
             <column name="code">1324</column>
             <column name="name">PROQUIL 15</column>
@@ -1581,7 +1684,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">10.02</column>
             <column name="category">Общопочистващи препарати</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
             <column name="code">1369</column>
             <column name="name">PROQUIL ALCA</column>
@@ -1602,9 +1706,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">7.26</column>
             <column name="category">Общопочистващи препарати</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">PROQUIL PLUS</column>
             <column name="packing">5, 10, 25</column>
             <column name="unit">л.</column>
@@ -1612,9 +1717,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">9.42</column>
             <column name="category">Общопочистващи препарати</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">PROQUIL AMON NF</column>
             <column name="packing">5, 10, 25</column>
             <column name="unit">л.</column>
@@ -1622,7 +1728,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">7.84</column>
             <column name="category">Общопочистващи препарати</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
             <column name="code">1314</column>
             <column name="name">PROQUIL CAR</column>
@@ -1632,7 +1739,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">6.30</column>
             <column name="category">Общопочистващи препарати</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
             <column name="code">1498</column>
             <column name="name">PROQUIL CAN 0.5L</column>
@@ -1642,7 +1750,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">16.70</column>
             <column name="category">Общопочистващи препарати</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">8048</column>
             <column name="name">TECMA SILVER</column>
@@ -1666,7 +1775,7 @@
             <column name="quantity">1</column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">HUM PROT MATE</column>
             <column name="packing">5, 10, 25</column>
             <column name="unit">л.</column>
@@ -1674,7 +1783,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">14.18</column>
             <column name="category">Фасадни водоотблъскващи препарати</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
             <column name="code">1752</column>
             <column name="name">IMPERMEABILIZANTE 10AG</column>
@@ -1687,7 +1797,7 @@
             <column name="quantity">, 6, </column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">HUMPROT HYDRO</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -1695,9 +1805,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">12.56</column>
             <column name="category">Фасадни водоотблъскващи препарати</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">HUM PROT AQUA</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -1705,7 +1816,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">12.48</column>
             <column name="category">Фасадни водоотблъскващи препарати</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">4210</column>
             <column name="name">TECMA PAINT FACH. WHITE</column>
@@ -1715,7 +1827,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">7.50</column>
             <column name="category">Фасадни водоотблъскващи бои</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
             <column name="code">4243</column>
             <column name="name">TECMA PAINT SILICATO AMARILLO SAHARA</column>
@@ -1725,9 +1838,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">6.22</column>
             <column name="category">Фасадни водоотблъскващи бои</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMACRIL FACHADAS</column>
             <column name="packing">5, 10, 25</column>
             <column name="unit">кг.</column>
@@ -1735,9 +1849,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">4.62</column>
             <column name="category">Фасадни водоотблъскващи бои</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMACRIL 09</column>
             <column name="packing">25</column>
             <column name="unit">кг.</column>
@@ -1745,9 +1860,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">4.18</column>
             <column name="category">Фасадни водоотблъскващи бои</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMALITE FACHADAS</column>
             <column name="packing">5, 10, 25</column>
             <column name="unit">кг.</column>
@@ -1755,9 +1871,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">8.18</column>
             <column name="category">Фасадни водоотблъскващи бои</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMASIL PRIMER</column>
             <column name="packing">5, 10, 25</column>
             <column name="unit">л.</column>
@@ -1765,7 +1882,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">6.18</column>
             <column name="category">Фасадни водоотблъскващи бои</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
             <column name="code">1710</column>
             <column name="name">TECMA PAINT AS GREY</column>
@@ -1800,7 +1918,7 @@
             <column name="quantity">, , 1</column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA BASS SH</column>
             <column name="packing">6, 12, 30</column>
             <column name="unit">кг.</column>
@@ -1808,9 +1926,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">8.32</column>
             <column name="category">Хидроизолация и защита на покриви</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA ELAST V 97</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -1818,7 +1937,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">6.36</column>
             <column name="category">Хидроизолация и защита на покриви</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">4412</column>
             <column name="name">TECMA ECO TR</column>
@@ -1828,7 +1948,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">14.50</column>
             <column name="category">Хидроизолация и защита на покриви</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0, 0</column>
+        </table>
         <table name="products">
             <column name="code">1597</column>
             <column name="name">TECMA IMPERAL P2008 GREY</column>
@@ -1852,7 +1973,7 @@
             <column name="quantity">, 4</column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMA IMPERAL P 98</column>
             <column name="packing">5, 10</column>
             <column name="unit">кг.</column>
@@ -1860,7 +1981,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">19.58</column>
             <column name="category">Хидроизолация и защита на покриви</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0</column>
+        </table>
         <table name="products">
             <column name="code">1669</column>
             <column name="name">TECMA IMPERAL H2O GREY</column>
@@ -1870,7 +1992,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">23.18</column>
             <column name="category">Хидроизолация и защита на покриви</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0, 0</column>
+        </table>
         <table name="products">
             <column name="code">1478</column>
             <column name="name">TECMA PAINT FINAL GREY</column>
@@ -1916,7 +2039,7 @@
             <column name="quantity">1, 5,</column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">SATECMA TERMIC</column>
             <column name="packing">60</column>
             <column name="unit"/>
@@ -1924,7 +2047,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">9.10</column>
             <column name="category">Топло изолация</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">1666</column>
             <column name="name">TECMA LSR NF 1L</column>
@@ -1945,7 +2069,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">10.32</column>
             <column name="category">Инсектициди и биоциди</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">1674</column>
             <column name="name">AER. TECMA INSEC SP33 0.65L</column>
@@ -1958,7 +2083,7 @@
             <column name="quantity">16</column>
         </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">FILTRO GEOTEXTIL 240gr./m2</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -1966,9 +2091,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">3.50</column>
             <column name="category">Спомагателни продукти и мемрани</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TELA DE ARMAR</column>
             <column name="packing">1.3</column>
             <column name="unit">бр.</column>
@@ -1976,7 +2102,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">2.02</column>
             <column name="category">Спомагателни продукти и мемрани</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">1467</column>
             <column name="name">FIBRA DE ARMAR 100 (M2)</column>
@@ -1986,9 +2113,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">3.98</column>
             <column name="category">Спомагателни продукти и мемрани</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">VELO DE REFUERZO</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -1996,9 +2124,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">3.22</column>
             <column name="category">Спомагателни продукти и мемрани</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">VELO DE REFUERZO 300 P</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -2006,9 +2135,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">5.08</column>
             <column name="category">Спомагателни продукти и мемрани</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">TECMADREN (2'10 x 20 m)</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -2016,9 +2146,10 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">303.40</column>
             <column name="category">Спомагателни продукти и мемрани</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
-            <column name="code">null</column>
+            <column name="code"/>
             <column name="name">DRENAJE ANTIRAICES</column>
             <column name="packing"/>
             <column name="unit"/>
@@ -2026,7 +2157,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">3.58</column>
             <column name="category">Спомагателни продукти и мемрани</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">0200</column>
             <column name="name">BIRDY LIQUID 0.25L</column>
@@ -2047,7 +2179,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">13.98</column>
             <column name="category">Други</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">1028</column>
             <column name="name">AER. CMR ANTIGRIPANTE 0.65L</column>
@@ -2057,7 +2190,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">13.90</column>
             <column name="category">Други</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">8324</column>
             <column name="name">AER. AMB. IMPACTO MENTOLIM</column>
@@ -2067,7 +2201,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">11.98</column>
             <column name="category">Други</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">8369</column>
             <column name="name">AER. AMB. IMPACTO CAFE INTENSO</column>
@@ -2077,7 +2212,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">11.98</column>
             <column name="category">Други</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">8370</column>
             <column name="name">AER. AMB. IMPACTO CANELA RIZADA</column>
@@ -2087,7 +2223,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">11.98</column>
             <column name="category">Други</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">1300</column>
             <column name="name">TECMA OFF C19 1L</column>
@@ -2097,7 +2234,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">12.92</column>
             <column name="category">Други</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">1070</column>
             <column name="name">AER. TECMA CLEAN GRASS 0.65L</column>
@@ -2107,7 +2245,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">8.30</column>
             <column name="category">Други</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">517</column>
             <column name="name">KIT BIO S</column>
@@ -2117,7 +2256,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">42.54</column>
             <column name="category">Други</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">1659</column>
             <column name="name">MAXIRAT BD-3</column>
@@ -2127,7 +2267,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">6.30</column>
             <column name="category">Други</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">1660</column>
             <column name="name">MAXIRAT BD-3 BLOQUE</column>
@@ -2137,7 +2278,8 @@
             <column name="percentage_increase">2.20</column>
             <column name="price">13.28</column>
             <column name="category">Други</column>
-        <column name="quantity">0</column></table>
+            <column name="quantity">0</column>
+        </table>
         <table name="products">
             <column name="code">1010</column>
             <column name="name">AER. PROT VINIL 0.65L</column>
@@ -2172,4 +2314,4 @@
             <column name="quantity">1</column>
         </table>
     </database>
-    </pma_xml_export>
+</pma_xml_export>

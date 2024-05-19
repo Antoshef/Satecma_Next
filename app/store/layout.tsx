@@ -1,14 +1,14 @@
 import { fetchData } from "@/utils/fetchData";
-import { StoreProductData } from "./utils/types";
 import Store from "./page";
+import { Product } from "@/create/invoice/types";
 
 export default async function StoreLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const data = await fetchData<StoreProductData[]>(
-    "http://localhost:3000/api/storage/get"
+  const data = await fetchData<Product[]>(
+    "http://localhost:3000/api/products/get",
   )
     .then((data) => data.data)
     .catch((error) => {

@@ -1,8 +1,10 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import receiverReducer from "./features/spedition/receiver";
 import econtReducer from "./features/spedition/econt";
+import appReducer from "./features/app";
 
 const rootReducer = combineReducers({
+  app: appReducer,
   receiver: receiverReducer,
   econt: econtReducer,
 });
@@ -10,7 +12,7 @@ const rootReducer = combineReducers({
 export const makeStore = () =>
   configureStore({
     reducer: rootReducer,
-    devTools: process.env.NODE_ENV !== 'production'
+    devTools: process.env.NODE_ENV !== "production",
   });
 
 export type AppStore = ReturnType<typeof makeStore>;

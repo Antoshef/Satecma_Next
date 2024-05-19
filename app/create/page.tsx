@@ -1,11 +1,12 @@
 "use client";
+import StoreProvider from "@/StoreProvider";
 import { useEffect, useMemo, useState } from "react";
-import { ProductData } from "./invoice/types";
+import { Product } from "./invoice/types";
 import { InvoiceWrapper } from "./invoice/wrapper";
 import { OfferWrapper } from "./offer/wrapper";
 
 interface Props {
-  data: ProductData[];
+  data: Product[];
   invoiceIds: {
     current: string;
     previous: string;
@@ -13,7 +14,7 @@ interface Props {
 }
 
 export default function CreatePage({ data, invoiceIds }: Props) {
-  const [currentHash, setCurrentHash] = useState<string>(window.location.hash);
+  const [currentHash, setCurrentHash] = useState<string>("#");
 
   const Component = useMemo(() => {
     switch (currentHash) {
@@ -27,10 +28,14 @@ export default function CreatePage({ data, invoiceIds }: Props) {
   }, [currentHash, data, invoiceIds]);
 
   useEffect(() => {
-    window.addEventListener("hashchange", () => {
-      setCurrentHash(window.location.hash);
-    });
-  });
+    setCurrentHash(window.location.hash);
 
-  return <div>{Component}</div>;
+    const handleHashChange = () => {
+      setCurrentHash(window.location.hash);
+    };
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
+
+  return <StoreProvider>{Component}</StoreProvider>;
 }

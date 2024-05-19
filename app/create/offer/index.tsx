@@ -1,17 +1,17 @@
 import { InputWrapper } from "@/components/input/wrapper";
+import { TextField } from "@/components/textField/TextField";
+import { Typography } from "@mui/material";
 import { Dispatch, forwardRef, SetStateAction, useState } from "react";
 import { SATECMA_LOGO } from "../invoice/constants";
-import { ProductData, Provider } from "../invoice/types";
+import { Product, Provider } from "../invoice/types";
 import { TableItems } from "../table/tableItems";
 import { TableServices } from "../table/tableServices";
 import { useTableItems } from "../table/useTableItems";
-import { TextField } from "@/components/textField/TextField";
-import { Typography } from "@mui/material";
 
 interface OfferBoxProps {
   provider: Provider;
   isFieldsDisabled: boolean;
-  products: ProductData[];
+  products: Product[];
   heading: string;
   recipient: {
     name: string;
@@ -39,10 +39,10 @@ export const OfferBox = forwardRef<HTMLDivElement, OfferBoxProps>(
       setHeading,
       setRecipient,
     },
-    ref
+    ref,
   ) => {
-    const [selectedProduct, setSelectedProduct] = useState<ProductData | null>(
-      null
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(
+      null,
     );
     const [application, setApplication] = useState({
       warranty: 0,
@@ -60,10 +60,11 @@ export const OfferBox = forwardRef<HTMLDivElement, OfferBoxProps>(
       serviceChangeHandler,
       serviceSelectHandler,
     } = useTableItems({ selectedProduct, setSelectedProduct });
+    console.log(provider, "PROVIDER");
 
     const productChangeHandler = (name: string | null) => {
       setSelectedProduct(
-        products.find((product) => product.name === name) || null
+        products.find((product) => product.name === name) || null,
       );
     };
 
@@ -305,5 +306,5 @@ export const OfferBox = forwardRef<HTMLDivElement, OfferBoxProps>(
         </div>
       </div>
     );
-  }
+  },
 );

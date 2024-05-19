@@ -10,6 +10,7 @@ import { SelectField } from "../../components/selectField/SelectField";
 import { TextField } from "../../components/textField/TextField";
 import { TableItems } from "../table/tableItems";
 import { TableServices } from "../table/tableServices";
+import { useTableItems } from "../table/useTableItems";
 import { INIT_RECEIVER, SATECMA_LOGO } from "./constants";
 import {
   InvoiceData,
@@ -18,14 +19,13 @@ import {
   InvoiceType,
   Item,
   LatestInvoices,
-  ProductData,
+  Product,
   Provider,
 } from "./types";
-import { useTableItems } from "../table/useTableItems";
 
 interface InvoiceBoxProps {
   provider: Provider;
-  products: ProductData[];
+  products: Product[];
   invoiceNumber: string;
   isFieldsDisabled: boolean;
   invoiceData: InvoiceData;
@@ -58,10 +58,10 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
       setInvoiceIdType,
       setLatestInvoiceNumbers,
     },
-    ref
+    ref,
   ) => {
-    const [selectedProduct, setSelectedProduct] = useState<ProductData | null>(
-      null
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(
+      null,
     );
     const [wordPrice, setWordPrice] = useState("");
     const [reason, setReason] = useState("");
@@ -82,7 +82,7 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
 
     const productChangeHandler = (name: string | null) => {
       setSelectedProduct(
-        products.find((product) => product.name === name) || null
+        products.find((product) => product.name === name) || null,
       );
     };
 
@@ -417,5 +417,5 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
         </table>
       </div>
     );
-  }
+  },
 );

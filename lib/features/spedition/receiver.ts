@@ -12,6 +12,7 @@ const initialState: Receiver = {
   city: {},
   email: "",
   office: {},
+  currentCityOffices: [],
 };
 
 export const receiverSlice = createSlice({

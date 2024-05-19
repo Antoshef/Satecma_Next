@@ -1,10 +1,10 @@
 import { Product } from "@/create/invoice/types";
-import { InvoiceProductData, StoreProductData } from "@/store/utils/types";
+import { InvoiceProductData } from "@/store/utils/types";
 import { NextApiRequest, NextApiResponse } from "next";
 import { queryAsync } from "../../../utils/db";
 
 const COURSE_EVRO_LEVA = 2;
-const ITEM_PREFIX = (code: string, _package: number) => `${code}:${_package}`;
+const ITEM_PREFIX = (code: string, packing: string) => `${code}:${packing}`;
 
 interface ProcessPriceItemProps {
   item: InvoiceProductData;
@@ -49,14 +49,15 @@ const processPriceItem = async ({ item, priceMap }: ProcessPriceItemProps) => {
 
 interface ProcessStoreItemProps {
   item: InvoiceProductData;
-  storageMap: Record<string, StoreProductData>;
+  storageMap: Record<string, Product>;
 }
 
 const processStoreItem = async ({
   item,
   storageMap,
 }: ProcessStoreItemProps) => {
-  const storageItem = storageMap[ITEM_PREFIX(item.code, item.package)];
+  const storageItem =
+    storageMap[ITEM_PREFIX(item.code, item.package.toString())];
   if (storageItem) {
     const query = `UPDATE products_storage SET quantity = quantity + ? WHERE code = ? AND package = ?`;
     const params = [item.quantity, item.code, item.package];
@@ -106,14 +107,14 @@ export default async function handler(
       const priceQuery = `SELECT * FROM product_prices`;
       const productPrices = await queryAsync<Product[]>(priceQuery);
       const storageQuery = `SELECT * FROM products_storage`;
-      const productStorage = await queryAsync<StoreProductData[]>(storageQuery);
+      const productStorage = await queryAsync<Product[]>(storageQuery);
 
       const storageMap = productStorage.reduce(
         (acc, item) => {
-          acc[ITEM_PREFIX(item.code, item.package)] = item;
+          acc[ITEM_PREFIX(item.code || "N/A", item.packing)] = item;
           return acc;
         },
-        {} as Record<string, StoreProductData>,
+        {} as Record<string, Product>,
       );
       const priceMap = productPrices.reduce(
         (acc, item) => {

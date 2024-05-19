@@ -2,7 +2,7 @@ import { StoreUnits } from "../../store/utils/types";
 import { Company } from "./constants";
 
 export interface Item
-  extends Pick<ProductData, "name" | "code" | "price" | "unit" | "packing"> {
+  extends Pick<Product, "name" | "code" | "price" | "unit" | "packing"> {
   quantity: number;
   currentPackage: string;
   totalPrice: string;
@@ -10,7 +10,7 @@ export interface Item
   discount: string;
 }
 
-export interface ProductData {
+export interface Product {
   code: string;
   name: string;
   packing: string;
@@ -18,7 +18,8 @@ export interface ProductData {
   color: string;
   percentage_increase: number;
   price: number;
-  category: string | null;
+  category: string;
+  quantity: string;
 }
 
 export interface Provider {

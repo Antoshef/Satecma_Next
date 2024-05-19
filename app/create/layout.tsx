@@ -1,11 +1,11 @@
 import { fetchData } from "@/utils/fetchData";
-import { InvoiceData, ProductData } from "./invoice/types";
+import { InvoiceData, Product } from "./invoice/types";
 import { getInvoiceNumber } from "./invoice/utils";
 import CreatePage from "./page";
 
 export default async function CreateLayout() {
-  const data = await fetchData<ProductData[]>(
-    "http://localhost:3000/api/get-prices"
+  const data = await fetchData<Product[]>(
+    "http://localhost:3000/api/products/get",
   )
     .then((res) => res.data)
     .catch((error) => {
@@ -14,7 +14,7 @@ export default async function CreateLayout() {
     });
 
   const invoiceIds = await fetchData<InvoiceData[]>(
-    "http://localhost:3000/api/create/invoice-sent"
+    "http://localhost:3000/api/create/invoice-sent",
   )
     .then((data) => getInvoiceNumber(data.data))
     .catch((error) => {

@@ -7,18 +7,18 @@ import {
   TableSortLabel,
 } from "@mui/material";
 import { visuallyHidden } from "@mui/utils";
-import { Order, StoreProductData } from "./types";
+import { Order, StoreProduct } from "./types";
 
 export interface EnhancedTableHeadProps {
   headCells: readonly {
-    id: keyof StoreProductData;
+    id: keyof StoreProduct;
     numeric: boolean;
     disablePadding: boolean;
     label: string;
   }[];
   onRequestSort: (
     event: MouseEvent<unknown>,
-    property: keyof StoreProductData
+    property: keyof StoreProduct
   ) => void;
   order: Order;
   orderBy: string;
@@ -31,7 +31,7 @@ export const EnhancedTableHead = ({
   onRequestSort,
 }: EnhancedTableHeadProps) => {
   const createSortHandler =
-    (property: keyof StoreProductData) => (event: MouseEvent<unknown>) => {
+    (property: keyof StoreProduct) => (event: MouseEvent<unknown>) => {
       onRequestSort(event, property);
     };
 

@@ -6,10 +6,10 @@ import { ProductEditor } from "@/store/utils/productEditor";
 import {
   InvoiceProductData,
   Order,
-  StoreProductData,
+  StoreProduct,
   StoreUnits,
 } from "@/store/utils/types";
-import { createKey } from "@/store/utils/utils";
+import { createKey, handleProductsMap } from "@/store/utils/utils";
 import { fetchData } from "@/utils/fetchData";
 import CloseIcon from "@mui/icons-material/Close";
 import {
@@ -49,6 +49,7 @@ import {
 import { Hourglass } from "react-loader-spinner";
 import FileUpload from "./utils/fileUpload";
 import useToast from "./utils/useToast";
+import { Product } from "@/create/invoice/types";
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -62,10 +63,10 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 
 function getComparator<Key extends keyof any>(
   order: Order,
-  orderBy: Key
+  orderBy: Key,
 ): (
   a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string }
+  b: { [key in Key]: number | string },
 ) => number {
   return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
@@ -73,24 +74,22 @@ function getComparator<Key extends keyof any>(
 }
 
 interface Props {
-  data: StoreProductData[];
+  data: Product[];
 }
 
 export default function Store({ data }: Props) {
-  const [products, setProducts] = useState<StoreProductData[]>(data);
-  const [productMap, setProductMap] = useState(
-    new Map<string, StoreProductData>()
+  const [products, setProducts] = useState<StoreProduct[]>(
+    handleProductsMap(data),
   );
+  const [productMap, setProductMap] = useState(new Map<string, StoreProduct>());
   const [categories, setCategories] = useState<string[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<StoreProductData[]>(
-    []
-  );
+  const [filteredProducts, setFilteredProducts] = useState<StoreProduct[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [isFetching, setIsFetching] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [order, setOrder] = useState<Order>("asc");
-  const [orderBy, setOrderBy] = useState<keyof StoreProductData>("name");
-  const [selected, setSelected] = useState<StoreProductData>();
+  const [orderBy, setOrderBy] = useState<keyof StoreProduct>("name");
+  const [selected, setSelected] = useState<StoreProduct>();
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(true);
   const [rowsPerPage, setRowsPerPage] = useState(25);
@@ -103,7 +102,7 @@ export default function Store({ data }: Props) {
 
   const handleRequestSort = (
     event: MouseEvent<unknown>,
-    property: keyof StoreProductData
+    property: keyof StoreProduct,
   ) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -124,20 +123,20 @@ export default function Store({ data }: Props) {
   };
 
   const sortAndFilterProducts = (
-    products: StoreProductData[],
-    category: string
+    products: StoreProduct[],
+    category: string,
   ) => {
     let sortedProducts = products.sort((a, b) => a.name.localeCompare(b.name));
     if (category !== "all") {
       sortedProducts = sortedProducts.filter(
-        (product) => product.category === category
+        (product) => product.category === category,
       );
     }
     setFilteredProducts(() =>
       sortedProducts.map((p) => ({
         ...p,
         total: p.unit === StoreUnits.pcs ? p.quantity : p.quantity * p.package,
-      }))
+      })),
     );
   };
 
@@ -155,28 +154,28 @@ export default function Store({ data }: Props) {
     const _searchTerm = e.target.value.toLowerCase();
     setSearchTerm(_searchTerm);
     const filtered = products.filter((product) =>
-      product.name.toLowerCase().includes(_searchTerm.toLowerCase())
+      product.name.toLowerCase().includes(_searchTerm.toLowerCase()),
     );
     setFilteredProducts(() =>
       filtered.map((p) => ({
         ...p,
         total: p.unit === StoreUnits.pcs ? p.quantity : p.quantity * p.package,
-      }))
+      })),
     );
   };
 
-  const onEditSubmit = async (product: StoreProductData) => {
+  const onEditSubmit = async (product: StoreProduct) => {
     try {
       await fetchData("/api/storage/get", {
         method: "PUT",
         body: JSON.stringify({ product }),
       });
       const updatedProducts = products.map((p) =>
-        p.code === product.code && p.package === product.package ? product : p
+        p.code === product.code && p.package === product.package ? product : p,
       );
       setProducts(updatedProducts);
       setSelected(undefined);
-      setMessage({ severity: "success", text: "Product updated" });
+      setMessage({ severity: "success", text: "StoreProduct updated" });
     } catch (error) {
       setMessage({ severity: "error", text: "Error updating product" });
     } finally {
@@ -194,7 +193,7 @@ export default function Store({ data }: Props) {
       filteredProducts
         .sort(getComparator(order, orderBy))
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [order, orderBy, page, rowsPerPage, filteredProducts]
+    [order, orderBy, page, rowsPerPage, filteredProducts],
   );
 
   const uploadProductsHandler = async () => {
@@ -205,7 +204,7 @@ export default function Store({ data }: Props) {
         method: "PUT",
         body: JSON.stringify({ items: productsToUpdate }),
       });
-      const { data } = await fetchData<StoreProductData[]>("/api/storage/get");
+      const { data } = await fetchData<StoreProduct[]>("/api/storage/get");
       setProducts(data);
       const uniqueCategories = Array.from(new Set(data.map((p) => p.category)));
       setCategories(uniqueCategories);
@@ -223,13 +222,15 @@ export default function Store({ data }: Props) {
   };
 
   useEffect(() => {
-    const uniqueCategories = Array.from(new Set(data.map((p) => p.category)));
+    const uniqueCategories = Array.from(
+      new Set(products.map((p) => p.category)),
+    );
     setCategories(uniqueCategories);
-    sortAndFilterProducts(data, "all");
+    sortAndFilterProducts(products, "all");
   }, [products]);
 
   useEffect(() => {
-    const map = new Map<string, StoreProductData>();
+    const map = new Map<string, StoreProduct>();
     setFilteredProducts(() =>
       products.map((p) => {
         setProductMap(map.set(`${p.code}-${p.package}`, p));
@@ -238,7 +239,7 @@ export default function Store({ data }: Props) {
           total:
             p.unit === StoreUnits.pcs ? p.quantity : p.quantity * p.package,
         };
-      })
+      }),
     );
   }, [products]);
 
@@ -480,7 +481,7 @@ export default function Store({ data }: Props) {
                       </TableCell>
                       <TableCell align="right">{row.quantity}</TableCell>
                       <TableCell align="right">
-                        {row.total} {row.unit}
+                        {row.totalQuantity} {row.unit}
                       </TableCell>
                     </TableRow>
                   );

@@ -1,16 +1,9 @@
-import { CompanyContext } from "@/components/providers/companyProvider";
 import useToast from "@/store/utils/useToast";
 import { fetchData } from "@/utils/fetchData";
 import { Button, Checkbox, Grid, Typography } from "@mui/material";
-import {
-  FormEvent,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { InvoiceBox } from ".";
+import { useAppSelector } from "../../../lib/hooks";
 import {
   Company,
   ECOHOME_COMPANY,
@@ -23,12 +16,12 @@ import {
   InvoiceType,
   Item,
   LatestInvoices,
-  ProductData,
+  Product,
   Provider,
 } from "./types";
 
 interface InvoiceWrapperProps {
-  data: ProductData[];
+  data: Product[];
   invoiceIds: {
     current: string;
     previous: string;
@@ -45,27 +38,27 @@ export const InvoiceWrapper = ({ data, invoiceIds }: InvoiceWrapperProps) => {
       manual: "",
     });
   const [invoiceIdType, setInvoiceIdType] = useState<InvoiceIdType>(
-    InvoiceIdType.current
+    InvoiceIdType.current,
   );
   const [invoiceType, setInvoiceType] = useState<InvoiceType>(
-    InvoiceType.proforma
+    InvoiceType.proforma,
   );
   const [provider, setProvider] = useState<Provider>(ECOHOME_COMPANY);
   const invoiceRef = useRef<HTMLTableElement>(null);
   const [isFieldsDisabled, setIsFieldsDisabled] = useState<boolean>(false);
   const [items, setItems] = useState<Item[]>([]);
   const [invoiceData, setInvoiceData] = useState<InvoiceData>(
-    INVOICE_DATA_DEFAULT_VALUES
+    INVOICE_DATA_DEFAULT_VALUES,
   );
+  const company = useAppSelector((state) => state.app.provider);
   const { Toast, setMessage } = useToast();
-  const { company } = useContext(CompanyContext);
 
   const invoiceNumber = useMemo(() => {
     return invoiceIdType === InvoiceIdType.manual
       ? latestInvoiceNumbers.manual || ""
       : invoiceIdType === InvoiceIdType.current
-      ? latestInvoiceNumbers.current
-      : latestInvoiceNumbers.previous;
+        ? latestInvoiceNumbers.current
+        : latestInvoiceNumbers.previous;
   }, [invoiceIdType, latestInvoiceNumbers]);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -115,7 +108,7 @@ export const InvoiceWrapper = ({ data, invoiceIds }: InvoiceWrapperProps) => {
 
   useEffect(() => {
     setProvider(
-      company === Company.ekoHome ? ECOHOME_COMPANY : SATECMA_COMPANY
+      company === Company.ekoHome ? ECOHOME_COMPANY : SATECMA_COMPANY,
     );
   }, [company]);
 

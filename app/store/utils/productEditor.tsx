@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { StoreProductData } from "./types";
+import { StoreProduct } from "./types";
 import { Button, Grid, Input, Typography } from "@mui/material";
 
 interface ProductEditorProps {
-  selected?: StoreProductData;
+  selected?: StoreProduct;
   editMode: boolean;
   setEditMode: (editMode: boolean) => void;
-  onSubmit: (product: StoreProductData) => Promise<void>;
+  onSubmit: (product: StoreProduct) => Promise<void>;
 }
 
 export const ProductEditor = ({
@@ -15,12 +15,12 @@ export const ProductEditor = ({
   setEditMode,
   onSubmit,
 }: ProductEditorProps) => {
-  const [product, setProduct] = useState<StoreProductData | undefined>(
+  const [product, setProduct] = useState<StoreProduct | undefined>(
     selected
   );
 
   const handleChange = (
-    key: keyof StoreProductData,
+    key: keyof StoreProduct,
     value: string | number
   ) => {
     const updatedValue =
@@ -59,7 +59,7 @@ export const ProductEditor = ({
           value={product?.name}
           onChange={(e) =>
             handleChange(
-              e.target.name as keyof StoreProductData,
+              e.target.name as keyof StoreProduct,
               e.target.value
             )
           }
@@ -78,7 +78,7 @@ export const ProductEditor = ({
           value={product?.quantity}
           onChange={(e) =>
             handleChange(
-              e.target.name as keyof StoreProductData,
+              e.target.name as keyof StoreProduct,
               e.target.value
             )
           }
@@ -93,7 +93,7 @@ export const ProductEditor = ({
           value={product?.category}
           onChange={(e) =>
             handleChange(
-              e.target.name as keyof StoreProductData,
+              e.target.name as keyof StoreProduct,
               e.target.value
             )
           }

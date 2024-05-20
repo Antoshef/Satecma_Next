@@ -26,7 +26,7 @@ export const handleProductsMap = (data: Product[]) => {
               : currentProduct.code,
           name: currentProduct.name,
           package: Number(packing[j]),
-          unit: StoreUnits.pcs,
+          unit: currentProduct.unit,
           category: currentProduct.category,
           quantity: Number(quantity[j]),
           color: currentProduct.color,

@@ -1,10 +1,10 @@
-import { Item } from "@/create/invoice/types";
+import { Item, Product } from "@/create/invoice/types";
 import { NextApiRequest, NextApiResponse } from "next";
 import { queryAsync } from "../../../utils/db";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const { method } = req;
   if (method === "PUT") {
@@ -17,20 +17,30 @@ export default async function handler(
           .json({ message: "No items provided", status: 400 });
       }
       const filteredItems = items.filter(
-        (item) => item.quantity > 0 && item.code !== "0"
+        (item) => item.quantity > 0 && item.code !== "0",
       );
-      const query = `UPDATE products_storage SET quantity = quantity - ? WHERE code = ? AND package = ?`;
+      const products = await queryAsync<Product[]>(`SELECT * FROM products`);
       for (const item of filteredItems) {
         if (!item.quantity || !item.code || !item.currentPackage) {
           return res
             .status(400)
             .json({ message: "Missing required fields", status: 400 });
         }
-        await queryAsync(query, [
-          item.quantity,
-          item.code,
-          item.currentPackage,
-        ]);
+        const productToUpdate = products.find(
+          (product) => product.code === item.code,
+        );
+        if (!productToUpdate) {
+          console.error("Product not found", productToUpdate);
+        }
+        const packingArr = productToUpdate?.packing.split(",").map(Number);
+        const quantityArr = productToUpdate?.quantity.split(",").map(Number);
+        const index = packingArr?.indexOf(item.currentPackage);
+        if (index !== -1 && quantityArr && index) {
+          quantityArr[index] = quantityArr[index] - item.quantity;
+        }
+
+        const query = `UPDATE products SET quantity = ? WHERE code = ?`;
+        await queryAsync(query, [quantityArr, item.code]);
       }
       return res
         .status(200)

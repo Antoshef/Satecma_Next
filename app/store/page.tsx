@@ -79,7 +79,7 @@ interface Props {
 
 export default function Store({ data }: Props) {
   const [products, setProducts] = useState<StoreProduct[]>(
-    handleProductsMap(data),
+    handleProductsMap(data).filter((p) => p.quantity !== 0),
   );
   const [productMap, setProductMap] = useState(new Map<string, StoreProduct>());
   const [categories, setCategories] = useState<string[]>([]);
@@ -146,6 +146,7 @@ export default function Store({ data }: Props) {
     const category = event.target.value;
     setSelectedCategory(category);
     sortAndFilterProducts(products, category);
+    setPage(0);
   };
 
   const handleSearch = function (e: React.ChangeEvent<HTMLInputElement>) {
@@ -166,7 +167,7 @@ export default function Store({ data }: Props) {
 
   const onEditSubmit = async (product: StoreProduct) => {
     try {
-      await fetchData("/api/storage/get", {
+      await fetchData("/api/products/get", {
         method: "PUT",
         body: JSON.stringify({ product }),
       });
@@ -200,11 +201,11 @@ export default function Store({ data }: Props) {
     if (!productsToUpdate) return;
     setIsFetching(true);
     try {
-      await fetchData("/api/storage/add", {
+      await fetchData("/api/products/add", {
         method: "PUT",
         body: JSON.stringify({ items: productsToUpdate }),
       });
-      const { data } = await fetchData<StoreProduct[]>("/api/storage/get");
+      const { data } = await fetchData<StoreProduct[]>("/api/products/get");
       setProducts(data);
       const uniqueCategories = Array.from(new Set(data.map((p) => p.category)));
       setCategories(uniqueCategories);

@@ -3,10 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import dynamic from "next/dynamic";
 import StoreProvider from "./StoreProvider";
-import { fetchData } from "./utils/fetchData";
-import { Product } from "./create/invoice/types";
 
-const HeaderWrapper = dynamic(() => import("./components/header/wrapper"), {
+const Header = dynamic(() => import("./components/header/index"), {
   ssr: false,
 });
 
@@ -26,7 +24,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <StoreProvider>
-          <HeaderWrapper />
+          <Header />
           {children}
         </StoreProvider>
       </body>

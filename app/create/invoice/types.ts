@@ -4,10 +4,10 @@ import { Company } from "./constants";
 export interface Item
   extends Pick<Product, "name" | "code" | "price" | "unit" | "packing"> {
   quantity: number;
-  currentPackage: string;
+  currentPackage: number;
   totalPrice: string;
   VAT: string;
-  discount: string;
+  discount: number;
 }
 
 export interface Product {

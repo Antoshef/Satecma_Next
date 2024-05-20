@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { queryAsync } from "../../../utils/db";
 import { Product } from "@/create/invoice/types";
+import { StoreProduct } from "@/store/utils/types";
 
 export default async function handler(
   req: NextApiRequest,
@@ -23,20 +24,33 @@ export default async function handler(
       });
     }
   } else if (method === "PUT") {
-    const { product } = req.body as { product: Product };
+    const { product } = req.body as { product: StoreProduct };
     if (!product.name || !product.code || !product.unit) {
       return res
         .status(400)
         .json({ message: "Missing required product fields" });
     }
     try {
-      const query = `UPDATE products_storage SET name = ?, unit = ?, quantity = ? WHERE code = ? AND packing = ?`;
+      const productToUpdate = await queryAsync<Product[]>(
+        `SELECT * FROM products WHERE code = ?`,
+        [product.code],
+      );
+      if (!productToUpdate || productToUpdate.length === 0) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+      const packingArr = productToUpdate[0].packing.split(",").map(Number);
+      const quantityArr = productToUpdate[0].quantity.split(",").map(Number);
+      const index = packingArr.indexOf(product.package);
+      if (index !== -1) {
+        quantityArr[index] = product.quantity;
+      }
+
+      const query = `UPDATE products SET name = ?, unit = ?, quantity = ? WHERE code = ?`;
       const values = [
         product.name,
         product.unit,
-        product.quantity,
+        quantityArr.join(", "),
         product.code,
-        product.packing,
       ];
       await queryAsync<Product>(query, values);
       return res.status(201).json({ message: "Product updated" });

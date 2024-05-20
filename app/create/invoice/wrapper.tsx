@@ -73,7 +73,7 @@ export const InvoiceWrapper = ({ data, invoiceIds }: InvoiceWrapperProps) => {
           body: JSON.stringify(invoiceData),
         });
 
-        await fetchData("/api/storage/update", {
+        await fetchData("/api/products/update", {
           method: "PUT",
           body: JSON.stringify({ items }),
         });

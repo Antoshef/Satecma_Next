@@ -17,7 +17,7 @@ const processPriceItem = async ({ item, priceMap }: ProcessPriceItemProps) => {
   if (priceItem) {
     const packageIncluded = priceItem.packing.includes(item.package.toString());
     if (packageIncluded) {
-      const query = `UPDATE product_prices SET packing = CONCAT(packing, ', ', ?), price = ? WHERE code = ?`;
+      const query = `UPDATE products SET packing = CONCAT(packing, ', ', ?), price = ? WHERE code = ?`;
       const params = [
         item.package.toString(),
         item.price * COURSE_EVRO_LEVA,
@@ -25,13 +25,13 @@ const processPriceItem = async ({ item, priceMap }: ProcessPriceItemProps) => {
       ];
       await queryAsync(query, params);
     } else {
-      const query = `UPDATE product_prices SET price = ? WHERE code = ?`;
+      const query = `UPDATE products SET price = ? WHERE code = ?`;
       const params = [item.price * COURSE_EVRO_LEVA, item.code];
       await queryAsync(query, params);
     }
     console.log("Item updated in prices");
   } else {
-    const query = `INSERT INTO product_prices (code, name, packing, unit, color, percentage_increase, price, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    const query = `INSERT INTO products (code, name, packing, unit, color, percentage_increase, price, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
     const params = [
       item.code,
       item.description,
@@ -104,7 +104,7 @@ export default async function handler(
         return res.status(400).json({ error: "Missing required fields" });
       }
 
-      const priceQuery = `SELECT * FROM product_prices`;
+      const priceQuery = `SELECT * FROM products`;
       const productPrices = await queryAsync<Product[]>(priceQuery);
       const storageQuery = `SELECT * FROM products_storage`;
       const productStorage = await queryAsync<Product[]>(storageQuery);

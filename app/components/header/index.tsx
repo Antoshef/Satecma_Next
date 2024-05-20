@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { CompanySelectField } from "../companySelectField";
-import StoreProvider from "@/StoreProvider";
 
 export function classNames(classes: string[]) {
   return [...(classes || "")].filter(Boolean).join(" ");
@@ -34,7 +33,6 @@ export default function Header() {
   const [value, setValue] = useState<string>("/store");
   const [openDropdown, setOpenDropdown] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
- 
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -62,7 +60,7 @@ export default function Header() {
   }, []);
 
   return (
-    <StoreProvider>
+    <div>
       <Disclosure as="nav" className="bg-gray-800">
         {({ open }) => (
           <>
@@ -204,6 +202,6 @@ export default function Header() {
           </>
         )}
       </Disclosure>
-    </StoreProvider>
+    </div>
   );
 }

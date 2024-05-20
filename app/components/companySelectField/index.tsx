@@ -15,7 +15,6 @@ export const CompanySelectField = () => {
   const selectRef = useRef<HTMLSelectElement>(null);
   const company = useAppSelector((state) => state.app.provider);
   const dispatch = useAppDispatch();
-  console.log(company, "company");
 
   // Function to trigger select box
   const handleClickLogo = () => {
@@ -29,7 +28,6 @@ export const CompanySelectField = () => {
 
   useEffect(() => {
     const saved = localStorage?.getItem("company");
-    console.log(saved, "saved");
     if (saved) {
       dispatch(updateProvider(saved as Company));
     }

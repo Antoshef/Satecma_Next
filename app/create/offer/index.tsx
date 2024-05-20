@@ -60,7 +60,6 @@ export const OfferBox = forwardRef<HTMLDivElement, OfferBoxProps>(
       serviceChangeHandler,
       serviceSelectHandler,
     } = useTableItems({ selectedProduct, setSelectedProduct });
-    console.log(provider, "PROVIDER");
 
     const productChangeHandler = (name: string | null) => {
       setSelectedProduct(

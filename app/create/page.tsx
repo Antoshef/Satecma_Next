@@ -1,5 +1,4 @@
 "use client";
-import StoreProvider from "@/StoreProvider";
 import { useEffect, useMemo, useState } from "react";
 import { Product } from "./invoice/types";
 import { InvoiceWrapper } from "./invoice/wrapper";
@@ -37,5 +36,5 @@ export default function CreatePage({ data, invoiceIds }: Props) {
     return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
 
-  return <StoreProvider>{Component}</StoreProvider>;
+  return <main>{Component}</main>;
 }

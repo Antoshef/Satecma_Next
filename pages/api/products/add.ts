@@ -4,77 +4,96 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { queryAsync } from "../../../utils/db";
 
 const COURSE_EVRO_LEVA = 2;
-const ITEM_PREFIX = (code: string, packing: string) => `${code}:${packing}`;
 
-interface ProcessPriceItemProps {
+interface ProcessItemProps {
   item: InvoiceProductData;
-  priceMap: Record<string, Product>;
+  itemMap: Record<string, Product>;
 }
 
-const processPriceItem = async ({ item, priceMap }: ProcessPriceItemProps) => {
-  /* Update Product Prices */
-  const priceItem = priceMap[item.code];
-  if (priceItem) {
-    const packageIncluded = priceItem.packing.includes(item.package.toString());
-    if (packageIncluded) {
-      const query = `UPDATE products SET packing = CONCAT(packing, ', ', ?), price = ? WHERE code = ?`;
+const processItem = async ({ item, itemMap }: ProcessItemProps) => {
+  const mappedItem = itemMap[item.code];
+  if (mappedItem) {
+    const packageIndex = mappedItem.packing
+      .split(",")
+      .indexOf(item.package.toString());
+    const currentItemQuantity = mappedItem.quantity.split(",").map(Number);
+    currentItemQuantity[packageIndex] += item.quantity;
+    if (packageIndex !== -1) {
+      const query = `UPDATE products SET price = ?, quantity = ? WHERE code = ?`;
       const params = [
-        item.package.toString(),
         item.price * COURSE_EVRO_LEVA,
+        currentItemQuantity.join(", "),
         item.code,
       ];
       await queryAsync(query, params);
+      console.log("Item updated NOT FOUND", item.description);
     } else {
-      const query = `UPDATE products SET price = ? WHERE code = ?`;
-      const params = [item.price * COURSE_EVRO_LEVA, item.code];
+      let packing = mappedItem.packing.split(",").map(Number);
+      let quantity = mappedItem.quantity.split(",").map(Number);
+
+      const newPackage = Number(item.package);
+      const newQuantity = Number(item.quantity);
+
+      const existingIndex = packing.indexOf(newPackage);
+      if (existingIndex !== -1) {
+        quantity[existingIndex] += newQuantity;
+      } else {
+        packing.push(newPackage);
+        quantity.push(newQuantity);
+      }
+
+      const packingWithQuantity = packing.map((pack, index) => ({
+        pack,
+        qty: quantity[index],
+      }));
+
+      packingWithQuantity.sort((a, b) => a.pack - b.pack);
+
+      packing = packingWithQuantity.map((item) => item.pack);
+      quantity = packingWithQuantity.map((item) => item.qty);
+
+      const query = `UPDATE products SET price = ?, packing = ?, quantity = ? WHERE code = ?`;
+      const params = [
+        item.price * COURSE_EVRO_LEVA,
+        packing.join(", "),
+        quantity.join(", "),
+        item.code,
+      ];
+
       await queryAsync(query, params);
+      console.log("Item updated FOUND", item.description);
     }
-    console.log("Item updated in prices");
   } else {
-    const query = `INSERT INTO products (code, name, packing, unit, color, percentage_increase, price, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    const query = `INSERT INTO products (code, name, packing, unit, color, percentage_increase, price, category, quantity) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
     const params = [
       item.code,
       item.description,
       item.package.toString(),
       item.unit,
-      null,
-      2.5,
+      "",
+      2.2,
       item.price * COURSE_EVRO_LEVA,
       "Други",
+      item.quantity.toString(),
     ];
     await queryAsync(query, params);
+    const updatedItemMap = {
+      ...itemMap,
+      [item.code]: {
+        code: item.code,
+        name: item.description,
+        packing: item.package.toString(),
+        unit: item.unit,
+        color: "",
+        percentage_increase: 2.2,
+        price: item.price * COURSE_EVRO_LEVA,
+        category: "Други",
+        quantity: item.quantity.toString(),
+      },
+    };
+    console.log("Item added");
+    return updatedItemMap;
   }
-  console.log("Item added in prices");
-};
-
-interface ProcessStoreItemProps {
-  item: InvoiceProductData;
-  storageMap: Record<string, Product>;
-}
-
-const processStoreItem = async ({
-  item,
-  storageMap,
-}: ProcessStoreItemProps) => {
-  const storageItem =
-    storageMap[ITEM_PREFIX(item.code, item.package.toString())];
-  if (storageItem) {
-    const query = `UPDATE products_storage SET quantity = quantity + ? WHERE code = ? AND package = ?`;
-    const params = [item.quantity, item.code, item.package];
-    queryAsync(query, params);
-  } else {
-    const query = `INSERT INTO products_storage (code, name, package, unit, quantity, category) VALUES (?, ?, ?, ?, ?, ?)`;
-    const params = [
-      item.code,
-      item.description,
-      item.package,
-      item.unit,
-      item.quantity,
-      "Други",
-    ];
-    queryAsync(query, params);
-  }
-  console.log("Item added in storage");
 };
 
 export default async function handler(
@@ -104,19 +123,10 @@ export default async function handler(
         return res.status(400).json({ error: "Missing required fields" });
       }
 
-      const priceQuery = `SELECT * FROM products`;
-      const productPrices = await queryAsync<Product[]>(priceQuery);
-      const storageQuery = `SELECT * FROM products_storage`;
-      const productStorage = await queryAsync<Product[]>(storageQuery);
+      const query = `SELECT * FROM products`;
+      const products = await queryAsync<Product[]>(query);
 
-      const storageMap = productStorage.reduce(
-        (acc, item) => {
-          acc[ITEM_PREFIX(item.code || "N/A", item.packing)] = item;
-          return acc;
-        },
-        {} as Record<string, Product>,
-      );
-      const priceMap = productPrices.reduce(
+      let itemMap = products.reduce(
         (acc, item) => {
           acc[item.code] = item;
           return acc;
@@ -125,8 +135,10 @@ export default async function handler(
       );
 
       for (const item of items) {
-        await processPriceItem({ item, priceMap });
-        await processStoreItem({ item, storageMap });
+        const updatedItemMap = await processItem({ item, itemMap });
+        if (updatedItemMap) {
+          itemMap = updatedItemMap;
+        }
       }
       return res
         .status(200)

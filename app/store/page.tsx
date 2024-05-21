@@ -78,9 +78,7 @@ interface Props {
 }
 
 export default function Store({ data }: Props) {
-  const [products, setProducts] = useState<StoreProduct[]>(
-    handleProductsMap(data).filter((p) => p.quantity !== 0),
-  );
+  const [products, setProducts] = useState<StoreProduct[]>([]);
   const [productMap, setProductMap] = useState(new Map<string, StoreProduct>());
   const [categories, setCategories] = useState<string[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<StoreProduct[]>([]);
@@ -132,12 +130,7 @@ export default function Store({ data }: Props) {
         (product) => product.category === category,
       );
     }
-    setFilteredProducts(() =>
-      sortedProducts.map((p) => ({
-        ...p,
-        total: p.unit === StoreUnits.pcs ? p.quantity : p.quantity * p.package,
-      })),
-    );
+    setFilteredProducts(sortedProducts);
   };
 
   const isSelected = (code: string) => selected?.code === code;
@@ -157,12 +150,7 @@ export default function Store({ data }: Props) {
     const filtered = products.filter((product) =>
       product.name.toLowerCase().includes(_searchTerm.toLowerCase()),
     );
-    setFilteredProducts(() =>
-      filtered.map((p) => ({
-        ...p,
-        total: p.unit === StoreUnits.pcs ? p.quantity : p.quantity * p.package,
-      })),
-    );
+    setFilteredProducts(filtered);
   };
 
   const onEditSubmit = async (product: StoreProduct) => {
@@ -205,8 +193,8 @@ export default function Store({ data }: Props) {
         method: "PUT",
         body: JSON.stringify({ items: productsToUpdate }),
       });
-      const { data } = await fetchData<StoreProduct[]>("/api/products/get");
-      setProducts(data);
+      const { data } = await fetchData<Product[]>("/api/products/get");
+      setProducts(handleProductsMap(data));
       const uniqueCategories = Array.from(new Set(data.map((p) => p.category)));
       setCategories(uniqueCategories);
       setMessage({
@@ -232,16 +220,14 @@ export default function Store({ data }: Props) {
 
   useEffect(() => {
     const map = new Map<string, StoreProduct>();
-    setFilteredProducts(() =>
-      products.map((p) => {
-        setProductMap(map.set(`${p.code}-${p.package}`, p));
-        return {
-          ...p,
-          total:
-            p.unit === StoreUnits.pcs ? p.quantity : p.quantity * p.package,
-        };
-      }),
-    );
+    const filtered = products.map((p) => {
+      setProductMap(map.set(`${p.code}-${p.package}`, p));
+      return {
+        ...p,
+        total: p.unit === StoreUnits.pcs ? p.quantity : p.quantity * p.package,
+      };
+    });
+    setFilteredProducts(filtered);
   }, [products]);
 
   useEffect(() => {
@@ -255,6 +241,10 @@ export default function Store({ data }: Props) {
       setOpenCheckProductsDialog(false);
     }
   }, [productsToUpdate]);
+
+  useEffect(() => {
+    setProducts(handleProductsMap(data));
+  }, [data]);
 
   return (
     <Box margin={2}>
@@ -301,71 +291,82 @@ export default function Store({ data }: Props) {
                 <DialogContentText className="p-4" variant="h5">
                   Брой продукти за добавяне: {productsToUpdate?.length}
                 </DialogContentText>
-                {productsToUpdate?.map((incomingProduct) => {
-                  const key = `${incomingProduct.code}-${incomingProduct.package}`;
-                  const storeProduct = productMap.get(key);
-                  return (
-                    <Fragment key={incomingProduct.code}>
-                      <Grid className="mb-4" container>
-                        <DialogContentText variant="body1">
-                          {storeProduct ? (
-                            <>
-                              <Divider />
-                              Код: {storeProduct.code}, Име: {storeProduct.name}
-                              , Опаковка: {storeProduct.package}{" "}
-                              {storeProduct.unit} - Текущо количество:{" "}
-                              <Typography
-                                fontSize="1.25rem"
-                                component="span"
-                                className="text-red-500"
-                              >
-                                {storeProduct.quantity}
-                              </Typography>
-                              , Приходящо количество:{" "}
-                              <Typography
-                                fontSize="1.25rem"
-                                component="span"
-                                className="text-blue-500"
-                              >
-                                {incomingProduct.unit === StoreUnits.pcs
-                                  ? incomingProduct.totalQuantity
-                                  : incomingProduct.quantity}{" "}
-                              </Typography>{" "}
-                              {"=>"} ,Общо:{" "}
-                              <Typography
-                                fontSize="1.25rem"
-                                component="span"
-                                className="text-green-500"
-                              >
-                                {storeProduct.quantity +
-                                  incomingProduct.quantity}{" "}
-                                {StoreUnits.pcs}
-                              </Typography>
-                            </>
-                          ) : (
-                            <>
-                              <Divider />
-                              Код: {incomingProduct.code}, Име:{" "}
-                              {incomingProduct.description}, Опаковка:{" "}
-                              {incomingProduct.package} {incomingProduct.unit},
-                              Приходящо количество:{" "}
-                              <Typography
-                                fontSize="1.25rem"
-                                component="span"
-                                className="text-blue-500"
-                              >
-                                {incomingProduct.unit === StoreUnits.pcs
-                                  ? incomingProduct.totalQuantity
-                                  : incomingProduct.quantity}{" "}
-                                {StoreUnits.pcs}
-                              </Typography>
-                            </>
-                          )}
-                        </DialogContentText>
-                      </Grid>
-                    </Fragment>
-                  );
-                })}
+                {productsToUpdate
+                  ?.sort((a, b) => {
+                    const aKey = `${a.code}-${a.package}`;
+                    const storeProduct = productMap.get(aKey);
+                    if (storeProduct) {
+                      return -1;
+                    } else {
+                      return 1;
+                    }
+                  })
+                  .map((incomingProduct) => {
+                    const key = `${incomingProduct.code}-${incomingProduct.package}`;
+                    const storeProduct = productMap.get(key);
+                    return (
+                      <Fragment key={incomingProduct.code}>
+                        <Grid className="mb-4" container>
+                          <DialogContentText variant="body1">
+                            {storeProduct ? (
+                              <>
+                                <Divider />
+                                Код: {storeProduct.code}, Име:{" "}
+                                {storeProduct.name}, Опаковка:{" "}
+                                {storeProduct.package} {storeProduct.unit} -
+                                Текущо количество:{" "}
+                                <Typography
+                                  fontSize="1.25rem"
+                                  component="span"
+                                  className="text-red-500"
+                                >
+                                  {storeProduct.quantity}
+                                </Typography>
+                                , Приходящо количество:{" "}
+                                <Typography
+                                  fontSize="1.25rem"
+                                  component="span"
+                                  className="text-blue-500"
+                                >
+                                  {incomingProduct.unit === StoreUnits.pcs
+                                    ? incomingProduct.totalQuantity
+                                    : incomingProduct.quantity}{" "}
+                                </Typography>{" "}
+                                {"=>"} ,Общо:{" "}
+                                <Typography
+                                  fontSize="1.25rem"
+                                  component="span"
+                                  className="text-green-500"
+                                >
+                                  {storeProduct.quantity +
+                                    incomingProduct.quantity}{" "}
+                                  {StoreUnits.pcs}
+                                </Typography>
+                              </>
+                            ) : (
+                              <>
+                                <Divider />
+                                Код: {incomingProduct.code}, Име:{" "}
+                                {incomingProduct.description}, Опаковка:{" "}
+                                {incomingProduct.package} {incomingProduct.unit}
+                                , Приходящо количество:{" "}
+                                <Typography
+                                  fontSize="1.25rem"
+                                  component="span"
+                                  className="text-blue-500"
+                                >
+                                  {incomingProduct.unit === StoreUnits.pcs
+                                    ? incomingProduct.totalQuantity
+                                    : incomingProduct.quantity}{" "}
+                                  {StoreUnits.pcs}
+                                </Typography>
+                              </>
+                            )}
+                          </DialogContentText>
+                        </Grid>
+                      </Fragment>
+                    );
+                  })}
                 <Button
                   variant="contained"
                   color="primary"

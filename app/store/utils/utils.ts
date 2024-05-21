@@ -2,7 +2,7 @@ import { Product } from "@/create/invoice/types";
 import { StoreProduct, StoreUnits } from "./types";
 
 export const createKey = (product: StoreProduct) =>
-  `${product.code}-${product.name}-${product.package}`;
+  `${product.code}-${product.name}-${product.package}${Math.random()}`;
 
 export const spanishUnitsMap = {
   L: "л.",
@@ -60,5 +60,5 @@ export const handleProductsMap = (data: Product[]) => {
       });
     }
   }
-  return result;
+  return result.filter((item) => item.totalQuantity !== 0);
 };

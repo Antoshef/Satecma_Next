@@ -67,16 +67,18 @@ export const InvoiceWrapper = ({ data, invoiceIds }: InvoiceWrapperProps) => {
     const css = await fetch("/globals.css").then((res) => res.text());
 
     try {
-      if (invoiceType === InvoiceType.invoice && items.length) {
+      if (invoiceType === InvoiceType.invoice) {
         await fetchData("/api/create/invoice-sent", {
           method: "POST",
           body: JSON.stringify(invoiceData),
         });
 
-        await fetchData("/api/products/update", {
-          method: "PUT",
-          body: JSON.stringify({ items }),
-        });
+        if (items.length > 0) {
+          await fetchData("/api/products/update", {
+            method: "PUT",
+            body: JSON.stringify({ items }),
+          });
+        }
       }
 
       await fetchData("/api/create/invoice", {

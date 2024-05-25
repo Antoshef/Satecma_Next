@@ -41,12 +41,7 @@ export const ECOHOME_COMPANY: Provider = {
 export const INVOICE_DATA_DEFAULT_VALUES: InvoiceData = {
   amount: 0,
   client: "",
-  date: new Date().toLocaleDateString("bg-BG", {
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-    timeZone: "Europe/Sofia",
-  }),
+  date: "",
   eik: 0,
   invoice_id: "",
   total: 0,

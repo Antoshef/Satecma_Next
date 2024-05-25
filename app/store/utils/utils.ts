@@ -17,7 +17,7 @@ export const handleProductsMap = (data: Product[]) => {
     const packing = currentProduct.packing.split(",");
     const quantity = currentProduct.quantity.split(",");
     const list: StoreProduct[] = [];
-    if (packing.length > 1) {
+    if (packing.length > 1 && quantity.length > 1) {
       for (let j = 0; j < packing.length; j++) {
         list.push({
           code:
@@ -26,6 +26,10 @@ export const handleProductsMap = (data: Product[]) => {
               : currentProduct.code,
           name: currentProduct.name,
           package: Number(packing[j]),
+          packagePrice:
+            currentProduct.unit === StoreUnits.pcs
+              ? currentProduct.price
+              : currentProduct.price * Number(packing[j]),
           unit: currentProduct.unit,
           category: currentProduct.category,
           quantity: Number(quantity[j]),
@@ -47,6 +51,10 @@ export const handleProductsMap = (data: Product[]) => {
             : currentProduct.code,
         name: currentProduct.name,
         package: Number(packing[0]),
+        packagePrice:
+          currentProduct.unit === StoreUnits.pcs
+            ? currentProduct.price
+            : currentProduct.price * Number(currentProduct.packing[0]),
         unit: currentProduct.unit,
         category: currentProduct.category,
         quantity: Number(quantity[0]),

@@ -479,6 +479,12 @@ export default function Store({ data }: Props) {
                         {row.name}
                       </TableCell>
                       <TableCell align="right">
+                        {row.price.toFixed(2)} {"лв."}
+                      </TableCell>
+                      <TableCell align="right">
+                        {row.packagePrice.toFixed(2)} {"лв."}
+                      </TableCell>
+                      <TableCell align="right">
                         {row.package} {row.unit}
                       </TableCell>
                       <TableCell align="right">{row.quantity}</TableCell>

@@ -9,6 +9,7 @@ export interface ToastMessage {
 export type StoreProduct = {
   code: string;
   package: number;
+  packagePrice: number;
   quantity: number;
   totalQuantity: number;
 } & Pick<

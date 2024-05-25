@@ -5,12 +5,22 @@ interface AppSliceState {
   provider: Company;
 }
 
+const getInitialProvider = (): Company => {
+  if (typeof window !== "undefined") {
+    const savedProvider = localStorage.getItem("company");
+    if (savedProvider) {
+      return JSON.parse(savedProvider);
+    }
+  }
+  return Company.ekoHome;
+};
+
 const initialState: AppSliceState = {
-  provider: Company.ekoHome,
+  provider: getInitialProvider(),
 };
 
 export const appSlice = createSlice({
-  name: "econt",
+  name: "provider",
   initialState,
   reducers: {
     updateProvider: (state, action: PayloadAction<Company>) => {

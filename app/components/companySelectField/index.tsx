@@ -1,7 +1,7 @@
 import { Company } from "@/create/invoice/constants";
 import { Menu, Transition } from "@headlessui/react";
 import Image from "next/image";
-import { Fragment, useEffect, useRef } from "react";
+import { Fragment, useRef } from "react";
 import { classNames } from "../header";
 import { useAppDispatch, useAppSelector } from "../../../lib/hooks";
 import { updateProvider } from "../../../lib/features/app";
@@ -25,13 +25,6 @@ export const CompanySelectField = () => {
     dispatch(updateProvider(value));
     localStorage.setItem("company", JSON.stringify(value));
   };
-
-  useEffect(() => {
-    const saved = localStorage?.getItem("company");
-    if (saved) {
-      dispatch(updateProvider(saved as Company));
-    }
-  }, []);
 
   return (
     <Menu as="div" className="relative ml-3">

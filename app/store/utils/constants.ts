@@ -14,6 +14,18 @@ export const headCells: readonly HeadCell[] = [
     label: "Продукт",
   },
   {
+    id: "price",
+    numeric: true,
+    disablePadding: true,
+    label: "Цена кг./л./бр.",
+  },
+  {
+    id: "packagePrice",
+    numeric: true,
+    disablePadding: true,
+    label: "Цена опаковка",
+  },
+  {
     id: "package",
     numeric: true,
     disablePadding: false,
@@ -26,7 +38,7 @@ export const headCells: readonly HeadCell[] = [
     label: "Количество бр.",
   },
   {
-    id: "total",
+    id: "totalQuantity",
     numeric: true,
     disablePadding: false,
     label: "Общо",

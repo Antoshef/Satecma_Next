@@ -21,7 +21,7 @@ export default async function CreateLayout() {
       console.error("Error:", error);
       return {
         current: "0000100000",
-        previous: "0005000000",
+        previous: "0000000000",
       };
     });
 

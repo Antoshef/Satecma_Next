@@ -113,7 +113,7 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
     }, [wordPrice, invoiceNumber, setError]);
 
     useEffect(() => {
-      submitItems([...items]);
+      submitItems(items);
     }, [items, submitItems]);
 
     useEffect(() => {
@@ -202,7 +202,21 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
                           )}
                         </span>
                         <br />
-                        <span>Създадена: {invoiceData.date}</span>
+                        <span>
+                          Създадена:{" "}
+                          <TextField
+                            isFieldsDisabled={isFieldsDisabled}
+                            value={invoiceData.date}
+                            type="date"
+                            name="date"
+                            onChange={(e) =>
+                              setInvoiceData((state) => ({
+                                ...state,
+                                date: e.target.value,
+                              }))
+                            }
+                          />
+                        </span>
                       </td>
 
                       <td>

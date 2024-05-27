@@ -35,6 +35,7 @@ export interface Provider {
 
 export interface InvoiceReceiver {
   email: string;
+  phone: string;
   company: string;
   city: string;
   address: string;

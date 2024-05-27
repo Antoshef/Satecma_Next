@@ -9,13 +9,8 @@ import { SenderFields } from "./senderFields";
 
 export const CreateEcontPackage = () => {
   const [isAddressUsed, setIsAddressUsed] = useState(false);
-  const {
-    sender,
-    receiver,
-    cities,
-    setSender,
-    setReceiver,
-  } = useCreateEcontPackage();
+  const { sender, receiver, cities, setSender, setReceiver } =
+    useCreateEcontPackage();
 
   const submitHandler = (e: FormEvent<HTMLElement>) => {
     e.preventDefault();

@@ -41,7 +41,7 @@ export const ECOHOME_COMPANY: Provider = {
 export const INVOICE_DATA_DEFAULT_VALUES: InvoiceData = {
   amount: 0,
   client: "",
-  date: "",
+  date: new Date().toISOString().split("T")[0],
   eik: 0,
   invoice_id: "",
   total: 0,
@@ -51,6 +51,7 @@ export const INVOICE_DATA_DEFAULT_VALUES: InvoiceData = {
 
 export const INIT_RECEIVER: InvoiceReceiver = {
   email: "",
+  phone: "",
   company: "",
   city: "",
   address: "",

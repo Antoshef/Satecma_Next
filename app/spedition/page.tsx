@@ -5,7 +5,11 @@ import { CreateEcontPackage } from "./create/econt";
 import { CreateSpeedyPackage } from "./create/speedy";
 import { getCities, getOffices } from "./create/econt/services/utils";
 import { useAppDispatch } from "../../lib/hooks";
-import { updateCities, updateOffices } from "../../lib/features/spedition/econt";
+import {
+  updateCities,
+  updateOffices,
+} from "../../lib/features/spedition/econt";
+import { onCLS, onINP, onLCP } from "web-vitals/attribution";
 
 export default function Page() {
   const [spedition, setSpedition] = useState<string>("Econt");
@@ -15,6 +19,10 @@ export default function Page() {
     getOffices().then((offices) => dispatch(updateOffices(offices)));
     getCities().then((cities) => dispatch(updateCities(cities)));
   }, []);
+
+  onLCP(console.log);
+  onCLS(console.log);
+  onINP(console.log);
 
   return (
     <main className="flex flex-col justify-center align-middle m-auto max-w-screen-lg">

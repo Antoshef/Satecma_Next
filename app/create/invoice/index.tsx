@@ -386,12 +386,22 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
                   onChange={onChange}
                 />
                 <br />
-                Email:{" "}
+                Е-Поща:{" "}
                 <TextField
                   name="email"
                   type="text"
-                  placeholder="Email"
+                  placeholder="Е-Поща"
                   value={receiver.email}
+                  isFieldsDisabled={isFieldsDisabled}
+                  onChange={onChange}
+                />
+                <br />
+                Телефон:{" "}
+                <TextField
+                  name="phone"
+                  type="text"
+                  placeholder="Телефон"
+                  value={receiver.phone}
                   isFieldsDisabled={isFieldsDisabled}
                   onChange={onChange}
                 />

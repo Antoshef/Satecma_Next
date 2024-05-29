@@ -2,7 +2,7 @@ export interface Client {
   name: string;
   city: string;
   address: string;
-  eik: number;
+  eik: string;
   vat: string;
   director: string;
   email: string;

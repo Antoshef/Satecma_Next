@@ -1,4 +1,7 @@
 "use client";
+import { getComparator } from "@/store/page";
+import { EnhancedTableHead } from "@/store/utils/enhancedTableHead";
+import { EnhancedTableToolbar } from "@/store/utils/enhancedTableToolbar";
 import {
   Box,
   Checkbox,
@@ -15,12 +18,12 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { Client } from "./types";
-import { EnhancedTableToolbar } from "@/store/utils/enhancedTableToolbar";
-import { EnhancedTableHead } from "@/store/utils/enhancedTableHead";
-import { ChangeEvent, MouseEvent, useMemo, useState } from "react";
-import { headCells } from "./constants";
-import { getComparator } from "@/store/page";
+import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from "react";
+import { headCells } from "./utils/constants";
+import { Client } from "./utils/types";
+import { ClientEditor } from "./utils/clientEditor";
+import useToast from "@/store/utils/useToast";
+import { fetchData } from "@/utils/fetchData";
 
 export const createKey = (client: Client) => `${client.name}-${client.eik}`;
 
@@ -35,11 +38,12 @@ export default function ClientsPage({ data }: Props) {
   const [selected, setSelected] = useState<Client | undefined>(undefined);
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
   const [editMode, setEditMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const { Toast, setMessage } = useToast();
 
-  const isSelected = (eik: number) => selected?.eik === eik;
+  const isSelected = (eik: string) => selected?.eik === eik;
 
   const handleRequestSort = (
     event: MouseEvent<unknown>,
@@ -73,6 +77,31 @@ export default function ClientsPage({ data }: Props) {
     setPage(0);
   };
 
+  const onEditSubmit = async (client: Client) => {
+    try {
+      await fetchData("/api/clients/get", {
+        method: "PUT",
+        body: JSON.stringify(client),
+      });
+      const index = filteredClients.findIndex((c) => c.eik === client.eik);
+      if (index >= 0) {
+        const newClients = [...filteredClients];
+        newClients[index] = client;
+        setFilteredClients(newClients);
+      }
+      setEditMode(false);
+      setMessage({
+        text: "Клиентът е редактиран успешно",
+        severity: "success",
+      });
+    } catch (error) {
+      setMessage({
+        text: "Грешка при редакцията на клиента",
+        severity: "error",
+      });
+    }
+  };
+
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0
@@ -87,10 +116,25 @@ export default function ClientsPage({ data }: Props) {
     [order, orderBy, page, rowsPerPage, filteredClients],
   );
 
+  useEffect(() => {
+    setEditMode(!!selected);
+  }, [selected]);
+
   return (
     <Box>
+      <Toast />
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar isSelected={!!selected} onEdit={setEditMode} />
+        <EnhancedTableToolbar
+          title="Клиенти"
+          isSelected={!!selected}
+          onEdit={setEditMode}
+        />
+        <ClientEditor
+          editMode={editMode}
+          selected={selected}
+          onSubmit={onEditSubmit}
+          setEditMode={setEditMode}
+        />
         <Grid container alignItems="baseline">
           <Typography
             variant="body1"
@@ -98,7 +142,7 @@ export default function ClientsPage({ data }: Props) {
             marginRight={2}
             marginLeft={2}
           >
-            Избери категория:
+            Намери клиент:
           </Typography>
           <Input
             type="text"

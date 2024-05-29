@@ -11,16 +11,8 @@ import {
 } from "@/store/utils/types";
 import { createKey, handleProductsMap } from "@/store/utils/utils";
 import { fetchData } from "@/utils/fetchData";
-import CloseIcon from "@mui/icons-material/Close";
 import {
-  Button,
-  Dialog,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Divider,
   Grid,
-  IconButton,
   Input,
   MenuItem,
   Select,
@@ -38,18 +30,11 @@ import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import {
-  ChangeEvent,
-  Fragment,
-  MouseEvent,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { Hourglass } from "react-loader-spinner";
+import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from "react";
 import FileUpload from "./utils/fileUpload";
 import useToast from "./utils/useToast";
 import { Product } from "@/create/invoice/types";
+import { ProductsDialog } from "./utils/productsDialog";
 
 export function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -250,141 +235,25 @@ export default function Store({ data }: Props) {
     <Box margin={2}>
       <>
         <Toast />
-        <Dialog
-          open={openCheckProductsDialog}
-          onClose={() => setOpenCheckProductsDialog(false)}
-          fullWidth
-          maxWidth="md"
-        >
-          {isFetching ? (
-            <DialogTitle marginRight={4}>Обновяване на склада...</DialogTitle>
-          ) : (
-            <>
-              <DialogTitle marginRight={4}>Проверка на продуктите</DialogTitle>
-              <IconButton
-                aria-label="close"
-                onClick={() => setOpenCheckProductsDialog(false)}
-                sx={{
-                  position: "absolute",
-                  right: 8,
-                  top: 8,
-                  color: (theme) => theme.palette.grey[500],
-                }}
-              >
-                <CloseIcon />
-              </IconButton>
-            </>
-          )}
-          <DialogContent>
-            {isFetching ? (
-              <Grid className="justify-center" container>
-                <Hourglass
-                  visible={true}
-                  height="80"
-                  width="80"
-                  ariaLabel="hourglass-loading"
-                  colors={["#306cce", "#72a1ed"]}
-                />
-              </Grid>
-            ) : (
-              <Grid container direction="column" alignItems="center">
-                <DialogContentText className="p-4" variant="h5">
-                  Брой продукти за добавяне: {productsToUpdate?.length}
-                </DialogContentText>
-                {productsToUpdate
-                  ?.sort((a, b) => {
-                    const aKey = `${a.code}-${a.package}`;
-                    const storeProduct = productMap.get(aKey);
-                    if (storeProduct) {
-                      return -1;
-                    } else {
-                      return 1;
-                    }
-                  })
-                  .map((incomingProduct) => {
-                    const key = `${incomingProduct.code}-${incomingProduct.package}`;
-                    const storeProduct = productMap.get(key);
-                    return (
-                      <Fragment key={incomingProduct.code}>
-                        <Grid className="mb-4" container>
-                          <DialogContentText variant="body1">
-                            {storeProduct ? (
-                              <>
-                                <Divider />
-                                Код: {storeProduct.code}, Име:{" "}
-                                {storeProduct.name}, Опаковка:{" "}
-                                {storeProduct.package} {storeProduct.unit} -
-                                Текущо количество:{" "}
-                                <Typography
-                                  fontSize="1.25rem"
-                                  component="span"
-                                  className="text-red-500"
-                                >
-                                  {storeProduct.quantity}
-                                </Typography>
-                                , Приходящо количество:{" "}
-                                <Typography
-                                  fontSize="1.25rem"
-                                  component="span"
-                                  className="text-blue-500"
-                                >
-                                  {incomingProduct.unit === StoreUnits.pcs
-                                    ? incomingProduct.totalQuantity
-                                    : incomingProduct.quantity}{" "}
-                                </Typography>{" "}
-                                {"=>"} ,Общо:{" "}
-                                <Typography
-                                  fontSize="1.25rem"
-                                  component="span"
-                                  className="text-green-500"
-                                >
-                                  {storeProduct.quantity +
-                                    incomingProduct.quantity}{" "}
-                                  {StoreUnits.pcs}
-                                </Typography>
-                              </>
-                            ) : (
-                              <>
-                                <Divider />
-                                Код: {incomingProduct.code}, Име:{" "}
-                                {incomingProduct.description}, Опаковка:{" "}
-                                {incomingProduct.package} {incomingProduct.unit}
-                                , Приходящо количество:{" "}
-                                <Typography
-                                  fontSize="1.25rem"
-                                  component="span"
-                                  className="text-blue-500"
-                                >
-                                  {incomingProduct.unit === StoreUnits.pcs
-                                    ? incomingProduct.totalQuantity
-                                    : incomingProduct.quantity}{" "}
-                                  {StoreUnits.pcs}
-                                </Typography>
-                              </>
-                            )}
-                          </DialogContentText>
-                        </Grid>
-                      </Fragment>
-                    );
-                  })}
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={uploadProductsHandler}
-                >
-                  Прибави продуктите
-                </Button>
-              </Grid>
-            )}
-          </DialogContent>
-        </Dialog>
+        <ProductsDialog
+          isOpen={openCheckProductsDialog}
+          setIsOpen={setOpenCheckProductsDialog}
+          onConfirm={uploadProductsHandler}
+          isFetching={isFetching}
+          productMap={productMap}
+          productsToUpdate={productsToUpdate}
+        />
         <FileUpload
           data={productsToUpdate}
           setData={setProductsToUpdate}
           setOpenDialog={setOpenCheckProductsDialog}
         />
         <Paper sx={{ width: "100%", mb: 2 }}>
-          <EnhancedTableToolbar isSelected={!!selected} onEdit={setEditMode} />
+          <EnhancedTableToolbar
+            title="Склад"
+            isSelected={!!selected}
+            onEdit={setEditMode}
+          />
           <ProductEditor
             editMode={editMode}
             selected={selected}

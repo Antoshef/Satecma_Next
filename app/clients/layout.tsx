@@ -1,6 +1,6 @@
 import { fetchData } from "@/utils/fetchData";
 import ClientsPage from "./page";
-import { Client } from "./types";
+import { Client } from "./utils/types";
 
 export default async function StoreLayout({
   children,

@@ -61,7 +61,7 @@ export default function Header() {
   }, []);
 
   return (
-    <div>
+    <div className="relative z-10">
       <Disclosure as="nav" className="bg-gray-800">
         {({ open }) => (
           <>

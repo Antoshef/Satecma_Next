@@ -7,12 +7,14 @@ import { useAppSelector } from "../../../lib/hooks";
 import {
   Company,
   ECOHOME_COMPANY,
+  INIT_RECEIVER,
   INVOICE_DATA_DEFAULT_VALUES,
   SATECMA_COMPANY,
 } from "./constants";
 import {
   InvoiceData,
   InvoiceIdType,
+  InvoiceReceiver,
   InvoiceType,
   Item,
   LatestInvoices,
@@ -32,6 +34,7 @@ export const InvoiceWrapper = ({ data, invoiceIds }: InvoiceWrapperProps) => {
   const [email, setEmail] = useState("");
   const [sendMailToRecepient, setSendMailToRecepient] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
+  const [receiver, setReceiver] = useState<InvoiceReceiver>(INIT_RECEIVER);
   const [latestInvoiceNumbers, setLatestInvoiceNumbers] =
     useState<LatestInvoices>({
       ...invoiceIds,
@@ -80,6 +83,19 @@ export const InvoiceWrapper = ({ data, invoiceIds }: InvoiceWrapperProps) => {
           });
         }
       }
+      await fetchData("/api/clients/get", {
+        method: "POST",
+        body: JSON.stringify({
+          name: receiver.company,
+          city: receiver.city,
+          address: receiver.address,
+          eik: receiver.EIK,
+          vat: receiver.VAT,
+          director: receiver.director,
+          email: receiver.email,
+          phone: receiver.phone,
+        }),
+      });
 
       await fetchData("/api/create/invoice", {
         method: "POST",
@@ -126,6 +142,8 @@ export const InvoiceWrapper = ({ data, invoiceIds }: InvoiceWrapperProps) => {
         invoiceData={invoiceData}
         invoiceIdType={invoiceIdType}
         invoiceType={invoiceType}
+        receiver={receiver}
+        setReceiver={setReceiver}
         setEmail={setEmail}
         setError={setError}
         submitItems={setItems}

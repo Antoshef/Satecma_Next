@@ -3,7 +3,6 @@ export const fetchData = async <T = undefined>(
   init?: RequestInit,
 ): Promise<{ data: T }> => {
   try {
-    console.log(new Date().getMilliseconds(), "START");
     const response = await fetch(url, {
       method: init?.method || "GET",
       headers: init?.headers || {
@@ -14,7 +13,6 @@ export const fetchData = async <T = undefined>(
     });
 
     const data = await response.json();
-    console.log(new Date().getMilliseconds(), "STOP");
 
     if (!response.ok) {
       const errorMessage = data.message || "Something went wrong";

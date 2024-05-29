@@ -31,6 +31,8 @@ interface InvoiceBoxProps {
   invoiceData: InvoiceData;
   invoiceIdType: InvoiceIdType;
   invoiceType: InvoiceType;
+  receiver: InvoiceReceiver;
+  setReceiver: Dispatch<SetStateAction<InvoiceReceiver>>;
   setEmail: (email: string) => void;
   setError: (error: boolean) => void;
   submitItems: (items: Item[]) => void;
@@ -50,6 +52,8 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
       invoiceData,
       invoiceIdType,
       invoiceType,
+      receiver,
+      setReceiver,
       setEmail,
       setError,
       submitItems,
@@ -66,7 +70,6 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
     const [wordPrice, setWordPrice] = useState("");
     const [reason, setReason] = useState("");
     const [paymentMethod, setPaymentMethod] = useState("По Банка");
-    const [receiver, setReceiver] = useState<InvoiceReceiver>(INIT_RECEIVER);
 
     const {
       items,

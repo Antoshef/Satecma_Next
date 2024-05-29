@@ -4,11 +4,13 @@ import EditIcon from "@mui/icons-material/Edit";
 import FilterListIcon from "@mui/icons-material/FilterList";
 
 interface EnhancedTableToolbarProps {
+  title: string;
   isSelected: boolean;
   onEdit: (edit: boolean) => void;
 }
 
 export const EnhancedTableToolbar = ({
+  title,
   isSelected,
   onEdit,
 }: EnhancedTableToolbarProps) => {
@@ -21,7 +23,7 @@ export const EnhancedTableToolbar = ({
           bgcolor: (theme) =>
             alpha(
               theme.palette.primary.main,
-              theme.palette.action.activatedOpacity
+              theme.palette.action.activatedOpacity,
             ),
         }),
       }}
@@ -42,7 +44,7 @@ export const EnhancedTableToolbar = ({
           id="tableTitle"
           component="div"
         >
-          Склад
+          {title}
         </Typography>
       )}
       {isSelected ? (

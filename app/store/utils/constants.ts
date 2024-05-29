@@ -1,6 +1,6 @@
-import { HeadCell } from "./types";
+import { HeadCell, StoreProduct } from "./types";
 
-export const headCells: readonly HeadCell[] = [
+export const headCells: readonly HeadCell<StoreProduct>[] = [
   {
     id: "code",
     numeric: true,

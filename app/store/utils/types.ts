@@ -31,9 +31,9 @@ export enum StoreUnits {
   pcs = "бр.",
 }
 
-export interface HeadCell {
+export interface HeadCell<T> {
   disablePadding: boolean;
-  id: keyof StoreProduct;
+  id: keyof T;
   label: string;
   numeric: boolean;
 }

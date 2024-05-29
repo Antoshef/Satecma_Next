@@ -16,6 +16,7 @@ export interface NavigationItem {
 
 const navigation: NavigationItem[] = [
   { name: "Склад", href: "/store" },
+  { name: "Клиенти", href: "/clients" },
   {
     name: "Създай",
     subItems: [

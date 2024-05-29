@@ -31,6 +31,6 @@
     "server.ts",
     "next.config.js",
     "postcss.config.js"
-  ],
+, "app/store/reverse.js"  ],
   "exclude": ["node_modules"]
 }

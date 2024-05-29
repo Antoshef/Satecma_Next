@@ -51,7 +51,7 @@ import FileUpload from "./utils/fileUpload";
 import useToast from "./utils/useToast";
 import { Product } from "@/create/invoice/types";
 
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
+export function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
@@ -61,7 +61,7 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   return 0;
 }
 
-function getComparator<Key extends keyof any>(
+export function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key,
 ): (
@@ -479,10 +479,14 @@ export default function Store({ data }: Props) {
                         {row.name}
                       </TableCell>
                       <TableCell align="right">
-                        {row.price.toFixed(2)} {"лв."}
+                        {(row.price * row.percentage_increase).toFixed(2)}{" "}
+                        {"лв."}
                       </TableCell>
                       <TableCell align="right">
-                        {row.packagePrice.toFixed(2)} {"лв."}
+                        {(row.packagePrice * row.percentage_increase).toFixed(
+                          2,
+                        )}{" "}
+                        {"лв."}
                       </TableCell>
                       <TableCell align="right">
                         {row.package} {row.unit}

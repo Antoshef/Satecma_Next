@@ -54,7 +54,7 @@ export const handleProductsMap = (data: Product[]) => {
         packagePrice:
           currentProduct.unit === StoreUnits.pcs
             ? currentProduct.price
-            : currentProduct.price * Number(currentProduct.packing[0]),
+            : currentProduct.price * Number(packing[0]),
         unit: currentProduct.unit,
         category: currentProduct.category,
         quantity: Number(quantity[0]),
@@ -68,5 +68,5 @@ export const handleProductsMap = (data: Product[]) => {
       });
     }
   }
-  return result.filter((item) => item.totalQuantity !== 0);
+  return result;
 };

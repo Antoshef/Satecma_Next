@@ -1,6 +1,8 @@
 import { fetchData } from "@/utils/fetchData";
 import Store from "./page";
 import { Product } from "@/create/invoice/types";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 export default async function StoreLayout({
   children,
@@ -18,7 +20,9 @@ export default async function StoreLayout({
 
   return (
     <main>
-      <Store data={data} />
+      <Suspense fallback={<Loading />}>
+        <Store data={data} />
+      </Suspense>
     </main>
   );
 }

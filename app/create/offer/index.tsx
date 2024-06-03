@@ -253,7 +253,7 @@ export const OfferBox = forwardRef<HTMLDivElement, OfferBoxProps>(
               <p>
                 Срок на изпълнение: до{" "}
                 <TextField
-                  type="number"
+                  type="text"
                   name="delivery"
                   value={application.delivery}
                   smallField
@@ -270,7 +270,7 @@ export const OfferBox = forwardRef<HTMLDivElement, OfferBoxProps>(
               <p>
                 Гаранция по изпълнение:{" "}
                 <TextField
-                  type="number"
+                  type="text"
                   name="warranty"
                   value={application.warranty}
                   smallField
@@ -289,6 +289,11 @@ export const OfferBox = forwardRef<HTMLDivElement, OfferBoxProps>(
           <Typography variant="body1" className="pt-4">
             За информация относно продуктите и услугите, <br />
             моля свържете се с нас на телефон: {provider.phone}
+          </Typography>
+          <Typography variant="body1" className="pt-4">
+            След завършване на обекта с протокол акт 19, <br />
+            се измерват всички количества. <br />
+            За всички допълнителни СМР-та, се издават анекси.
           </Typography>
         </div>
         <div className="flex flex-col text-end mt-6 mb-2">

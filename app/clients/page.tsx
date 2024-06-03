@@ -24,14 +24,15 @@ import { Client } from "./utils/types";
 import { ClientEditor } from "./utils/clientEditor";
 import useToast from "@/store/utils/useToast";
 import { fetchData } from "@/utils/fetchData";
+import Link from "next/link";
 
-export const createKey = (client: Client) => `${client.name}-${client.eik}`;
+const createKey = (client: Client) => `${client.name}-${client.eik}`;
 
-interface Props {
+interface PageProps {
   data: Client[];
 }
 
-export default function ClientsPage({ data }: Props) {
+export default function ClientsPage({ data }: PageProps) {
   const [filteredClients, setFilteredClients] = useState(data);
   const [order, setOrder] = useState<"asc" | "desc">("asc");
   const [orderBy, setOrderBy] = useState<keyof Client>("name");
@@ -100,6 +101,10 @@ export default function ClientsPage({ data }: Props) {
         severity: "error",
       });
     }
+  };
+
+  const linkClickHandler = (e: MouseEvent<HTMLAnchorElement>) => {
+    e.stopPropagation();
   };
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -182,6 +187,7 @@ export default function ClientsPage({ data }: Props) {
                         }
                       })
                     }
+                    className="cursor-pointer"
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
@@ -207,12 +213,21 @@ export default function ClientsPage({ data }: Props) {
                       {row.name}
                     </TableCell>
                     <TableCell align="right">
-                      <a href={`tel:${row.phone}`}>{row.phone}</a>
+                      <Link
+                        onClick={linkClickHandler}
+                        href={`tel:${row.phone}`}
+                      >
+                        {row.phone}
+                      </Link>
                     </TableCell>
                     <TableCell align="right">
-                      <a target="_blank" href={`mailto:${row.email}`}>
+                      <Link
+                        onClick={linkClickHandler}
+                        target="_blank"
+                        href={`mailto:${row.email}`}
+                      >
                         {row.email}
-                      </a>
+                      </Link>
                     </TableCell>
                     <TableCell align="right">{row.city}</TableCell>
                     <TableCell align="right">{row.address}</TableCell>

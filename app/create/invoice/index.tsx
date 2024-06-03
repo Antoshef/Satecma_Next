@@ -398,16 +398,6 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
                   isFieldsDisabled={isFieldsDisabled}
                   onChange={onChange}
                 />
-                <br />
-                Телефон:{" "}
-                <TextField
-                  name="phone"
-                  type="text"
-                  placeholder="Телефон"
-                  value={receiver.phone}
-                  isFieldsDisabled={isFieldsDisabled}
-                  onChange={onChange}
-                />
               </td>
               <td colSpan={4}>
                 Начин на плащане:

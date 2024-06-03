@@ -1,8 +1,8 @@
-import { fetchData } from "@/utils/fetchData";
-import Store from "./page";
 import { Product } from "@/create/invoice/types";
+import { fetchData } from "@/utils/fetchData";
 import { Suspense } from "react";
 import Loading from "./loading";
+import Store from "./page";
 
 export default async function StoreLayout({
   children,

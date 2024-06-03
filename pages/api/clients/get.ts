@@ -28,12 +28,12 @@ export default async function handler(
       const clients = await queryAsync<Client[]>(`SELECT * FROM clients`);
       const { name, city, address, eik, vat, director, email, phone } =
         req.body as Client;
-      if (!name || !city || !address || !eik) {
+      if (!eik) {
         return res.status(400).json({ message: "Missing required fields" });
       }
 
       if (clients.find((client) => client.eik === eik)) {
-        return res.status(400).json({ message: "Client already exists" });
+        return res.status(200).json({ message: "Client already exists" });
       } else {
         await queryAsync(
           `
@@ -56,7 +56,7 @@ export default async function handler(
     try {
       const { name, city, address, eik, vat, director, email, phone } =
         req.body as Client;
-      if (!name || !city || !address || !eik) {
+      if (!eik) {
         return res.status(400).json({ message: "Missing required fields" });
       }
       await queryAsync(

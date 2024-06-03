@@ -59,14 +59,14 @@ export const TableItems = ({
             name="currentPackage"
             data-code={code}
             isFieldsDisabled={isFieldsDisabled}
-            value={currentPackage}
+            value={currentPackage.toString()}
             values={packing.split(", ")}
             onChange={itemSelectHandler}
           />
           {` ${unit}`}
         </td>
 
-        <td>{`${price.toFixed(2)} лв.`}</td>
+        <td>{`${(price * currentPackage).toFixed(2)} лв.`}</td>
         <td>
           <TextField
             smallField
@@ -94,6 +94,6 @@ export const TableItems = ({
           {totalPrice} лв.
         </td>
       </tr>
-    )
+    ),
   );
 };

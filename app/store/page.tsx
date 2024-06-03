@@ -360,7 +360,10 @@ export default function Store({ data }: Props) {
                       <TableCell align="right">
                         {row.package} {row.unit}
                       </TableCell>
-                      <TableCell align="right">{row.quantity}</TableCell>
+                      <TableCell align="right">
+                        {row.quantity}
+                        {" бр."}
+                      </TableCell>
                       <TableCell align="right">
                         {row.totalQuantity} {row.unit}
                       </TableCell>

@@ -35,7 +35,7 @@ export const headCells: readonly HeadCell<StoreProduct>[] = [
     id: "quantity",
     numeric: true,
     disablePadding: false,
-    label: "Количество бр.",
+    label: "Количество",
   },
   {
     id: "totalQuantity",

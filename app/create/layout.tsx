@@ -1,7 +1,7 @@
 import { fetchData } from "@/utils/fetchData";
+import CreatePage from "./page";
 import { InvoiceData, Product } from "./invoice/types";
 import { getInvoiceNumber } from "./invoice/utils";
-import CreatePage from "./page";
 
 export default async function CreateLayout() {
   const data = await fetchData<Product[]>(

@@ -67,11 +67,6 @@ body {
   color: red;
 }
 
-p,
-td {
-  cursor: default;
-}
-
 .invoiceBox__companyData {
   margin-top: 1rem;
 }

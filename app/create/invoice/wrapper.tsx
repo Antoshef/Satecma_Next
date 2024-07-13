@@ -27,6 +27,7 @@ interface InvoiceWrapperProps {
   invoiceIds: {
     current: string;
     previous: string;
+    proforma: string;
   };
 }
 
@@ -57,12 +58,17 @@ export const InvoiceWrapper = ({ data, invoiceIds }: InvoiceWrapperProps) => {
   const { Toast, setMessage } = useToast();
 
   const invoiceNumber = useMemo(() => {
-    return invoiceIdType === InvoiceIdType.manual
-      ? latestInvoiceNumbers.manual || ""
-      : invoiceIdType === InvoiceIdType.current
-        ? latestInvoiceNumbers.current
-        : latestInvoiceNumbers.previous;
-  }, [invoiceIdType, latestInvoiceNumbers]);
+    if (invoiceIdType === InvoiceIdType.manual) {
+      return latestInvoiceNumbers.manual || "";
+    }
+    if (invoiceType === InvoiceType.proforma) {
+      return latestInvoiceNumbers.proforma;
+    }
+    if (invoiceIdType === InvoiceIdType.current) {
+      return latestInvoiceNumbers.current;
+    }
+    return latestInvoiceNumbers.previous;
+  }, [invoiceIdType, latestInvoiceNumbers, invoiceType]);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -70,12 +76,12 @@ export const InvoiceWrapper = ({ data, invoiceIds }: InvoiceWrapperProps) => {
     const css = await fetch("/globals.css").then((res) => res.text());
 
     try {
-      if (invoiceType === InvoiceType.invoice) {
-        await fetchData("/api/create/invoice-sent", {
-          method: "POST",
-          body: JSON.stringify(invoiceData),
-        });
+      await fetchData("/api/create/invoice-sent", {
+        method: "POST",
+        body: JSON.stringify(invoiceData),
+      });
 
+      if (invoiceType === InvoiceType.invoice) {
         if (items.length > 0) {
           await fetchData("/api/products/update", {
             method: "PUT",

@@ -1,5 +1,4 @@
 import { StoreUnits } from "../../store/utils/types";
-import { Company } from "./constants";
 import { InvoiceData, Item } from "./types";
 
 const bankCodes = {
@@ -40,24 +39,31 @@ export const calculateItemPrice = (item: Item) => {
 };
 
 export const getInvoiceNumber = (data: InvoiceData[]) => {
+  const proformaInvoices = data.filter((d) => d.type === "proforma");
   const filteredCurrentInvoice = data.filter((d) =>
-    d.invoice_id.startsWith("00001")
+    d.invoice_id.startsWith("10000"),
   );
 
   const latestCurrentInvoice = filteredCurrentInvoice.reduce(
     (acc, curr) =>
       Number(acc.invoice_id) > Number(curr.invoice_id) ? acc : curr,
-    { invoice_id: "0000100000" }
+    { invoice_id: "1000000000" },
   );
 
   const filteredPreviousInvoice = data.filter((d) =>
-    d.invoice_id.startsWith("00000")
+    d.invoice_id.startsWith("00001"),
+  );
+
+  const latestProformaInvoice = proformaInvoices.reduce(
+    (acc, curr) =>
+      Number(acc.invoice_id) > Number(curr.invoice_id) ? acc : curr,
+    { invoice_id: "0000000000" },
   );
 
   const latestPreviousInvoice = filteredPreviousInvoice.reduce(
     (acc, curr) =>
       Number(acc.invoice_id) > Number(curr.invoice_id) ? acc : curr,
-    { invoice_id: "0000000000" }
+    { invoice_id: "0000000000" },
   );
 
   const addZeros = (invoice: string) => {
@@ -70,39 +76,18 @@ export const getInvoiceNumber = (data: InvoiceData[]) => {
   };
 
   const current = addZeros(
-    (Number(latestCurrentInvoice.invoice_id) + 1).toString()
+    (Number(latestCurrentInvoice.invoice_id) + 1).toString(),
   );
   const previous = addZeros(
-    (Number(latestPreviousInvoice.invoice_id) + 1).toString()
+    (Number(latestPreviousInvoice.invoice_id) + 1).toString(),
+  );
+  const proforma = addZeros(
+    (Number(latestProformaInvoice.invoice_id) + 1).toString(),
   );
 
   return {
     current,
     previous,
+    proforma,
   };
 };
-
-// export const generateBcc = ({
-//   accountantCopy,
-//   officeCopy,
-//   providerName,
-// }: {
-//   accountantCopy?: boolean;
-//   officeCopy?: boolean;
-//   providerName?: Company;
-// }) => {
-//   const bcc = [];
-//   if (accountantCopy) {
-//     bcc.push(
-//       providerName === Company.satecma
-//         ? process.env.NEXT_PUBLIC_SATECMA_ACCOUNTANT_EMAIL || ""
-//         : providerName === Company.ekoHome
-//         ? process.env.NEXT_PUBLIC_ECO_HOME_ACCOUNTANT_EMAIL || ""
-//         : ""
-//     );
-//   }
-//   if (officeCopy) {
-//     bcc.push(process.env.NEXT_PUBLIC_OFFICE_EMAIL || "");
-//   }
-//   return bcc.filter((email) => email !== "");
-// };

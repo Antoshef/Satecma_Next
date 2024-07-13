@@ -9,6 +9,7 @@ interface Props {
   invoiceIds: {
     current: string;
     previous: string;
+    proforma: string;
   };
 }
 

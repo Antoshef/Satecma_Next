@@ -71,6 +71,11 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
     const [reason, setReason] = useState("");
     const [paymentMethod, setPaymentMethod] = useState("По Банка");
 
+    const invoiceTypeValues =
+      invoiceType === InvoiceType.invoice
+        ? [InvoiceIdType.current, InvoiceIdType.previous, InvoiceIdType.manual]
+        : [InvoiceIdType.current, InvoiceIdType.manual];
+
     const {
       items,
       services,
@@ -129,6 +134,7 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
         vat: total.VAT,
         total: total.paid,
         invoice_id: invoiceNumber,
+        type: invoiceType,
       }));
     }, [receiver, total, invoiceNumber]);
 
@@ -154,6 +160,10 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
                           isFieldsDisabled={isFieldsDisabled}
                           value={invoiceType}
                           values={[InvoiceType.invoice, InvoiceType.proforma]}
+                          displayValues={[
+                            "Фактура Оригинал",
+                            "Проформа Фактура",
+                          ]}
                           className="text-3xl mb"
                           onChange={(e) =>
                             setInvoiceType(e.target.value as InvoiceType)
@@ -164,11 +174,7 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
                           <SelectField
                             isFieldsDisabled={isFieldsDisabled}
                             value={invoiceIdType}
-                            values={[
-                              InvoiceIdType.current,
-                              InvoiceIdType.previous,
-                              InvoiceIdType.manual,
-                            ]}
+                            values={invoiceTypeValues}
                             onChange={(e) =>
                               setInvoiceIdType(e.target.value as InvoiceIdType)
                             }

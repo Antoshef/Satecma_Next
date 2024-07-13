@@ -20,8 +20,9 @@ export default async function CreateLayout() {
     .catch((error) => {
       console.error("Error:", error);
       return {
-        current: "0000100000",
-        previous: "0000000000",
+        current: "1000000000",
+        previous: "0000100000",
+        proforma: "0000000000",
       };
     });
 

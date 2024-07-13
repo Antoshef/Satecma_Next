@@ -59,21 +59,24 @@ export interface InvoiceData {
   amount: number;
   vat: number;
   total: number;
+  type: InvoiceType;
 }
 
 export interface LatestInvoices {
   current: string;
   previous: string;
+  proforma: string;
   manual: string;
 }
 
 export enum InvoiceIdType {
   current = "Текущ номер",
   previous = "Предходен номер",
+  proforma = "Текущ номер",
   manual = "Въведи номер",
 }
 
 export enum InvoiceType {
-  invoice = "Фактура Оригинал",
-  proforma = "Проформа фактура",
+  invoice = "original",
+  proforma = "proforma",
 }

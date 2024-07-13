@@ -1,7 +1,7 @@
-import { InvoiceData, InvoiceReceiver, Provider } from "./types";
+import { InvoiceData, InvoiceReceiver, InvoiceType, Provider } from "./types";
 
 export const SATECMA_LOGO =
-  "https://satecma.bg/wp-content/uploads/2024/02/logo-satecma-industrias.png";
+  "http://satecma.bg/wp-content/uploads/2024/04/main-logo-dark.png";
 
 export enum Company {
   satecma = "Сатекма ЕООД",
@@ -47,6 +47,7 @@ export const INVOICE_DATA_DEFAULT_VALUES: InvoiceData = {
   total: 0,
   vat: 0,
   vat_number: "",
+  type: InvoiceType.proforma,
 };
 
 export const INIT_RECEIVER: InvoiceReceiver = {

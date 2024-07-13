@@ -6,6 +6,7 @@ interface SelectFieldProps {
   isFieldsDisabled: boolean;
   value: string;
   values: string[];
+  displayValues?: string[];
   className?: string;
   onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
 }
@@ -14,6 +15,7 @@ export const SelectField = ({
   name,
   value,
   values,
+  displayValues,
   className,
   isFieldsDisabled,
   onChange,
@@ -21,7 +23,9 @@ export const SelectField = ({
 }: SelectFieldProps) => (
   <>
     {isFieldsDisabled ? (
-      <span className={className}>{value}</span>
+      <span className={className}>
+        {displayValues ? displayValues[values.indexOf(value)] : value}
+      </span>
     ) : (
       <select
         {...props}
@@ -30,9 +34,9 @@ export const SelectField = ({
         value={value}
         onChange={onChange}
       >
-        {values.map((v) => (
+        {values.map((v, i) => (
           <option key={v} value={v}>
-            {v}
+            {displayValues ? displayValues[i] : v}
           </option>
         ))}
       </select>

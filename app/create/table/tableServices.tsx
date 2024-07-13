@@ -29,8 +29,8 @@ export const TableServices = ({
         prev.map((u) =>
           u.code === event.target.dataset.code
             ? { code: u.code, unit: event.target.value }
-            : u
-        )
+            : u,
+        ),
       );
       return;
     } else {
@@ -75,7 +75,7 @@ export const TableServices = ({
             data-code={code}
             isFieldsDisabled={isFieldsDisabled}
             value={unit.find((u) => u.code === code)?.unit || "бр."}
-            values={["бр.", "кг.", "л.", "л.м", "м2"]}
+            values={["бр.", "кг.", "л.", "л.м", "м2", "м3"]}
             onChange={unitChangeHandler}
           />
         </td>
@@ -116,6 +116,6 @@ export const TableServices = ({
         </td>
         <td>{totalPrice} лв.</td>
       </tr>
-    )
+    ),
   );
 };

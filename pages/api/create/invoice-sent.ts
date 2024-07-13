@@ -1,17 +1,32 @@
 import { InvoiceData } from "@/create/invoice/types";
 import { NextApiRequest, NextApiResponse } from "next";
 import { queryAsync } from "../../../utils/db";
+import { Company } from "@/create/invoice/constants";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const { method } = req;
+  const {
+    client,
+    eik,
+    vat_number,
+    date,
+    invoice_id,
+    amount,
+    vat,
+    total,
+    company,
+    type,
+  } = req.body as InvoiceData & { company: Company };
+  const table_name =
+    company === Company.ekoHome ? "eko_invoices_sent" : "satecma_invoices_sent";
 
   if (method === "GET") {
     try {
       const results = await queryAsync<InvoiceData[]>(
-        `SELECT * FROM eko_invoices_sent`
+        `SELECT * FROM eko_invoices_sent`,
       );
       if (!results) {
         return res.status(404).json({ message: "Invoices not found" });
@@ -27,8 +42,6 @@ export default async function handler(
 
   if (method === "POST") {
     try {
-      const { client, eik, vat_number, date, invoice_id, amount, vat, total } =
-        req.body as InvoiceData;
       if (
         !client ||
         !eik ||
@@ -37,7 +50,8 @@ export default async function handler(
         !invoice_id ||
         !amount ||
         !vat ||
-        !total
+        !total ||
+        !type
       ) {
         return res.status(400).json({ message: "Missing required fields" });
       } else if (invoice_id.length !== 10) {
@@ -47,10 +61,10 @@ export default async function handler(
       }
       const results = await queryAsync(
         `
-        INSERT INTO eko_invoices_sent (client, eik, vat_number, date, invoice_id, amount, vat, total)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO eko_invoices_sent (client, eik, vat_number, date, invoice_id, amount, vat, total, type)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
-        [client, eik, vat_number, date, invoice_id, amount, vat, total]
+        [client, eik, vat_number, date, invoice_id, amount, vat, total, type],
       );
       if (!results) {
         return res.status(500).json({ message: "Invoice not sent" });

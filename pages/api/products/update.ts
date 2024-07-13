@@ -40,7 +40,7 @@ export default async function handler(
         }
 
         const query = `UPDATE products SET quantity = ? WHERE code = ?`;
-        await queryAsync(query, [quantityArr, item.code]);
+        await queryAsync(query, [quantityArr?.join(", "), item.code]);
       }
       return res
         .status(200)

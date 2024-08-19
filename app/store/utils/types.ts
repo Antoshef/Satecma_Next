@@ -7,14 +7,19 @@ export interface ToastMessage {
 }
 
 export type StoreProduct = {
-  code: string;
   package: number;
   packagePrice: number;
   quantity: number;
   totalQuantity: number;
 } & Pick<
   Product,
-  "category" | "color" | "name" | "percentage_increase" | "price" | "unit"
+  | "category"
+  | "color"
+  | "name"
+  | "percentage_increase"
+  | "price"
+  | "unit"
+  | "code"
 >;
 
 export interface InvoiceProductData

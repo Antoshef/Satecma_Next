@@ -17,16 +17,26 @@ export default async function handler(
     amount,
     vat,
     total,
-    company,
     type,
-  } = req.body as InvoiceData & { company: Company };
-  const table_name =
-    company === Company.ekoHome ? "eko_invoices_sent" : "satecma_invoices_sent";
+  } = req.body as InvoiceData;
+  const { company } = req.query;
+
+  const getTableName = (name: string) => {
+    switch (name) {
+      case Company.ekoHome:
+        return "eko_invoices_sent";
+      case Company.satecma:
+        return "satecma_invoices_sent";
+      default:
+        return null;
+    }
+  };
+  const table_name = getTableName(company as string);
 
   if (method === "GET") {
     try {
       const results = await queryAsync<InvoiceData[]>(
-        `SELECT * FROM eko_invoices_sent`,
+        `SELECT * FROM ${table_name}`,
       );
       if (!results) {
         return res.status(404).json({ message: "Invoices not found" });

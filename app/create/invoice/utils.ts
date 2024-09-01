@@ -26,15 +26,16 @@ export const getBankDetailsFromIban = (iban: string) => {
     iban,
     name: error ? "" : bank?.name || "",
     swift: error ? "" : bank?.swift || "",
-    error: iban.length !== 22,
+    error,
   };
 };
 
 export const calculateItemPrice = (item: Item) => {
+  const basePrice = item.price * item.quantity;
   const totalPrice =
     item.unit === StoreUnits.pcs
-      ? item.price * item.quantity
-      : item.price * item.quantity * Number(item.currentPackage);
+      ? basePrice
+      : basePrice * Number(item.currentPackage);
   return totalPrice.toFixed(2);
 };
 

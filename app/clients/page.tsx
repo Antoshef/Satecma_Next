@@ -25,6 +25,8 @@ import { ClientEditor } from "./utils/clientEditor";
 import useToast from "@/store/utils/useToast";
 import { fetchData } from "@/utils/fetchData";
 import Link from "next/link";
+import { setClients } from "../../lib/features/clients";
+import { useAppDispatch } from "../../lib/hooks";
 
 const createKey = (client: Client) => `${client.name}-${client.eik}`;
 
@@ -33,6 +35,7 @@ interface PageProps {
 }
 
 export default function ClientsPage({ data }: PageProps) {
+  const dispatch = useAppDispatch();
   const [filteredClients, setFilteredClients] = useState(data);
   const [order, setOrder] = useState<"asc" | "desc">("asc");
   const [orderBy, setOrderBy] = useState<keyof Client>("name");
@@ -124,6 +127,11 @@ export default function ClientsPage({ data }: PageProps) {
   useEffect(() => {
     setEditMode(!!selected);
   }, [selected]);
+
+  useEffect(() => {
+    if (!data.length) return;
+    dispatch(setClients(data));
+  }, [data]);
 
   return (
     <Box>

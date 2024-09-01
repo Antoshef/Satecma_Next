@@ -1,8 +1,10 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+
+import { memo, useEffect, useRef, useState } from "react";
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { CompanySelectField } from "../companySelectField";
+import { useRouter, usePathname } from "next/navigation";
 
 export function classNames(classes: string[]) {
   return [...(classes || "")].filter(Boolean).join(" ");
@@ -30,8 +32,9 @@ const navigation: NavigationItem[] = [
   },
 ];
 
-export default function Header() {
-  const [value, setValue] = useState<string>("/store");
+const Header = () => {
+  const router = useRouter();
+  const pathname = usePathname();
   const [openDropdown, setOpenDropdown] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -45,15 +48,9 @@ export default function Header() {
   };
 
   const handleChange = (path: string) => {
-    setValue(path);
     setOpenDropdown(false);
+    router.push(path);
   };
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setValue(window.location.pathname);
-    }
-  }, []);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -87,15 +84,15 @@ export default function Header() {
                           <a
                             href={item.href}
                             className={classNames([
-                              value === item.href ||
-                              (value.includes("/create") &&
+                              pathname === item.href ||
+                              (pathname?.includes("/create") &&
                                 item.name === "Създай")
                                 ? "bg-gray-900 text-white uppercase"
                                 : "text-gray-300 hover:bg-gray-700 hover:text-white",
                               "rounded-md px-3 py-2 text-sm font-medium cursor-pointer uppercase",
                             ])}
                             aria-current={
-                              value === item.href ? "page" : undefined
+                              pathname === item.href ? "page" : undefined
                             }
                             onClick={() => {
                               if (item.href) {
@@ -118,7 +115,7 @@ export default function Header() {
                                     key={subItem.name}
                                     href={subItem.href}
                                     className={classNames([
-                                      value === subItem.href
+                                      pathname === subItem.href
                                         ? "bg-gray-200"
                                         : "hover:bg-gray-100",
                                       "block px-4 py-2 text-sm text-gray-700",
@@ -165,13 +162,13 @@ export default function Header() {
                         as="a"
                         href={subitem.href}
                         className={classNames([
-                          value === subitem.href
+                          pathname === subitem.href
                             ? "bg-gray-900 text-white uppercase"
                             : "text-gray-300 hover:bg-gray-700 hover:text-white",
                           "block rounded-md px-3 py-2 text-base font-medium uppercase",
                         ])}
                         aria-current={
-                          value === subitem.href ? "page" : undefined
+                          pathname === subitem.href ? "page" : undefined
                         }
                         onClick={() =>
                           subitem.href && handleChange(subitem.href)
@@ -186,12 +183,12 @@ export default function Header() {
                       as="a"
                       href={item.href}
                       className={classNames([
-                        value === item.href
+                        pathname === item.href
                           ? "bg-gray-900 text-white uppercase"
                           : "text-gray-300 hover:bg-gray-700 hover:text-white",
                         "block rounded-md px-3 py-2 text-base font-medium uppercase",
                       ])}
-                      aria-current={value === item.href ? "page" : undefined}
+                      aria-current={pathname === item.href ? "page" : undefined}
                       onClick={() => item.href && handleChange(item.href)}
                     >
                       {item.name}
@@ -205,4 +202,6 @@ export default function Header() {
       </Disclosure>
     </div>
   );
-}
+};
+
+export default memo(Header);

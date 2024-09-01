@@ -2,6 +2,7 @@ import { fetchData } from "@/utils/fetchData";
 import CreatePage from "./page";
 import { InvoiceData, Product } from "./invoice/types";
 import { getInvoiceNumber } from "./invoice/utils";
+import { Company } from "./invoice/constants";
 
 export default async function CreateLayout() {
   const data = await fetchData<Product[]>(
@@ -14,7 +15,7 @@ export default async function CreateLayout() {
     });
 
   const invoiceIds = await fetchData<InvoiceData[]>(
-    "http://localhost:3000/api/create/invoice-sent",
+    `http://localhost:3000/api/create/invoice-sent?company=${Company.satecma}`,
   )
     .then((data) => getInvoiceNumber(data.data))
     .catch((error) => {

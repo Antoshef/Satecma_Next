@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import ClientProviders from "./ClientProviders";
+import dynamic from "next/dynamic";
+
+const ClientProviders = dynamic(() => import("./ClientProviders"), {
+  ssr: false,
+});
 
 export const metadata: Metadata = {
   title: "Satecma - Industrias Químicas S.A.",

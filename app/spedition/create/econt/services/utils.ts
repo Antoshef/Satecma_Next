@@ -3,7 +3,7 @@ import { EcontRestClient } from "../econtRestClient";
 import { City, Office, Shipment, ShippingLabel } from "./shipments/types";
 import { Receiver } from "../types";
 
-export const getCities = async () =>
+const getCities = async () =>
   EcontRestClient.request("Nomenclatures/NomenclaturesService.getCities.json", {
     countryCode: "BG",
   })
@@ -12,51 +12,51 @@ export const getCities = async () =>
       throw new Error(error);
     });
 
-export const getOffices = async () =>
+const getOffices = async () =>
   EcontRestClient.request(
     "Nomenclatures/NomenclaturesService.getOffices.json",
-    { countryCode: "BG" }
+    { countryCode: "BG" },
   )
     .then((res) => res.offices as Office[])
     .catch((error) => {
       throw new Error(error);
     });
 
-export const getClientProfiles = async () => {
+const getClientProfiles = async () => {
   EcontRestClient.request("Profile/ProfileService.getClientProfiles.json")
     .then((data) => console.log(data))
     .catch((error) => console.error(error));
 };
 
-export const getShipments = async () => {
+const getShipments = async () => {
   EcontRestClient.request("Shipments/ShipmentService.getMyAWB.json")
     .then((data) => data.results as Shipment[])
     .catch((error) => console.error(error));
 };
 
-export const getSpeedyOffices = async () => {
+const getSpeedyOffices = async () => {
   apiRequest("shipment")
     .then((data) => console.log(data, "DATA"))
     .catch((error) => console.error(error));
 };
 
-export const getPaymentReportService = async () => {
+const getPaymentReportService = async () => {
   EcontRestClient.request(
     "PaymentReport/PaymentReportService.PaymentReport.json",
     {
       dateFrom: "2024-05-01",
       dateTo: "2024-05-15",
       paymentType: "CASH",
-    }
+    },
   )
     .then((data) => console.log(data))
     .catch((error) => console.error(error));
 };
 
-export const getShipmentStatuses = async () => {
+const getShipmentStatuses = async () => {
   EcontRestClient.request(
     "Shipments/ShipmentService.getShipmentStatuses.json",
-    {}
+    {},
   )
     .then((data) => console.log(data))
     .catch((error) => console.error(error));
@@ -64,13 +64,13 @@ export const getShipmentStatuses = async () => {
 
 const validateAddress = async (receiver: Receiver) => {
   const isAddressValid = EcontRestClient.request(
-    "Nomenclatures/AddressService.validateAddress.json"
+    "Nomenclatures/AddressService.validateAddress.json",
     // { city: receiver.city, street: receiver.address, num: receiver.num }
   );
   return isAddressValid;
 };
 
-export const createLabel = async (receiver: Receiver) => {
+const createLabel = async (receiver: Receiver) => {
   const label = EcontRestClient.request<{ label: ShippingLabel }>(
     "Shipments/LabelService.createLabel.json",
     {
@@ -87,7 +87,19 @@ export const createLabel = async (receiver: Receiver) => {
         },
         receiverOfficeCode: receiver.office.code,
       },
-    }
+    },
   );
   return label;
+};
+
+export const EcontUtils = {
+  getCities,
+  getOffices,
+  getClientProfiles,
+  getShipments,
+  getSpeedyOffices,
+  getPaymentReportService,
+  getShipmentStatuses,
+  validateAddress,
+  createLabel,
 };

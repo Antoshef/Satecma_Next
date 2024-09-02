@@ -1,9 +1,15 @@
 import useToast from "@/store/utils/useToast";
 import { fetchData } from "@/utils/fetchData";
 import { Button, Checkbox, Grid, Typography } from "@mui/material";
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import {
+  FormEvent,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { InvoiceBox } from ".";
-import { useAppSelector } from "../../../lib/hooks";
 import {
   Company,
   ECOHOME_COMPANY,
@@ -21,6 +27,7 @@ import {
   Product,
   Provider,
 } from "./types";
+import { CompanyContext } from "@/ClientProviders";
 
 interface InvoiceWrapperProps {
   data: Product[];
@@ -54,7 +61,7 @@ export const InvoiceWrapper = ({ data, invoiceIds }: InvoiceWrapperProps) => {
   const [invoiceData, setInvoiceData] = useState<InvoiceData>(
     INVOICE_DATA_DEFAULT_VALUES,
   );
-  const company = useAppSelector((state) => state.app.provider);
+  const { company } = useContext(CompanyContext);
   const { Toast, setMessage } = useToast();
 
   const invoiceNumber = useMemo(() => {

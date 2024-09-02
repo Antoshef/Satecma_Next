@@ -1,13 +1,12 @@
-import StoreProvider from "@/StoreProvider";
+import { EcontUtils } from "./create/econt/services/utils";
 
 export default function Spedition({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <StoreProvider>
-      <div className="p-4">{children}</div>
-    </StoreProvider>
-  );
+  const offices = EcontUtils.getOffices();
+  const cities = EcontUtils.getCities();
+
+  return <div className="p-4">{children}</div>;
 }

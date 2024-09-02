@@ -1,10 +1,9 @@
 import { Company } from "@/create/invoice/constants";
 import { Menu, Transition } from "@headlessui/react";
 import Image from "next/image";
-import { Fragment, useRef } from "react";
+import { Fragment, useContext, useRef } from "react";
 import { classNames } from "../header";
-import { useAppDispatch, useAppSelector } from "../../../lib/hooks";
-import { updateProvider } from "../../../lib/features/app";
+import { CompanyContext } from "@/ClientProviders";
 
 const satecma =
   "https://satecma.bg/wp-content/uploads/2024/04/favico-transparent.png";
@@ -13,8 +12,7 @@ const eko =
 
 export const CompanySelectField = () => {
   const selectRef = useRef<HTMLSelectElement>(null);
-  const company = useAppSelector((state) => state.app.provider);
-  const dispatch = useAppDispatch();
+  const { company, setCompany } = useContext(CompanyContext);
 
   // Function to trigger select box
   const handleClickLogo = () => {
@@ -22,9 +20,11 @@ export const CompanySelectField = () => {
   };
 
   const changeHandler = (value: Company) => {
-    dispatch(updateProvider(value));
+    setCompany(value);
     localStorage.setItem("company", JSON.stringify(value));
   };
+
+  console.log(company, "COMPANY");
 
   return (
     <Menu as="div" className="relative ml-3">

@@ -1,15 +1,15 @@
 import useToast from "@/store/utils/useToast";
 import { fetchData } from "@/utils/fetchData";
 import { Button } from "@mui/material";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useContext, useEffect, useRef, useState } from "react";
 import { OfferBox } from ".";
-import { useAppSelector } from "../../../lib/hooks";
 import {
   Company,
   ECOHOME_COMPANY,
   SATECMA_COMPANY,
 } from "../invoice/constants";
 import { Product } from "../invoice/types";
+import { CompanyContext } from "@/ClientProviders";
 
 interface OfferWrapperProps {
   data: Product[];
@@ -21,7 +21,7 @@ export const OfferWrapper = ({ data }: OfferWrapperProps) => {
   const offerRef = useRef<HTMLTableElement>(null);
   const [isFieldsDisabled, setIsFieldsDisabled] = useState<boolean>(false);
   const [heading, setHeading] = useState("Заглавие на офертата");
-  const company = useAppSelector((state) => state.app.provider);
+  const { company } = useContext(CompanyContext);
   const { Toast, setMessage } = useToast();
   const [recipient, setRecipient] = useState({
     name: "",

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { AdditionalServices, Package, Receiver, Sender } from "./types";
-import { useAppSelector } from "../../../../lib/hooks";
 import {
   INIT_SENDER,
   INIT_RECEIVER,
@@ -9,8 +8,8 @@ import {
 } from "./constants";
 
 export const useCreateEcontPackage = () => {
-  const cities = useAppSelector((state) => state.econt.cities);
-  const offices = useAppSelector((state) => state.econt.offices);
+  const cities = [];
+  const offices = [];
   const [sender, setSender] = useState<Sender>(INIT_SENDER);
   const [receiver, setReceiver] = useState<Receiver>(INIT_RECEIVER);
   const [packageData, setPackageData] = useState<Package>(INIT_PACKAGE);
@@ -53,7 +52,7 @@ export const useCreateEcontPackage = () => {
     setSender((state) => ({
       ...state,
       currentCityOffices: offices.filter(
-        (office) => office?.address?.city?.id === sender.city?.id
+        (office) => office?.address?.city?.id === sender.city?.id,
       ),
     }));
   }, [sender.city]);
@@ -62,7 +61,7 @@ export const useCreateEcontPackage = () => {
     setReceiver((state) => ({
       ...state,
       currentCityOffices: offices.filter(
-        (office) => office?.address?.city?.id === receiver.city?.id
+        (office) => office?.address?.city?.id === receiver.city?.id,
       ),
     }));
   }, [receiver.city]);

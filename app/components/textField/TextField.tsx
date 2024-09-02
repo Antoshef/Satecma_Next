@@ -1,7 +1,7 @@
 import { ChangeEvent } from "react";
 import { classNames } from "../header";
 
-interface TextFieldProps {
+interface TextFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   isFieldsDisabled: boolean;
   type: string;
   placeholder?: string;

@@ -26,10 +26,6 @@ const navigation: NavigationItem[] = [
       { name: "Оферта", href: "/create#offer" },
     ],
   },
-  {
-    name: "Логистика",
-    href: "/spedition",
-  },
 ];
 
 const Header = () => {

@@ -12,10 +12,10 @@ import { Product } from "../invoice/types";
 import { CompanyContext } from "@/ClientProviders";
 
 interface OfferWrapperProps {
-  data: Product[];
+  products: Product[];
 }
 
-export const OfferWrapper = ({ data }: OfferWrapperProps) => {
+export const OfferWrapper = ({ products }: OfferWrapperProps) => {
   const [error, setError] = useState<boolean>(false);
   const [provider, setProvider] = useState(ECOHOME_COMPANY);
   const offerRef = useRef<HTMLTableElement>(null);
@@ -69,7 +69,7 @@ export const OfferWrapper = ({ data }: OfferWrapperProps) => {
       <OfferBox
         heading={heading}
         isFieldsDisabled={isFieldsDisabled}
-        products={data}
+        products={products}
         provider={provider}
         ref={offerRef}
         recipient={recipient}

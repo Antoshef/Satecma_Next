@@ -28,9 +28,11 @@ import {
   Provider,
 } from "./types";
 import { CompanyContext } from "@/ClientProviders";
+import { Client } from "@/clients/utils/types";
 
 interface InvoiceWrapperProps {
-  data: Product[];
+  products: Product[];
+  clients: Client[];
   invoiceIds: {
     current: string;
     previous: string;
@@ -38,7 +40,11 @@ interface InvoiceWrapperProps {
   };
 }
 
-export const InvoiceWrapper = ({ data, invoiceIds }: InvoiceWrapperProps) => {
+export const InvoiceWrapper = ({
+  products,
+  clients,
+  invoiceIds,
+}: InvoiceWrapperProps) => {
   const [email, setEmail] = useState("");
   const [sendMailToRecepient, setSendMailToRecepient] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
@@ -148,7 +154,8 @@ export const InvoiceWrapper = ({ data, invoiceIds }: InvoiceWrapperProps) => {
       <Toast />
       <InvoiceBox
         provider={provider}
-        products={data}
+        products={products}
+        clients={clients}
         invoiceNumber={invoiceNumber}
         ref={invoiceRef}
         isFieldsDisabled={isFieldsDisabled}

@@ -1,16 +1,30 @@
 import { fetchData } from "@/utils/fetchData";
-import CreatePage from "./page";
+import { Create } from "./Create";
+import { Company } from "./invoice/constants";
 import { InvoiceData, Product } from "./invoice/types";
 import { getInvoiceNumber } from "./invoice/utils";
-import { Company } from "./invoice/constants";
+import { Client } from "@/clients/utils/types";
 
-export default async function CreateLayout() {
-  const data = await fetchData<Product[]>(
+export default async function CreateLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  const products = await fetchData<Product[]>(
     "http://localhost:3000/api/products/get",
   )
     .then((res) => res.data)
     .catch((error) => {
       console.error("Error:", error);
+      return [];
+    });
+
+  const clients = await fetchData<Client[]>(
+    "http://localhost:3000/api/clients/get",
+  )
+    .then((data) => data.data)
+    .catch((error) => {
+      console.error(error);
       return [];
     });
 
@@ -29,7 +43,8 @@ export default async function CreateLayout() {
 
   return (
     <main>
-      <CreatePage data={data} invoiceIds={invoiceIds} />
+      <Create products={products} clients={clients} invoiceIds={invoiceIds} />
+      {children}
     </main>
   );
 }

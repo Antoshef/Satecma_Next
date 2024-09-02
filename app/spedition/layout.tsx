@@ -1,12 +1,19 @@
 import { EcontUtils } from "./create/econt/services/utils";
+import { Spedition } from "./Spedition";
 
-export default function Spedition({
+export default async function SpeditionLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const offices = EcontUtils.getOffices();
-  const cities = EcontUtils.getCities();
+  const offices = await EcontUtils.getOffices();
+  const cities = await EcontUtils.getCities();
+  console.log(offices, "Offices");
 
-  return <div className="p-4">{children}</div>;
+  return (
+    <div className="p-4">
+      <Spedition econt={{ offices, cities }} />
+      {children}
+    </div>
+  );
 }

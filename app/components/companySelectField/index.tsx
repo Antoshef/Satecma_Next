@@ -24,8 +24,6 @@ export const CompanySelectField = () => {
     localStorage.setItem("company", JSON.stringify(value));
   };
 
-  console.log(company, "COMPANY");
-
   return (
     <Menu as="div" className="relative ml-3">
       <div>

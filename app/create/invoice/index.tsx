@@ -11,7 +11,7 @@ import { TextField } from "../../components/textField/TextField";
 import { TableItems } from "../table/tableItems";
 import { TableServices } from "../table/tableServices";
 import { useTableItems } from "../table/useTableItems";
-import { INIT_RECEIVER, SATECMA_LOGO } from "./constants";
+import { SATECMA_LOGO } from "./constants";
 import {
   InvoiceData,
   InvoiceIdType,
@@ -22,9 +22,12 @@ import {
   Product,
   Provider,
 } from "./types";
+import { Client } from "@/clients/utils/types";
+import CompanySuggestions from "./CompanySuggestions";
 
 interface InvoiceBoxProps {
   provider: Provider;
+  clients: Client[];
   products: Product[];
   invoiceNumber: string;
   isFieldsDisabled: boolean;
@@ -46,6 +49,7 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
   (
     {
       provider,
+      clients,
       products,
       invoiceNumber,
       isFieldsDisabled,
@@ -95,9 +99,10 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
     };
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
       setReceiver((state) => ({
         ...state,
-        [e.target.name]: e.target.value,
+        [name]: value,
       }));
     };
 
@@ -336,13 +341,11 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
                 Получател:
                 <br />
                 Име на фирма:{" "}
-                <TextField
-                  name="company"
-                  type="text"
-                  placeholder="Име на фирма"
-                  value={receiver.company}
+                <CompanySuggestions
+                  clients={clients}
+                  receiver={receiver}
+                  setReceiver={setReceiver}
                   isFieldsDisabled={isFieldsDisabled}
-                  onChange={onChange}
                 />
                 <br />
                 Град:{" "}

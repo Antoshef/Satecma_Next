@@ -1,30 +1,17 @@
-"use client";
-import { useUser } from "@auth0/nextjs-auth0/client";
-import { useState, useEffect } from "react";
+import { getSession } from "@auth0/nextjs-auth0";
 import AuthModal from "./components/authModal/authModal";
 
-export default function HomePage() {
-  const { user, isLoading } = useUser();
-  const [isModalOpen, setModalOpen] = useState(false);
-
-  useEffect(() => {
-    if (!isLoading && !user) {
-      setModalOpen(true);
-    }
-  }, [isLoading, user]);
-
-  const handleCloseModal = () => {
-    setModalOpen(false);
-  };
-
-  console.log(user);
+export default async function HomePage() {
+  const session = await getSession();
+  const user = session?.user || null;
+  const isModalOpen = !user;
 
   return (
     <div>
       <a href="/api/auth/login">Login</a>
       <div />
       <a href="/api/auth/logout">Logout</a>
-      <AuthModal open={isModalOpen} onClose={handleCloseModal} />
+      {isModalOpen && <AuthModal open={isModalOpen} />}
     </div>
   );
 }

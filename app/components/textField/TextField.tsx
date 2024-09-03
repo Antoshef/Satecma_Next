@@ -1,5 +1,5 @@
 import { ChangeEvent } from "react";
-import { classNames } from "../header";
+import { classNames } from "../navbar";
 
 interface TextFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   isFieldsDisabled: boolean;

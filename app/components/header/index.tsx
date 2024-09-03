@@ -5,6 +5,7 @@ import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { CompanySelectField } from "../companySelectField";
 import { useRouter, usePathname } from "next/navigation";
+import UserSelect from "./UserSelect";
 
 export function classNames(classes: string[]) {
   return [...(classes || "")].filter(Boolean).join(" ");
@@ -143,7 +144,7 @@ const Header = () => {
                   </button>
 
                   {/* Profile dropdown */}
-                  <CompanySelectField />
+                  <UserSelect />
                 </div>
               </div>
             </div>

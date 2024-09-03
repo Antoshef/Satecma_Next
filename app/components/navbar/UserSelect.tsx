@@ -1,8 +1,10 @@
+"use client";
 import { Avatar, Button } from "@mui/material";
 import React, { useState, useRef, useEffect } from "react";
 
-const UserSelect = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
+const UserSelect = ({ user }: { user: any }) => {
   const [open, setOpen] = useState(false);
+  const isLoggedIn = !!user;
   const anchorRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -85,21 +87,21 @@ const UserSelect = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
               Profile
             </button>
             {isLoggedIn ? (
-              <button
+              <a
+                href="/api/auth/logout"
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full"
                 role="menuitem"
-                onClick={handleClose}
               >
                 Logout
-              </button>
+              </a>
             ) : (
-              <button
+              <a
+                href="/api/auth/login"
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full"
                 role="menuitem"
-                onClick={handleClose}
               >
                 Login
-              </button>
+              </a>
             )}
           </div>
         </div>

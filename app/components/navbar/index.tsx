@@ -1,5 +1,7 @@
 import { getSession } from "@auth0/nextjs-auth0";
 import Link from "next/link";
+import UserSelect from "./UserSelect";
+import SubMenu from "../subMenu";
 
 export function classNames(classes: string[]) {
   return [...(classes || "")].filter(Boolean).join(" ");
@@ -57,9 +59,16 @@ export default async function Navbar() {
             <div className="flex flex-1 items-center justify-center sm:items-stretch">
               <div className="hidden sm:ml-6 sm:block">
                 <div role="navigation" className="flex space-x-4">
-                  {navigation.map((item) => (
-                    <div key={item.name} className="relative">
+                  {navigation.map((item) =>
+                    item.subItems ? (
+                      <SubMenu
+                        key={item.name}
+                        name={item.name}
+                        subItems={item.subItems}
+                      />
+                    ) : (
                       <Link
+                        key={item.name}
                         href={item.href || "#"}
                         className={classNames([
                           "text-gray-300 hover:bg-gray-700 hover:text-white",
@@ -68,26 +77,8 @@ export default async function Navbar() {
                       >
                         {item.name}
                       </Link>
-                      {item.subItems && (
-                        <div className="absolute left-0 mt-1 rounded-md shadow-lg bg-white">
-                          <div className="py-1">
-                            {item.subItems.map((subItem) => (
-                              <Link
-                                key={subItem.name}
-                                href={subItem.href || "#"}
-                                className={classNames([
-                                  "hover:bg-gray-100",
-                                  "block px-4 py-2 text-sm text-gray-700",
-                                ])}
-                              >
-                                {subItem.name}
-                              </Link>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                    ),
+                  )}
                 </div>
               </div>
             </div>
@@ -116,7 +107,7 @@ export default async function Navbar() {
               </button>
 
               {/* Profile dropdown */}
-              {/* <UserSelect isLoggedIn={!!user} /> */}
+              <UserSelect user={user} />
             </div>
           </div>
         </div>

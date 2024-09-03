@@ -6,12 +6,5 @@ export default async function HomePage() {
   const user = session?.user || null;
   const isModalOpen = !user;
 
-  return (
-    <div>
-      <a href="/api/auth/login">Login</a>
-      <div />
-      <a href="/api/auth/logout">Logout</a>
-      {isModalOpen && <AuthModal open={isModalOpen} />}
-    </div>
-  );
+  return <div>{isModalOpen && <AuthModal open={isModalOpen} />}</div>;
 }

@@ -20,15 +20,17 @@ interface Session {
   token_type: string;
 }
 
-export default async function ProfileServer() {
+export default async function ProfilePage() {
   const response = (await getSession()) as Session;
   const { user } = response;
 
-  return user ? (
-    <div>
-      <img src={user.picture} alt={user.name} />
-      <h2>{user.name}</h2>
-      <p>{user.email}</p>
-    </div>
-  ) : null;
+  return (
+    user && (
+      <div>
+        <img src={user.picture || undefined} alt={user.name || undefined} />
+        <h2>{user.name}</h2>
+        <p>{user.email}</p>
+      </div>
+    )
+  );
 }

@@ -144,7 +144,7 @@ const Header = () => {
                   </button>
 
                   {/* Profile dropdown */}
-                  <UserSelect />
+                  <UserSelect isLoggedIn={false} />
                 </div>
               </div>
             </div>

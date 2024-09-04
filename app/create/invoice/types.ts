@@ -23,7 +23,7 @@ export interface Product {
 }
 
 export interface Provider {
-  name: Company;
+  name: string;
   eik: number;
   VAT: string;
   city: string;

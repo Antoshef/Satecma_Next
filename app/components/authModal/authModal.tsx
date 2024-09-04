@@ -1,12 +1,9 @@
 import { Modal, Button } from "@mui/material";
+import { user } from "../navbar";
 
-interface AuthModalProps {
-  open: boolean;
-}
-
-const AuthModal: React.FC<AuthModalProps> = ({ open }) => {
+const AuthModal: React.FC = () => {
   return (
-    <Modal open={open}>
+    <Modal open={!user}>
       <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
         <div className="bg-white rounded-lg p-6 shadow-lg w-80">
           <h2 className="text-xl font-semibold mb-4">Моля валедирайте се</h2>

@@ -1,8 +1,9 @@
 "use client";
+import { User } from "@/utils/getSession";
 import { Avatar, Button } from "@mui/material";
 import React, { useState, useRef, useEffect } from "react";
 
-const UserSelect = ({ user }: { user: any }) => {
+const UserSelect = ({ user }: { user: User | null }) => {
   const [open, setOpen] = useState(false);
   const isLoggedIn = !!user;
   const anchorRef = useRef<HTMLButtonElement>(null);
@@ -61,12 +62,16 @@ const UserSelect = ({ user }: { user: any }) => {
         onClick={handleToggle}
         className="text-sm font-medium text-gray-700 bg-transparent"
       >
-        <Avatar alt="User Avatar" src="/path/to/avatar.png" className="mr-1" />
+        <Avatar
+          alt="User Avatar"
+          src={user?.picture || "/path/to/avatar.png"}
+          className="mr-1"
+        />
       </Button>
       {open && (
         <div
           ref={dropdownRef}
-          className="absolute right-0 mt-40 w-max rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
+          className="absolute text-center right-0 mt-40 w-max rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
         >
           <div
             className="py-1"
@@ -79,13 +84,13 @@ const UserSelect = ({ user }: { user: any }) => {
             <div className="block px-4 py-2 text-sm text-gray-700">
               User Name
             </div>
-            <button
+            <a
+              href="/profile"
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full"
               role="menuitem"
-              onClick={handleClose}
             >
               Profile
-            </button>
+            </a>
             {isLoggedIn ? (
               <a
                 href="/api/auth/logout"

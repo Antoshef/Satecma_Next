@@ -1,36 +1,56 @@
-import { getSession } from "@auth0/nextjs-auth0";
-
-interface Session {
-  user: {
-    given_name: string;
-    family_name: string;
-    nickname: string;
-    name: string;
-    picture: string;
-    updated_at: string;
-    email: string;
-    email_verified: boolean;
-    sub: string;
-    sid: string;
-  };
-  accessToken: string;
-  accessTokenScope: string;
-  accessTokenExpiresAt: number;
-  idToken: string;
-  token_type: string;
-}
+import { fetchData } from "@/utils/fetchData";
+import { Avatar, Card, CardContent, Typography } from "@mui/material";
+import { Provider } from "@/create/invoice/types";
+import { user } from "@/components/navbar";
 
 export default async function ProfilePage() {
-  const response = (await getSession()) as Session;
-  const { user } = response;
+  const provider = await fetchData<Provider>(
+    "http://localhost:3000/api/profile/get",
+  )
+    .then((data) => data.data)
+    .catch((error) => {
+      console.error(error);
+      return null;
+    });
+
+  console.log(provider, "PROVIDER");
 
   return (
-    user && (
-      <div>
-        <img src={user.picture || undefined} alt={user.name || undefined} />
-        <h2>{user.name}</h2>
-        <p>{user.email}</p>
-      </div>
+    provider && (
+      <Card sx={{ maxWidth: 345, margin: "auto", mt: 5 }}>
+        <CardContent>
+          <Avatar
+            alt={user.name}
+            src={user.picture || undefined}
+            sx={{ width: 56, height: 56, margin: "auto" }}
+          />
+          <Typography variant="h5" component="div" align="center" mt={2}>
+            {user.name}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" align="center">
+            EIK: {provider.eik}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" align="center">
+            VAT: {provider.VAT}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" align="center">
+            City: {provider.city}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" align="center">
+            Address: {provider.address}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" align="center">
+            Director: {provider.director}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" align="center">
+            Phone: {provider.phone}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" align="center">
+            Bank Details: {provider.bankDetails.name},{" "}
+            {provider.bankDetails.iban}, {provider.bankDetails.swift}
+          </Typography>
+        </CardContent>
+      </Card>
     )
   );
 }

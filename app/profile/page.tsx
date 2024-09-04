@@ -13,8 +13,6 @@ export default async function ProfilePage() {
       return null;
     });
 
-  console.log(provider, "PROVIDER");
-
   return (
     provider && (
       <Card sx={{ maxWidth: 345, margin: "auto", mt: 5 }}>
@@ -26,6 +24,9 @@ export default async function ProfilePage() {
           />
           <Typography variant="h5" component="div" align="center" mt={2}>
             {user.name}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" align="center">
+            Company: {provider.name}
           </Typography>
           <Typography variant="body2" color="text.secondary" align="center">
             EIK: {provider.eik}

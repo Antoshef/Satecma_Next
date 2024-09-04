@@ -1,10 +1,8 @@
-// pages/api/user.ts
-import { Company } from "@/create/invoice/constants";
 import { Provider } from "@/create/invoice/types";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 const providerData: Provider = {
-  name: Company.satecma,
+  name: "Сатекма ЕООД",
   eik: 123456789,
   VAT: "BG123456789",
   city: "City Name",
@@ -20,7 +18,7 @@ const providerData: Provider = {
 
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Provider>,
+  res: NextApiResponse<{ data: Provider; status: number }>,
 ) {
-  res.status(200).json(providerData);
+  res.status(200).json({ data: providerData, status: 200 });
 }

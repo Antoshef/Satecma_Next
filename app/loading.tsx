@@ -1,15 +1,13 @@
-import clsx from "clsx";
+// app/loading.tsx
+import React from "react";
+import Spinner from "./components/Spinner";
 
-const dots = "mx-[1px] inline-block h-1 w-1 animate-blink rounded-md";
-
-const LoadingDots = ({ className }: { className: string }) => {
+const Loading = () => {
   return (
-    <span className="mx-2 inline-flex items-center">
-      <span className={clsx(dots, className)} />
-      <span className={clsx(dots, "animation-delay-[200ms]", className)} />
-      <span className={clsx(dots, "animation-delay-[400ms]", className)} />
-    </span>
+    <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-75">
+      <Spinner />
+    </div>
   );
 };
 
-export default LoadingDots;
+export default Loading;

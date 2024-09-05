@@ -10,6 +10,22 @@ export default async function HomePage() {
         <p className="text-2xl mt-6 text-gray-600">
           Оптимизирайте бизнес операциите си с лекота
         </p>
+        <div className="mt-6 flex justify-center space-x-4">
+          <a
+            href="/api/auth/login"
+            className="px-4 py-2 uppercase font-bold bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition"
+          >
+            Вход
+          </a>
+        </div>
+        <div className="mt-6 flex justify-center space-x-4">
+          <a
+            href="/api/auth/logout"
+            className="px-4 py-2 uppercase font-bold bg-red-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition"
+          >
+            Изход
+          </a>
+        </div>
       </header>
 
       <section className="my-12 bg-white p-8 rounded-lg shadow-md">

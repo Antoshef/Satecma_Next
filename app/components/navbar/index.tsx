@@ -1,20 +1,6 @@
 import Link from "next/link";
 import UserSelect from "./UserSelect";
 import SubMenu from "../subMenu";
-import { User } from "@/utils/getSession";
-
-export const user: User = {
-  given_name: "John",
-  family_name: "Doe",
-  nickname: "johndoe",
-  name: "John Doe",
-  picture: "https://example.com/johndoe.jpg",
-  updated_at: "2021-10-07T12:00:00.000Z",
-  email: "",
-  email_verified: false,
-  sub: "auth0|1234567890",
-  sid: "1234567890",
-};
 
 export function classNames(classes: string[]) {
   return [...(classes || "")].filter(Boolean).join(" ");
@@ -38,7 +24,7 @@ const navigation: NavigationItem[] = [
   },
 ];
 
-export default function Navbar() {
+export default async function Navbar() {
   return (
     <div className="relative z-10">
       <nav className="bg-gray-800">
@@ -117,7 +103,7 @@ export default function Navbar() {
               </button>
 
               {/* Profile dropdown */}
-              <UserSelect user={user} />
+              <UserSelect />
             </div>
           </div>
         </div>

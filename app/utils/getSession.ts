@@ -22,7 +22,7 @@ export interface Session {
   token_type: string;
 }
 
-export async function getSession(): Promise<Session | null> {
+export async function getSession(): Promise<Session> {
   const session = await originalGetSession();
-  return session as Session | null;
+  return session as Session;
 }

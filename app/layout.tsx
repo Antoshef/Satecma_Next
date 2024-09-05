@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "./components/navbar";
 import { Suspense } from "react";
+import { UserProvider } from "@auth0/nextjs-auth0/client";
 
 export const metadata: Metadata = {
   title: "Satecma - Industrias Químicas S.A.",
@@ -20,10 +21,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Navbar />
-        <Suspense>
-          <main>{children}</main>
-        </Suspense>
+        <UserProvider>
+          <Navbar />
+          <Suspense>
+            <main>{children}</main>
+          </Suspense>
+        </UserProvider>
       </body>
     </html>
   );

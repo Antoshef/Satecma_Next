@@ -1,32 +1,18 @@
 "use client";
-import { User } from "@/utils/getSession";
 import { Avatar, Button } from "@mui/material";
 import React, { useState, useRef, useEffect } from "react";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
-const UserSelect = ({ user }: { user: User | null }) => {
+const UserSelect = () => {
+  const { user } = useUser();
   const [open, setOpen] = useState(false);
-  const isLoggedIn = !!user;
   const anchorRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const isLoggedIn = !!user;
 
+  console.log(user, "U");
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
-  };
-
-  const handleClose = (event: MouseEvent | React.MouseEvent<EventTarget>) => {
-    if (
-      anchorRef.current &&
-      anchorRef.current.contains(event.target as HTMLElement)
-    ) {
-      return;
-    }
-
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(event.target as HTMLElement)
-    ) {
-      setOpen(false);
-    }
   };
 
   const handleListKeyDown = (event: React.KeyboardEvent) => {
@@ -45,13 +31,6 @@ const UserSelect = ({ user }: { user: User | null }) => {
 
     prevOpen.current = open;
   }, [open]);
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClose);
-    return () => {
-      document.removeEventListener("mousedown", handleClose);
-    };
-  }, []);
 
   return (
     <div className="relative flex items-center">

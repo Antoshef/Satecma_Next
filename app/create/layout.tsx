@@ -1,14 +1,18 @@
 import { fetchData } from "@/utils/fetchData";
-import { Create } from "./Create";
 import { Company } from "./invoice/constants";
-import { InvoiceData, Product } from "./invoice/types";
+import { InvoiceData, Product, Provider } from "./invoice/types";
 import { getInvoiceNumber } from "./invoice/utils";
 import { Client } from "@/clients/utils/types";
+import { ProviderContextProvider } from "@/context/ProviderContext";
+import { ClientsContextProvider } from "@/context/ClientsContext";
+import { ProductsContextProvider } from "@/context/ProductsContext";
+import { InvoiceIdsContextProvider } from "@/context/InvoiceIdsContext";
+import { cloneElement } from "react";
 
 export default async function CreateLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactElement;
 }>) {
   const products = await fetchData<Product[]>(
     "http://localhost:3000/api/products/get",
@@ -41,10 +45,18 @@ export default async function CreateLayout({
       };
     });
 
+  const provider = await fetchData<Provider>(
+    "http://localhost:3000/api/profile/get",
+  ).then((res) => res.data);
+
   return (
     <main>
-      <Create products={products} clients={clients} invoiceIds={invoiceIds} />
-      {children}
+      {cloneElement(children, {
+        products,
+        clients,
+        invoiceIds,
+        provider,
+      })}
     </main>
   );
 }

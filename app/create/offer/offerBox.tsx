@@ -1,74 +1,89 @@
+"use client";
+
 import { InputWrapper } from "@/components/input/wrapper";
 import { TextField } from "@/components/textField/TextField";
-import { Typography } from "@mui/material";
-import { Dispatch, forwardRef, SetStateAction, useState } from "react";
+import { Button, Typography } from "@mui/material";
+import { FormEvent, useRef, useState } from "react";
 import { SATECMA_LOGO } from "../invoice/constants";
 import { Product, Provider } from "../invoice/types";
 import { TableItems } from "../table/tableItems";
 import { TableServices } from "../table/tableServices";
 import { useTableItems } from "../table/useTableItems";
+import useToast from "@/store/utils/useToast";
+import { fetchData } from "@/utils/fetchData";
 
 interface OfferBoxProps {
   provider: Provider;
-  isFieldsDisabled: boolean;
   products: Product[];
-  heading: string;
-  recipient: {
-    name: string;
-    phone: string;
-    email: string;
-  };
-  setRecipient: Dispatch<
-    SetStateAction<{
-      name: string;
-      phone: string;
-      email: string;
-    }>
-  >;
-  setHeading: Dispatch<SetStateAction<string>>;
 }
 
-export const OfferBox = forwardRef<HTMLDivElement, OfferBoxProps>(
-  (
-    {
-      provider,
-      isFieldsDisabled,
-      products,
-      recipient,
-      heading,
-      setHeading,
-      setRecipient,
-    },
-    ref,
-  ) => {
-    const [selectedProduct, setSelectedProduct] = useState<Product | null>(
-      null,
+export const OfferBox = ({ products, provider }: OfferBoxProps) => {
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [application, setApplication] = useState({
+    warranty: 0,
+    delivery: 0,
+  });
+  const [showApplication, setShowApplication] = useState(false);
+  const [error, setError] = useState<boolean>(false);
+  const offerRef = useRef<HTMLTableElement>(null);
+  const [isFieldsDisabled, setIsFieldsDisabled] = useState<boolean>(false);
+  const [heading, setHeading] = useState("Заглавие на офертата");
+  const { Toast, setMessage } = useToast();
+  const [recipient, setRecipient] = useState({
+    name: "",
+    phone: "",
+    email: "",
+  });
+  const {
+    items,
+    services,
+    total,
+    addItem,
+    itemChangeHandler,
+    itemSelectHandler,
+    removeItem,
+    serviceChangeHandler,
+    serviceSelectHandler,
+  } = useTableItems({ selectedProduct, setSelectedProduct });
+
+  const productChangeHandler = (name: string | null) => {
+    setSelectedProduct(
+      products.find((product) => product.name === name) || null,
     );
-    const [application, setApplication] = useState({
-      warranty: 0,
-      delivery: 0,
-    });
-    const [showApplication, setShowApplication] = useState(false);
-    const {
-      items,
-      services,
-      total,
-      addItem,
-      itemChangeHandler,
-      itemSelectHandler,
-      removeItem,
-      serviceChangeHandler,
-      serviceSelectHandler,
-    } = useTableItems({ selectedProduct, setSelectedProduct });
+  };
 
-    const productChangeHandler = (name: string | null) => {
-      setSelectedProduct(
-        products.find((product) => product.name === name) || null,
-      );
-    };
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsFieldsDisabled(true);
+    const css = await fetch("/globals.css").then((res) => res.text());
+    try {
+      await fetchData("/api/create/offer", {
+        method: "POST",
+        body: JSON.stringify({
+          email: recipient.email,
+          name: recipient.name,
+          html: offerRef.current?.outerHTML,
+          css,
+          providerName: provider?.name,
+          heading,
+        }),
+      });
+      setMessage({
+        severity: "success",
+        text: "Офертата беше успешно изпратена.",
+      });
+    } catch (error) {
+      setMessage({
+        severity: "error",
+        text: "Грешка при изпращането на офертата.",
+      });
+    }
+  };
 
-    return (
-      <div ref={ref} className="send-box">
+  return (
+    <form className="p-4" onSubmit={onSubmit} id="offer">
+      <Toast />
+      <div ref={offerRef} className="send-box">
         <table>
           <tbody>
             <tr className="top">
@@ -92,7 +107,10 @@ export const OfferBox = forwardRef<HTMLDivElement, OfferBoxProps>(
                           value={recipient.name}
                           isFieldsDisabled={isFieldsDisabled}
                           onChange={(e) =>
-                            setRecipient({ ...recipient, name: e.target.value })
+                            setRecipient({
+                              ...recipient,
+                              name: e.target.value,
+                            })
                           }
                         />
                         <br />
@@ -309,6 +327,15 @@ export const OfferBox = forwardRef<HTMLDivElement, OfferBoxProps>(
           </span>
         </div>
       </div>
-    );
-  },
-);
+      <div className="invoice__button">
+        <Button
+          variant="contained"
+          disabled={error || isFieldsDisabled}
+          type="submit"
+        >
+          Създай
+        </Button>
+      </div>
+    </form>
+  );
+};

@@ -10,7 +10,6 @@ const UserSelect = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const isLoggedIn = !!user;
 
-  console.log(user, "U");
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };

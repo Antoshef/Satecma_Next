@@ -18,8 +18,8 @@ const navigation: NavigationItem[] = [
   {
     name: "Създай",
     subItems: [
-      { name: "Фактура", href: "/create#invoice" },
-      { name: "Оферта", href: "/create#offer" },
+      { name: "Фактура", href: "/create/invoice" },
+      { name: "Оферта", href: "/create/offer" },
     ],
   },
 ];

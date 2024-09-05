@@ -1,15 +1,9 @@
 import { fetchData } from "@/utils/fetchData";
-import { Avatar, Card, CardContent, Typography } from "@mui/material";
 import { Provider } from "@/create/invoice/types";
-import { cookies } from "next/headers";
+import { getSession } from "@/utils/getSession";
 
 export default async function ProfilePage() {
-  const cookieStore = cookies();
-  const userSession = cookieStore.get("userSession");
-
-  if (!userSession) {
-    return <p>Not Logged in. Please log in to view this page</p>;
-  }
+  const { user } = await getSession();
 
   const provider = await fetchData<Provider>(
     "http://localhost:3000/api/profile/get",
@@ -20,49 +14,33 @@ export default async function ProfilePage() {
       return null;
     });
 
-  const user = JSON.parse(userSession.value);
-
   return (
-    <Card sx={{ maxWidth: 345, margin: "auto", mt: 5 }}>
-      <CardContent>
-        <Avatar
-          alt={user.name}
-          src={user.picture || undefined}
-          sx={{ width: 56, height: 56, margin: "auto" }}
-        />
-        <Typography variant="h5" component="div" align="center" mt={2}>
-          {user.name}
-        </Typography>
+    <div className="max-w-sm mx-auto mt-5 bg-white shadow-md rounded-lg overflow-hidden">
+      <div className="p-6">
+        <div className="flex justify-center">
+          <img
+            className="w-14 h-14 rounded-full"
+            src={user.picture || undefined}
+            alt={user.name}
+          />
+        </div>
+        <h2 className="mt-4 text-center text-2xl font-bold">{user.name}</h2>
         {provider && (
-          <>
-            <Typography variant="body2" color="text.secondary" align="center">
-              Company: {provider.name}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" align="center">
-              EIK: {provider.eik}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" align="center">
-              VAT: {provider.VAT}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" align="center">
-              City: {provider.city}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" align="center">
-              Address: {provider.address}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" align="center">
-              Director: {provider.director}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" align="center">
-              Phone: {provider.phone}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" align="center">
+          <div className="mt-4 text-center text-gray-600">
+            <p>Company: {provider.name}</p>
+            <p>EIK: {provider.eik}</p>
+            <p>VAT: {provider.VAT}</p>
+            <p>City: {provider.city}</p>
+            <p>Address: {provider.address}</p>
+            <p>Director: {provider.director}</p>
+            <p>Phone: {provider.phone}</p>
+            <p>
               Bank Details: {provider.bankDetails.name},{" "}
               {provider.bankDetails.iban}, {provider.bankDetails.swift}
-            </Typography>
-          </>
+            </p>
+          </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

@@ -1,22 +1,11 @@
+"use client";
+
 import useToast from "@/store/utils/useToast";
 import { fetchData } from "@/utils/fetchData";
 import { Button, Checkbox, Grid, Typography } from "@mui/material";
-import {
-  FormEvent,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { InvoiceBox } from ".";
-import {
-  Company,
-  ECOHOME_COMPANY,
-  INIT_RECEIVER,
-  INVOICE_DATA_DEFAULT_VALUES,
-  SATECMA_COMPANY,
-} from "./constants";
+import { FormEvent, useMemo, useRef, useState } from "react";
+import { InvoiceBox } from "./invoiceBox";
+import { INIT_RECEIVER, INVOICE_DATA_DEFAULT_VALUES } from "./constants";
 import {
   InvoiceData,
   InvoiceIdType,
@@ -27,24 +16,21 @@ import {
   Product,
   Provider,
 } from "./types";
-import { CompanyContext } from "@/ClientProviders";
 import { Client } from "@/clients/utils/types";
 
-interface InvoiceWrapperProps {
+interface InvoicePageProps {
+  invoiceIds: LatestInvoices;
   products: Product[];
+  provider: Provider;
   clients: Client[];
-  invoiceIds: {
-    current: string;
-    previous: string;
-    proforma: string;
-  };
 }
 
-export const InvoiceWrapper = ({
-  products,
-  clients,
+const InvoicePage = ({
   invoiceIds,
-}: InvoiceWrapperProps) => {
+  products,
+  provider,
+  clients,
+}: InvoicePageProps) => {
   const [email, setEmail] = useState("");
   const [sendMailToRecepient, setSendMailToRecepient] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
@@ -60,14 +46,12 @@ export const InvoiceWrapper = ({
   const [invoiceType, setInvoiceType] = useState<InvoiceType>(
     InvoiceType.proforma,
   );
-  const [provider, setProvider] = useState<Provider>(ECOHOME_COMPANY);
   const invoiceRef = useRef<HTMLTableElement>(null);
   const [isFieldsDisabled, setIsFieldsDisabled] = useState<boolean>(false);
   const [items, setItems] = useState<Item[]>([]);
   const [invoiceData, setInvoiceData] = useState<InvoiceData>(
     INVOICE_DATA_DEFAULT_VALUES,
   );
-  const { company } = useContext(CompanyContext);
   const { Toast, setMessage } = useToast();
 
   const invoiceNumber = useMemo(() => {
@@ -125,7 +109,7 @@ export const InvoiceWrapper = ({
           css,
           sendMailToRecepient,
           invoiceType,
-          providerName: provider.name,
+          providerName: provider?.name,
           client: invoiceData.client,
         }),
       });
@@ -143,11 +127,7 @@ export const InvoiceWrapper = ({
     }
   };
 
-  useEffect(() => {
-    setProvider(
-      company === Company.ekoHome ? ECOHOME_COMPANY : SATECMA_COMPANY,
-    );
-  }, [company]);
+  if (!provider) return null;
 
   return (
     <form className="p-4" onSubmit={onSubmit} id="invoice">
@@ -199,3 +179,5 @@ export const InvoiceWrapper = ({
     </form>
   );
 };
+
+export default InvoicePage;

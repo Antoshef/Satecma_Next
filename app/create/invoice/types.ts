@@ -62,6 +62,11 @@ export interface InvoiceData {
   type: InvoiceType;
 }
 
+export type IInvoiceIds = Pick<
+  LatestInvoices,
+  "current" | "previous" | "proforma"
+>;
+
 export interface LatestInvoices {
   current: string;
   previous: string;

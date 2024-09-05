@@ -1,5 +1,5 @@
 import { StoreUnits } from "../../store/utils/types";
-import { InvoiceData, Item } from "./types";
+import { IInvoiceIds, InvoiceData, Item } from "./types";
 
 const bankCodes = {
   STSA: { name: "Банка ДСК", swift: "STSABGSF" },
@@ -39,7 +39,7 @@ export const calculateItemPrice = (item: Item) => {
   return totalPrice.toFixed(2);
 };
 
-export const getInvoiceNumber = (data: InvoiceData[]) => {
+export const getInvoiceNumber = (data: InvoiceData[]): IInvoiceIds => {
   const proformaInvoices = data.filter((d) => d.type === "proforma");
   const filteredCurrentInvoice = data.filter((d) =>
     d.invoice_id.startsWith("10000"),

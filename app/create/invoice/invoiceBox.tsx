@@ -1,18 +1,15 @@
-import { InputWrapper } from "@/components/input/wrapper";
+"use client";
+
+import useToast from "@/store/utils/useToast";
+import { fetchData } from "@/utils/fetchData";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import {
-  Dispatch,
-  forwardRef,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
-import { SelectField } from "../../components/selectField/SelectField";
-import { TextField } from "../../components/textField/TextField";
-import { TableItems } from "../table/tableItems";
-import { TableServices } from "../table/tableServices";
-import { useTableItems } from "../table/useTableItems";
-import { SATECMA_LOGO } from "./constants";
+  INIT_RECEIVER,
+  INVOICE_DATA_DEFAULT_VALUES,
+  SATECMA_LOGO,
+} from "./constants";
 import {
+  IInvoiceIds,
   InvoiceData,
   InvoiceIdType,
   InvoiceReceiver,
@@ -23,425 +20,518 @@ import {
   Provider,
 } from "./types";
 import { Client } from "@/clients/utils/types";
+import { Checkbox, Typography, Button, Grid } from "@mui/material";
+import { useTableItems } from "../table/useTableItems";
+import { InputWrapper } from "@/components/input/wrapper";
+import { SelectField } from "@/components/selectField/SelectField";
+import { TableItems } from "../table/tableItems";
+import { TableServices } from "../table/tableServices";
 import CompanySuggestions from "./CompanySuggestions";
+import { TextField } from "@/components/textField/TextField";
 
 interface InvoiceBoxProps {
   provider: Provider;
   clients: Client[];
   products: Product[];
-  invoiceNumber: string;
-  isFieldsDisabled: boolean;
-  invoiceData: InvoiceData;
-  invoiceIdType: InvoiceIdType;
-  invoiceType: InvoiceType;
-  receiver: InvoiceReceiver;
-  setReceiver: Dispatch<SetStateAction<InvoiceReceiver>>;
-  setEmail: (email: string) => void;
-  setError: (error: boolean) => void;
-  submitItems: (items: Item[]) => void;
-  setInvoiceData: Dispatch<SetStateAction<InvoiceData>>;
-  setInvoiceIdType: Dispatch<SetStateAction<InvoiceIdType>>;
-  setLatestInvoiceNumbers: Dispatch<SetStateAction<LatestInvoices>>;
-  setInvoiceType: Dispatch<SetStateAction<InvoiceType>>;
+  invoiceIds: IInvoiceIds;
 }
 
-export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
-  (
-    {
-      provider,
-      clients,
-      products,
-      invoiceNumber,
-      isFieldsDisabled,
-      invoiceData,
-      invoiceIdType,
-      invoiceType,
-      receiver,
-      setReceiver,
-      setEmail,
-      setError,
-      submitItems,
-      setInvoiceType,
-      setInvoiceData,
-      setInvoiceIdType,
-      setLatestInvoiceNumbers,
-    },
-    ref,
-  ) => {
-    const [selectedProduct, setSelectedProduct] = useState<Product | null>(
-      null,
+const InvoiceBox = ({
+  clients,
+  invoiceIds,
+  products,
+  provider,
+}: InvoiceBoxProps) => {
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [wordPrice, setWordPrice] = useState("");
+  const [reason, setReason] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("По Банка");
+  const [email, setEmail] = useState("");
+  const [sendMailToRecepient, setSendMailToRecepient] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
+  const [receiver, setReceiver] = useState<InvoiceReceiver>(INIT_RECEIVER);
+  const [latestInvoiceNumbers, setLatestInvoiceNumbers] =
+    useState<LatestInvoices>({
+      ...invoiceIds,
+      manual: "",
+    });
+  const [invoiceIdType, setInvoiceIdType] = useState<InvoiceIdType>(
+    InvoiceIdType.current,
+  );
+  const [invoiceType, setInvoiceType] = useState<InvoiceType>(
+    InvoiceType.proforma,
+  );
+  const invoiceRef = useRef<HTMLTableElement>(null);
+  const [isFieldsDisabled, setIsFieldsDisabled] = useState<boolean>(false);
+  const [invoiceData, setInvoiceData] = useState<InvoiceData>(
+    INVOICE_DATA_DEFAULT_VALUES,
+  );
+  const { Toast, setMessage } = useToast();
+
+  const invoiceNumber = useMemo(() => {
+    if (invoiceIdType === InvoiceIdType.manual) {
+      return latestInvoiceNumbers.manual || "";
+    }
+    if (invoiceType === InvoiceType.proforma) {
+      return latestInvoiceNumbers.proforma;
+    }
+    if (invoiceIdType === InvoiceIdType.current) {
+      return latestInvoiceNumbers.current;
+    }
+    return latestInvoiceNumbers.previous;
+  }, [invoiceIdType, latestInvoiceNumbers, invoiceType]);
+
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsFieldsDisabled(true);
+    const css = await fetch("/globals.css").then((res) => res.text());
+
+    try {
+      await fetchData("/api/create/invoice-sent", {
+        method: "POST",
+        body: JSON.stringify(invoiceData),
+      });
+
+      if (invoiceType === InvoiceType.invoice) {
+        if (items.length > 0) {
+          await fetchData("/api/products/update", {
+            method: "PUT",
+            body: JSON.stringify({ items }),
+          });
+        }
+      }
+      await fetchData("/api/clients/get", {
+        method: "POST",
+        body: JSON.stringify({
+          name: receiver.company,
+          city: receiver.city,
+          address: receiver.address,
+          eik: receiver.EIK,
+          vat: receiver.VAT,
+          director: receiver.director,
+          email: receiver.email,
+          phone: receiver.phone,
+        }),
+      });
+
+      await fetchData("/api/create/invoice", {
+        method: "POST",
+        body: JSON.stringify({
+          email,
+          invoiceNumber,
+          html: invoiceRef.current?.outerHTML,
+          css,
+          sendMailToRecepient,
+          invoiceType,
+          providerName: provider?.name,
+          client: invoiceData.client,
+        }),
+      });
+
+      setMessage({
+        text: "Фактурата е създадена успешно!",
+        severity: "success",
+      });
+    } catch (error) {
+      setMessage({
+        text: "Възникна грешка при създаването на фактурата.",
+        severity: "error",
+      });
+      setIsFieldsDisabled(false);
+    }
+  };
+
+  const invoiceTypeValues =
+    invoiceType === InvoiceType.invoice
+      ? [InvoiceIdType.current, InvoiceIdType.previous, InvoiceIdType.manual]
+      : [InvoiceIdType.current, InvoiceIdType.manual];
+
+  const {
+    items,
+    services,
+    total,
+    addItem,
+    itemChangeHandler,
+    itemSelectHandler,
+    removeItem,
+    serviceChangeHandler,
+    serviceSelectHandler,
+  } = useTableItems({ selectedProduct, setSelectedProduct });
+
+  const productChangeHandler = (name: string | null) => {
+    setSelectedProduct(
+      products.find((product) => product.name === name) || null,
     );
-    const [wordPrice, setWordPrice] = useState("");
-    const [reason, setReason] = useState("");
-    const [paymentMethod, setPaymentMethod] = useState("По Банка");
+  };
 
-    const invoiceTypeValues =
-      invoiceType === InvoiceType.invoice
-        ? [InvoiceIdType.current, InvoiceIdType.previous, InvoiceIdType.manual]
-        : [InvoiceIdType.current, InvoiceIdType.manual];
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setReceiver((state) => ({
+      ...state,
+      [name]: value,
+    }));
+  };
 
-    const {
+  const paymentMethodHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setPaymentMethod(e.target.value);
+  };
+
+  useEffect(() => {
+    setEmail(receiver.email);
+  }, [receiver.email, setEmail]);
+
+  useEffect(() => {
+    setReceiver((state) => ({
+      ...state,
+      VAT: receiver.EIK ? `BG${receiver.EIK}` : "",
+    }));
+  }, [receiver.EIK]);
+
+  useEffect(() => {
+    setError(!wordPrice || !invoiceNumber);
+  }, [wordPrice, invoiceNumber, setError]);
+
+  useEffect(() => {
+    setInvoiceData((state) => ({
+      ...state,
       items,
-      services,
-      total,
-      addItem,
-      itemChangeHandler,
-      itemSelectHandler,
-      removeItem,
-      serviceChangeHandler,
-      serviceSelectHandler,
-    } = useTableItems({ selectedProduct, setSelectedProduct });
+      total: total.paid,
+      invoiceNumber,
+      receiver,
+    }));
+  }, [receiver, total, invoiceNumber]);
 
-    const productChangeHandler = (name: string | null) => {
-      setSelectedProduct(
-        products.find((product) => product.name === name) || null,
-      );
-    };
-
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target;
-      setReceiver((state) => ({
-        ...state,
-        [name]: value,
-      }));
-    };
-
-    const paymentMethodHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      setPaymentMethod(e.target.value);
-    };
-
-    useEffect(() => {
-      setEmail(receiver.email);
-    }, [receiver.email, setEmail]);
-
-    useEffect(() => {
-      setReceiver((state) => ({
-        ...state,
-        VAT: receiver.EIK ? `BG${receiver.EIK}` : "",
-      }));
-    }, [receiver.EIK]);
-
-    useEffect(() => {
-      setError(!wordPrice.length || invoiceNumber.length !== 10);
-    }, [wordPrice, invoiceNumber, setError]);
-
-    useEffect(() => {
-      submitItems(items);
-    }, [items, submitItems]);
-
-    useEffect(() => {
-      setInvoiceData((state) => ({
-        ...state,
-        client: receiver.company,
-        eik: Number(receiver.EIK),
-        vat_number: receiver.VAT,
-        amount: total.netAmount,
-        vat: total.VAT,
-        total: total.paid,
-        invoice_id: invoiceNumber,
-        type: invoiceType,
-      }));
-    }, [receiver, total, invoiceNumber]);
-
-    return (
-      <div ref={ref} className="send-box">
-        <table cellPadding="0" cellSpacing="0">
-          <tbody>
-            <tr className="top">
-              <td colSpan={8}>
-                <table>
-                  <tbody>
-                    <tr>
-                      <td className="title">
-                        <img
-                          style={{ height: "auto", width: "auto" }}
-                          src={SATECMA_LOGO}
-                          alt="Satecma logo"
-                          width={420}
-                          height={95}
-                        />
-                        <br />
-                        <SelectField
-                          isFieldsDisabled={isFieldsDisabled}
-                          value={invoiceType}
-                          values={[InvoiceType.invoice, InvoiceType.proforma]}
-                          displayValues={[
-                            "Фактура Оригинал",
-                            "Проформа Фактура",
-                          ]}
-                          className="text-3xl mb"
-                          onChange={(e) =>
-                            setInvoiceType(e.target.value as InvoiceType)
-                          }
-                        />
-                        <br />
-                        {!isFieldsDisabled && (
+  return (
+    <div>
+      <form className="p-4" onSubmit={onSubmit} id="invoice">
+        <Toast />
+        <div ref={invoiceRef} className="send-box">
+          <table cellPadding="0" cellSpacing="0">
+            <tbody>
+              <tr className="top">
+                <td colSpan={8}>
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td className="title">
+                          <img
+                            style={{ height: "auto", width: "auto" }}
+                            src={SATECMA_LOGO}
+                            alt="Satecma logo"
+                            width={420}
+                            height={95}
+                          />
+                          <br />
                           <SelectField
                             isFieldsDisabled={isFieldsDisabled}
-                            value={invoiceIdType}
-                            values={invoiceTypeValues}
+                            value={invoiceType}
+                            values={[InvoiceType.invoice, InvoiceType.proforma]}
+                            displayValues={[
+                              "Фактура Оригинал",
+                              "Проформа Фактура",
+                            ]}
+                            className="text-3xl mb"
                             onChange={(e) =>
-                              setInvoiceIdType(e.target.value as InvoiceIdType)
+                              setInvoiceType(e.target.value as InvoiceType)
                             }
                           />
-                        )}
-                        <br />
-                        <span>
-                          Фактура №:{" "}
-                          {invoiceIdType === InvoiceIdType.manual ? (
-                            <TextField
-                              name="invoiceNumber"
-                              type="text"
-                              placeholder="0000000001"
-                              value={invoiceNumber}
+                          <br />
+                          {!isFieldsDisabled && (
+                            <SelectField
                               isFieldsDisabled={isFieldsDisabled}
-                              maxLength={10}
+                              value={invoiceIdType}
+                              values={invoiceTypeValues}
                               onChange={(e) =>
-                                setLatestInvoiceNumbers((state) => ({
+                                setInvoiceIdType(
+                                  e.target.value as InvoiceIdType,
+                                )
+                              }
+                            />
+                          )}
+                          <br />
+                          <span>
+                            Фактура №:{" "}
+                            {invoiceIdType === InvoiceIdType.manual ? (
+                              <TextField
+                                name="invoiceNumber"
+                                type="text"
+                                placeholder="0000000001"
+                                value={invoiceNumber}
+                                isFieldsDisabled={isFieldsDisabled}
+                                maxLength={10}
+                                onChange={(e) =>
+                                  setLatestInvoiceNumbers((state) => ({
+                                    ...state,
+                                    manual: e.target.value,
+                                  }))
+                                }
+                              />
+                            ) : (
+                              invoiceNumber
+                            )}
+                            {invoiceNumber.length !== 10 && (
+                              <>
+                                <br />
+                                <span className="invoiceBox__error">
+                                  Номера трябва да съдържа 10 символа
+                                </span>
+                              </>
+                            )}
+                          </span>
+                          <br />
+                          <span>
+                            Създадена:{" "}
+                            <TextField
+                              isFieldsDisabled={isFieldsDisabled}
+                              value={invoiceData.date}
+                              type="date"
+                              name="date"
+                              onChange={(e) =>
+                                setInvoiceData((state) => ({
                                   ...state,
-                                  manual: e.target.value,
+                                  date: e.target.value,
                                 }))
                               }
                             />
-                          ) : (
-                            invoiceNumber
-                          )}
-                          {invoiceNumber.length !== 10 && (
+                          </span>
+                        </td>
+
+                        <td>
+                          Доставчик: <br />
+                          Фирма: {provider.name}
+                          <br />
+                          ЕИК: {provider.eik}
+                          <br />
+                          ДДС №: BG{provider.eik}
+                          <br />
+                          Град: {provider.city}
+                          <br />
+                          Адрес: {provider.address}
+                          <br />
+                          МОЛ: {provider.director}
+                          <br />
+                          Телефон: {provider.phone}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+
+              <tr className="information">
+                <td colSpan={8}>
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td>
+                          Данъчна основа без отстъпка:{" "}
+                          {total.amountWithoutDiscount.toFixed(2)} BGN
+                          <br />
+                          Отстъпка: {total.discount.toFixed(2)} BGN
+                          <br />
+                          Общо НЕТО: {total.netAmount.toFixed(2)} BGN
+                          <br />
+                          Начислен ДДС (20.00 %): {total.VAT.toFixed(2)} BGN
+                          <br />
+                          Сума за плащане: {total.paid.toFixed(2)} BGN
+                          <br />
+                          Словом:{" "}
+                          <TextField
+                            name="wordPrice"
+                            type="text"
+                            placeholder="Сума на думи"
+                            value={wordPrice}
+                            isFieldsDisabled={isFieldsDisabled}
+                            onChange={(e) => setWordPrice(e.target.value)}
+                          />
+                          {!wordPrice.length && (
                             <>
                               <br />
                               <span className="invoiceBox__error">
-                                Номера трябва да съдържа 10 символа
+                                Полето не може да бъде празно
                               </span>
                             </>
                           )}
-                        </span>
-                        <br />
-                        <span>
-                          Създадена:{" "}
-                          <TextField
-                            isFieldsDisabled={isFieldsDisabled}
-                            value={invoiceData.date}
-                            type="date"
-                            name="date"
-                            onChange={(e) =>
-                              setInvoiceData((state) => ({
-                                ...state,
-                                date: e.target.value,
-                              }))
-                            }
-                          />
-                        </span>
-                      </td>
+                          <br />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
 
-                      <td>
-                        Доставчик: <br />
-                        Фирма: {provider.name}
-                        <br />
-                        ЕИК: {provider.eik}
-                        <br />
-                        ДДС №: BG{provider.eik}
-                        <br />
-                        Град: {provider.city}
-                        <br />
-                        Адрес: {provider.address}
-                        <br />
-                        МОЛ: {provider.director}
-                        <br />
-                        Телефон: {provider.phone}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </td>
-            </tr>
+              <tr className="bg-gray-700 text-white">
+                <td>№</td>
+                <td>Продукт / Услуга</td>
+                <td>Количество</td>
+                <td>Опаковка</td>
+                <td>Ед. цена</td>
+                <td>Отстъпка</td>
+                <td>ДДС</td>
+                <td>Стойност (без ДДС)</td>
+              </tr>
 
-            <tr className="information">
-              <td colSpan={8}>
-                <table>
-                  <tbody>
-                    <tr>
-                      <td>
-                        Данъчна основа без отстъпка:{" "}
-                        {total.amountWithoutDiscount.toFixed(2)} BGN
-                        <br />
-                        Отстъпка: {total.discount.toFixed(2)} BGN
-                        <br />
-                        Общо НЕТО: {total.netAmount.toFixed(2)} BGN
-                        <br />
-                        Начислен ДДС (20.00 %): {total.VAT.toFixed(2)} BGN
-                        <br />
-                        Сума за плащане: {total.paid.toFixed(2)} BGN
-                        <br />
-                        Словом:{" "}
-                        <TextField
-                          name="wordPrice"
-                          type="text"
-                          placeholder="Сума на думи"
-                          value={wordPrice}
-                          isFieldsDisabled={isFieldsDisabled}
-                          onChange={(e) => setWordPrice(e.target.value)}
-                        />
-                        {!wordPrice.length && (
-                          <>
-                            <br />
-                            <span className="invoiceBox__error">
-                              Полето не може да бъде празно
-                            </span>
-                          </>
-                        )}
-                        <br />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </td>
-            </tr>
+              <TableItems
+                items={items}
+                className="border-gray-800 border-b text-right"
+                isFieldsDisabled={isFieldsDisabled}
+                itemChangeHandler={itemChangeHandler}
+                itemSelectHandler={itemSelectHandler}
+                removeItem={removeItem}
+              />
 
-            <tr className="bg-gray-700 text-white">
-              <td>№</td>
-              <td>Продукт / Услуга</td>
-              <td>Количество</td>
-              <td>Опаковка</td>
-              <td>Ед. цена</td>
-              <td>Отстъпка</td>
-              <td>ДДС</td>
-              <td>Стойност (без ДДС)</td>
-            </tr>
+              <TableServices
+                services={services}
+                className="border-gray-800 border-b text-right"
+                isFieldsDisabled={isFieldsDisabled}
+                serviceChangeHandler={serviceChangeHandler}
+                serviceSelectHandler={serviceSelectHandler}
+                removeItem={removeItem}
+              />
 
-            <TableItems
-              items={items}
-              className="border-gray-800 border-b text-right"
-              isFieldsDisabled={isFieldsDisabled}
-              itemChangeHandler={itemChangeHandler}
-              itemSelectHandler={itemSelectHandler}
-              removeItem={removeItem}
+              <InputWrapper
+                size="small"
+                variant="standard"
+                data={products}
+                isFieldsDisabled={isFieldsDisabled}
+                selectedItem={selectedProduct}
+                onSubmit={addItem}
+                setSelectedItem={productChangeHandler}
+              />
+
+              <tr className="invoiceBox__companyData">
+                <td colSpan={4}>
+                  Получател:
+                  <br />
+                  Име на фирма:{" "}
+                  <CompanySuggestions
+                    clients={clients}
+                    receiver={receiver}
+                    setReceiver={setReceiver}
+                    isFieldsDisabled={isFieldsDisabled}
+                  />
+                  <br />
+                  Град:{" "}
+                  <TextField
+                    name="city"
+                    type="text"
+                    placeholder="Град"
+                    value={receiver.city}
+                    isFieldsDisabled={isFieldsDisabled}
+                    onChange={onChange}
+                  />
+                  <br />
+                  Адрес:{" "}
+                  <TextField
+                    name="address"
+                    type="text"
+                    placeholder="Адрес"
+                    value={receiver.address}
+                    isFieldsDisabled={isFieldsDisabled}
+                    onChange={onChange}
+                  />
+                  <br />
+                  ЕИК:{" "}
+                  <TextField
+                    name="EIK"
+                    type="text"
+                    placeholder="ЕИК"
+                    value={receiver.EIK}
+                    isFieldsDisabled={isFieldsDisabled}
+                    onChange={onChange}
+                  />
+                  <br />
+                  ДДС №:{" "}
+                  <TextField
+                    name="VAT"
+                    type="text"
+                    placeholder="ДДС №"
+                    value={receiver.VAT}
+                    isFieldsDisabled={isFieldsDisabled}
+                    onChange={onChange}
+                  />
+                  <br />
+                  МОЛ:{" "}
+                  <TextField
+                    name="director"
+                    type="text"
+                    placeholder="МОЛ"
+                    value={receiver.director}
+                    isFieldsDisabled={isFieldsDisabled}
+                    onChange={onChange}
+                  />
+                  <br />
+                  Е-Поща:{" "}
+                  <TextField
+                    name="email"
+                    type="text"
+                    placeholder="Е-Поща"
+                    value={receiver.email}
+                    isFieldsDisabled={isFieldsDisabled}
+                    onChange={onChange}
+                  />
+                </td>
+                <td colSpan={4}>
+                  Начин на плащане:
+                  <SelectField
+                    isFieldsDisabled={isFieldsDisabled}
+                    value={paymentMethod}
+                    values={["По Банка", "В Брой"]}
+                    onChange={paymentMethodHandler}
+                  />
+                  <br />
+                  {paymentMethod === "По Банка" && (
+                    <>
+                      Банкови реквизити: {provider.bankDetails.name}
+                      <br />
+                      BIC: {provider.bankDetails.swift}
+                      <br />
+                      IBAN: {provider.bankDetails.iban}
+                      <br />
+                    </>
+                  )}
+                  Основание на сделка по ЗДДС:
+                  <br />
+                  <TextField
+                    name="reason"
+                    type="text"
+                    placeholder="Основание на сделка по ЗДДС"
+                    value={reason}
+                    isFieldsDisabled={isFieldsDisabled}
+                    onChange={(e) => setReason(e.target.value)}
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <Grid container margin={2} justifyContent="center" alignItems="center">
+          <Grid
+            item
+            className="cursor-pointer"
+            onClick={() => setSendMailToRecepient(!sendMailToRecepient)}
+          >
+            <Checkbox
+              checked={sendMailToRecepient}
+              inputProps={{ "aria-label": "controlled" }}
             />
+            <Typography component="span" variant="body2">
+              Изпрати до получател
+            </Typography>
+          </Grid>
+        </Grid>
+        <div className="invoice__button">
+          <Button
+            variant="contained"
+            disabled={error || isFieldsDisabled}
+            type="submit"
+          >
+            Създай
+          </Button>
+        </div>
+      </form>
+    </div>
+  );
+};
 
-            <TableServices
-              services={services}
-              className="border-gray-800 border-b text-right"
-              isFieldsDisabled={isFieldsDisabled}
-              serviceChangeHandler={serviceChangeHandler}
-              serviceSelectHandler={serviceSelectHandler}
-              removeItem={removeItem}
-            />
-
-            <InputWrapper
-              size="small"
-              variant="standard"
-              data={products}
-              isFieldsDisabled={isFieldsDisabled}
-              selectedItem={selectedProduct}
-              onSubmit={addItem}
-              setSelectedItem={productChangeHandler}
-            />
-
-            <tr className="invoiceBox__companyData">
-              <td colSpan={4}>
-                Получател:
-                <br />
-                Име на фирма:{" "}
-                <CompanySuggestions
-                  clients={clients}
-                  receiver={receiver}
-                  setReceiver={setReceiver}
-                  isFieldsDisabled={isFieldsDisabled}
-                />
-                <br />
-                Град:{" "}
-                <TextField
-                  name="city"
-                  type="text"
-                  placeholder="Град"
-                  value={receiver.city}
-                  isFieldsDisabled={isFieldsDisabled}
-                  onChange={onChange}
-                />
-                <br />
-                Адрес:{" "}
-                <TextField
-                  name="address"
-                  type="text"
-                  placeholder="Адрес"
-                  value={receiver.address}
-                  isFieldsDisabled={isFieldsDisabled}
-                  onChange={onChange}
-                />
-                <br />
-                ЕИК:{" "}
-                <TextField
-                  name="EIK"
-                  type="text"
-                  placeholder="ЕИК"
-                  value={receiver.EIK}
-                  isFieldsDisabled={isFieldsDisabled}
-                  onChange={onChange}
-                />
-                <br />
-                ДДС №:{" "}
-                <TextField
-                  name="VAT"
-                  type="text"
-                  placeholder="ДДС №"
-                  value={receiver.VAT}
-                  isFieldsDisabled={isFieldsDisabled}
-                  onChange={onChange}
-                />
-                <br />
-                МОЛ:{" "}
-                <TextField
-                  name="director"
-                  type="text"
-                  placeholder="МОЛ"
-                  value={receiver.director}
-                  isFieldsDisabled={isFieldsDisabled}
-                  onChange={onChange}
-                />
-                <br />
-                Е-Поща:{" "}
-                <TextField
-                  name="email"
-                  type="text"
-                  placeholder="Е-Поща"
-                  value={receiver.email}
-                  isFieldsDisabled={isFieldsDisabled}
-                  onChange={onChange}
-                />
-              </td>
-              <td colSpan={4}>
-                Начин на плащане:
-                <SelectField
-                  isFieldsDisabled={isFieldsDisabled}
-                  value={paymentMethod}
-                  values={["По Банка", "В Брой"]}
-                  onChange={paymentMethodHandler}
-                />
-                <br />
-                {paymentMethod === "По Банка" && (
-                  <>
-                    Банкови реквизити: {provider.bankDetails.name}
-                    <br />
-                    BIC: {provider.bankDetails.swift}
-                    <br />
-                    IBAN: {provider.bankDetails.iban}
-                    <br />
-                  </>
-                )}
-                Основание на сделка по ЗДДС:
-                <br />
-                <TextField
-                  name="reason"
-                  type="text"
-                  placeholder="Основание на сделка по ЗДДС"
-                  value={reason}
-                  isFieldsDisabled={isFieldsDisabled}
-                  onChange={(e) => setReason(e.target.value)}
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    );
-  },
-);
+export default InvoiceBox;

@@ -1,183 +1,54 @@
-"use client";
-
-import useToast from "@/store/utils/useToast";
 import { fetchData } from "@/utils/fetchData";
-import { Button, Checkbox, Grid, Typography } from "@mui/material";
-import { FormEvent, useMemo, useRef, useState } from "react";
-import { InvoiceBox } from "./invoiceBox";
-import { INIT_RECEIVER, INVOICE_DATA_DEFAULT_VALUES } from "./constants";
-import {
-  InvoiceData,
-  InvoiceIdType,
-  InvoiceReceiver,
-  InvoiceType,
-  Item,
-  LatestInvoices,
-  Product,
-  Provider,
-} from "./types";
+import { Product, Provider, InvoiceData } from "../invoice/types";
 import { Client } from "@/clients/utils/types";
+import InvoiceBox from "./invoiceBox";
+import { getInvoiceNumber } from "./utils";
+import { Company } from "./constants";
 
-interface InvoicePageProps {
-  invoiceIds: LatestInvoices;
-  products: Product[];
-  provider: Provider;
-  clients: Client[];
-}
-
-const InvoicePage = ({
-  invoiceIds,
-  products,
-  provider,
-  clients,
-}: InvoicePageProps) => {
-  const [email, setEmail] = useState("");
-  const [sendMailToRecepient, setSendMailToRecepient] = useState<boolean>(true);
-  const [error, setError] = useState<boolean>(false);
-  const [receiver, setReceiver] = useState<InvoiceReceiver>(INIT_RECEIVER);
-  const [latestInvoiceNumbers, setLatestInvoiceNumbers] =
-    useState<LatestInvoices>({
-      ...invoiceIds,
-      manual: "",
+async function InvoicePage() {
+  const products = await fetchData<Product[]>(
+    "http://localhost:3000/api/products/get",
+  )
+    .then((res) => res.data)
+    .catch((error) => {
+      console.error("Error:", error);
+      return [];
     });
-  const [invoiceIdType, setInvoiceIdType] = useState<InvoiceIdType>(
-    InvoiceIdType.current,
-  );
-  const [invoiceType, setInvoiceType] = useState<InvoiceType>(
-    InvoiceType.proforma,
-  );
-  const invoiceRef = useRef<HTMLTableElement>(null);
-  const [isFieldsDisabled, setIsFieldsDisabled] = useState<boolean>(false);
-  const [items, setItems] = useState<Item[]>([]);
-  const [invoiceData, setInvoiceData] = useState<InvoiceData>(
-    INVOICE_DATA_DEFAULT_VALUES,
-  );
-  const { Toast, setMessage } = useToast();
 
-  const invoiceNumber = useMemo(() => {
-    if (invoiceIdType === InvoiceIdType.manual) {
-      return latestInvoiceNumbers.manual || "";
-    }
-    if (invoiceType === InvoiceType.proforma) {
-      return latestInvoiceNumbers.proforma;
-    }
-    if (invoiceIdType === InvoiceIdType.current) {
-      return latestInvoiceNumbers.current;
-    }
-    return latestInvoiceNumbers.previous;
-  }, [invoiceIdType, latestInvoiceNumbers, invoiceType]);
+  const clients = await fetchData<Client[]>(
+    "http://localhost:3000/api/clients/get",
+  )
+    .then((data) => data.data)
+    .catch((error) => {
+      console.error(error);
+      return [];
+    });
 
-  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsFieldsDisabled(true);
-    const css = await fetch("/globals.css").then((res) => res.text());
+  const invoiceIds = await fetchData<InvoiceData[]>(
+    `http://localhost:3000/api/create/invoice-sent?company=${Company.satecma}`,
+  )
+    .then((data) => getInvoiceNumber(data.data))
+    .catch((error) => {
+      console.error("Error:", error);
+      return {
+        current: "1000000000",
+        previous: "0000100000",
+        proforma: "0000000000",
+      };
+    });
 
-    try {
-      await fetchData("/api/create/invoice-sent", {
-        method: "POST",
-        body: JSON.stringify(invoiceData),
-      });
-
-      if (invoiceType === InvoiceType.invoice) {
-        if (items.length > 0) {
-          await fetchData("/api/products/update", {
-            method: "PUT",
-            body: JSON.stringify({ items }),
-          });
-        }
-      }
-      await fetchData("/api/clients/get", {
-        method: "POST",
-        body: JSON.stringify({
-          name: receiver.company,
-          city: receiver.city,
-          address: receiver.address,
-          eik: receiver.EIK,
-          vat: receiver.VAT,
-          director: receiver.director,
-          email: receiver.email,
-          phone: receiver.phone,
-        }),
-      });
-
-      await fetchData("/api/create/invoice", {
-        method: "POST",
-        body: JSON.stringify({
-          email,
-          invoiceNumber,
-          html: invoiceRef.current?.outerHTML,
-          css,
-          sendMailToRecepient,
-          invoiceType,
-          providerName: provider?.name,
-          client: invoiceData.client,
-        }),
-      });
-
-      setMessage({
-        text: "Фактурата е създадена успешно!",
-        severity: "success",
-      });
-    } catch (error) {
-      setMessage({
-        text: "Възникна грешка при създаването на фактурата.",
-        severity: "error",
-      });
-      setIsFieldsDisabled(false);
-    }
-  };
-
-  if (!provider) return null;
+  const provider = await fetchData<Provider>(
+    "http://localhost:3000/api/profile/get",
+  ).then((res) => res.data);
 
   return (
-    <form className="p-4" onSubmit={onSubmit} id="invoice">
-      <Toast />
-      <InvoiceBox
-        provider={provider}
-        products={products}
-        clients={clients}
-        invoiceNumber={invoiceNumber}
-        ref={invoiceRef}
-        isFieldsDisabled={isFieldsDisabled}
-        invoiceData={invoiceData}
-        invoiceIdType={invoiceIdType}
-        invoiceType={invoiceType}
-        receiver={receiver}
-        setReceiver={setReceiver}
-        setEmail={setEmail}
-        setError={setError}
-        submitItems={setItems}
-        setInvoiceData={setInvoiceData}
-        setInvoiceType={setInvoiceType}
-        setInvoiceIdType={setInvoiceIdType}
-        setLatestInvoiceNumbers={setLatestInvoiceNumbers}
-      />
-      <Grid container margin={2} justifyContent="center" alignItems="center">
-        <Grid
-          item
-          className="cursor-pointer"
-          onClick={() => setSendMailToRecepient(!sendMailToRecepient)}
-        >
-          <Checkbox
-            checked={sendMailToRecepient}
-            inputProps={{ "aria-label": "controlled" }}
-          />
-          <Typography component="span" variant="body2">
-            Изпрати до получател
-          </Typography>
-        </Grid>
-      </Grid>
-      <div className="invoice__button">
-        <Button
-          variant="contained"
-          disabled={error || isFieldsDisabled}
-          type="submit"
-        >
-          Създай
-        </Button>
-      </div>
-    </form>
+    <InvoiceBox
+      invoiceIds={invoiceIds}
+      products={products}
+      provider={provider}
+      clients={clients}
+    />
   );
-};
+}
 
 export default InvoicePage;

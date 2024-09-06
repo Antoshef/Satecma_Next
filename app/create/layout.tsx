@@ -3,10 +3,6 @@ import { Company } from "./invoice/constants";
 import { InvoiceData, Product, Provider } from "./invoice/types";
 import { getInvoiceNumber } from "./invoice/utils";
 import { Client } from "@/clients/utils/types";
-import { ProviderContextProvider } from "@/context/ProviderContext";
-import { ClientsContextProvider } from "@/context/ClientsContext";
-import { ProductsContextProvider } from "@/context/ProductsContext";
-import { InvoiceIdsContextProvider } from "@/context/InvoiceIdsContext";
 import { cloneElement } from "react";
 
 export default async function CreateLayout({

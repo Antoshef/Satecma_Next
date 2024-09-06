@@ -28,7 +28,7 @@ export const TextField = ({
   ...props
 }: TextFieldProps) => {
   const classes = classNames([
-    !!smallField ? "max-w-12" : "",
+    smallField ? "max-w-12" : "",
     "input-field",
     className || "",
   ]);

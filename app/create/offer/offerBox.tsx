@@ -11,6 +11,7 @@ import { TableServices } from "../table/tableServices";
 import { useTableItems } from "../table/useTableItems";
 import useToast from "@/store/utils/useToast";
 import { fetchData } from "@/utils/fetchData";
+import Image from "next/image";
 
 interface OfferBoxProps {
   provider: Provider;
@@ -92,7 +93,7 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
                   <tbody>
                     <tr>
                       <td className="title">
-                        <img
+                        <Image
                           style={{ height: "auto", width: "auto" }}
                           src={SATECMA_LOGO}
                           alt="Satecma logo"
@@ -254,8 +255,7 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
               <label className="switch">
                 <input
                   type="checkbox"
-                  //@ts-ignore
-                  onClick={(e) => setShowApplication(e.target.checked)}
+                  onClick={(e) => setShowApplication(e.currentTarget.checked)}
                 />
                 <span className="slider round"></span>
               </label>

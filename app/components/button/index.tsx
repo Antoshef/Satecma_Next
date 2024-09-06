@@ -13,7 +13,7 @@ export const Button = ({
   className,
   onClick,
 }: ButtonProps) => {
-  const classes = classNames([!!className ? className : "", "button"]);
+  const classes = classNames([className ? className : "", "button"]);
   return (
     <>
       {isFieldsDisabled ? (

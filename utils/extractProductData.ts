@@ -13,7 +13,7 @@ export function extractProductData(text: string) {
 
   const productRows: InvoiceProductData[] = [];
 
-  for (let row of rows) {
+  for (const row of rows) {
     const matches = Array.from(row.matchAll(pattern));
     for (const match of matches) {
       const [_, quantity, unit, packageSize, code, description, price, total] =

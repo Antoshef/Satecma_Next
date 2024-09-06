@@ -1,5 +1,4 @@
 import { StoreUnits } from "../../store/utils/types";
-import { Company } from "./constants";
 
 export interface Item
   extends Pick<Product, "name" | "code" | "price" | "unit" | "packing"> {

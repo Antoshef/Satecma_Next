@@ -14,7 +14,6 @@ import {
   InvoiceIdType,
   InvoiceReceiver,
   InvoiceType,
-  Item,
   LatestInvoices,
   Product,
   Provider,
@@ -28,6 +27,7 @@ import { TableItems } from "../table/tableItems";
 import { TableServices } from "../table/tableServices";
 import CompanySuggestions from "./CompanySuggestions";
 import { TextField } from "@/components/textField/TextField";
+import Image from "next/image";
 
 interface InvoiceBoxProps {
   provider: Provider;
@@ -199,7 +199,7 @@ const InvoiceBox = ({
       invoiceNumber,
       receiver,
     }));
-  }, [receiver, total, invoiceNumber]);
+  }, [receiver, total, invoiceNumber, items]);
 
   return (
     <div>
@@ -214,7 +214,7 @@ const InvoiceBox = ({
                     <tbody>
                       <tr>
                         <td className="title">
-                          <img
+                          <Image
                             style={{ height: "auto", width: "auto" }}
                             src={SATECMA_LOGO}
                             alt="Satecma logo"

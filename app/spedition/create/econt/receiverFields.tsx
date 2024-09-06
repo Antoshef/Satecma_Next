@@ -1,6 +1,6 @@
 import { Input, itemHandler } from "@/components/input";
 import { Checkbox, Grid, TextField, Typography } from "@mui/material";
-import { Address, City, Office } from "./services/shipments/types";
+import { City } from "./services/shipments/types";
 import { Receiver } from "./types";
 import { CSSTransition } from "react-transition-group";
 import { useRef } from "react";

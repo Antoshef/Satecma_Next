@@ -63,7 +63,7 @@ export default async function handler(
         (await fs.promises.writeFile(localFilePath, modifiedPdfBuffer));
 
       if (sendMailToRecepient) {
-        let transporter = nodemailer.createTransport({
+        const transporter = nodemailer.createTransport({
           host: process.env.IMAP_HOST,
           port: 465,
           secure: true,

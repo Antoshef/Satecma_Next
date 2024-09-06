@@ -6,7 +6,7 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 interface EnhancedTableToolbarProps {
   title: string;
   isSelected: boolean;
-  onEdit: (edit: boolean) => void;
+  onEdit?: (edit: boolean) => void;
 }
 
 export const EnhancedTableToolbar = ({
@@ -49,7 +49,7 @@ export const EnhancedTableToolbar = ({
       )}
       {isSelected ? (
         <Tooltip title="Edit">
-          <IconButton onClick={() => onEdit(true)}>
+          <IconButton onClick={() => onEdit?.(true)}>
             <EditIcon />
           </IconButton>
         </Tooltip>

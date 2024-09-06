@@ -28,13 +28,8 @@ import { TableServices } from "../table/tableServices";
 import CompanySuggestions from "./CompanySuggestions";
 import { TextField } from "@/components/textField/TextField";
 import Image from "next/image";
-import { InvoiceRequestBody } from "../../../pages/api/create/invoice";
-import {
-  createInvoice,
-  getClientData,
-  sendInvoiceData,
-  updateProducts,
-} from "./actions";
+import { createInvoice, getClientData, updateProducts } from "./actions";
+import { InvoiceRequestBody } from "../../../pages/api/create/invoiceUtils";
 
 interface InvoiceBoxProps {
   provider: Provider;
@@ -94,15 +89,6 @@ const InvoiceBox = ({
     const css = await fetch("/globals.css").then((res) => res.text());
 
     try {
-      await sendInvoiceData(invoiceData);
-
-      if (invoiceType === InvoiceType.original) {
-        if (items.length > 0) {
-          await updateProducts(items);
-        }
-      }
-      await getClientData(receiver);
-
       if (!invoiceRef.current?.outerHTML) {
         setMessage({
           text: "Възникна грешка при създаването на фактурата.",
@@ -110,6 +96,13 @@ const InvoiceBox = ({
         });
         return;
       }
+
+      if (invoiceType === InvoiceType.original) {
+        if (items.length > 0) {
+          await updateProducts(items);
+        }
+      }
+      await getClientData(receiver);
       const invoiceRequest: InvoiceRequestBody = {
         email,
         invoiceNumber,
@@ -120,7 +113,7 @@ const InvoiceBox = ({
         providerName: provider?.name,
         client: invoiceData.client,
       };
-      await createInvoice(invoiceRequest);
+      await createInvoice({ invoiceRequest, invoiceData });
 
       setMessage({
         text: "Фактурата е създадена успешно!",

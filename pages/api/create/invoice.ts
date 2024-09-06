@@ -1,29 +1,16 @@
-import fs from "fs";
-import Imap from "imap";
-import nodemailer from "nodemailer";
+import { InvoiceData } from "@/create/invoice/types";
 import { NextApiRequest, NextApiResponse } from "next";
-import {
-  addTextToPDF,
-  convertHTMLToPDF,
-} from "../../../utils/createPdfFromHtml";
-import { createDir } from "../../../utils/utils";
-import { InvoiceType } from "@/create/invoice/types";
+import { queryAsync } from "../../../utils/db";
+import { Company } from "@/create/invoice/constants";
+import { generateAndSendInvoice, InvoiceRequestBody } from "./invoiceUtils";
 
-// Define the interface for the request body
-export interface InvoiceRequestBody {
-  email: string;
-  invoiceNumber: string;
-  html: string;
-  css: string;
-  sendMailToRecepient: boolean;
-  invoiceType: InvoiceType;
-  providerName: string;
-  client: string;
+export interface IInvoice extends InvoiceData {
+  file_path: string;
 }
 
-// Extend the NextApiRequest interface to include the typed body
 interface TypedNextApiRequest extends NextApiRequest {
-  body: InvoiceRequestBody;
+  invoiceRequest: InvoiceRequestBody;
+  invoiceData: InvoiceData;
 }
 
 export default async function handler(
@@ -31,154 +18,126 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   const { method } = req;
-  if (method === "POST") {
-    const {
-      email,
-      invoiceNumber,
-      html,
-      css,
-      sendMailToRecepient,
-      invoiceType,
-      providerName,
-      client,
-    } = req.body;
-    const fileName = `${invoiceType}-${client}-${invoiceNumber}.pdf`;
-    const companyFolder = providerName;
-    const currentMonth = new Date().toLocaleString("default", {
-      month: "long",
-    });
-    const currentYear = new Date().getFullYear();
 
-    try {
-      if (!providerName) throw new Error("Provider name is missing.");
-      const baseDir = `/Users/antoshef/Satecma/invoices/${companyFolder}`;
-      createDir(baseDir);
-      createDir(`${baseDir}/Sent`);
-      createDir(`${baseDir}/Sent/${invoiceType}`);
-      createDir(`${baseDir}/Sent/${invoiceType}/${currentYear}`);
-      createDir(
-        `${baseDir}/Sent/${invoiceType}/${currentYear}/${currentMonth}`,
-      );
-      const localFilePath = `${baseDir}/Sent/${invoiceType}/${currentYear}/${currentMonth}/${fileName}`;
+  const { company } = req.query;
 
-      const pdfBuffer = await convertHTMLToPDF(html, css);
-      const modifiedPdfBuffer = pdfBuffer && (await addTextToPDF(pdfBuffer));
-
-      if (modifiedPdfBuffer) {
-        await fs.promises.writeFile(localFilePath, modifiedPdfBuffer);
-      }
-
-      if (sendMailToRecepient) {
-        const transporter = nodemailer.createTransport({
-          host: process.env.IMAP_HOST,
-          port: 465,
-          secure: true,
-          auth: {
-            user: process.env.NEXT_PUBLIC_OFFICE_EMAIL,
-            pass: process.env.EMAIL_PASS,
-          },
-        });
-
-        const mailOptions = {
-          from: process.env.NEXT_PUBLIC_OFFICE_EMAIL,
-          to: email,
-          subject: "Your Invoice",
-          text: "Please find attached your invoice.",
-          attachments: [
-            {
-              filename: fileName,
-              path: localFilePath,
-              contentType: "application/pdf",
-            },
-          ],
-        };
-
-        transporter.sendMail(mailOptions, (error, info) => {
-          if (error) {
-            console.log("Error occurred: " + error.message);
-            return;
-          }
-
-          console.log("Message sent: %s", info.messageId);
-
-          const imapConfig = {
-            user: process.env.NEXT_PUBLIC_OFFICE_EMAIL,
-            password: process.env.EMAIL_PASS,
-            host: process.env.IMAP_HOST,
-            port: 993,
-            tls: true,
-            tlsOptions: { rejectUnauthorized: false },
-          };
-
-          const imap = new Imap(imapConfig);
-
-          imap.once("ready", () => {
-            imap.openBox("INBOX", false, (err, box) => {
-              if (err) {
-                console.error("Error opening inbox:", err);
-                imap.end();
-                return;
-              }
-
-              const message = [
-                `From: ${mailOptions.from}`,
-                `To: ${mailOptions.to}`,
-                `Subject: ${mailOptions.subject}`,
-                `MIME-Version: 1.0`,
-                `Content-Type: multipart/mixed; boundary="boundary"`,
-                ``,
-                `--boundary`,
-                `Content-Type: text/plain; charset=utf-8`,
-                ``,
-                mailOptions.text,
-                ``,
-                `--boundary`,
-                `Content-Type: application/pdf; name="${mailOptions.attachments[0].filename}"`,
-                `Content-Disposition: attachment; filename="${mailOptions.attachments[0].filename}"`,
-                `Content-Transfer-Encoding: base64`,
-                ``,
-                fs
-                  .readFileSync(mailOptions.attachments[0].path)
-                  .toString("base64"),
-                ``,
-                `--boundary--`,
-                ``,
-              ].join("\r\n");
-
-              // Append the raw message to the Sent folder
-              imap.append(
-                message,
-                { mailbox: "INBOX.Sent", flags: ["\\Seen"] },
-                (err) => {
-                  if (err) {
-                    console.error("Error saving to Sent folder:", err);
-                  } else {
-                    console.log("Message saved to Sent folder");
-                  }
-                  imap.end();
-                },
-              );
-            });
-          });
-
-          imap.once("error", (err: any) => {
-            console.error("IMAP error:", err);
-          });
-
-          imap.once("end", () => {
-            console.log("IMAP connection ended");
-          });
-
-          imap.connect();
-        });
-
-        console.log("Email sent");
-      }
-
-      res.status(200).json({ message: "Invoice generated and sent!" });
-    } catch (error) {
-      console.error("Error in invoice generation or sending email:", error);
-      res.status(500).json({ message: "Error generating or sending invoice." });
+  const getTableName = (name: string) => {
+    switch (name) {
+      case Company.ekoHome:
+        return "eko_invoices_sent";
+      case Company.satecma:
+        return "satecma_invoices_sent";
+      default:
+        return null;
     }
+  };
+  const table_name = getTableName(company as string);
+
+  if (method === "GET") {
+    try {
+      const results = await queryAsync<InvoiceData[]>(
+        `SELECT * FROM eko_invoices_sent`,
+      );
+      if (!results) {
+        return res.status(404).json({ message: "Invoices not found" });
+      }
+      return res.status(200).json({ data: results });
+    } catch (error) {
+      console.error("GET error:", error);
+      return res.status(500).json({
+        message: "Internal server error",
+      });
+    }
+  }
+
+  if (method === "POST") {
+    try {
+      const { invoiceRequest, invoiceData } = req.body;
+
+      // Destructure fields from invoiceData
+      const {
+        client,
+        eik,
+        vat_number,
+        date,
+        invoice_id,
+        amount,
+        vat,
+        total,
+        type,
+      } = invoiceData;
+
+      // Check for missing required fields and invalid invoice ID length
+      const missingFields = [];
+      if (!client) missingFields.push("client");
+      if (!eik) missingFields.push("eik");
+      if (!vat_number) missingFields.push("vat_number");
+      if (!date) missingFields.push("date");
+      if (!invoice_id) missingFields.push("invoice_id");
+      if (!amount) missingFields.push("amount");
+      if (!vat) missingFields.push("vat");
+      if (!total) missingFields.push("total");
+      if (!type) missingFields.push("type");
+
+      if (missingFields.length > 0) {
+        return res.status(400).json({
+          message: `Missing required fields: ${missingFields.join(", ")}`,
+        });
+      }
+
+      if (!invoiceRequest) {
+        return res.status(400).json({ message: "Missing invoice request" });
+      }
+
+      if (invoice_id.length !== 10) {
+        return res.status(400).json({
+          message: "Invoice number must be 10 characters long",
+        });
+      }
+
+      // Generate and send invoice
+      const file_path = await generateAndSendInvoice(invoiceRequest);
+      if (!file_path) {
+        return res.status(500).json({ message: "Error generating invoice" });
+      }
+
+      // Insert into database only after successful invoice generation
+      const results = await queryAsync(
+        `
+        INSERT INTO eko_invoices_sent (client, eik, vat_number, date, invoice_id, amount, vat, total, type, file_path)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `,
+        [
+          client,
+          eik,
+          vat_number,
+          date,
+          invoice_id,
+          amount,
+          vat,
+          total,
+          type,
+          file_path,
+        ],
+      );
+
+      if (!results) {
+        return res
+          .status(500)
+          .json({ message: "Invoice not saved to the database" });
+      }
+
+      // Successfully sent and stored
+      return res
+        .status(200)
+        .json({ message: "Invoice sent and saved", file_path });
+    } catch (error) {
+      console.error("POST error:", error);
+      return res.status(500).json({
+        message: "Internal server error",
+      });
+    }
+  } else {
+    return res.status(405).json({ message: "Method Not Allowed" });
   }
 }

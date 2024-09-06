@@ -1,13 +1,6 @@
 import { fetchData } from "@/utils/fetchData";
-import { InvoiceRequestBody } from "../../../pages/api/create/invoice";
 import { InvoiceData, InvoiceReceiver, Item } from "./types";
-
-export const sendInvoiceData = async (invoiceData: InvoiceData) => {
-  return await fetchData("/api/create/invoice-sent", {
-    method: "POST",
-    body: JSON.stringify(invoiceData),
-  });
-};
+import { InvoiceRequestBody } from "../../../pages/api/create/invoiceUtils";
 
 export const updateProducts = async (items: Item[]) => {
   return await fetchData("/api/products/update", {
@@ -32,9 +25,15 @@ export const getClientData = async (receiver: InvoiceReceiver) => {
   });
 };
 
-export const createInvoice = async (invoiceRequest: InvoiceRequestBody) => {
+export const createInvoice = async ({
+  invoiceRequest,
+  invoiceData,
+}: {
+  invoiceRequest: InvoiceRequestBody;
+  invoiceData: InvoiceData;
+}) => {
   return await fetchData("/api/create/invoice", {
     method: "POST",
-    body: JSON.stringify(invoiceRequest),
+    body: JSON.stringify({ invoiceRequest, invoiceData }),
   });
 };

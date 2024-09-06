@@ -1,5 +1,5 @@
 import { ChangeEvent } from "react";
-import { classNames } from "../navbar";
+import { classNames } from "../sidePanel";
 
 interface SelectFieldProps {
   name?: string;

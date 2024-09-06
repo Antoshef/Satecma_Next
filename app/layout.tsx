@@ -1,8 +1,8 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import Navbar from "./components/navbar";
-import { Suspense } from "react";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
+import type { Metadata } from "next";
+import { Suspense } from "react";
+import SidePanel from "./components/sidePanel";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Satecma - Industrias Químicas S.A.",
@@ -20,12 +20,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className="h-full">
         <UserProvider>
-          <Navbar />
-          <Suspense>
-            <main>{children}</main>
-          </Suspense>
+          <div className="flex h-full">
+            <SidePanel />
+            <div className="flex-1 relative overflow-y-auto">
+              <Suspense>
+                <main className="p-4">{children}</main>
+              </Suspense>
+            </div>
+          </div>
         </UserProvider>
       </body>
     </html>

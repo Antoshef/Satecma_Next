@@ -3,7 +3,7 @@ import { Company } from "@/create/invoice/constants";
 import { Menu, Transition } from "@headlessui/react";
 import Image from "next/image";
 import { Fragment, useContext, useRef } from "react";
-import { classNames } from "../navbar";
+import { classNames } from "../sidePanel";
 
 const satecma =
   "https://satecma.bg/wp-content/uploads/2024/04/favico-transparent.png";

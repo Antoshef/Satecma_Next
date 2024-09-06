@@ -8,11 +8,27 @@ import {
 } from "../../../utils/createPdfFromHtml";
 import { createDir } from "../../../utils/utils";
 import { InvoiceType } from "@/create/invoice/types";
-import { Company } from "@/create/invoice/constants";
+
+// Define the interface for the request body
+export interface InvoiceRequestBody {
+  email: string;
+  invoiceNumber: string;
+  html: string;
+  css: string;
+  sendMailToRecepient: boolean;
+  invoiceType: InvoiceType;
+  providerName: string;
+  client: string;
+}
+
+// Extend the NextApiRequest interface to include the typed body
+interface TypedNextApiRequest extends NextApiRequest {
+  body: InvoiceRequestBody;
+}
 
 export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
+  req: TypedNextApiRequest,
+  res: NextApiResponse,
 ) {
   const { method } = req;
   if (method === "POST") {
@@ -26,16 +42,8 @@ export default async function handler(
       providerName,
       client,
     } = req.body;
-    const fileType = InvoiceType.invoice ? "фактура" : "проформа-фактура";
-    const fileName = `${fileType}-${client}-${invoiceNumber}.pdf`;
-    const invoiceFolder =
-      invoiceType === InvoiceType.invoice ? "фактури" : "проформа-фактури";
-    const companyFolder =
-      providerName === Company.ekoHome
-        ? "Еко Хоум"
-        : Company.satecma
-        ? "Сатекма"
-        : "";
+    const fileName = `${invoiceType}-${client}-${invoiceNumber}.pdf`;
+    const companyFolder = providerName;
     const currentMonth = new Date().toLocaleString("default", {
       month: "long",
     });
@@ -43,24 +51,22 @@ export default async function handler(
 
     try {
       if (!providerName) throw new Error("Provider name is missing.");
-      createDir(`/Users/antoshef/Satecma/фактури/${companyFolder}`);
-      createDir(`/Users/antoshef/Satecma/фактури/${companyFolder}/Издадени`);
+      const baseDir = `/Users/antoshef/Satecma/invoices/${companyFolder}`;
+      createDir(baseDir);
+      createDir(`${baseDir}/Sent`);
+      createDir(`${baseDir}/Sent/${invoiceType}`);
+      createDir(`${baseDir}/Sent/${invoiceType}/${currentYear}`);
       createDir(
-        `/Users/antoshef/Satecma/фактури/${companyFolder}/Издадени/${invoiceFolder}`
+        `${baseDir}/Sent/${invoiceType}/${currentYear}/${currentMonth}`,
       );
-      createDir(
-        `/Users/antoshef/Satecma/фактури/${companyFolder}/Издадени/${invoiceFolder}/${currentYear}`
-      );
-      createDir(
-        `/Users/antoshef/Satecma/фактури/${companyFolder}/Издадени/${invoiceFolder}/${currentYear}/${currentMonth}`
-      );
-      const localFilePath = `/Users/antoshef/Satecma/фактури/${companyFolder}/Издадени/${invoiceFolder}/${currentYear}/${currentMonth}/${fileName}`;
+      const localFilePath = `${baseDir}/Sent/${invoiceType}/${currentYear}/${currentMonth}/${fileName}`;
 
       const pdfBuffer = await convertHTMLToPDF(html, css);
       const modifiedPdfBuffer = pdfBuffer && (await addTextToPDF(pdfBuffer));
 
-      modifiedPdfBuffer &&
-        (await fs.promises.writeFile(localFilePath, modifiedPdfBuffer));
+      if (modifiedPdfBuffer) {
+        await fs.promises.writeFile(localFilePath, modifiedPdfBuffer);
+      }
 
       if (sendMailToRecepient) {
         const transporter = nodemailer.createTransport({
@@ -86,6 +92,7 @@ export default async function handler(
             },
           ],
         };
+
         transporter.sendMail(mailOptions, (error, info) => {
           if (error) {
             console.log("Error occurred: " + error.message);
@@ -149,7 +156,7 @@ export default async function handler(
                     console.log("Message saved to Sent folder");
                   }
                   imap.end();
-                }
+                },
               );
             });
           });

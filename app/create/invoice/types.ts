@@ -81,6 +81,6 @@ export enum InvoiceIdType {
 }
 
 export enum InvoiceType {
-  invoice = "original",
+  original = "original",
   proforma = "proforma",
 }

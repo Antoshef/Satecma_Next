@@ -61,7 +61,7 @@ export default async function HomePage() {
           <ul className="list-none text-lg space-y-4">
             <li className="group">
               <Link
-                href="/create#offer"
+                href="/create/offer"
                 className="block p-4 bg-gray-200 rounded-lg shadow-md transition transform hover:bg-gray-300 hover:scale-105"
               >
                 <span className="text-gray-800 group-hover:text-gray-900 font-medium">
@@ -71,7 +71,7 @@ export default async function HomePage() {
             </li>
             <li className="group">
               <Link
-                href="/create#invoice"
+                href="/create/invoice"
                 className="block p-4 bg-gray-200 rounded-lg shadow-md transition transform hover:bg-gray-300 hover:scale-105"
               >
                 <span className="text-gray-800 group-hover:text-gray-900 font-medium">

@@ -1,12 +1,12 @@
 "use client";
 
 import useToast from "@/store/utils/useToast";
-import { fetchData } from "@/utils/fetchData";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import {
   INIT_RECEIVER,
   INVOICE_DATA_DEFAULT_VALUES,
   SATECMA_LOGO,
+  VAT_PREFIX,
 } from "./constants";
 import {
   IInvoiceIds,
@@ -28,6 +28,13 @@ import { TableServices } from "../table/tableServices";
 import CompanySuggestions from "./CompanySuggestions";
 import { TextField } from "@/components/textField/TextField";
 import Image from "next/image";
+import { InvoiceRequestBody } from "../../../pages/api/create/invoice";
+import {
+  createInvoice,
+  getClientData,
+  sendInvoiceData,
+  updateProducts,
+} from "./actions";
 
 interface InvoiceBoxProps {
   provider: Provider;
@@ -87,46 +94,33 @@ const InvoiceBox = ({
     const css = await fetch("/globals.css").then((res) => res.text());
 
     try {
-      await fetchData("/api/create/invoice-sent", {
-        method: "POST",
-        body: JSON.stringify(invoiceData),
-      });
+      await sendInvoiceData(invoiceData);
 
-      if (invoiceType === InvoiceType.invoice) {
+      if (invoiceType === InvoiceType.original) {
         if (items.length > 0) {
-          await fetchData("/api/products/update", {
-            method: "PUT",
-            body: JSON.stringify({ items }),
-          });
+          await updateProducts(items);
         }
       }
-      await fetchData("/api/clients/get", {
-        method: "POST",
-        body: JSON.stringify({
-          name: receiver.company,
-          city: receiver.city,
-          address: receiver.address,
-          eik: receiver.EIK,
-          vat: receiver.VAT,
-          director: receiver.director,
-          email: receiver.email,
-          phone: receiver.phone,
-        }),
-      });
+      await getClientData(receiver);
 
-      await fetchData("/api/create/invoice", {
-        method: "POST",
-        body: JSON.stringify({
-          email,
-          invoiceNumber,
-          html: invoiceRef.current?.outerHTML,
-          css,
-          sendMailToRecepient,
-          invoiceType,
-          providerName: provider?.name,
-          client: invoiceData.client,
-        }),
-      });
+      if (!invoiceRef.current?.outerHTML) {
+        setMessage({
+          text: "Възникна грешка при създаването на фактурата.",
+          severity: "error",
+        });
+        return;
+      }
+      const invoiceRequest: InvoiceRequestBody = {
+        email,
+        invoiceNumber,
+        html: invoiceRef.current.outerHTML,
+        css,
+        sendMailToRecepient,
+        invoiceType,
+        providerName: provider?.name,
+        client: invoiceData.client,
+      };
+      await createInvoice(invoiceRequest);
 
       setMessage({
         text: "Фактурата е създадена успешно!",
@@ -142,7 +136,7 @@ const InvoiceBox = ({
   };
 
   const invoiceTypeValues =
-    invoiceType === InvoiceType.invoice
+    invoiceType === InvoiceType.original
       ? [InvoiceIdType.current, InvoiceIdType.previous, InvoiceIdType.manual]
       : [InvoiceIdType.current, InvoiceIdType.manual];
 
@@ -183,7 +177,7 @@ const InvoiceBox = ({
   useEffect(() => {
     setReceiver((state) => ({
       ...state,
-      VAT: receiver.EIK ? `BG${receiver.EIK}` : "",
+      VAT: receiver.EIK ? `${VAT_PREFIX}${receiver.EIK}` : "",
     }));
   }, [receiver.EIK]);
 
@@ -225,7 +219,10 @@ const InvoiceBox = ({
                           <SelectField
                             isFieldsDisabled={isFieldsDisabled}
                             value={invoiceType}
-                            values={[InvoiceType.invoice, InvoiceType.proforma]}
+                            values={[
+                              InvoiceType.original,
+                              InvoiceType.proforma,
+                            ]}
                             displayValues={[
                               "Фактура Оригинал",
                               "Проформа Фактура",

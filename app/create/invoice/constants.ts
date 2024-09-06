@@ -1,7 +1,7 @@
 import { InvoiceData, InvoiceReceiver, InvoiceType, Provider } from "./types";
-
+export const VAT_PREFIX = "BG";
 export const SATECMA_LOGO =
-  "http://satecma.bg/wp-content/uploads/2024/04/main-logo-dark.png";
+  "https://satecma.bg/wp-content/uploads/2024/04/main-logo-dark.png";
 
 export enum Company {
   satecma = "Сатекма ЕООД",

@@ -1,18 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { generateAndSendDocument } from "./documentUtils";
+import { DocumentRequestBody } from "./types";
 import { queryAsync } from "../../../utils/db";
-import { generateAndSendInvoice } from "./invoiceUtils";
-import { InvoiceRequestBody } from "./types";
 import { InvoiceData } from "@/create/invoice/types";
 
-export interface IInvoice extends InvoiceData {
-  file_path: string;
-}
-
 interface TypedNextApiRequest extends NextApiRequest {
-  body: {
-    invoiceRequest: InvoiceRequestBody;
-    invoiceData: InvoiceData;
-  };
+  body: DocumentRequestBody;
 }
 
 export default async function handler(
@@ -44,23 +37,23 @@ export default async function handler(
 
   if (method === "POST") {
     try {
-      const { invoiceRequest, invoiceData } = req.body;
+      const documentRequest = req.body;
 
       // Validate required fields
-      const missingFields: typeof requiredFields = [];
-      const requiredFields: (keyof InvoiceData)[] = [
+      const requiredFields: (keyof DocumentRequestBody)[] = [
+        "email",
+        "name",
+        "html",
+        "css",
+        "sendMailToRecepient",
+        "documentType",
+        "providerName",
         "client",
-        "eik",
-        "vat_number",
-        "date",
-        "invoice_id",
-        "amount",
-        "vat",
-        "total",
-        "type",
       ];
+      const missingFields: (keyof DocumentRequestBody)[] = [];
+
       requiredFields.forEach((field) => {
-        if (!invoiceData[field]) missingFields.push(field);
+        if (!documentRequest[field]) missingFields.push(field);
       });
 
       if (missingFields.length > 0) {
@@ -69,55 +62,16 @@ export default async function handler(
         });
       }
 
-      if (!invoiceRequest) {
-        return res.status(400).json({ message: "Missing invoice request" });
-      }
-
-      if (invoiceData.invoice_id.length !== 10) {
-        return res
-          .status(400)
-          .json({ message: "Invoice number must be 10 characters long" });
-      }
-
-      // Generate and send the invoice
-      const { path: filePath } = await generateAndSendInvoice(invoiceRequest);
+      // Generate and send the document
+      const { path: filePath } = await generateAndSendDocument(documentRequest);
       if (!filePath) {
-        return res.status(500).json({ message: "Error generating invoice" });
+        return res.status(500).json({ message: "Error generating document" });
       }
 
-      // Save the relative path to the database
-      const relativeFilePath = filePath.replace(
-        process.env.INVOICE_BASE_DIR || "",
-        "",
-      );
-
-      // Insert into database
-      const result = await queryAsync(
-        `INSERT INTO ${table_name} (client, eik, vat_number, date, invoice_id, amount, vat, total, type, file_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          invoiceData.client,
-          invoiceData.eik,
-          invoiceData.vat_number,
-          invoiceData.date,
-          invoiceData.invoice_id,
-          invoiceData.amount,
-          invoiceData.vat,
-          invoiceData.total,
-          invoiceData.type,
-          relativeFilePath,
-        ],
-      );
-
-      if (!result) {
-        return res
-          .status(500)
-          .json({ message: "Invoice not saved to the database" });
-      }
-
-      // Successfully saved the invoice
+      // Successfully saved the document
       return res.status(200).json({
-        message: "Invoice sent and saved",
-        file_path: relativeFilePath,
+        message: "Document generated and sent",
+        file_path: filePath,
       });
     } catch (error) {
       console.error("POST error:", error);

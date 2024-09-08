@@ -8,3 +8,24 @@ export interface InvoiceRequestBody {
   providerName: string;
   client: string;
 }
+
+export interface OfferRequestBody {
+  email: string;
+  name: string;
+  html: string;
+  css: string;
+  providerName: string;
+  heading: string;
+}
+
+export interface DocumentRequestBody {
+  email: string;
+  name: string;
+  html: string;
+  css: string;
+  sendMailToRecepient: boolean;
+  documentType: "invoice" | "offer";
+  providerName: string;
+  client: string;
+  heading?: string;
+}

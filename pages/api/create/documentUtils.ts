@@ -7,10 +7,10 @@ import {
   addTextToPDF,
 } from "../../../utils/createPdfFromHtml";
 import { createDir } from "../../../utils/utils";
-import { InvoiceRequestBody } from "./types";
+import { DocumentRequestBody } from "./types";
 
 // Utility to load base directory from environment
-const BASE_DIR = process.env.INVOICE_BASE_DIR || "/default/path/to/invoices";
+const BASE_DIR = process.env.DOCUMENT_BASE_DIR || "/default/path/to/documents";
 
 // Helper function to safely build file paths
 const safeJoin = (...segments: string[]) =>
@@ -20,28 +20,29 @@ const safeJoin = (...segments: string[]) =>
 const sanitizeFilename = (filename: string) =>
   filename.replace(/[^a-zA-Z0-9-_.]/g, "_");
 
-export const generateAndSendInvoice = async (
-  invoiceRequest: InvoiceRequestBody,
+export const generateAndSendDocument = async (
+  documentRequest: DocumentRequestBody,
 ) => {
   const {
     email,
-    invoiceNumber,
+    name,
     html,
     css,
     sendMailToRecepient,
-    invoiceType,
+    documentType,
     providerName,
     client,
-  } = invoiceRequest;
+    heading,
+  } = documentRequest;
 
   if (!providerName) throw new Error("Provider name is missing.");
 
   // Sanitize inputs to prevent directory traversal
   const sanitizedProviderName = sanitizeFilename(providerName);
   const sanitizedClient = sanitizeFilename(client);
-  const sanitizedInvoiceNumber = sanitizeFilename(invoiceNumber);
+  const sanitizedHeading = sanitizeFilename(heading || name);
 
-  const fileName = `${invoiceType}-${sanitizedClient}-${sanitizedInvoiceNumber}.pdf`;
+  const fileName = `${documentType}-${sanitizedClient}-${sanitizedHeading}.pdf`;
 
   const currentMonth = new Date().toLocaleString("default", { month: "long" });
   const currentYear = new Date().getFullYear();
@@ -51,7 +52,7 @@ export const generateAndSendInvoice = async (
   const sentDir = safeJoin(
     baseDir,
     "Sent",
-    invoiceType,
+    documentType,
     currentYear.toString(),
     currentMonth,
   );
@@ -72,7 +73,7 @@ export const generateAndSendInvoice = async (
     await fs.promises.writeFile(localFilePathAndName, modifiedPdfBuffer);
   } catch (error) {
     console.error("Error writing PDF to disk:", error);
-    throw new Error("Failed to save invoice PDF.");
+    throw new Error("Failed to save document PDF.");
   }
 
   if (sendMailToRecepient) {
@@ -90,8 +91,8 @@ export const generateAndSendInvoice = async (
     const mailOptions = {
       from: process.env.OFFICE_EMAIL,
       to: email,
-      subject: "Your Invoice",
-      text: "Please find attached your invoice.",
+      subject: `Your ${documentType}`,
+      text: `Please find attached your ${documentType}.`,
       attachments: [
         {
           filename: fileName,
@@ -110,7 +111,7 @@ export const generateAndSendInvoice = async (
       await saveEmailToSent(mailOptions);
     } catch (error) {
       console.error("Error sending email:", error);
-      throw new Error("Failed to send invoice email.");
+      throw new Error(`Failed to send ${documentType} email.`);
     }
   }
 

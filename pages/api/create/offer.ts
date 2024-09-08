@@ -1,160 +1,60 @@
-import fs from "fs";
-import Imap from "imap";
-import nodemailer from "nodemailer";
 import { NextApiRequest, NextApiResponse } from "next";
-import {
-  addTextToPDF,
-  convertHTMLToPDF,
-} from "../../../utils/createPdfFromHtml";
-import { createDir } from "../../../utils/utils";
-import { Company } from "@/create/invoice/constants";
+import { generateAndSendDocument } from "./documentUtils";
+import { DocumentRequestBody } from "./types";
+
+interface TypedNextApiRequest extends NextApiRequest {
+  body: DocumentRequestBody;
+}
 
 export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
+  req: TypedNextApiRequest,
+  res: NextApiResponse,
 ) {
   const { method } = req;
+
   if (method === "POST") {
-    const { email, name, html, css, providerName, heading } = req.body;
-    const fileName = `оферта-${heading}-${name}.pdf`;
-    const offerFolder = "оферти";
-    const companyFolder =
-      providerName === Company.ekoHome
-        ? "Еко Хоум"
-        : Company.satecma
-        ? "Сатекма"
-        : "";
-    const currentMonth = new Date().toLocaleString("default", {
-      month: "long",
-    });
-    const currentYear = new Date().getFullYear();
-
     try {
-      createDir(`/Users/antoshef/Satecma/фактури/${companyFolder}`);
-      createDir(`/Users/antoshef/Satecma/фактури/${companyFolder}/Издадени`);
-      createDir(
-        `/Users/antoshef/Satecma/фактури/${companyFolder}/Издадени/${offerFolder}`
-      );
-      createDir(
-        `/Users/antoshef/Satecma/фактури/${companyFolder}/Издадени/${offerFolder}/${currentYear}`
-      );
-      createDir(
-        `/Users/antoshef/Satecma/фактури/${companyFolder}/Издадени/${offerFolder}/${currentYear}/${currentMonth}`
-      );
-      const localFilePath = `/Users/antoshef/Satecma/фактури/${companyFolder}/Издадени/${offerFolder}/${currentYear}/${currentMonth}/${fileName}`;
+      const documentRequest = req.body;
 
-      const pdfBuffer = await convertHTMLToPDF(html, css);
-      const modifiedPdfBuffer = pdfBuffer && (await addTextToPDF(pdfBuffer));
-      modifiedPdfBuffer &&
-        (await fs.promises.writeFile(localFilePath, modifiedPdfBuffer));
+      // Validate required fields
+      const requiredFields: (keyof DocumentRequestBody)[] = [
+        "email",
+        "name",
+        "html",
+        "css",
+        "sendMailToRecepient",
+        "documentType",
+        "providerName",
+        "client",
+      ];
+      const missingFields: (keyof DocumentRequestBody)[] = [];
 
-      const transporter = nodemailer.createTransport({
-        host: process.env.IMAP_HOST,
-        port: 465,
-        secure: true,
-        auth: {
-          user: process.env.NEXT_PUBLIC_OFFICE_EMAIL,
-          pass: process.env.EMAIL_PASS,
-        },
+      requiredFields.forEach((field) => {
+        if (!documentRequest[field]) missingFields.push(field);
       });
 
-      const mailOptions = {
-        from: process.env.NEXT_PUBLIC_OFFICE_EMAIL,
-        to: email,
-        subject: "Your Offer",
-        text: "Please find attached your offer.",
-        attachments: [
-          {
-            filename: fileName,
-            path: localFilePath,
-            contentType: "application/pdf",
-          },
-        ],
-      };
-
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.log("Error occurred: " + error.message);
-          return;
-        }
-
-        console.log("Message sent: %s", info.messageId);
-
-        const imapConfig = {
-          user: process.env.NEXT_PUBLIC_OFFICE_EMAIL,
-          password: process.env.EMAIL_PASS,
-          host: process.env.IMAP_HOST,
-          port: 993,
-          tls: true,
-          tlsOptions: { rejectUnauthorized: false },
-        };
-
-        const imap = new Imap(imapConfig);
-
-        imap.once("ready", () => {
-          imap.openBox("INBOX", false, (err, box) => {
-            if (err) {
-              console.error("Error opening inbox:", err);
-              imap.end();
-              return;
-            }
-
-            const message = [
-              `From: ${mailOptions.from}`,
-              `To: ${mailOptions.to}`,
-              `Subject: ${mailOptions.subject}`,
-              `MIME-Version: 1.0`,
-              `Content-Type: multipart/mixed; boundary="boundary"`,
-              ``,
-              `--boundary`,
-              `Content-Type: text/plain; charset=utf-8`,
-              ``,
-              mailOptions.text,
-              ``,
-              `--boundary`,
-              `Content-Type: application/pdf; name="${mailOptions.attachments[0].filename}"`,
-              `Content-Disposition: attachment; filename="${mailOptions.attachments[0].filename}"`,
-              `Content-Transfer-Encoding: base64`,
-              ``,
-              fs
-                .readFileSync(mailOptions.attachments[0].path)
-                .toString("base64"),
-              ``,
-              `--boundary--`,
-              ``,
-            ].join("\r\n");
-
-            // Append the raw message to the Sent folder
-            imap.append(
-              message,
-              { mailbox: "INBOX.Sent", flags: ["\\Seen"] },
-              (err) => {
-                if (err) {
-                  console.error("Error saving to Sent folder:", err);
-                } else {
-                  console.log("Message saved to Sent folder");
-                }
-                imap.end();
-              }
-            );
-          });
+      if (missingFields.length > 0) {
+        return res.status(400).json({
+          message: `Missing required fields: ${missingFields.join(", ")}`,
         });
+      }
 
-        imap.once("error", (err: any) => {
-          console.error("IMAP error:", err);
-        });
+      // Generate and send the document
+      const { path: filePath } = await generateAndSendDocument(documentRequest);
+      if (!filePath) {
+        return res.status(500).json({ message: "Error generating document" });
+      }
 
-        imap.once("end", () => {
-          console.log("IMAP connection ended");
-        });
-
-        imap.connect();
+      // Successfully saved the document
+      return res.status(200).json({
+        message: "Document generated and sent",
+        file_path: filePath,
       });
-
-      res.status(200).json({ message: "Offer generated and sent!" });
     } catch (error) {
-      console.error("Error in offer generation or sending email:", error);
-      res.status(500).json({ message: "Error generating or sending offer." });
+      console.error("POST error:", error);
+      return res.status(500).json({ message: "Internal server error" });
     }
+  } else {
+    return res.status(405).json({ message: "Method Not Allowed" });
   }
 }

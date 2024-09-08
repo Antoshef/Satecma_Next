@@ -1,6 +1,6 @@
 import { fetchData } from "@/utils/fetchData";
 import { InvoiceData, InvoiceReceiver, Item } from "./types";
-import { InvoiceRequestBody } from "../../../pages/api/create/invoiceUtils";
+import { InvoiceRequestBody } from "../../../pages/api/create/types";
 
 export const updateProducts = async (items: Item[]) => {
   return await fetchData("/api/products/update", {

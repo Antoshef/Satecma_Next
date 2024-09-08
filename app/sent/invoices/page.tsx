@@ -12,8 +12,6 @@ async function InvoicesPage() {
       return [];
     });
 
-    console.log(invoices);
-
   return (
     <div>
       <h1>Invoices</h1>

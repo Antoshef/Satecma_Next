@@ -24,6 +24,7 @@ import { saveAs } from "file-saver";
 import { IInvoice } from "../../../pages/api/create/invoice";
 import { EnhancedTableHead, HeadCell } from "@/store/utils/enhancedTableHead";
 import { Order } from "@/store/utils/types";
+import { Company } from "@/create/invoice/constants";
 
 interface InvoicesTableProps {
   data: IInvoice[];
@@ -36,6 +37,7 @@ const invoiceHeadCells: HeadCell<IInvoice>[] = [
     disablePadding: false,
     label: "Invoice ID",
   },
+  { id: "date", numeric: false, disablePadding: false, label: "Date" },
   { id: "client", numeric: false, disablePadding: false, label: "Client" },
   { id: "eik", numeric: false, disablePadding: false, label: "EIK" },
   {
@@ -54,7 +56,7 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
   const [order, setOrder] = useState<Order>("asc");
   const [orderBy, setOrderBy] = useState<keyof IInvoice>("invoice_id");
   const [selected, setSelected] = useState<IInvoice[]>([]);
-  const [dense, setDense] = useState(false);
+  const [dense, setDense] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
 
@@ -125,10 +127,16 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
   );
 
   // Handle file download for a single PDF
-  const handleDownload = (filePath: string) => {
+  const handleDownload = (
+    company: string,
+    year: string,
+    month: string,
+    invoiceName: string,
+  ) => {
+    // Send the necessary parameters to the backend
     const link = document.createElement("a");
-    link.href = filePath;
-    link.setAttribute("download", "invoice.pdf"); // Provide a default name for download
+    link.href = `/api/invoices/download?company=${encodeURIComponent(company)}&year=${year}&month=${month}&invoiceName=${encodeURIComponent(invoiceName)}`;
+    link.setAttribute("download", `${invoiceName}.pdf`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -161,7 +169,7 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
   return (
     <Box>
       {/* Button to download selected invoices as zip */}
-      {selected.length > 0 && (
+      {selected.length > 1 && (
         <Grid container justifyContent="flex-end" sx={{ mb: 2 }}>
           <Button
             variant="contained"
@@ -174,7 +182,7 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
       )}
       <Paper sx={{ width: "100%", mb: 2 }}>
         <TableContainer>
-          <Table sx={{ minWidth: 750 }}>
+          <Table size={dense ? "small" : "medium"} sx={{ minWidth: 750 }}>
             <EnhancedTableHead
               headCells={invoiceHeadCells}
               order={order}
@@ -214,6 +222,7 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
                     >
                       {row.invoice_id}
                     </TableCell>
+                    <TableCell>{row.date}</TableCell>
                     <TableCell>{row.client}</TableCell>
                     <TableCell>{row.eik}</TableCell>
                     <TableCell>{row.vat_number}</TableCell>
@@ -225,7 +234,16 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
                       <Tooltip title="Download PDF">
                         <IconButton
                           aria-label="download invoice"
-                          onClick={() => handleDownload(row.file_path)} // Use file_path to download the PDF
+                          onClick={() =>
+                            handleDownload(
+                              "eko_invoices_sent",
+                              new Date(row.date).toLocaleString("default", {
+                                month: "long",
+                              }),
+                              new Date(row.date).getFullYear().toString(),
+                              row.invoice_id,
+                            )
+                          }
                         >
                           <DownloadIcon />
                         </IconButton>

@@ -29,7 +29,7 @@ import CompanySuggestions from "./CompanySuggestions";
 import { TextField } from "@/components/textField/TextField";
 import Image from "next/image";
 import { createInvoice, getClientData, updateProducts } from "./actions";
-import { InvoiceRequestBody } from "../../../pages/api/create/invoiceUtils";
+import { InvoiceRequestBody } from "../../../pages/api/create/types";
 
 interface InvoiceBoxProps {
   provider: Provider;

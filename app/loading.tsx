@@ -1,12 +1,22 @@
-// app/loading.tsx
 import React from "react";
-import Spinner from "./components/Spinner";
+import { CircularProgress, Container, Grid } from "@mui/material";
 
-const Loading = () => {
+const Loading: React.FC = () => {
   return (
-    <div className="inset-0 flex items-center justify-center bg-white bg-opacity-75">
-      <Spinner />
-    </div>
+    <Container className="flex justify-center items-center h-screen">
+      <Grid
+        container
+        spacing={0}
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        style={{ minHeight: "100vh" }}
+      >
+        <Grid item xs={3}>
+          <CircularProgress />
+        </Grid>
+      </Grid>
+    </Container>
   );
 };
 

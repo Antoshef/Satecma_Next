@@ -9,7 +9,6 @@ export const fetchData = async <T = undefined>(
         "Content-Type": "application/json",
       },
       body: init?.body || undefined,
-      cache: "default",
     });
 
     const data = await response.json();

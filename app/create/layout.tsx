@@ -1,6 +1,5 @@
 import { fetchData } from "@/utils/fetchData";
-import { Company } from "./invoice/constants";
-import { InvoiceData, Product, Provider } from "./invoice/types";
+import { InvoiceData, Product, Company } from "./invoice/types";
 import { getInvoiceNumber } from "./invoice/utils";
 import { Client } from "@/clients/utils/types";
 import { cloneElement } from "react";
@@ -19,9 +18,7 @@ export default async function CreateLayout({
       return [];
     });
 
-  const clients = await fetchData<Client[]>(
-    "http://localhost:3000/api/clients/get",
-  )
+  const clients = await fetchData<Client[]>("http://localhost:3000/api/clients")
     .then((data) => data.data)
     .catch((error) => {
       console.error(error);
@@ -29,7 +26,7 @@ export default async function CreateLayout({
     });
 
   const invoiceIds = await fetchData<InvoiceData[]>(
-    `http://localhost:3000/api/create/invoice-sent?company=${Company.satecma}`,
+    `http://localhost:3000/api/create/invoice`,
   )
     .then((data) => getInvoiceNumber(data.data))
     .catch((error) => {
@@ -41,9 +38,22 @@ export default async function CreateLayout({
       };
     });
 
-  const provider = await fetchData<Provider>(
-    "http://localhost:3000/api/profile/get",
-  ).then((res) => res.data);
+  // const provider = await fetchData<Company>(
+  //   "http://localhost:3000/api/company",
+  // ).then((res) => res.data);
+
+  const provider: Company = {
+    name: "Сатекма",
+    city: "София",
+    address: "ул. Люлин 33",
+    eik: 123456789,
+    VAT: "BG123456789",
+    director: "Стефан Стефанов",
+    phone: "0888888888",
+    iban: "BG123456789",
+    swift: "SWIFT",
+    bankName: "Банка",
+  };
 
   return (
     <main>

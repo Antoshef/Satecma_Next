@@ -80,7 +80,7 @@ export default function ClientsPage({ data }: PageProps) {
 
   const onEditSubmit = async (client: Client) => {
     try {
-      await fetchData("/api/clients/get", {
+      await fetchData("/api/clients", {
         method: "PUT",
         body: JSON.stringify(client),
       });
@@ -168,6 +168,9 @@ export default function ClientsPage({ data }: PageProps) {
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
+              onSelectAllClick={() => {}}
+              numSelected={0}
+              rowCount={filteredClients.length}
             />
             <TableBody>
               {visibleRows.map((row, index) => {

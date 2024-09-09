@@ -1,10 +1,10 @@
 "use client";
-import { Provider } from "@/create/invoice/types";
+import { Company } from "@/create/invoice/types";
 import React, { createContext, useContext } from "react";
 
 // Define the context type
 interface ProviderContextType {
-  provider: Provider;
+  provider: Company;
 }
 
 // Create the context
@@ -27,7 +27,7 @@ export const ProviderContextProvider = ({
   provider,
 }: {
   children: React.ReactNode;
-  provider: Provider;
+  provider: Company;
 }) => {
   return (
     <ProviderContext.Provider value={{ provider }}>

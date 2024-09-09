@@ -1,13 +1,14 @@
 import { fetchData } from "@/utils/fetchData";
-import { Provider } from "@/create/invoice/types";
+import { Company } from "@/create/invoice/types";
 import { Container } from "@mui/material";
 import ProfileDetails from "./profileDetails";
 import { Suspense } from "react";
 import Loading from "@/loading";
+import CompanySearch from "./companySearch";
 
 export default async function ProfilePage() {
-  const provider = await fetchData<Provider>(
-    "http://localhost:3000/api/profile/get",
+  const companies = await fetchData<Company>(
+    "http://localhost:3000/api/company",
   )
     .then((data) => data.data)
     .catch((error) => {
@@ -18,7 +19,8 @@ export default async function ProfilePage() {
   return (
     <Suspense fallback={<Loading />}>
       <Container>
-        {provider && <ProfileDetails provider={provider} />}
+        <CompanySearch />
+        {companies && <ProfileDetails companies={companies} />}
       </Container>
     </Suspense>
   );

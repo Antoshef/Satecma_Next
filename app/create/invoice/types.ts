@@ -21,7 +21,7 @@ export interface Product {
   quantity: string;
 }
 
-export interface Provider {
+export interface Company {
   name: string;
   eik: number;
   VAT: string;
@@ -29,7 +29,9 @@ export interface Provider {
   address: string;
   director: string;
   phone: string;
-  bankDetails: BankDetails;
+  iban: string;
+  swift: string;
+  bankName: string;
 }
 
 export interface InvoiceReceiver {
@@ -43,12 +45,6 @@ export interface InvoiceReceiver {
   director: string;
 }
 
-interface BankDetails {
-  iban: string;
-  swift: string;
-  name: string;
-}
-
 export interface InvoiceData {
   client: string;
   eik: number;
@@ -59,6 +55,7 @@ export interface InvoiceData {
   vat: number;
   total: number;
   type: InvoiceType;
+  file_path?: string;
 }
 
 export type IInvoiceIds = Pick<

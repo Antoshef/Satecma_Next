@@ -8,7 +8,7 @@ export default async function StoreLayout({
   children: React.ReactNode;
 }>) {
   const data = await fetchData<Client[]>(
-    "http://localhost:3000/api/clients/get",
+    "http://localhost:3000/api/clients",
   )
     .then((data) => data.data)
     .catch((error) => {

@@ -10,7 +10,7 @@ export const updateProducts = async (items: Item[]) => {
 };
 
 export const getClientData = async (receiver: InvoiceReceiver) => {
-  return await fetchData("/api/clients/get", {
+  return await fetchData("/api/clients", {
     method: "POST",
     body: JSON.stringify({
       name: receiver.company,

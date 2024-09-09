@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Provider } from "@/create/invoice/types";
+import { Company } from "@/create/invoice/types";
 import {
   TextField,
   Button,
@@ -15,12 +15,12 @@ import {
 import { useUser } from "@auth0/nextjs-auth0/client";
 
 interface ProfileDetailsProps {
-  provider: Provider;
+  companies: Company;
 }
 
-const ProfileDetails: React.FC<ProfileDetailsProps> = ({ provider }) => {
+const ProfileDetails: React.FC<ProfileDetailsProps> = ({ companies }) => {
   const { user, isLoading } = useUser();
-  const [formData, setFormData] = useState<Provider>(provider);
+  const [formData, setFormData] = useState<Company>(companies);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -172,8 +172,8 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ provider }) => {
                 <TextField
                   fullWidth
                   label="Bank Name"
-                  name="bankDetails.name"
-                  value={formData.bankDetails.name}
+                  name="bankName"
+                  value={formData.bankName}
                   onChange={handleChange}
                 />
               </Grid>
@@ -181,8 +181,8 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ provider }) => {
                 <TextField
                   fullWidth
                   label="IBAN"
-                  name="bankDetails.iban"
-                  value={formData.bankDetails.iban}
+                  name="iban"
+                  value={formData.iban}
                   onChange={handleChange}
                 />
               </Grid>
@@ -190,8 +190,8 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ provider }) => {
                 <TextField
                   fullWidth
                   label="SWIFT"
-                  name="bankDetails.swift"
-                  value={formData.bankDetails.swift}
+                  name="swift"
+                  value={formData.swift}
                   onChange={handleChange}
                 />
               </Grid>

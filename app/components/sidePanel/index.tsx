@@ -15,7 +15,7 @@ const navigation: NavigationItem[] = [
   { name: "Склад", href: "/store" },
   { name: "Клиенти", href: "/clients" },
   { name: "Фактури", href: "/sent/invoices" },
-  { name: "Оферти", href: "/sent/offers" },
+  // { name: "Оферти", href: "/sent/offers" },
   {
     name: "Създай",
     subItems: [
@@ -31,7 +31,9 @@ export default function SidePanel() {
       <nav className="bg-gray-800 w-64 h-full fixed">
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-between p-4 bg-gray-900">
-            <span className="text-white text-lg font-semibold">Logo</span>
+            <Link href="/profile">
+              <span className="text-white text-lg font-semibold">Твоето лого</span>
+            </Link>
             <button
               type="button"
               className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"

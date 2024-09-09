@@ -303,6 +303,9 @@ export default function Store({ data }: Props) {
                 order={order}
                 orderBy={orderBy}
                 onRequestSort={handleRequestSort}
+                onSelectAllClick={() => {}}
+                numSelected={0}
+                rowCount={filteredProducts.length}
               />
               <TableBody>
                 {visibleRows.map((row, index) => {
@@ -344,6 +347,7 @@ export default function Store({ data }: Props) {
                         id={labelId}
                         scope="row"
                         padding="none"
+                        align="right"
                       >
                         {row.name}
                       </TableCell>

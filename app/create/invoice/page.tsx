@@ -1,9 +1,8 @@
 import { fetchData } from "@/utils/fetchData";
-import { Product, Provider, InvoiceData } from "../invoice/types";
+import { Product, Company, InvoiceData } from "../invoice/types";
 import { Client } from "@/clients/utils/types";
 import InvoiceBox from "./invoiceBox";
 import { getInvoiceNumber } from "./utils";
-import { Company } from "./constants";
 
 async function InvoicePage() {
   const products = await fetchData<Product[]>(
@@ -15,9 +14,7 @@ async function InvoicePage() {
       return [];
     });
 
-  const clients = await fetchData<Client[]>(
-    "http://localhost:3000/api/clients/get",
-  )
+  const clients = await fetchData<Client[]>("http://localhost:3000/api/clients")
     .then((data) => data.data)
     .catch((error) => {
       console.error(error);
@@ -25,7 +22,7 @@ async function InvoicePage() {
     });
 
   const invoiceIds = await fetchData<InvoiceData[]>(
-    `http://localhost:3000/api/create/invoice-sent?company=${Company.satecma}`,
+    `http://localhost:3000/api/create/invoice`,
   )
     .then((data) => getInvoiceNumber(data.data))
     .catch((error) => {
@@ -37,8 +34,8 @@ async function InvoicePage() {
       };
     });
 
-  const provider = await fetchData<Provider>(
-    "http://localhost:3000/api/profile/get",
+  const provider = await fetchData<Company>(
+    "http://localhost:3000/api/company",
   ).then((res) => res.data);
 
   return (

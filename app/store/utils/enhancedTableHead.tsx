@@ -61,7 +61,7 @@ export const EnhancedTableHead = <T,>({
         {headCells.map((headCell) => (
           <TableCell
             key={String(headCell.id)}
-            align={headCell.numeric ? "right" : "left"}
+            align="right"
             padding={headCell.disablePadding ? "none" : "normal"}
             sortDirection={orderBy === headCell.id ? order : false}
           >

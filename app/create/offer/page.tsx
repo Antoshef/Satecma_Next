@@ -1,10 +1,10 @@
 import { fetchData } from "@/utils/fetchData";
-import { Product, Provider } from "../invoice/types";
+import { Product, Company } from "../invoice/types";
 import { OfferBox } from "./offerBox";
 
 async function OfferPage() {
-  const provider = await fetchData<Provider>(
-    "http://localhost:3000/api/profile/get",
+  const provider = await fetchData<Company>(
+    "http://localhost:3000/api/company",
   ).then((res) => res.data);
 
   const products = await fetchData<Product[]>(

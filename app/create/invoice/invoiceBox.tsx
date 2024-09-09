@@ -16,7 +16,7 @@ import {
   InvoiceType,
   LatestInvoices,
   Product,
-  Provider,
+  Company,
 } from "./types";
 import { Client } from "@/clients/utils/types";
 import { Checkbox, Typography, Button, Grid } from "@mui/material";
@@ -32,7 +32,7 @@ import { createInvoice, getClientData, updateProducts } from "./actions";
 import { InvoiceRequestBody } from "../../../pages/api/create/types";
 
 interface InvoiceBoxProps {
-  provider: Provider;
+  provider: Company;
   clients: Client[];
   products: Product[];
   invoiceIds: IInvoiceIds;
@@ -472,11 +472,11 @@ const InvoiceBox = ({
                   <br />
                   {paymentMethod === "По Банка" && (
                     <>
-                      Банкови реквизити: {provider.bankDetails.name}
+                      Банкови реквизити: {provider.bankName}
                       <br />
-                      BIC: {provider.bankDetails.swift}
+                      BIC: {provider.swift}
                       <br />
-                      IBAN: {provider.bankDetails.iban}
+                      IBAN: {provider.iban}
                       <br />
                     </>
                   )}

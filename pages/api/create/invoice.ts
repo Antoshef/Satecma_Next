@@ -22,6 +22,7 @@ export default async function handler(
 
   if (method === "GET") {
     try {
+      console.log("GET");
       const results = await queryAsync<InvoiceData[]>(
         `SELECT * FROM ${table_name}`,
       );

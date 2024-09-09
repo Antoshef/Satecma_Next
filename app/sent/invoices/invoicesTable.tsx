@@ -18,19 +18,18 @@ import {
   Switch,
 } from "@mui/material";
 import { useState, useMemo, MouseEvent, ChangeEvent } from "react";
-import { Download as DownloadIcon } from "@mui/icons-material"; // Import the download icon
+import { Download as DownloadIcon } from "@mui/icons-material";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
-import { IInvoice } from "../../../pages/api/create/invoice";
 import { EnhancedTableHead, HeadCell } from "@/store/utils/enhancedTableHead";
 import { Order } from "@/store/utils/types";
-import { Company } from "@/create/invoice/constants";
+import { InvoiceData } from "@/create/invoice/types";
 
 interface InvoicesTableProps {
-  data: IInvoice[];
+  data: InvoiceData[];
 }
 
-const invoiceHeadCells: HeadCell<IInvoice>[] = [
+const invoiceHeadCells: HeadCell<InvoiceData>[] = [
   {
     id: "invoice_id",
     numeric: false,
@@ -54,8 +53,8 @@ const invoiceHeadCells: HeadCell<IInvoice>[] = [
 
 export default function InvoicesTable({ data }: InvoicesTableProps) {
   const [order, setOrder] = useState<Order>("asc");
-  const [orderBy, setOrderBy] = useState<keyof IInvoice>("invoice_id");
-  const [selected, setSelected] = useState<IInvoice[]>([]);
+  const [orderBy, setOrderBy] = useState<keyof InvoiceData>("invoice_id");
+  const [selected, setSelected] = useState<InvoiceData[]>([]);
   const [dense, setDense] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
@@ -65,7 +64,7 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
 
   const handleRequestSort = (
     event: MouseEvent<unknown>,
-    property: keyof IInvoice,
+    property: keyof InvoiceData,
   ) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -84,11 +83,11 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
     setDense(event.target.checked);
   };
 
-  const handleClick = (event: MouseEvent<unknown>, row: IInvoice) => {
+  const handleClick = (event: MouseEvent<unknown>, row: InvoiceData) => {
     const selectedIndex = selected.findIndex(
       (invoice) => invoice.invoice_id === row.invoice_id,
     );
-    let newSelected: IInvoice[] = [];
+    let newSelected: InvoiceData[] = [];
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, row);
@@ -149,7 +148,7 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
     // Add each selected invoice to the zip
     for (const invoice of selected) {
       try {
-        const response = await fetch(invoice.file_path); // Fetch the file from the path
+        const response = await fetch(invoice.file_path || ""); // Fetch the file from the path
         const blob = await response.blob(); // Convert it to a Blob
         zip.file(`${invoice.invoice_id}.pdf`, blob); // Add the blob to the zip file
       } catch (error) {
@@ -219,18 +218,19 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
                       id={labelId}
                       scope="row"
                       padding="none"
+                      align="right"
                     >
                       {row.invoice_id}
                     </TableCell>
-                    <TableCell>{row.date}</TableCell>
-                    <TableCell>{row.client}</TableCell>
-                    <TableCell>{row.eik}</TableCell>
-                    <TableCell>{row.vat_number}</TableCell>
+                    <TableCell align="right">{row.date}</TableCell>
+                    <TableCell align="right">{row.client}</TableCell>
+                    <TableCell align="right">{row.eik}</TableCell>
+                    <TableCell align="right">{row.vat_number}</TableCell>
                     <TableCell align="right">{row.amount.toFixed(2)}</TableCell>
                     <TableCell align="right">{row.vat.toFixed(2)}</TableCell>
                     <TableCell align="right">{row.total.toFixed(2)}</TableCell>
                     {/* New column for the download button */}
-                    <TableCell align="center">
+                    <TableCell align="right">
                       <Tooltip title="Download PDF">
                         <IconButton
                           aria-label="download invoice"

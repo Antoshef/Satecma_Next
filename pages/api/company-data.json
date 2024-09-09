@@ -1,0 +1,189 @@
+{
+  "deedStatus": 1,
+  "companyName": "Сатекма",
+  "uic": "207756461",
+  "uicWithCtx": "MjA3NzU2NDYxJtCh0LDRgtC10LrQvNCwP_keyYIPxB1xB3dLM1S8GjLXPJPkHTnN7TbKw2nvphM",
+  "legalForm": 10,
+  "sections": [
+    {
+      "subUICType": 1,
+      "nameCode": "CR_GL_GENERAL_STATUS_L",
+      "order": "20001",
+      "subDeeds": [
+        {
+          "subUIC": "0017",
+          "subUICType": 1,
+          "subDeedStatus": 2,
+          "sectionName": "CR_GL_GENERAL_STATUS_L",
+          "subDeedIsClosed": false,
+          "groups": [
+            {
+              "groupID": 415,
+              "nameCode": "CR_GL_MAIN_CIRCUMSTANCES_L",
+              "order": "20001",
+              "fields": [
+                {
+                  "nameCode": "CR_F_1_L",
+                  "htmlData": "<div class='record-container record-container--preview'><p class='field-text'>207756461</p></div>",
+                  "fieldEntryNumber": "20240319112533",
+                  "recordMinActionDate": "2024-03-19T11:25:33",
+                  "fieldEntryDate": "2024-03-19T11:25:33",
+                  "fieldActionDate": "2024-03-19T11:25:33",
+                  "fieldIdent": "00010",
+                  "fieldOperation": 3,
+                  "order": "00010"
+                },
+                {
+                  "nameCode": "CR_F_2_L",
+                  "htmlData": "<div class='record-container record-container--preview'><p class='field-text'>Сатекма</p></div>",
+                  "fieldEntryNumber": "20240319112533",
+                  "recordMinActionDate": "2024-03-19T11:25:33",
+                  "fieldEntryDate": "2024-03-19T11:25:33",
+                  "fieldActionDate": "2024-03-19T11:25:33",
+                  "fieldIdent": "00020",
+                  "fieldOperation": 3,
+                  "order": "00020"
+                },
+                {
+                  "nameCode": "CR_F_3_L",
+                  "htmlData": "<div class='record-container record-container--preview'><p class='field-text'>Еднолично дружество с ограничена отговорност</p></div>",
+                  "fieldEntryNumber": "20240319112533",
+                  "recordMinActionDate": "2024-03-19T11:25:33",
+                  "fieldEntryDate": "2024-03-19T11:25:33",
+                  "fieldActionDate": "2024-03-19T11:25:33",
+                  "fieldIdent": "00030",
+                  "fieldOperation": 3,
+                  "order": "00030"
+                },
+                {
+                  "nameCode": "CR_F_4_L",
+                  "htmlData": "<div class='record-container record-container--preview'><p class='field-text'>Satecma</p></div>",
+                  "fieldEntryNumber": "20240319112533",
+                  "recordMinActionDate": "2024-03-19T11:25:33",
+                  "fieldEntryDate": "2024-03-19T11:25:33",
+                  "fieldActionDate": "2024-03-19T11:25:33",
+                  "fieldIdent": "00040",
+                  "fieldOperation": 3,
+                  "order": "00040"
+                },
+                {
+                  "nameCode": "CR_F_5_L",
+                  "htmlData": "<div class='record-container record-container--preview'><p class='field-text'>Държава: БЪЛГАРИЯ<br/>Област: Ямбол, Община: Ямбол<br />Населено място: гр. Ямбол, п.к. 8600<br/>бул./ул. ж.к. Каргона, ул. Феризович № 17 Телефон: (088) 6858601<br/>Адрес на електронна поща: <a style=\"text-decoration:underline;color:black\" href=\"mailto:anton.stanev@satecma.bg\">anton.stanev@satecma.bg</a>, Интернет страница: <a style=\"text-decoration:underline;color:black\" href=\"http://www.satecma.bg\" target=\"_blank\">www.satecma.bg</a></p></div>",
+                  "fieldEntryNumber": "20240319112533",
+                  "recordMinActionDate": "2024-03-19T11:25:33",
+                  "fieldEntryDate": "2024-03-19T11:25:33",
+                  "fieldActionDate": "2024-03-19T11:25:33",
+                  "fieldIdent": "00050",
+                  "fieldOperation": 3,
+                  "order": "00050"
+                },
+                {
+                  "nameCode": "CR_F_6_L",
+                  "htmlData": "<div class='record-container record-container--preview'><p class='field-text'>покупка на стоки и други вещи с цел продажба в първоначален или преработен вид; извършване на външнотърговска дейност; търговия на едро и на дребно; производство, дистрибуция на стоки, търговско посредничество и представителство; реклама, както и всяка друга търговска дейност, която не е забранена от закон, а когато има регистрационен или разрешителен режим - след извършването на регистрацията, съответно - след получаване на съответното разрешение или лиценз</p></div>",
+                  "fieldEntryNumber": "20240319112533",
+                  "recordMinActionDate": "2024-03-19T11:25:33",
+                  "fieldEntryDate": "2024-03-19T11:25:33",
+                  "fieldActionDate": "2024-03-19T11:25:33",
+                  "fieldIdent": "00060",
+                  "fieldOperation": 3,
+                  "order": "00060"
+                },
+                {
+                  "nameCode": "CR_F_7_L",
+                  "htmlData": "<div class='record-container record-container--preview'><p class='field-text'>АНТОН СТАНИМИРОВ СТАНЕВ, Държава: БЪЛГАРИЯ</p></div>",
+                  "fieldEntryNumber": "20240319112533",
+                  "fieldEntryDate": "2024-03-19T11:25:33",
+                  "fieldActionDate": "2024-03-19T11:25:33",
+                  "fieldIdent": "00070",
+                  "fieldOperation": 3,
+                  "order": "00070"
+                },
+                {
+                  "nameCode": "CR_F_23_L",
+                  "htmlData": "<div class='record-container record-container--preview'><p class='field-text'>АНТОН СТАНИМИРОВ СТАНЕВ, Държава: БЪЛГАРИЯ</p></div>",
+                  "fieldEntryNumber": "20240319112533",
+                  "recordMinActionDate": "2024-03-19T11:25:33",
+                  "fieldEntryDate": "2024-03-19T11:25:33",
+                  "fieldActionDate": "2024-03-19T11:25:33",
+                  "fieldIdent": "00230",
+                  "fieldOperation": 3,
+                  "order": "00230"
+                }
+              ]
+            },
+            {
+              "groupID": 16,
+              "nameCode": "CR_GL_FUND_L",
+              "order": "20002",
+              "fields": [
+                {
+                  "nameCode": "CR_F_31_L",
+                  "htmlData": "<div class='record-container record-container--preview'><p class='field-text'>1000 лв.</p></div>",
+                  "fieldEntryNumber": "20240319112533",
+                  "recordMinActionDate": "2024-03-19T11:25:33",
+                  "fieldEntryDate": "2024-03-19T11:25:33",
+                  "fieldActionDate": "2024-03-19T11:25:33",
+                  "fieldIdent": "00310",
+                  "fieldOperation": 3,
+                  "order": "00310"
+                },
+                {
+                  "nameCode": "CR_F_32_L",
+                  "htmlData": "<div class='record-container record-container--preview'><p class='field-text'>1000 лева</p></div>",
+                  "fieldEntryNumber": "20240319112533",
+                  "recordMinActionDate": "2024-03-19T11:25:33",
+                  "fieldEntryDate": "2024-03-19T11:25:33",
+                  "fieldActionDate": "2024-03-19T11:25:33",
+                  "fieldIdent": "00320",
+                  "fieldOperation": 3,
+                  "order": "00320"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "subUICType": 13,
+      "nameCode": "CR_GL_CURRENT_CONSTUTIVE_ACT_L",
+      "order": "20001",
+      "subDeeds": [
+        {
+          "subUIC": "0017",
+          "subUICType": 13,
+          "subDeedStatus": 0,
+          "sectionName": "CR_GL_ANNOUNCED_ACTS_L",
+          "subDeedIsClosed": false,
+          "groups": [
+            {
+              "groupID": 451,
+              "nameCode": "CR_GL_CURRENT_CONSTUTIVE_ACT_L",
+              "order": "20001",
+              "fields": [
+                {
+                  "nameCode": "CR_F_1001_L",
+                  "htmlData": "<div class='record-container record-container--preview'><p class='field-text'>Актуален дружествен договор/учредителен акт/устав<br /><a href='DocumentAccess/MjA3NzU2NDYxJmUmOWU5MTdiOTE4M2QzNGNhNjk1MjUxZGYzYWE3NGJkNDcR_QkonfXA_CoQzqREQz-C-RmVlXJsSSe3yXIM2kgmfw' target='_blank'><i class='ui-icon ui-icon-download-color mr-1'></i>Актуален дружествен договор/учредителен акт/устав</a><br/>Дата на обявяване: 19.03.2024 г. 11:25:33</p></div>",
+                  "fieldEntryNumber": "20240319112533",
+                  "fieldEntryDate": "2024-03-19T11:25:33",
+                  "fieldActionDate": "2024-03-19T11:25:33",
+                  "fieldIdent": "1001AJ",
+                  "fieldOperation": 3,
+                  "order": "10010029"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "fullName": "\"Сатекма\" ЕООД",
+  "hasInstructions": true,
+  "hasAssignments": false,
+  "hasCompanyCasees": false,
+  "hasLegalFormChange": false,
+  "hasNotifications": false,
+  "hasForeignParentCompany": false,
+  "hasForeignBranches": false
+}

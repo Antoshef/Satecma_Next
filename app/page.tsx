@@ -1,8 +1,11 @@
 import Link from "next/link";
+import VerifyEmailModal from "./verificationPage";
 
 export default async function HomePage() {
   return (
     <div className="container mx-auto p-6 bg-gray-100 min-h-screen">
+      <VerifyEmailModal />
+
       <header className="text-center my-12 bg-white p-8 rounded-lg shadow-md">
         <h1 className="text-5xl font-extrabold text-gray-800">
           Добре дошли в нашето приложение за управление на бизнес

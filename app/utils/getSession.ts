@@ -1,8 +1,8 @@
 import { getSession as originalGetSession } from "@auth0/nextjs-auth0";
 
 export interface User {
-  given_name: string;
-  family_name: string;
+  given_name?: string;
+  family_name?: string;
   nickname: string;
   name: string;
   picture: string;
@@ -10,7 +10,7 @@ export interface User {
   email: string;
   email_verified: boolean;
   sub: string;
-  sid: string;
+  sid?: string;
 }
 
 export interface Session {

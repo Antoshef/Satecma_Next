@@ -1,36 +1,46 @@
 "use client";
 
-import { useUser } from "@auth0/nextjs-auth0/client";
-import { useEffect, useState } from "react";
-import { Modal, Box, Typography } from "@mui/material";
+import { Modal, Box, Typography, Button } from "@mui/material";
+import { IUserProfile } from "./page";
+import { useState } from "react";
 
-export default function VerifyEmailModal() {
-  const { user, isLoading } = useUser();
-  const [open, setOpen] = useState(false);
+export default function VerifyEmailModal({ user }: { user: IUserProfile }) {
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    // Open the modal if the user's email is not verified
-    if (!isLoading && user && !user.email_verified) {
-      setOpen(true);
-    }
-  }, [isLoading, user]);
+  const handleResendVerification = async () => {
+    setLoading(true);
+    setMessage("");
 
-  // The modal should remain open until the email is verified
-  const handleClose = () => {
-    if (user?.email_verified) {
-      setOpen(false);
+    try {
+      const response = await fetch("/api/resend-verification", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage("Verification email sent. Please check your inbox.");
+      } else {
+        setMessage(data.message || "Error sending verification email.");
+      }
+    } catch (error) {
+      setMessage("Error sending verification email.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  console.log(user, "USER");
 
   return (
     <Modal
       component="div"
-      open={open}
-      onClose={handleClose}
+      open={user.email_verified}
       aria-labelledby="verify-email-modal"
     >
       <Box
@@ -56,6 +66,20 @@ export default function VerifyEmailModal() {
           Once you verify your email, this message will disappear and you can
           continue using the app.
         </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleResendVerification}
+          disabled={loading}
+          sx={{ mt: 2 }}
+        >
+          {loading ? "Sending..." : "Resend Verification Email"}
+        </Button>
+        {message && (
+          <Typography variant="body2" mt={2} color="error">
+            {message}
+          </Typography>
+        )}
       </Box>
     </Modal>
   );

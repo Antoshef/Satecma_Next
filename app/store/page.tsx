@@ -70,7 +70,7 @@ export default function Store({ data }: Props) {
   const [searchTerm, setSearchTerm] = useState("");
   const [order, setOrder] = useState<Order>("asc");
   const [orderBy, setOrderBy] = useState<keyof StoreProduct>("name");
-  const [selected, setSelected] = useState<StoreProduct>();
+  const [selected, setSelected] = useState<StoreProduct[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [editMode, setEditMode] = useState(false);
@@ -87,6 +87,52 @@ export default function Store({ data }: Props) {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
+  };
+
+  const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      const newSelecteds = filteredProducts.map((n) => n);
+      setSelected(newSelecteds);
+      return;
+    }
+    setSelected([]);
+  };
+
+  const handleClick = (event: MouseEvent<unknown>, product: StoreProduct) => {
+    const selectedIndex = selected.indexOf(product);
+    let newSelected: StoreProduct[] = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, product);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
+    }
+
+    setSelected(newSelected);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await fetchData("/api/products/delete", {
+        method: "DELETE",
+        body: JSON.stringify({ products: selected }),
+      });
+      const updatedProducts = products.filter(
+        (product) => !selected.includes(product),
+      );
+      setProducts(updatedProducts);
+      setSelected([]);
+      setMessage({ severity: "success", text: "Products deleted" });
+    } catch (error) {
+      setMessage({ severity: "error", text: "Error deleting products" });
+    }
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -111,7 +157,8 @@ export default function Store({ data }: Props) {
     setFilteredProducts(sortedProducts);
   };
 
-  const isSelected = (code: string) => selected?.code === code;
+  const isSelected = (product: StoreProduct) =>
+    selected.indexOf(product) !== -1;
 
   const handleCategoryChange = (event: SelectChangeEvent<string>) => {
     const category = event.target.value;
@@ -141,7 +188,7 @@ export default function Store({ data }: Props) {
         p.code === product.code && p.package === product.package ? product : p,
       );
       setProducts(updatedProducts);
-      setSelected(undefined);
+      setSelected([]);
       setMessage({ severity: "success", text: "StoreProduct updated" });
     } catch (error) {
       setMessage({ severity: "error", text: "Error updating product" });
@@ -208,7 +255,7 @@ export default function Store({ data }: Props) {
   }, [products]);
 
   useEffect(() => {
-    setEditMode(!!selected);
+    setEditMode(selected.length === 1);
   }, [selected]);
 
   useEffect(() => {
@@ -245,10 +292,11 @@ export default function Store({ data }: Props) {
             title="Склад"
             isSelected={!!selected}
             onEdit={setEditMode}
+            onDelete={handleDelete}
           />
           <ProductEditor
             editMode={editMode}
-            selected={selected}
+            selected={selected[0]}
             setEditMode={setEditMode}
             onSubmit={onEditSubmit}
           />
@@ -295,32 +343,23 @@ export default function Store({ data }: Props) {
                 order={order}
                 orderBy={orderBy}
                 onRequestSort={handleRequestSort}
-                onSelectAllClick={() => {}}
-                numSelected={0}
+                onSelectAllClick={handleSelectAllClick}
+                numSelected={selected.length}
                 rowCount={filteredProducts.length}
               />
               <TableBody>
                 {visibleRows.map((row, index) => {
-                  const isItemSelected = isSelected(row.code);
+                  const isItemSelected = isSelected(row);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={() =>
-                        setSelected((state) => {
-                          if (state === row) {
-                            setEditMode(false);
-                            return undefined;
-                          } else {
-                            return row;
-                          }
-                        })
-                      }
+                      onClick={(event) => handleClick(event, row)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={createKey(row)}
+                      key={row.code}
                       selected={isItemSelected}
                       sx={{ cursor: "pointer" }}
                     >

@@ -2,17 +2,20 @@ import { alpha, IconButton, Tooltip, Typography } from "@mui/material";
 import Toolbar from "@mui/material/Toolbar/Toolbar";
 import EditIcon from "@mui/icons-material/Edit";
 import FilterListIcon from "@mui/icons-material/FilterList";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface EnhancedTableToolbarProps {
   title: string;
   isSelected: boolean;
   onEdit?: (edit: boolean) => void;
+  onDelete?: () => void; // Add onDelete prop
 }
 
 export const EnhancedTableToolbar = ({
   title,
   isSelected,
   onEdit,
+  onDelete, // Add onDelete prop
 }: EnhancedTableToolbarProps) => {
   return (
     <Toolbar
@@ -35,7 +38,7 @@ export const EnhancedTableToolbar = ({
           variant="subtitle1"
           component="div"
         >
-          Редактиране на продукт
+          {title}
         </Typography>
       ) : (
         <Typography
@@ -48,11 +51,18 @@ export const EnhancedTableToolbar = ({
         </Typography>
       )}
       {isSelected ? (
-        <Tooltip title="Edit">
-          <IconButton onClick={() => onEdit?.(true)}>
-            <EditIcon />
-          </IconButton>
-        </Tooltip>
+        <>
+          <Tooltip title="Edit">
+            <IconButton onClick={() => onEdit?.(true)}>
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete">
+            <IconButton onClick={onDelete}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </>
       ) : (
         <Tooltip title="Filter list">
           <IconButton>

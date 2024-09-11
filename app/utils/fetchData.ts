@@ -3,6 +3,14 @@ export const fetchData = async <T = undefined>(
   init?: RequestInit,
 ): Promise<{ data: T }> => {
   try {
+    if (url.startsWith("/api")) {
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+      if (!baseUrl) {
+        throw new Error("Base URL is not defined in environment variables");
+      }
+      url = `${baseUrl}${url}`;
+    }
+
     const response = await fetch(url, {
       method: init?.method || "GET",
       headers: init?.headers || {

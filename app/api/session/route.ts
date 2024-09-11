@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { serialize } from "cookie";
-import { getSession } from "@/utils/getSession";
+import { getSession } from "@auth0/nextjs-auth0";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const session = await getSession();
 
   if (!session) {

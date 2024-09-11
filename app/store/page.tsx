@@ -20,9 +20,7 @@ import {
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import Paper from "@mui/material/Paper";
-import Switch from "@mui/material/Switch";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -74,7 +72,6 @@ export default function Store({ data }: Props) {
   const [orderBy, setOrderBy] = useState<keyof StoreProduct>("name");
   const [selected, setSelected] = useState<StoreProduct>();
   const [page, setPage] = useState(0);
-  const [dense, setDense] = useState(true);
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [editMode, setEditMode] = useState(false);
   const [productsToUpdate, setProductsToUpdate] = useState<
@@ -99,10 +96,6 @@ export default function Store({ data }: Props) {
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-  };
-
-  const handleChangeDense = (event: ChangeEvent<HTMLInputElement>) => {
-    setDense(event.target.checked);
   };
 
   const sortAndFilterProducts = (
@@ -152,7 +145,6 @@ export default function Store({ data }: Props) {
       setMessage({ severity: "success", text: "StoreProduct updated" });
     } catch (error) {
       setMessage({ severity: "error", text: "Error updating product" });
-    } finally {
     }
   };
 
@@ -296,7 +288,7 @@ export default function Store({ data }: Props) {
             <Table
               sx={{ minWidth: 750 }}
               aria-labelledby="tableTitle"
-              size={dense ? "small" : "medium"}
+              size="small"
             >
               <EnhancedTableHead
                 headCells={headCells}
@@ -377,7 +369,7 @@ export default function Store({ data }: Props) {
                 {emptyRows > 0 && (
                   <TableRow
                     style={{
-                      height: (dense ? 33 : 53) * emptyRows,
+                      height: 33 * emptyRows,
                     }}
                   >
                     <TableCell colSpan={6} />
@@ -396,10 +388,6 @@ export default function Store({ data }: Props) {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Paper>
-        <FormControlLabel
-          control={<Switch checked={dense} onChange={handleChangeDense} />}
-          label="Dense padding"
-        />
       </>
     </Box>
   );

@@ -1,10 +1,10 @@
 "use client";
 
 import { Modal, Box, Typography, Button } from "@mui/material";
-import { IUserProfile } from "./page";
 import { useState } from "react";
+import { User } from "./api/auth/[auth0]/types";
 
-export default function VerifyEmailModal({ user }: { user: IUserProfile }) {
+export default function VerifyEmailModal({ user }: { user: User }) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -24,47 +24,50 @@ export default function VerifyEmailModal({ user }: { user: IUserProfile }) {
       const data = await response.json();
 
       if (response.ok) {
-        setMessage("Verification email sent. Please check your inbox.");
+        setMessage(
+          "Имейлът за потвърждение е изпратен. Моля, проверете пощата си.",
+        );
       } else {
-        setMessage(data.message || "Error sending verification email.");
+        setMessage(
+          data.message || "Грешка при изпращане на имейл за потвърждение.",
+        );
       }
     } catch (error) {
-      setMessage("Error sending verification email.");
+      setMessage("Грешка при изпращане на имейл за потвърждение.");
     } finally {
       setLoading(false);
     }
   };
 
-  console.log(user, "USER");
-
   return (
     <Modal
       component="div"
-      open={user.email_verified}
+      open={!user.email_verified}
       aria-labelledby="verify-email-modal"
     >
       <Box
         sx={{
           position: "absolute",
           top: "50%",
-          left: "50%",
+          left: "calc(50% + 16rem)",
           transform: "translate(-50%, -50%)",
           bgcolor: "background.paper",
           boxShadow: 24,
           p: 4,
           outline: "none",
+          textAlign: "center",
         }}
       >
-        <Typography variant="h6" id="verify-email-modal">
-          Please Verify Your Email
+        <Typography variant="h6" align="center" id="verify-email-modal">
+          Моля, потвърдете имейла си
         </Typography>
         <Typography variant="body1" mt={2}>
-          Hi {user?.name}, please verify your email to proceed. Check your inbox
-          for a verification link.
+          Здравейте {user?.name}, моля, потвърдете имейла си, за да продължите.
+          Проверете пощата си за връзка за потвърждение.
         </Typography>
         <Typography variant="body2" mt={2}>
-          Once you verify your email, this message will disappear and you can
-          continue using the app.
+          След като потвърдите имейла си, това съобщение ще изчезне и ще можете
+          да продължите да използвате приложението.
         </Typography>
         <Button
           variant="contained"
@@ -73,7 +76,7 @@ export default function VerifyEmailModal({ user }: { user: IUserProfile }) {
           disabled={loading}
           sx={{ mt: 2 }}
         >
-          {loading ? "Sending..." : "Resend Verification Email"}
+          {loading ? "Изпращане..." : "Изпрати имейл за потвърждение"}
         </Button>
         {message && (
           <Typography variant="body2" mt={2} color="error">

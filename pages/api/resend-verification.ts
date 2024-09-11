@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { withApiAuthRequired } from "@auth0/nextjs-auth0";
-import { User } from "@/utils/getSession";
+import { User } from "@/api/auth/[auth0]/types";
 
 export default withApiAuthRequired(async function handler(
   req: NextApiRequest,
@@ -15,7 +15,7 @@ export default withApiAuthRequired(async function handler(
 
     try {
       const response = await fetch(
-        "https://dev-v0j7oq4ny47ngw87.eu.auth0.com/oauth/token",
+        `${process.env.AUTH0_ISSUER_BASE_URL}/oauth/token`,
         {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -23,7 +23,7 @@ export default withApiAuthRequired(async function handler(
             grant_type: "client_credentials",
             client_id: process.env.AUTH0_CLIENT_ID!,
             client_secret: process.env.AUTH0_CLIENT_SECRET!,
-            audience: "https://dev-v0j7oq4ny47ngw87.eu.auth0.com/api/v2/",
+            audience: `${process.env.AUTH0_ISSUER_BASE_URL}/api/v2/`,
             scope: "update:users",
           }),
         },
@@ -60,7 +60,7 @@ export default withApiAuthRequired(async function handler(
 
       // Send the verification email
       const verificationResponse = await fetch(
-        "https://dev-v0j7oq4ny47ngw87.eu.auth0.com/api/v2/jobs/verification-email",
+        `${process.env.AUTH0_ISSUER_BASE_URL}/api/v2/jobs/verification-email`,
         requestOptions,
       );
 

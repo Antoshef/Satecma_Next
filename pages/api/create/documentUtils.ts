@@ -1,10 +1,10 @@
 import fs from "fs";
-import path from "path";
 import Imap from "imap";
 import nodemailer from "nodemailer";
+import path from "path";
 import {
-  convertHTMLToPDF,
   addTextToPDF,
+  convertHTMLToPDF,
 } from "../../../utils/createPdfFromHtml";
 import { createDir } from "../../../utils/utils";
 import { DocumentRequestBody } from "./types";
@@ -83,13 +83,13 @@ export const generateAndSendDocument = async (
       port: 465,
       secure: true,
       auth: {
-        user: process.env.OFFICE_EMAIL, // Make sure this is not public (no NEXT_PUBLIC prefix)
-        pass: process.env.EMAIL_PASS,
+        user: process.env.PROFILE_EMAIL, // Make sure this is not public (no NEXT_PUBLIC prefix)
+        pass: process.env.PROFILE_EMAIL_PASS,
       },
     });
 
     const mailOptions = {
-      from: process.env.OFFICE_EMAIL,
+      from: process.env.PROFILE_EMAIL,
       to: email,
       subject: `Your ${documentType}`,
       text: `Please find attached your ${documentType}.`,
@@ -122,8 +122,8 @@ export const generateAndSendDocument = async (
 async function saveEmailToSent(mailOptions: any) {
   return new Promise<void>((resolve, reject) => {
     const imapConfig = {
-      user: process.env.OFFICE_EMAIL as string,
-      password: process.env.EMAIL_PASS,
+      user: process.env.PROFILE_EMAIL as string,
+      password: process.env.PROFILE_EMAIL_PASS,
       host: process.env.IMAP_HOST,
       port: 993,
       tls: true,

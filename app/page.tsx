@@ -1,41 +1,61 @@
 import Link from "next/link";
 import VerifyEmailModal from "./verificationPage";
-import { getSession, withPageAuthRequired } from "@auth0/nextjs-auth0";
+import { getSession } from "@auth0/nextjs-auth0";
+import { User } from "./api/auth/[auth0]/types";
+import { fetchData } from "./utils/fetchData";
 
-export interface IUserProfile {
-  sub: string;
-  nickname: string;
-  name: string;
-  picture: string;
-  updated_at: string;
-  email: string;
-  email_verified: boolean;
-}
-
-export default withPageAuthRequired(async function HomePage() {
+export default async function HomePage() {
   const session = await getSession();
 
-  if (!session) {
-    return (
-      <div className="container mx-auto p-6 bg-gray-100 min-h-screen">
-        <p>Loading...</p>
-      </div>
-    );
+  let user: User | null = null;
+  if (session) {
+    const { accessToken } = session;
+
+    try {
+      const response = await fetch(
+        `https://${process.env.AUTH0_DOMAIN}/userinfo`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+
+      if (response.ok) {
+        user = await response.json();
+
+        if (user?.email_verified) {
+          // Check if user already exists
+          const userExistsResponse = await fetchData(
+            `/api/profile?sub=${user.sub}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            },
+          );
+
+          if (!userExistsResponse.data) {
+            // User does not exist, proceed with POST request
+            await fetchData("/api/profile", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(user),
+            });
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching user info or checking existence:", error);
+    }
   }
-
-  const { accessToken } = session;
-
-  const response = await fetch(`https://${process.env.AUTH0_DOMAIN}/userinfo`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-
-  console.log(response, "RESPONSE");
 
   return (
     <div className="container mx-auto p-6 bg-gray-100 min-h-screen">
-      {response.ok && <VerifyEmailModal user={await response.json()} />}
+      {user && user.email_verified && <VerifyEmailModal user={user} />}
 
       <header className="text-center my-12 bg-white p-8 rounded-lg shadow-md">
         <h1 className="text-5xl font-extrabold text-gray-800">
@@ -44,22 +64,16 @@ export default withPageAuthRequired(async function HomePage() {
         <p className="text-2xl mt-6 text-gray-600">
           Оптимизирайте бизнес операциите си с лекота
         </p>
-        <div className="mt-6 flex justify-center space-x-4">
-          <a
-            href="/api/auth/login"
-            className="px-4 py-2 uppercase font-bold bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition"
-          >
-            Вход
-          </a>
-        </div>
-        <div className="mt-6 flex justify-center space-x-4">
-          <a
-            href="/api/auth/logout"
-            className="px-4 py-2 uppercase font-bold bg-red-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition"
-          >
-            Изход
-          </a>
-        </div>
+        {!user && (
+          <div className="mt-6 flex justify-center space-x-4">
+            <a
+              href="/api/auth/login"
+              className="px-4 py-2 uppercase font-bold bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition"
+            >
+              Вход
+            </a>
+          </div>
+        )}
       </header>
 
       <section className="my-12 bg-white p-8 rounded-lg shadow-md">
@@ -138,4 +152,4 @@ export default withPageAuthRequired(async function HomePage() {
       </section>
     </div>
   );
-});
+}

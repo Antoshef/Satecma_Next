@@ -42,6 +42,7 @@ export const EmailIcon = ({ isActive }: { isActive?: boolean }) => (
   </svg>
 );
 
+// DashedLineIcon Component
 export const DashedLineIcon = ({
   isActive,
   disableLine,
@@ -59,13 +60,13 @@ export const DashedLineIcon = ({
       const rect = element.getBoundingClientRect();
       const middleOfScreen = window.innerHeight / 2;
 
-      // If part of the dashed line is in the top 50%, make part of it solid
+      // Adjust the height of the solid line based on scroll position
       if (rect.top < middleOfScreen) {
         const percentageSolid =
           ((middleOfScreen - rect.top) / rect.height) * 100;
-        setSolidHeight(Math.min(percentageSolid, 100)); // Transition smoothly
+        setSolidHeight(Math.min(percentageSolid, 100)); // Grow the solid line up to 100%
       } else {
-        setSolidHeight(0); // Keep it dashed below the middle of the screen
+        setSolidHeight(0); // Keep it 0% below the middle of the screen
       }
     };
 
@@ -82,31 +83,47 @@ export const DashedLineIcon = ({
         flexDirection: "column",
         alignItems: "center",
         position: "relative",
+        height: "120px",
       }}
     >
       {/* Render Email Icon */}
       <EmailIcon isActive={isActive} />
-      {/* Dashed line from bottom of icon */}
+
+      {/* Dashed and Solid Line */}
       {!disableLine && (
-        <div
-          ref={lineRef}
-          style={{
-            width: "1px",
-            height: "70px", // Fixed height
-            backgroundImage: `linear-gradient(
-            to bottom,
-            rgb(0, 61, 45) ${solidHeight}%, /* Solid part */
-            rgba(0, 61, 45, 0.5) ${solidHeight}%, /* Dashed part */
-            transparent ${solidHeight}%, /* Transparent part */
-            transparent 100%
-          )`,
-            backgroundSize: "1px 8px",
-            backgroundRepeat: "repeat-y",
-            margin: "10px 0",
-            opacity: 0.8,
-            transition: "all 0.3s ease-in-out",
-          }}
-        />
+        <>
+          {/* Dashed Line */}
+          <span
+            style={{
+              zIndex: 1,
+              position: "absolute",
+              top: "40px", // Start from bottom of the icon
+              left: "50%",
+              transform: "translateX(-50%)",
+              borderLeft: "1px dashed rgb(0, 61, 45)",
+              height: "80px", // Fixed height for the dashed line
+              width: "1px",
+              opacity: 0.5,
+            }}
+          />
+
+          {/* Solid Line - Height changes dynamically */}
+          <span
+            ref={lineRef}
+            style={{
+              zIndex: 1,
+              position: "absolute",
+              top: "40px", // Start from bottom of the icon
+              left: "50%",
+              transform: "translateX(-50%)",
+              borderLeft: "1px solid rgb(0, 61, 45)",
+              height: `${solidHeight}%`, // Dynamic height from 0% to 100%
+              width: "1px",
+              transition: "height 0.1s ease",
+              maxHeight: "80px", // Fixed height for the solid line
+            }}
+          />
+        </>
       )}
     </ListItemIcon>
   );

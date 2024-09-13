@@ -64,7 +64,7 @@ export const ScrollableText = () => {
   return (
     <Paper
       sx={{
-        my: 12,
+        my: 18,
         borderRadius: 0,
         boxShadow: 0,
       }}
@@ -91,7 +91,7 @@ export const ScrollableText = () => {
               component="h2"
               sx={{
                 fontWeight: "bold",
-                color: "text.primary",
+                color: "darkgreen",
                 letterSpacing: "0.05em",
               }}
             >
@@ -134,6 +134,14 @@ export const ScrollableText = () => {
                 <ListItemText
                   primary={item.primary}
                   secondary={item.secondary}
+                  sx={{
+                    "& .MuiListItemText-primary": {
+                      color: "rgb(0, 61, 45)", // Dark green color for primary text
+                    },
+                    "& .MuiListItemText-secondary": {
+                      color: "rgb(34, 139, 34)", // Slightly lighter green for secondary text
+                    },
+                  }}
                 />
               </ListItem>
             ))}

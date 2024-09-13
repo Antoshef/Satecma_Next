@@ -1,55 +1,37 @@
 "use client";
-
 import {
   Paper,
   Typography,
   List,
   ListItem,
-  ListItemIcon,
   ListItemText,
   Grid,
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
+import { DashedLineIcon } from "./dashedLineIcon"; // Import the DashedLineIcon component
 
-// Reusable EmailIcon component with dynamic color change
-export const EmailIcon = ({ isActive }: { isActive?: boolean }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="40"
-    height="40"
-    viewBox="0 0 100 100"
-    id="emailIcon"
-  >
-    {/* Outer Circle */}
-    <circle
-      cx="50"
-      cy="50"
-      r="48"
-      stroke={isActive ? "darkgreen" : "black"}
-      strokeWidth="2"
-      fill="none"
-      id="outerCircle"
-    />
-
-    {/* Inner Circle (changes when active) */}
-    <circle
-      cx="50"
-      cy="50"
-      r="38"
-      fill={isActive ? "darkgreen" : "none"}
-      id="innerCircle"
-    />
-
-    {/* Email Icon (Envelope) */}
-    <path
-      d="M30 35 L50 50 L70 35 V65 H30 Z M30 35 H70 L50 50 Z"
-      stroke={isActive ? "white" : "black"}
-      strokeWidth="2"
-      fill="none"
-      id="envelope"
-    />
-  </svg>
-);
+const items = [
+  {
+    primary: "Регистрация на екип",
+    secondary: "Добавяне на членове към проекта",
+  },
+  {
+    primary: "Подписване на договор",
+    secondary: "Използвайте готови или персонализирани договори",
+  },
+  {
+    primary: "Изпращане на фактура",
+    secondary: "Екипът изпраща фактури за одобрение",
+  },
+  {
+    primary: "Одобряване на фактура",
+    secondary: "Извършете плащане по фактурата",
+  },
+  {
+    primary: "Получаване на плащане",
+    secondary: "Екипът получава заплащането в избраната валута",
+  },
+];
 
 export const ScrollableText = () => {
   const listItemRefs = useRef<(HTMLLIElement | null)[]>([]);
@@ -131,38 +113,24 @@ export const ScrollableText = () => {
           }}
         >
           <List>
-            {[
-              {
-                primary: "Регистрация на екип",
-                secondary: "Добавяне на членове към проекта",
-              },
-              {
-                primary: "Подписване на договор",
-                secondary: "Използвайте готови или персонализирани договори",
-              },
-              {
-                primary: "Изпращане на фактура",
-                secondary: "Екипът изпраща фактури за одобрение",
-              },
-              {
-                primary: "Одобряване на фактура",
-                secondary: "Извършете плащане по фактурата",
-              },
-              {
-                primary: "Получаване на плащане",
-                secondary: "Екипът получава заплащането в избраната валута",
-              },
-            ].map((item, index) => (
+            {items.map((item, index) => (
               <ListItem
                 key={index}
                 ref={(el) => {
                   listItemRefs.current[index] = el;
                   return undefined;
                 }}
+                sx={{
+                  alignItems: "flex-start",
+                  gap: 2,
+                  py: 0,
+                }}
               >
-                <ListItemIcon>
-                  <EmailIcon isActive={activeIndices.includes(index)} />
-                </ListItemIcon>
+                {/* DashedLineIcon with the isActive prop */}
+                <DashedLineIcon
+                  disableLine={index >= items.length - 1}
+                  isActive={activeIndices.includes(index)}
+                />
                 <ListItemText
                   primary={item.primary}
                   secondary={item.secondary}

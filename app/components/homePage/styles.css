@@ -10,3 +10,21 @@
 #emailIcon:hover #iconFill {
   fill: lightgrey; /* Change icon to light grey */
 }
+
+.dashed-line {
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 20px;
+  border-left: 1px dashed rgb(0, 61, 45);
+  height: 100%; /* Full height initially */
+  width: 1px;
+  opacity: 0.5;
+  transition: height 0.5s ease-in-out;
+}
+
+.full-line {
+  border-left: 1px solid rgb(0, 61, 45); /* Turns to solid */
+  height: 100%; /* Adjust this for a full-height effect */
+  opacity: 1;
+}

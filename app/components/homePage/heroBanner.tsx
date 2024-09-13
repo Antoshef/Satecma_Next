@@ -50,6 +50,8 @@ export const HeroBanner = () => {
         borderRadius: 4,
         boxShadow: 6,
         background: "linear-gradient(135deg, #f0f4f8, #ffffff)",
+        maxWidth: "1440px",
+        mx: "auto",
       }}
     >
       <Grid container spacing={0}>

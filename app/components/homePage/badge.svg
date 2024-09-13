@@ -1,0 +1,17 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer Circle -->
+  <circle cx="100" cy="100" r="90" fill="#f9c74f" stroke="#f94144" stroke-width="10"/>
+
+  <!-- Inner Circle -->
+  <circle cx="100" cy="100" r="70" fill="#90be6d" />
+
+  <!-- Star -->
+  <polygon points="100,40 110,80 150,80 115,100 125,140 100,115 75,140 85,100 50,80 90,80"
+    fill="#f94144" />
+
+  <!-- Bottom Banner -->
+  <rect x="30" y="140" width="140" height="30" rx="15" ry="15" fill="#f9844a"/>
+  <text x="100" y="160" font-size="16" font-family="Arial" fill="white" text-anchor="middle">
+    Вашият бизнес
+  </text>
+</svg>

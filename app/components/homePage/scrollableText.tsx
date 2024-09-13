@@ -6,11 +6,50 @@ import {
   List,
   ListItem,
   ListItemIcon,
-  IconButton,
   ListItemText,
   Grid,
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
+
+// Reusable EmailIcon component with dynamic color change
+export const EmailIcon = ({ isActive }: { isActive?: boolean }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="40"
+    height="40"
+    viewBox="0 0 100 100"
+    id="emailIcon"
+  >
+    {/* Outer Circle */}
+    <circle
+      cx="50"
+      cy="50"
+      r="48"
+      stroke={isActive ? "darkgreen" : "black"}
+      strokeWidth="2"
+      fill="none"
+      id="outerCircle"
+    />
+
+    {/* Inner Circle (changes when active) */}
+    <circle
+      cx="50"
+      cy="50"
+      r="38"
+      fill={isActive ? "darkgreen" : "none"}
+      id="innerCircle"
+    />
+
+    {/* Email Icon (Envelope) */}
+    <path
+      d="M30 35 L50 50 L70 35 V65 H30 Z M30 35 H70 L50 50 Z"
+      stroke={isActive ? "white" : "black"}
+      strokeWidth="2"
+      fill="none"
+      id="envelope"
+    />
+  </svg>
+);
 
 export const ScrollableText = () => {
   const listItemRefs = useRef<(HTMLLIElement | null)[]>([]);
@@ -40,57 +79,21 @@ export const ScrollableText = () => {
     };
   }, []);
 
-  // SVG Email Icon Component with two variations
-  const EmailIcon = ({ isActive }: { isActive: boolean }) => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="40"
-      height="40"
-      viewBox="0 0 100 100"
-      id="emailIcon"
-    >
-      {/* Outer Circle */}
-      <circle
-        cx="50"
-        cy="50"
-        r="48"
-        stroke={isActive ? "darkgreen" : "black"}
-        strokeWidth="2"
-        fill="none"
-        id="outerCircle"
-      />
-
-      {/* Inner Circle (changes when active) */}
-      <circle
-        cx="50"
-        cy="50"
-        r="38"
-        fill={isActive ? "darkgreen" : "none"}
-        id="innerCircle"
-      />
-
-      {/* Email Icon (Envelope) */}
-      <path
-        d="M30 35 L50 50 L70 35 V65 H30 Z M30 35 H70 L50 50 Z"
-        stroke={isActive ? "white" : "black"}
-        strokeWidth="2"
-        fill="none"
-        id="envelope"
-      />
-    </svg>
-  );
-
   return (
     <Paper
       sx={{
         my: 12,
-        p: 8,
-        borderRadius: 4,
-        boxShadow: 6,
-        background: "linear-gradient(135deg, #f0f4f8, #ffffff)",
+        borderRadius: 0,
+        boxShadow: 0,
       }}
     >
-      <Grid container spacing={8}>
+      <Grid
+        container
+        px={16}
+        sx={{
+          minHeight: "50vh",
+        }}
+      >
         {/* Left Column: Large Title */}
         <Grid item xs={12} md={6}>
           <div
@@ -116,7 +119,17 @@ export const ScrollableText = () => {
         </Grid>
 
         {/* Right Column: Icons with Titles/Subtitles */}
-        <Grid item xs={12} md={6}>
+        <Grid
+          item
+          xs={12}
+          md={6}
+          pl={12}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
           <List>
             {[
               {
@@ -148,10 +161,7 @@ export const ScrollableText = () => {
                 }}
               >
                 <ListItemIcon>
-                  <IconButton>
-                    {/* Use the inline SVG icon */}
-                    <EmailIcon isActive={activeIndices.includes(index)} />
-                  </IconButton>
+                  <EmailIcon isActive={activeIndices.includes(index)} />
                 </ListItemIcon>
                 <ListItemText
                   primary={item.primary}

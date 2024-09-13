@@ -24,9 +24,9 @@ export default function RootLayout({
         <UserProvider>
           <div className="flex h-full">
             <SidePanel />
-            <div className="flex-1 relative overflow-y-auto">
+            <div className="flex-1 relative">
               <Suspense>
-                <main className="p-4">{children}</main>
+                <main>{children}</main>
               </Suspense>
             </div>
           </div>

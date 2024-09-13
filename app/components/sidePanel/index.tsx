@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SubMenu from "./subMenu";
+import { getSession } from "@auth0/nextjs-auth0";
 
 export function classNames(classes: string[]) {
   return [...(classes || "")].filter(Boolean).join(" ");
@@ -25,14 +26,22 @@ const navigation: NavigationItem[] = [
   },
 ];
 
-export default function SidePanel() {
+export default async function SidePanel() {
+  const session = await getSession();
+
+  if (!session) {
+    return null;
+  }
+
   return (
     <div className="relative z-10 flex h-full">
       <nav className="bg-gray-800 w-64 h-full fixed">
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-between p-4 bg-gray-900">
             <Link href="/profile">
-              <span className="text-white text-lg font-semibold">Твоето лого</span>
+              <span className="text-white text-lg font-semibold">
+                Твоето лого
+              </span>
             </Link>
             <button
               type="button"

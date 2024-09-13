@@ -1,0 +1,12 @@
+#emailIcon {
+  cursor: pointer;
+  transition: 0.3s ease; /* Smooth transition */
+}
+
+#emailIcon:hover #iconBg {
+  fill: black; /* Change background to black */
+}
+
+#emailIcon:hover #iconFill {
+  fill: lightgrey; /* Change icon to light grey */
+}

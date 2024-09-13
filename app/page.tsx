@@ -3,6 +3,19 @@ import VerifyEmailModal from "./verificationPage";
 import { getSession } from "@auth0/nextjs-auth0";
 import { User } from "./api/auth/[auth0]/types";
 import { fetchData } from "./utils/fetchData";
+import { SEOAccordion } from "./components/seoAccordion";
+import {
+  Container,
+  Box,
+  Paper,
+  Typography,
+  Button,
+  List,
+  ListItem,
+} from "@mui/material";
+import { Header } from "./components/homePage/header";
+import { ScrollableText } from "./components/homePage/scrollableText";
+import { HeroBanner } from "./components/homePage/heroBanner";
 
 export default async function HomePage() {
   const session = await getSession();
@@ -54,102 +67,174 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="container mx-auto p-6 bg-gray-100 min-h-screen">
+    <Container
+      maxWidth={false}
+      sx={{ bgcolor: "background.default", minHeight: "100vh" }}
+      disableGutters
+    >
       {user && user.email_verified && <VerifyEmailModal user={user} />}
 
-      <header className="text-center my-12 bg-white p-8 rounded-lg shadow-md">
-        <h1 className="text-5xl font-extrabold text-gray-800">
-          Добре дошли в нашето приложение за управление на бизнес
-        </h1>
-        <p className="text-2xl mt-6 text-gray-600">
-          Оптимизирайте бизнес операциите си с лекота
-        </p>
-        {!user && (
-          <div className="mt-6 flex justify-center space-x-4">
-            <a
-              href="/api/auth/login"
-              className="px-4 py-2 uppercase font-bold bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition"
-            >
-              Вход
-            </a>
-          </div>
-        )}
-      </header>
+      {/* Header section with full-width image */}
+      <Header />
 
-      <section className="my-12 bg-white p-8 rounded-lg shadow-md">
-        <h2 className="text-4xl font-bold text-gray-800">
-          За нашето приложение
-        </h2>
-        <p className="mt-6 text-xl text-gray-700">
-          Нашето приложение е създадено, за да помогне на бизнеса да управлява
-          своите операции ефективно. С функции като създаване на оферти,
-          фактуриране, съхранение на продукти и управление на клиентска база
-          данни, можете да се справите с всички нужди на вашия бизнес на едно
-          място.
-        </p>
-      </section>
+      <Container
+        maxWidth="xl"
+        sx={{ p: 6, bgcolor: "background.default", minHeight: "100vh" }}
+      >
+        <Paper
+          sx={{
+            my: 12,
+            p: 8,
+            borderRadius: 4,
+            boxShadow: 6,
+            background: "linear-gradient(135deg, #f0f4f8, #ffffff)",
+          }}
+        >
+          <Typography
+            variant="h2"
+            component="h2"
+            sx={{
+              fontWeight: "bold",
+              color: "text.primary",
+              letterSpacing: "0.05em",
+              textAlign: "center",
+            }}
+          >
+            За нашето приложение
+          </Typography>
+          <Typography
+            variant="body1"
+            component="p"
+            sx={{
+              mt: 6,
+              fontSize: "1.25rem",
+              color: "text.secondary",
+              textAlign: "center",
+              lineHeight: 1.75,
+            }}
+          >
+            Нашето приложение е създадено, за да помогне на бизнеса да управлява
+            своите операции ефективно. С функции като създаване на оферти,
+            фактуриране, съхранение на продукти и управление на клиентска база
+            данни, можете да се справите с всички нужди на вашия бизнес на едно
+            място.
+          </Typography>
+        </Paper>
+        <HeroBanner />
 
-      <section className="my-12 bg-white p-8 rounded-lg shadow-md">
-        <h2 className="text-4xl font-bold text-gray-800">Функции</h2>
-        <ul className="list-disc list-inside mt-6 text-xl text-gray-700 space-y-4">
-          <li>Създаване и управление на оферти</li>
-          <li>Генериране и проследяване на фактури</li>
-          <li>Поддържане на обширно продуктово съхранение</li>
-          <li>Ефективно управление на клиентската информация</li>
-        </ul>
-      </section>
+        <ScrollableText />
 
-      <section className="my-12 bg-white p-8 rounded-lg shadow-md">
-        <h2 className="text-4xl font-bold text-gray-800">Започнете сега</h2>
-        <p className="mt-6 text-xl text-gray-700">
-          Готови ли сте да оптимизирате бизнес операциите си? Разгледайте
-          различните секции на нашето приложение:
-        </p>
-        <nav className="mt-6">
-          <ul className="list-none text-lg space-y-4">
-            <li className="group">
-              <Link
-                href="/create/offer"
-                className="block p-4 bg-gray-200 rounded-lg shadow-md transition transform hover:bg-gray-300 hover:scale-105"
-              >
-                <span className="text-gray-800 group-hover:text-gray-900 font-medium">
-                  Оферти
-                </span>
-              </Link>
-            </li>
-            <li className="group">
-              <Link
-                href="/create/invoice"
-                className="block p-4 bg-gray-200 rounded-lg shadow-md transition transform hover:bg-gray-300 hover:scale-105"
-              >
-                <span className="text-gray-800 group-hover:text-gray-900 font-medium">
-                  Фактури
-                </span>
-              </Link>
-            </li>
-            <li className="group">
-              <Link
-                href="/store"
-                className="block p-4 bg-gray-200 rounded-lg shadow-md transition transform hover:bg-gray-300 hover:scale-105"
-              >
-                <span className="text-gray-800 group-hover:text-gray-900 font-medium">
-                  Продуктово Съхранение
-                </span>
-              </Link>
-            </li>
-            <li className="group">
-              <Link
-                href="/clients"
-                className="block p-4 bg-gray-200 rounded-lg shadow-md transition transform hover:bg-gray-300 hover:scale-105"
-              >
-                <span className="text-gray-800 group-hover:text-gray-900 font-medium">
-                  Клиенти
-                </span>
-              </Link>
-            </li>
-          </ul>
-        </nav>
-      </section>
-    </div>
+        <Paper
+          sx={{
+            my: 12,
+            p: 8,
+            borderRadius: 4,
+            boxShadow: 6,
+            background: "linear-gradient(135deg, #f0f4f8, #ffffff)",
+          }}
+        >
+          <Typography
+            variant="h2"
+            component="h2"
+            sx={{
+              fontWeight: "bold",
+              color: "text.primary",
+              letterSpacing: "0.05em",
+              textAlign: "center",
+            }}
+          >
+            Започнете сега
+          </Typography>
+
+          <Typography
+            variant="body1"
+            component="p"
+            sx={{
+              mt: 6,
+              fontSize: "1.25rem",
+              color: "text.secondary",
+              textAlign: "center",
+              lineHeight: 1.75,
+            }}
+          >
+            Готови ли сте да оптимизирате бизнес операциите си? Разгледайте
+            различните секции на нашето приложение:
+          </Typography>
+
+          <Box component="nav" sx={{ mt: 8 }}>
+            <List sx={{ listStyle: "none", p: 0 }}>
+              {[
+                { href: "/create/offer", text: "Оферти" },
+                { href: "/create/invoice", text: "Фактури" },
+                { href: "/store", text: "Продуктово Съхранение" },
+                { href: "/clients", text: "Клиенти" },
+              ].map((item, index) => (
+                <ListItem key={index} sx={{ mb: 3 }}>
+                  <Link href={item.href} passHref>
+                    <Button
+                      variant="contained"
+                      fullWidth
+                      sx={{
+                        p: 2,
+                        borderRadius: 3,
+                        backgroundColor: "#3b82f6",
+                        backgroundImage:
+                          "linear-gradient(135deg, #3b82f6, #1e40af)",
+                        color: "white",
+                        boxShadow: 4,
+                        transition:
+                          "transform 0.4s, background 0.3s ease-in-out",
+                        "&:hover": {
+                          transform: "scale(1.07)",
+                          backgroundImage:
+                            "linear-gradient(135deg, #1e40af, #3b82f6)",
+                        },
+                      }}
+                    >
+                      <Typography
+                        variant="body1"
+                        component="span"
+                        sx={{
+                          fontWeight: "medium",
+                          fontSize: "1.1rem",
+                          letterSpacing: "0.02em",
+                        }}
+                      >
+                        {item.text}
+                      </Typography>
+                    </Button>
+                  </Link>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        </Paper>
+
+        <Paper
+          sx={{
+            my: 12,
+            p: 8,
+            borderRadius: 4,
+            boxShadow: 6,
+            background: "linear-gradient(135deg, #f0f4f8, #ffffff)",
+          }}
+        >
+          <Typography
+            variant="h2"
+            component="h2"
+            sx={{
+              fontWeight: "bold",
+              color: "text.primary",
+              letterSpacing: "0.05em",
+              textAlign: "center",
+              mb: 6,
+            }}
+          >
+            Защо да изберете нашето приложение?
+          </Typography>
+          <SEOAccordion />
+        </Paper>
+      </Container>
+    </Container>
   );
 }

@@ -1,4 +1,5 @@
 "use client";
+
 import { headCells } from "@/store/utils/constants";
 import { EnhancedTableHead } from "@/store/utils/enhancedTableHead";
 import { EnhancedTableToolbar } from "@/store/utils/enhancedTableToolbar";
@@ -9,25 +10,8 @@ import {
   StoreProduct,
   StoreUnits,
 } from "@/store/utils/types";
-import { createKey, handleProductsMap } from "@/store/utils/utils";
+import { handleProductsMap } from "@/store/utils/utils";
 import { fetchData } from "@/utils/fetchData";
-import {
-  Grid,
-  Input,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-} from "@mui/material";
-import Box from "@mui/material/Box";
-import Checkbox from "@mui/material/Checkbox";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
-import Typography from "@mui/material/Typography";
 import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from "react";
 import FileUpload from "./utils/fileUpload";
 import useToast from "./utils/useToast";
@@ -78,7 +62,7 @@ export default function Store({ data }: Props) {
     InvoiceProductData[] | null
   >(null);
   const [openCheckProductsDialog, setOpenCheckProductsDialog] = useState(false);
-  const { Toast, setMessage } = useToast();
+  const { Toast, notify } = useToast();
 
   const handleRequestSort = (
     event: MouseEvent<unknown>,
@@ -129,9 +113,9 @@ export default function Store({ data }: Props) {
       );
       setProducts(updatedProducts);
       setSelected([]);
-      setMessage({ severity: "success", text: "Products deleted" });
+      notify("Products deleted", "success");
     } catch (error) {
-      setMessage({ severity: "error", text: "Error deleting products" });
+      notify("Error deleting products", "error");
     }
   };
 
@@ -139,7 +123,7 @@ export default function Store({ data }: Props) {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLSelectElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -160,7 +144,7 @@ export default function Store({ data }: Props) {
   const isSelected = (product: StoreProduct) =>
     selected.indexOf(product) !== -1;
 
-  const handleCategoryChange = (event: SelectChangeEvent<string>) => {
+  const handleCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const category = event.target.value;
     setSelectedCategory(category);
     sortAndFilterProducts(products, category);
@@ -189,9 +173,9 @@ export default function Store({ data }: Props) {
       );
       setProducts(updatedProducts);
       setSelected([]);
-      setMessage({ severity: "success", text: "StoreProduct updated" });
+      notify("StoreProduct updated", "success");
     } catch (error) {
-      setMessage({ severity: "error", text: "Error updating product" });
+      notify("Error updating product", "error");
     }
   };
 
@@ -221,12 +205,12 @@ export default function Store({ data }: Props) {
       setProducts(handleProductsMap(data));
       const uniqueCategories = Array.from(new Set(data.map((p) => p.category)));
       setCategories(uniqueCategories);
-      setMessage({
-        text: `${productsToUpdate.length} products added successfully`,
-        severity: "success",
-      });
+      notify(
+        `${productsToUpdate.length} products added successfully`,
+        "success",
+      );
     } catch (error) {
-      setMessage({ text: "Error updating products", severity: "error" });
+      notify("Error updating products", "error");
     } finally {
       setProductsToUpdate(null);
       setOpenCheckProductsDialog(false);
@@ -271,163 +255,165 @@ export default function Store({ data }: Props) {
   }, [data]);
 
   return (
-    <Box margin={2}>
-      <>
-        <Toast />
-        <ProductsDialog
-          isOpen={openCheckProductsDialog}
-          setIsOpen={setOpenCheckProductsDialog}
-          onConfirm={uploadProductsHandler}
-          isFetching={isFetching}
-          productMap={productMap}
-          productsToUpdate={productsToUpdate}
+    <div className="m-4">
+      <Toast />
+      <ProductsDialog
+        isOpen={openCheckProductsDialog}
+        setIsOpen={setOpenCheckProductsDialog}
+        onConfirm={uploadProductsHandler}
+        isFetching={isFetching}
+        productMap={productMap}
+        productsToUpdate={productsToUpdate}
+      />
+      <FileUpload
+        data={productsToUpdate}
+        setData={setProductsToUpdate}
+        setOpenDialog={setOpenCheckProductsDialog}
+      />
+      <div className="w-full mb-4 bg-white shadow rounded-lg">
+        <EnhancedTableToolbar
+          title="Склад"
+          isSelected={!!selected.length}
+          onEdit={setEditMode}
+          onDelete={handleDelete}
         />
-        <FileUpload
-          data={productsToUpdate}
-          setData={setProductsToUpdate}
-          setOpenDialog={setOpenCheckProductsDialog}
+        <ProductEditor
+          editMode={editMode}
+          selected={selected[0]}
+          setEditMode={setEditMode}
+          onSubmit={onEditSubmit}
         />
-        <Paper sx={{ width: "100%", mb: 2 }}>
-          <EnhancedTableToolbar
-            title="Склад"
-            isSelected={!!selected}
-            onEdit={setEditMode}
-            onDelete={handleDelete}
+        <div className="flex items-baseline p-4">
+          <span className="mr-2 ml-2 text-lg">Избери категория:</span>
+          <select
+            id="category-select"
+            onChange={handleCategoryChange}
+            value={selectedCategory}
+            className="ml-4 p-2 border rounded"
+          >
+            <option key="all" value="all">
+              Всички
+            </option>
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+          <input
+            type="text"
+            placeholder="Търси по име"
+            value={searchTerm}
+            onChange={handleSearch}
+            className="ml-4 p-2 border rounded"
           />
-          <ProductEditor
-            editMode={editMode}
-            selected={selected[0]}
-            setEditMode={setEditMode}
-            onSubmit={onEditSubmit}
-          />
-          <Grid container alignItems="baseline">
-            <Typography
-              variant="body1"
-              component="span"
-              marginRight={2}
-              marginLeft={2}
-            >
-              Избери категория:
-            </Typography>
-            <Select
-              id="category-select"
-              onChange={handleCategoryChange}
-              value={selectedCategory}
-              variant="filled"
-            >
-              <MenuItem key="all" value="all">
-                Всички
-              </MenuItem>
-              {categories.map((category) => (
-                <MenuItem key={category} value={category}>
-                  {category}
-                </MenuItem>
-              ))}
-            </Select>
-            <Input
-              type="text"
-              placeholder="Търси по име"
-              value={searchTerm}
-              onChange={handleSearch}
-              className="ml-4"
+        </div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-sm">
+            <EnhancedTableHead
+              headCells={headCells}
+              order={order}
+              orderBy={orderBy}
+              onRequestSort={handleRequestSort}
+              onSelectAllClick={handleSelectAllClick}
+              numSelected={selected.length}
+              rowCount={filteredProducts.length}
             />
-          </Grid>
-          <TableContainer>
-            <Table
-              sx={{ minWidth: 750 }}
-              aria-labelledby="tableTitle"
-              size="small"
-            >
-              <EnhancedTableHead
-                headCells={headCells}
-                order={order}
-                orderBy={orderBy}
-                onRequestSort={handleRequestSort}
-                onSelectAllClick={handleSelectAllClick}
-                numSelected={selected.length}
-                rowCount={filteredProducts.length}
-              />
-              <TableBody>
-                {visibleRows.map((row, index) => {
-                  const isItemSelected = isSelected(row);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+            <tbody>
+              {visibleRows.map((row, index) => {
+                const isItemSelected = isSelected(row);
+                const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.code}
-                      selected={isItemSelected}
-                      sx={{ cursor: "pointer" }}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            "aria-labelledby": labelId,
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell align="right">{row.code}</TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                        align="right"
-                      >
-                        {row.name}
-                      </TableCell>
-                      <TableCell align="right">
-                        {(row.price * row.percentage_increase).toFixed(2)}{" "}
-                        {"лв."}
-                      </TableCell>
-                      <TableCell align="right">
-                        {(row.packagePrice * row.percentage_increase).toFixed(
-                          2,
-                        )}{" "}
-                        {"лв."}
-                      </TableCell>
-                      <TableCell align="right">
-                        {row.package} {row.unit}
-                      </TableCell>
-                      <TableCell align="right">
-                        {row.quantity}
-                        {" бр."}
-                      </TableCell>
-                      <TableCell align="right">
-                        {row.totalQuantity} {row.unit}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-                {emptyRows > 0 && (
-                  <TableRow
-                    style={{
-                      height: 33 * emptyRows,
-                    }}
+                return (
+                  <tr
+                    key={row.code + index}
+                    onClick={(event) => handleClick(event, row)}
+                    className={`cursor-pointer ${
+                      isItemSelected ? "bg-gray-100" : ""
+                    }`}
+                    role="checkbox"
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
                   >
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={filteredProducts.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Paper>
-      </>
-    </Box>
+                    <td className="p-2">
+                      <input
+                        type="checkbox"
+                        checked={isItemSelected}
+                        onChange={() => {}}
+                        className="form-checkbox h-5 w-5 text-blue-600"
+                        aria-labelledby={labelId}
+                      />
+                    </td>
+                    <td className="p-2 text-right">{row.code}</td>
+                    <td className="p-2 text-right" id={labelId}>
+                      {row.name}
+                    </td>
+                    <td className="p-2 text-right">
+                      {(row.price * row.percentage_increase).toFixed(2)} лв.
+                    </td>
+                    <td className="p-2 text-right">
+                      {(row.packagePrice * row.percentage_increase).toFixed(2)}{" "}
+                      лв.
+                    </td>
+                    <td className="p-2 text-right">
+                      {row.package} {row.unit}
+                    </td>
+                    <td className="p-2 text-right">{row.quantity} бр.</td>
+                    <td className="p-2 text-right">
+                      {row.totalQuantity} {row.unit}
+                    </td>
+                  </tr>
+                );
+              })}
+              {emptyRows > 0 && (
+                <tr
+                  style={{
+                    height: 33 * emptyRows,
+                  }}
+                >
+                  <td colSpan={6} />
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+        <div className="flex justify-between items-center p-4">
+          <div>
+            <label className="mr-2">Rows per page:</label>
+            <select
+              value={rowsPerPage}
+              onChange={handleChangeRowsPerPage}
+              className="border rounded p-2"
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+            </select>
+          </div>
+          <div>
+            <button
+              onClick={() => handleChangePage(null, page - 1)}
+              disabled={page === 0}
+              className="p-2 border rounded mr-2"
+            >
+              Previous
+            </button>
+            <span>
+              Page {page + 1} of{" "}
+              {Math.ceil(filteredProducts.length / rowsPerPage)}
+            </span>
+            <button
+              onClick={() => handleChangePage(null, page + 1)}
+              disabled={
+                page >= Math.ceil(filteredProducts.length / rowsPerPage) - 1
+              }
+              className="p-2 border rounded ml-2"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

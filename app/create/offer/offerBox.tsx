@@ -5,7 +5,7 @@ import { TextField } from "@/components/textField/TextField";
 import { Button, Typography } from "@mui/material";
 import { FormEvent, useRef, useState } from "react";
 import { SATECMA_LOGO } from "../invoice/constants";
-import { Product, Provider } from "../invoice/types";
+import { Product } from "../invoice/types";
 import { TableItems } from "../table/tableItems";
 import { TableServices } from "../table/tableServices";
 import { useTableItems } from "../table/useTableItems";
@@ -14,7 +14,7 @@ import { fetchData } from "@/utils/fetchData";
 import Image from "next/image";
 
 interface OfferBoxProps {
-  provider: Provider;
+  provider: any;
   products: Product[];
 }
 
@@ -29,7 +29,7 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
   const offerRef = useRef<HTMLTableElement>(null);
   const [isFieldsDisabled, setIsFieldsDisabled] = useState<boolean>(false);
   const [heading, setHeading] = useState("Заглавие на офертата");
-  const { Toast, setMessage } = useToast();
+  const { Toast, notify } = useToast();
   const [recipient, setRecipient] = useState({
     name: "",
     phone: "",
@@ -69,15 +69,9 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
           heading,
         }),
       });
-      setMessage({
-        severity: "success",
-        text: "Офертата беше успешно изпратена.",
-      });
+      notify("Офертата беше успешно изпратена.", "success");
     } catch (error) {
-      setMessage({
-        severity: "error",
-        text: "Грешка при изпращането на офертата.",
-      });
+      notify("Грешка при изпращането на офертата.", "error");
     }
   };
 

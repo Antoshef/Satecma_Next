@@ -1,15 +1,17 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { getSession } from "@auth0/nextjs-auth0/edge";
 
 // Define the paths that require authentication
 const protectedRoutes = ["/store", "/clients", "/sent", "/create"];
 
-export function middleware(request: NextRequest) {
-  const token = request.cookies.get("auth-token")?.value;
+export async function middleware(request: NextRequest) {
+  const res = NextResponse.next();
+  const session = await getSession(request, res);
 
   // If the user is not authenticated and tries to access protected routes, redirect them
   if (
-    !token &&
+    !session &&
     protectedRoutes.some((route) => request.nextUrl.pathname.startsWith(route))
   ) {
     // Redirect to home page if not authenticated
@@ -17,7 +19,7 @@ export function middleware(request: NextRequest) {
   }
 
   // Allow the request to proceed if authenticated or on a public page
-  return NextResponse.next();
+  return res;
 }
 
 export const config = {

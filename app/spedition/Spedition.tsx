@@ -17,7 +17,7 @@ export function Spedition({ econt }: SpeditionProps) {
   console.log(econt, "Econt");
 
   return (
-    <main className="flex flex-col justify-center align-middle m-auto max-w-screen-lg">
+    <section className="flex flex-col justify-center align-middle m-auto max-w-screen-lg">
       <Select
         id="spedition"
         value={spedition}
@@ -29,6 +29,6 @@ export function Spedition({ econt }: SpeditionProps) {
       </Select>
       {spedition === "Econt" && <CreateEcontPackage />}
       {spedition === "Speedy" && <CreateSpeedyPackage />}
-    </main>
+    </section>
   );
 }

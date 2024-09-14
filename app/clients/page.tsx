@@ -15,8 +15,8 @@ export default async function ClientsPage({
     });
 
   return (
-    <main>
+    <section>
       <ClientsTable data={data} />
-    </main>
+    </section>
   );
 }

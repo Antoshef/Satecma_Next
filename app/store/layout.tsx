@@ -18,10 +18,10 @@ export default async function StoreLayout({
     });
 
   return (
-    <main>
+    <section>
       <Suspense>
         <Store data={data} />
       </Suspense>
-    </main>
+    </section>
   );
 }

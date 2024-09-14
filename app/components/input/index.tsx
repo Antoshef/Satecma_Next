@@ -14,7 +14,7 @@ export function itemHandler<T, K extends keyof T>(
   name: string,
   items: Array<{ name?: string }>,
   stateProperty: K,
-  handler: Dispatch<SetStateAction<T>>
+  handler: Dispatch<SetStateAction<T>>,
 ): void {
   const selected = items.find((item) => item.name === name);
   handler((prevState) => ({
@@ -46,7 +46,7 @@ export const Input = forwardRef<{}, InputProps>(
       variant,
       setSelectedItem,
     },
-    ref
+    ref,
   ) => {
     const [input, setInput] = useState("");
     const [uniqueNames, setUniqueNames] = useState<string[]>([]);
@@ -60,7 +60,7 @@ export const Input = forwardRef<{}, InputProps>(
       setInput(value);
       if (value.length > 0) {
         const filteredSuggestions = uniqueNames.filter((item) =>
-          item.toLowerCase().includes(value.toLowerCase())
+          item.toLowerCase().includes(value.toLowerCase()),
         );
         setSuggestions(filteredSuggestions);
         setShowSuggestions(true);
@@ -149,7 +149,7 @@ export const Input = forwardRef<{}, InputProps>(
                   key={index}
                   onClick={() =>
                     selectItem(
-                      data.find((item) => item.name === name)?.name || ""
+                      data.find((item) => item.name === name)?.name || "",
                     )
                   }
                   style={{
@@ -167,5 +167,5 @@ export const Input = forwardRef<{}, InputProps>(
         )}
       </div>
     );
-  }
+  },
 );

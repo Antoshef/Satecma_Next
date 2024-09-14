@@ -1,4 +1,3 @@
-import { Button, Grid } from "@mui/material";
 import {
   ChangeEvent,
   Dispatch,
@@ -73,16 +72,12 @@ const FileUpload = ({ data, setData, setOpenDialog }: FileUploadProps) => {
   }, [data]);
 
   return (
-    <Grid container direction="column">
+    <div className="flex flex-col">
       {/* Drag and Drop area */}
       <div
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        style={{
-          border: "2px dashed #ccc",
-          padding: "20px",
-          textAlign: "center",
-        }}
+        className="border-2 border-dashed border-gray-300 p-5 text-center"
       >
         Drag and drop your file here or click to select a file
       </div>
@@ -92,29 +87,27 @@ const FileUpload = ({ data, setData, setOpenDialog }: FileUploadProps) => {
         type="file"
         accept="text/plain"
         onChange={handleChange}
-        style={{ display: "none" }} // Hide the default file input
+        className="hidden" // Hide the default file input
         id="fileInput" // Used to link label
       />
       <label
         htmlFor="fileInput"
-        style={{
-          display: "block",
-          marginTop: "20px",
-          textAlign: "center",
-          cursor: "pointer",
-        }}
+        className="block mt-5 text-center cursor-pointer"
       >
         Or click to select a file
       </label>
 
       {file && (
-        <Grid container spacing={2} marginTop={2} justifyContent="space-evenly">
-          <Button size="large" onClick={() => setOpenDialog(true)}>
+        <div className="flex justify-evenly mt-5">
+          <button
+            className="px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            onClick={() => setOpenDialog(true)}
+          >
             Selected file: {file.name}
-          </Button>
-        </Grid>
+          </button>
+        </div>
       )}
-    </Grid>
+    </div>
   );
 };
 

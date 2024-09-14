@@ -1,10 +1,11 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export const Header = () => (
   <header className="relative w-full h-[80vh] flex items-center justify-between p-4">
     {/* Background Image */}
     <Image
-      src="/header-bg.jpg"
+      src="/assets/header-bg.jpg"
       alt="Business Management App Background"
       fill
       quality={100}
@@ -23,7 +24,7 @@ export const Header = () => (
       {/* Buttons for Sign Up and Book a Demo */}
       <div className="mt-4 flex gap-2">
         <button className="bg-blue-600 px-4 py-1.5 rounded-lg text-white text-lg">
-          Вход
+          <Link href="/api/auth/login">Вход</Link>
         </button>
         <button className="border border-white text-white px-4 py-1.5 rounded-lg text-lg hover:border-blue-600">
           Виж Демо

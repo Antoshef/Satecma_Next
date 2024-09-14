@@ -1,75 +1,65 @@
-import { alpha, IconButton, Tooltip, Typography } from "@mui/material";
-import Toolbar from "@mui/material/Toolbar/Toolbar";
 import EditIcon from "@mui/icons-material/Edit";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { FC } from "react";
+import { Tooltip } from "@mui/material";
 
 interface EnhancedTableToolbarProps {
   title: string;
   isSelected: boolean;
   onEdit?: (edit: boolean) => void;
-  onDelete?: () => void; // Add onDelete prop
+  onDelete?: () => void;
 }
 
-export const EnhancedTableToolbar = ({
+export const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = ({
   title,
   isSelected,
   onEdit,
-  onDelete, // Add onDelete prop
-}: EnhancedTableToolbarProps) => {
+  onDelete,
+}) => {
   return (
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-        ...(isSelected && {
-          bgcolor: (theme) =>
-            alpha(
-              theme.palette.primary.main,
-              theme.palette.action.activatedOpacity,
-            ),
-        }),
-      }}
+    <div
+      className={`flex items-center justify-between p-2 ${
+        isSelected ? "bg-blue-100" : ""
+      }`}
     >
-      {isSelected ? (
-        <Typography
-          sx={{ flex: "1 1 100%" }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
+      <div className="flex-1">
+        <h2
+          className={`${
+            isSelected ? "text-white" : "text-gray-900"
+          } text-lg font-medium`}
         >
           {title}
-        </Typography>
-      ) : (
-        <Typography
-          sx={{ flex: "1 1 100%" }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          {title}
-        </Typography>
-      )}
-      {isSelected ? (
-        <>
-          <Tooltip title="Edit">
-            <IconButton onClick={() => onEdit?.(true)}>
-              <EditIcon />
-            </IconButton>
+        </h2>
+      </div>
+      <div className="flex items-center space-x-2">
+        {isSelected ? (
+          <>
+            <Tooltip title="Edit">
+              <button
+                onClick={() => onEdit?.(true)}
+                className="p-2 rounded-full hover:bg-gray-200"
+              >
+                <EditIcon />
+              </button>
+            </Tooltip>
+            <Tooltip title="Delete">
+              <button
+                onClick={onDelete}
+                className="p-2 rounded-full hover:bg-gray-200"
+              >
+                <DeleteIcon />
+              </button>
+            </Tooltip>
+          </>
+        ) : (
+          <Tooltip title="Filter list">
+            <button className="p-2 rounded-full hover:bg-gray-200">
+              <FilterListIcon />
+            </button>
           </Tooltip>
-          <Tooltip title="Delete">
-            <IconButton onClick={onDelete}>
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-        </>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
-    </Toolbar>
+        )}
+      </div>
+    </div>
   );
 };

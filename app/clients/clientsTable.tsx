@@ -2,22 +2,6 @@
 import { getComparator } from "@/store/page";
 import { EnhancedTableHead } from "@/store/utils/enhancedTableHead";
 import { EnhancedTableToolbar } from "@/store/utils/enhancedTableToolbar";
-import {
-  Box,
-  Checkbox,
-  FormControlLabel,
-  Grid,
-  Input,
-  Paper,
-  Switch,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TablePagination,
-  TableRow,
-  Typography,
-} from "@mui/material";
 import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from "react";
 import { headCells } from "./utils/constants";
 import { Client } from "./utils/types";
@@ -42,7 +26,7 @@ export default function ClientsTable({ data }: PageProps) {
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [editMode, setEditMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const { Toast, setMessage } = useToast();
+  const { Toast, notify } = useToast();
 
   const isSelected = (eik: string) => selected?.eik === eik;
 
@@ -73,7 +57,7 @@ export default function ClientsTable({ data }: PageProps) {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLSelectElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -91,15 +75,9 @@ export default function ClientsTable({ data }: PageProps) {
         setFilteredClients(newClients);
       }
       setEditMode(false);
-      setMessage({
-        text: "Клиентът е редактиран успешно",
-        severity: "success",
-      });
+      notify("Клиентът е редактиран успешно", "success");
     } catch (error) {
-      setMessage({
-        text: "Грешка при редакцията на клиента",
-        severity: "error",
-      });
+      notify("Грешка при редакцията на клиента", "error");
     }
   };
 
@@ -122,13 +100,15 @@ export default function ClientsTable({ data }: PageProps) {
   );
 
   useEffect(() => {
+    console.log("Clients loaded", selected);
     setEditMode(!!selected);
-  }, [selected]);
+    notify("Клиентите са заредени успешно", "success");
+  }, [selected, notify]);
 
   return (
-    <Box>
+    <div className="p-4">
       <Toast />
-      <Paper sx={{ width: "100%", mb: 2 }}>
+      <div className="w-full mb-2 bg-white shadow rounded-lg">
         <EnhancedTableToolbar
           title="Клиенти"
           isSelected={!!selected}
@@ -140,29 +120,18 @@ export default function ClientsTable({ data }: PageProps) {
           onSubmit={onEditSubmit}
           setEditMode={setEditMode}
         />
-        <Grid container alignItems="baseline">
-          <Typography
-            variant="body1"
-            component="span"
-            marginRight={2}
-            marginLeft={2}
-          >
-            Намери клиент:
-          </Typography>
-          <Input
+        <div className="flex items-baseline p-4">
+          <span className="mr-2 ml-2 text-lg">Намери клиент:</span>
+          <input
             type="text"
             placeholder="Търси по име"
             value={searchTerm}
             onChange={handleSearch}
-            className="ml-4"
+            className="ml-4 p-2 border rounded"
           />
-        </Grid>
-        <TableContainer>
-          <Table
-            sx={{ minWidth: 750 }}
-            aria-labelledby="tableTitle"
-            size={dense ? "small" : "medium"}
-          >
+        </div>
+        <div className="overflow-x-auto">
+          <table className={`min-w-full ${dense ? "text-sm" : "text-base"}`}>
             <EnhancedTableHead
               headCells={headCells}
               order={order}
@@ -172,14 +141,14 @@ export default function ClientsTable({ data }: PageProps) {
               numSelected={0}
               rowCount={filteredClients.length}
             />
-            <TableBody>
+            <tbody>
               {visibleRows.map((row, index) => {
                 const isItemSelected = isSelected(row.eik);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
-                  <TableRow
-                    hover
+                  <tr
+                    key={createKey(row)}
                     onClick={() =>
                       setSelected((state) => {
                         if (state === row) {
@@ -190,82 +159,110 @@ export default function ClientsTable({ data }: PageProps) {
                         }
                       })
                     }
-                    className="cursor-pointer"
+                    className={`cursor-pointer ${
+                      isItemSelected ? "bg-gray-100" : ""
+                    }`}
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
-                    key={createKey(row)}
-                    selected={isItemSelected}
-                    sx={{ cursor: "pointer" }}
                   >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
+                    <td className="p-2">
+                      <input
+                        type="checkbox"
                         checked={isItemSelected}
-                        inputProps={{
-                          "aria-labelledby": labelId,
-                        }}
+                        onChange={() => {}}
+                        className="form-checkbox h-5 w-5 text-blue-600"
+                        aria-labelledby={labelId}
                       />
-                    </TableCell>
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
-                    >
+                    </td>
+                    <td className="p-2" id={labelId}>
                       {row.name}
-                    </TableCell>
-                    <TableCell align="right">
+                    </td>
+                    <td className="p-2 text-right">
                       <Link
                         onClick={linkClickHandler}
                         href={`tel:${row.phone}`}
+                        className="text-blue-600 hover:underline"
                       >
                         {row.phone}
                       </Link>
-                    </TableCell>
-                    <TableCell align="right">
+                    </td>
+                    <td className="p-2 text-right">
                       <Link
                         onClick={linkClickHandler}
                         target="_blank"
                         href={`mailto:${row.email}`}
+                        className="text-blue-600 hover:underline"
                       >
                         {row.email}
                       </Link>
-                    </TableCell>
-                    <TableCell align="right">{row.city}</TableCell>
-                    <TableCell align="right">{row.address}</TableCell>
-                    <TableCell align="right">{row.director}</TableCell>
-                    <TableCell align="right">{row.eik}</TableCell>
-                    <TableCell align="right">{row.vat}</TableCell>
-                  </TableRow>
+                    </td>
+                    <td className="p-2 text-right">{row.city}</td>
+                    <td className="p-2 text-right">{row.address}</td>
+                    <td className="p-2 text-right">{row.director}</td>
+                    <td className="p-2 text-right">{row.eik}</td>
+                    <td className="p-2 text-right">{row.vat}</td>
+                  </tr>
                 );
               })}
               {emptyRows > 0 && (
-                <TableRow
+                <tr
                   style={{
                     height: (dense ? 33 : 53) * emptyRows,
                   }}
                 >
-                  <TableCell colSpan={6} />
-                </TableRow>
+                  <td colSpan={9} />
+                </tr>
               )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={filteredClients.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper>
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      />
-    </Box>
+            </tbody>
+          </table>
+        </div>
+        <div className="flex justify-between items-center p-4">
+          <div>
+            <label className="mr-2">Rows per page:</label>
+            <select
+              value={rowsPerPage}
+              onChange={handleChangeRowsPerPage}
+              className="border rounded p-2"
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+            </select>
+          </div>
+          <div>
+            <button
+              onClick={() => handleChangePage(null, page - 1)}
+              disabled={page === 0}
+              className="p-2 border rounded mr-2"
+            >
+              Previous
+            </button>
+            <span>
+              Page {page + 1} of{" "}
+              {Math.ceil(filteredClients.length / rowsPerPage)}
+            </span>
+            <button
+              onClick={() => handleChangePage(null, page + 1)}
+              disabled={
+                page >= Math.ceil(filteredClients.length / rowsPerPage) - 1
+              }
+              className="p-2 border rounded ml-2"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+        <div className="flex items-center p-4">
+          <label className="mr-2">Dense padding</label>
+          <input
+            type="checkbox"
+            checked={dense}
+            onChange={handleChangeDense}
+            className="form-checkbox h-5 w-5 text-blue-600"
+          />
+        </div>
+      </div>
+    </div>
   );
 }

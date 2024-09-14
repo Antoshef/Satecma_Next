@@ -1,13 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Typography,
-} from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 export const SEOAccordion = () => {
   const [openTab, setOpenTab] = useState<number | null>(null);
@@ -19,22 +12,45 @@ export const SEOAccordion = () => {
   return (
     <div>
       {accordionData.map((item, index) => (
-        <Accordion
+        <div
           key={index}
-          expanded={openTab === index}
-          onChange={() => toggleTab(index)}
+          className={`border border-gray-200 rounded-lg overflow-hidden shadow-sm ${openTab === index && "mb-4"}`}
         >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
+          <button
+            onClick={() => toggleTab(index)}
+            className="flex justify-between items-center w-full p-4 text-left text-lg font-medium text-gray-900 bg-gray-100 hover:bg-gray-200 focus:outline-none"
             aria-controls={`panel${index}-content`}
             id={`panel${index}-header`}
           >
-            <Typography variant="h6">{item.title}</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography>{item.content}</Typography>
-          </AccordionDetails>
-        </Accordion>
+            {item.title}
+            <span
+              className={`transform transition-transform ${
+                openTab === index ? "rotate-180" : ""
+              }`}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 transform rotate-180"
+                viewBox="0 0 20 20"
+                fill="grey"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 3a1 1 0 01.707.293l5 5a1 1 0 01-1.414 1.414L10 5.414 5.707 9.707A1 1 0 014.293 8.293l5-5A1 1 0 0110 3z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </span>
+          </button>
+          <div
+            id={`panel${index}-content`}
+            className={`transition-max-height duration-200 overflow-hidden ${
+              openTab === index ? "max-h-screen p-4" : "max-h-0"
+            } bg-white text-gray-700`}
+          >
+            {item.content}
+          </div>
+        </div>
       ))}
     </div>
   );

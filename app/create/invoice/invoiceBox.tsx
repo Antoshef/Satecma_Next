@@ -68,7 +68,7 @@ const InvoiceBox = ({
   const [invoiceData, setInvoiceData] = useState<InvoiceData>(
     INVOICE_DATA_DEFAULT_VALUES,
   );
-  const { Toast, setMessage } = useToast();
+  const { Toast, notify } = useToast();
 
   const invoiceNumber = useMemo(() => {
     if (invoiceIdType === InvoiceIdType.manual) {
@@ -90,10 +90,7 @@ const InvoiceBox = ({
 
     try {
       if (!invoiceRef.current?.outerHTML) {
-        setMessage({
-          text: "Възникна грешка при създаването на фактурата.",
-          severity: "error",
-        });
+        notify("Възникна грешка при създаването на фактурата.", "error");
         return;
       }
 
@@ -115,15 +112,9 @@ const InvoiceBox = ({
       };
       await createInvoice({ invoiceRequest, invoiceData });
 
-      setMessage({
-        text: "Фактурата е създадена успешно!",
-        severity: "success",
-      });
+      notify("Фактурата е създадена успешно!", "success");
     } catch (error) {
-      setMessage({
-        text: "Възникна грешка при създаването на фактурата.",
-        severity: "error",
-      });
+      notify("Възникна грешка при създаването на фактурата.", "error");
       setIsFieldsDisabled(false);
     }
   };

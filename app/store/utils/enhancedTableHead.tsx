@@ -1,13 +1,4 @@
 import { MouseEvent, ChangeEvent } from "react";
-import {
-  Box,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableSortLabel,
-  Checkbox,
-} from "@mui/material";
-import { visuallyHidden } from "@mui/utils";
 import { Order } from "./types";
 
 // Define a generic interface for head cells
@@ -44,42 +35,73 @@ export const EnhancedTableHead = <T,>({
     };
 
   return (
-    <TableHead>
-      <TableRow>
+    <thead className="bg-gray-50">
+      <tr>
         {/* Checkbox for selecting all rows */}
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount} // If some rows are selected but not all
+        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <input
+            type="checkbox"
+            className="form-checkbox h-4 w-4 text-blue-600"
             checked={rowCount > 0 && numSelected === rowCount} // If all rows are selected
+            ref={(input) => {
+              if (input)
+                input.indeterminate = numSelected > 0 && numSelected < rowCount;
+            }} // If some rows are selected but not all
             onChange={onSelectAllClick} // Handle the select all click
-            inputProps={{
-              "aria-label": "select all invoices",
-            }}
+            aria-label="select all invoices"
           />
-        </TableCell>
-        {headCells.map((headCell) => (
-          <TableCell
-            key={String(headCell.id)}
-            align="right"
-            padding={headCell.disablePadding ? "none" : "normal"}
-            sortDirection={orderBy === headCell.id ? order : false}
+        </th>
+        {headCells.map((headCell, index) => (
+          <th
+            key={`${(headCell.id, index)}`}
+            className={`px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider ${
+              headCell.disablePadding ? "p-0" : "p-4"
+            }`}
           >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : "asc"}
+            <div
+              className="flex items-center justify-end cursor-pointer"
               onClick={createSortHandler(headCell.id)}
             >
               {headCell.label}
               {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === "desc" ? "sorted descending" : "sorted ascending"}
-                </Box>
+                <span className="ml-2">
+                  {order === "desc" ? (
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M19 9l-7 7-7-7"
+                      ></path>
+                    </svg>
+                  ) : (
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 15l7-7 7 7"
+                      ></path>
+                    </svg>
+                  )}
+                </span>
               ) : null}
-            </TableSortLabel>
-          </TableCell>
+            </div>
+          </th>
         ))}
-      </TableRow>
-    </TableHead>
+      </tr>
+    </thead>
   );
 };

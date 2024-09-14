@@ -75,7 +75,7 @@ export const HeroBanner = () => {
         <div className="bg-gray-900 text-white rounded-2xl flex flex-col justify-center items-center p-8">
           {/* Example image - replace with actual image */}
           <Image
-            src="/path-to-image.png"
+            src="/assets/girl-transparent.png"
             alt="Project Management Image"
             className="mb-3 w-24 h-auto"
             width={96}

@@ -56,13 +56,13 @@ export default async function CreateLayout({
   };
 
   return (
-    <main>
+    <article>
       {cloneElement(children, {
         products,
         clients,
         invoiceIds,
         provider,
       })}
-    </main>
+    </article>
   );
 }

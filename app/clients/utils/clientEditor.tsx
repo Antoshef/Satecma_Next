@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Client } from "./types";
-import { Button, Grid, Input, Typography } from "@mui/material";
 
 interface Props {
   selected?: Client;
@@ -38,10 +37,10 @@ export const ClientEditor = ({
   }, [selected]);
 
   return editMode ? (
-    <Grid container columnSpacing={3} margin={2} alignItems="center">
-      <Grid item>
-        <Typography variant="subtitle1">Име</Typography>
-        <Input
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Име</label>
+        <input
           name="name"
           placeholder="Име"
           type="text"
@@ -49,11 +48,12 @@ export const ClientEditor = ({
           onChange={(e) =>
             handleChange(e.target.name as keyof Client, e.target.value)
           }
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         />
-      </Grid>
-      <Grid item>
-        <Typography variant="subtitle1">Град</Typography>
-        <Input
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Град</label>
+        <input
           name="city"
           placeholder="Град"
           type="text"
@@ -61,11 +61,12 @@ export const ClientEditor = ({
           onChange={(e) =>
             handleChange(e.target.name as keyof Client, e.target.value)
           }
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         />
-      </Grid>
-      <Grid item>
-        <Typography variant="subtitle1">Адрес</Typography>
-        <Input
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Адрес</label>
+        <input
           name="address"
           placeholder="Адрес"
           type="text"
@@ -73,15 +74,18 @@ export const ClientEditor = ({
           onChange={(e) =>
             handleChange(e.target.name as keyof Client, e.target.value)
           }
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         />
-      </Grid>
-      <Grid item>
-        <Typography variant="subtitle1">ЕИК</Typography>
-        <Typography variant="subtitle1">{client?.eik}</Typography>
-      </Grid>
-      <Grid item>
-        <Typography variant="subtitle1">ДДС №</Typography>
-        <Input
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700">ЕИК</label>
+        <p className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm sm:text-sm">
+          {client?.eik}
+        </p>
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700">ДДС №</label>
+        <input
           name="vat"
           placeholder="ДДС №"
           type="text"
@@ -89,11 +93,14 @@ export const ClientEditor = ({
           onChange={(e) =>
             handleChange(e.target.name as keyof Client, e.target.value)
           }
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         />
-      </Grid>
-      <Grid item>
-        <Typography variant="subtitle1">Директор</Typography>
-        <Input
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Директор
+        </label>
+        <input
           name="director"
           placeholder="Директор"
           type="text"
@@ -101,11 +108,14 @@ export const ClientEditor = ({
           onChange={(e) =>
             handleChange(e.target.name as keyof Client, e.target.value)
           }
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         />
-      </Grid>
-      <Grid item>
-        <Typography variant="subtitle1">Е-Поща</Typography>
-        <Input
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Е-Поща
+        </label>
+        <input
           name="email"
           placeholder="Е-Поща"
           type="text"
@@ -113,11 +123,14 @@ export const ClientEditor = ({
           onChange={(e) =>
             handleChange(e.target.name as keyof Client, e.target.value)
           }
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         />
-      </Grid>
-      <Grid item>
-        <Typography variant="subtitle1">Телефон</Typography>
-        <Input
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Телефон
+        </label>
+        <input
           name="phone"
           placeholder="Телефон"
           type="text"
@@ -125,12 +138,23 @@ export const ClientEditor = ({
           onChange={(e) =>
             handleChange(e.target.name as keyof Client, e.target.value)
           }
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         />
-      </Grid>
-      <Grid item>
-        <Button onClick={submitHandler}>Save</Button>
-        <Button onClick={() => setEditMode(false)}>Cancel</Button>
-      </Grid>
-    </Grid>
+      </div>
+      <div className="col-span-2 flex justify-end space-x-4">
+        <button
+          onClick={submitHandler}
+          className="px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          Save
+        </button>
+        <button
+          onClick={() => setEditMode(false)}
+          className="px-4 py-2 bg-gray-600 text-white rounded-md shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
   ) : null;
 };

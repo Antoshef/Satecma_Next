@@ -1,18 +1,8 @@
-import Link from "next/link";
 import VerifyEmailModal from "./verificationPage";
 import { getSession } from "@auth0/nextjs-auth0";
 import { User } from "./api/auth/[auth0]/types";
 import { fetchData } from "./utils/fetchData";
 import { SEOAccordion } from "./components/seoAccordion";
-import {
-  Container,
-  Box,
-  Paper,
-  Typography,
-  Button,
-  List,
-  ListItem,
-} from "@mui/material";
 import { Header } from "./components/homePage/header";
 import { ScrollableText } from "./components/homePage/scrollableText";
 import { HeroBanner } from "./components/homePage/heroBanner";
@@ -69,52 +59,25 @@ export default async function HomePage() {
   }
 
   return (
-    <Container
-      maxWidth={false}
-      sx={{ bgcolor: "background.default", minHeight: "100vh" }}
-      disableGutters
-    >
+    <div className="bg-gray-100 min-h-screen">
       {user && user.email_verified && <VerifyEmailModal user={user} />}
 
       {/* Header section with full-width image */}
       <Header />
 
-      <Container
-        maxWidth={false}
-        sx={{ p: 6, bgcolor: "background.default", minHeight: "100vh" }}
-      >
+      <div className="p-6 bg-gray-100 min-h-screen">
         <Intro />
         <HeroBanner />
         <ScrollableText />
         <StartNow />
 
-        <Paper
-          sx={{
-            my: 12,
-            p: 8,
-            borderRadius: 4,
-            boxShadow: 6,
-            background: "linear-gradient(135deg, #f0f4f8, #ffffff)",
-            maxWidth: "1440px",
-            mx: "auto",
-          }}
-        >
-          <Typography
-            variant="h2"
-            component="h2"
-            sx={{
-              fontWeight: "bold",
-              color: "text.primary",
-              letterSpacing: "0.05em",
-              textAlign: "center",
-              mb: 6,
-            }}
-          >
+        <div className="my-12 p-8 rounded-lg shadow-lg bg-gradient-to-br from-gray-100 to-white max-w-6xl mx-auto">
+          <h2 className="font-bold text-primary tracking-wide text-center mb-6">
             Защо да изберете нашето приложение?
-          </Typography>
+          </h2>
           <SEOAccordion />
-        </Paper>
-      </Container>
-    </Container>
+        </div>
+      </div>
+    </div>
   );
 }

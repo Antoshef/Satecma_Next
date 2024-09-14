@@ -19,7 +19,6 @@ import {
   Company,
 } from "./types";
 import { Client } from "@/clients/utils/types";
-import { Checkbox, Typography, Button, Grid } from "@mui/material";
 import { useTableItems } from "../table/useTableItems";
 import { InputWrapper } from "@/components/input/wrapper";
 import { SelectField } from "@/components/selectField/SelectField";
@@ -486,29 +485,29 @@ const InvoiceBox = ({
             </tbody>
           </table>
         </div>
-        <Grid container margin={2} justifyContent="center" alignItems="center">
-          <Grid
-            item
-            className="cursor-pointer"
+        <div className="flex justify-center items-center my-2">
+          <div
+            className="cursor-pointer flex items-center"
             onClick={() => setSendMailToRecepient(!sendMailToRecepient)}
           >
-            <Checkbox
+            <input
+              type="checkbox"
               checked={sendMailToRecepient}
-              inputProps={{ "aria-label": "controlled" }}
+              onChange={() => setSendMailToRecepient(!sendMailToRecepient)}
+              className="form-checkbox h-5 w-5 text-blue-600"
+              aria-label="controlled"
             />
-            <Typography component="span" variant="body2">
-              Изпрати до получател
-            </Typography>
-          </Grid>
-        </Grid>
+            <span className="ml-2 text-sm">Изпрати до получател</span>
+          </div>
+        </div>
         <div className="invoice__button">
-          <Button
-            variant="contained"
+          <button
+            className="bg-blue-600 text-white py-2 px-4 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
             disabled={error || isFieldsDisabled}
             type="submit"
           >
             Създай
-          </Button>
+          </button>
         </div>
       </form>
     </div>

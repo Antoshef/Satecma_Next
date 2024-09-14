@@ -1,6 +1,7 @@
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import clsx from "clsx";
+import { ToastSeverity } from "./types";
 
 const HIDE_TIMEOUT = 5000;
 
@@ -26,9 +27,7 @@ const useToast = () => {
   };
 
   // Define styles based on the severity of the message
-  const getSeverityStyle = (
-    severity: "success" | "error" | "warning" | "info",
-  ) => {
+  const getSeverityStyle = (severity: ToastSeverity) => {
     switch (severity) {
       case "success":
         return "text-green-500 bg-grey-500";

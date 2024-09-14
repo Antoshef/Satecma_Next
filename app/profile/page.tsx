@@ -1,6 +1,5 @@
 import { fetchData } from "@/utils/fetchData";
 import { Company } from "@/create/invoice/types";
-import { Container } from "@mui/material";
 import ProfileDetails from "./profileDetails";
 import { Suspense } from "react";
 import Loading from "@/loading";
@@ -18,10 +17,10 @@ export default async function ProfilePage() {
 
   return (
     <Suspense fallback={<Loading />}>
-      <Container>
+      <div className="container mx-auto p-4">
         <CompanySearch />
         {companies && <ProfileDetails companies={companies} />}
-      </Container>
+      </div>
     </Suspense>
   );
 }

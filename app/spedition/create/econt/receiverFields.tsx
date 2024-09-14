@@ -1,5 +1,4 @@
 import { Input, itemHandler } from "@/components/input";
-import { Checkbox, Grid, TextField, Typography } from "@mui/material";
 import { City } from "./services/shipments/types";
 import { Receiver } from "./types";
 import { CSSTransition } from "react-transition-group";
@@ -31,75 +30,110 @@ export const ReceiverFields = ({
 
   return (
     <article className="flex flex-col gap-4">
-      <Typography className="bg-gray-800 text-white px-2 py-1" variant="h6">
+      <h6 className="bg-gray-800 text-white px-2 py-1 text-lg font-semibold">
         Получател
-      </Typography>
+      </h6>
       <section className="flex flex-col gap-4">
-        <Grid
-          item
-          className="cursor-pointer"
+        <div
+          className="cursor-pointer flex items-center"
           onClick={() => setIsAddressUsed(!isAddressUsed)}
         >
-          <Typography component="span" variant="body2">
+          <span className="text-sm font-medium text-gray-700">
             Достави до адрес
-          </Typography>
-          <Checkbox
+          </span>
+          <input
+            type="checkbox"
             checked={isAddressUsed}
-            inputProps={{ "aria-label": "controlled" }}
+            onChange={() => setIsAddressUsed(!isAddressUsed)}
+            className="ml-2 form-checkbox h-5 w-5 text-blue-600"
+            aria-label="controlled"
           />
-        </Grid>
+        </div>
         <div className="flex flex-row gap-4">
-          <TextField
-            id="phone"
-            label="Телефон"
-            required
-            value={phone}
-            onChange={(e) =>
-              setReceiver((state) => ({
-                ...state,
-                phone: e.target.value,
-              }))
-            }
-          />
-          <TextField
-            id="name"
-            label="Име на получател"
-            required
-            value={name}
-            onChange={(e) =>
-              setReceiver((state) => ({
-                ...state,
-                name: e.target.value,
-              }))
-            }
-          />
-          <TextField
-            id="email"
-            label="Имейл"
-            value={email}
-            onChange={(e) =>
-              setReceiver((state) => ({
-                ...state,
-                email: e.target.value,
-              }))
-            }
-          />
+          <div className="flex flex-col">
+            <label
+              htmlFor="phone"
+              className="text-sm font-medium text-gray-700"
+            >
+              Телефон
+            </label>
+            <input
+              id="phone"
+              type="text"
+              required
+              value={phone}
+              onChange={(e) =>
+                setReceiver((state) => ({
+                  ...state,
+                  phone: e.target.value,
+                }))
+              }
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="name" className="text-sm font-medium text-gray-700">
+              Име на получател
+            </label>
+            <input
+              id="name"
+              type="text"
+              required
+              value={name}
+              onChange={(e) =>
+                setReceiver((state) => ({
+                  ...state,
+                  name: e.target.value,
+                }))
+              }
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label
+              htmlFor="email"
+              className="text-sm font-medium text-gray-700"
+            >
+              Имейл
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) =>
+                setReceiver((state) => ({
+                  ...state,
+                  email: e.target.value,
+                }))
+              }
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
         </div>
 
         <div className="flex flex-row gap-4">
-          <TextField
-            id="country"
-            label="Държава"
-            required
-            disabled
-            value={country}
-            onChange={(e) =>
-              setReceiver((state) => ({
-                ...state,
-                country: e.target.value,
-              }))
-            }
-          />
+          <div className="flex flex-col">
+            <label
+              htmlFor="country"
+              className="text-sm font-medium text-gray-700"
+            >
+              Държава
+            </label>
+            <input
+              id="country"
+              type="text"
+              required
+              disabled
+              value={country}
+              onChange={(e) =>
+                setReceiver((state) => ({
+                  ...state,
+                  country: e.target.value,
+                }))
+              }
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
           <Input
             label="Град"
             required
@@ -109,18 +143,26 @@ export const ReceiverFields = ({
               itemHandler(name, cities, "city", setReceiver)
             }
           />
-          <TextField
-            id="postCode"
-            label="Пощенски код"
-            type="number"
-            value={city?.postCode || ""}
-            onChange={(e) =>
-              setReceiver((state) => ({
-                ...state,
-                postCode: +e.target.value,
-              }))
-            }
-          />
+          <div className="flex flex-col">
+            <label
+              htmlFor="postCode"
+              className="text-sm font-medium text-gray-700"
+            >
+              Пощенски код
+            </label>
+            <input
+              id="postCode"
+              type="number"
+              value={city?.postCode || ""}
+              onChange={(e) =>
+                setReceiver((state) => ({
+                  ...state,
+                  postCode: +e.target.value,
+                }))
+              }
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
           <CSSTransition
             in={!isAddressUsed}
             timeout={300}
@@ -150,108 +192,171 @@ export const ReceiverFields = ({
         >
           <div className="flex flex-col gap-4" ref={addressRef}>
             <div className="flex flex-row gap-4">
-              <TextField
-                id="street"
-                label="Улица"
-                required
-                value={address?.street || ""}
-                onChange={(e) =>
-                  setReceiver((state) => ({
-                    ...state,
-                    address: {
-                      ...state.address,
-                      street: e.target.value,
-                    },
-                  }))
-                }
-              />
-              <TextField
-                id="number"
-                label="Номер"
-                required
-                value={address?.num || ""}
-                onChange={(e) =>
-                  setReceiver((state) => ({
-                    ...state,
-                    address: {
-                      ...state.address,
-                      num: e.target.value,
-                    },
-                  }))
-                }
-              />
-              <TextField
-                id="district"
-                label="Квартал"
-                value={address?.quarter || ""}
-                onChange={(e) =>
-                  setReceiver((state) => ({
-                    ...state,
-                    address: {
-                      ...state.address,
-                      quarter: e.target.value,
-                    },
-                  }))
-                }
-              />
+              <div className="flex flex-col">
+                <label
+                  htmlFor="street"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  Улица
+                </label>
+                <input
+                  id="street"
+                  type="text"
+                  required
+                  value={address?.street || ""}
+                  onChange={(e) =>
+                    setReceiver((state) => ({
+                      ...state,
+                      address: {
+                        ...state.address,
+                        street: e.target.value,
+                      },
+                    }))
+                  }
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label
+                  htmlFor="number"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  Номер
+                </label>
+                <input
+                  id="number"
+                  type="text"
+                  required
+                  value={address?.num || ""}
+                  onChange={(e) =>
+                    setReceiver((state) => ({
+                      ...state,
+                      address: {
+                        ...state.address,
+                        num: e.target.value,
+                      },
+                    }))
+                  }
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label
+                  htmlFor="district"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  Квартал
+                </label>
+                <input
+                  id="district"
+                  type="text"
+                  value={address?.quarter || ""}
+                  onChange={(e) =>
+                    setReceiver((state) => ({
+                      ...state,
+                      address: {
+                        ...state.address,
+                        quarter: e.target.value,
+                      },
+                    }))
+                  }
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
             </div>
             <div className="flex flex-row gap-4">
-              <TextField
-                id="Building"
-                label="Блок"
-                value={address?.other || ""}
-                onChange={(e) =>
-                  setReceiver((state) => ({
-                    ...state,
-                    address: {
-                      ...state.address,
-                      other: e.target.value,
-                    },
-                  }))
-                }
-              />
-              <TextField
-                id="entrance"
-                label="Вход"
-                value={address?.other || ""}
-                onChange={(e) =>
-                  setReceiver((state) => ({
-                    ...state,
-                    address: {
-                      ...state.address,
-                      other: e.target.value,
-                    },
-                  }))
-                }
-              />
-              <TextField
-                id="floor"
-                label="Етаж"
-                value={address?.other || ""}
-                onChange={(e) =>
-                  setReceiver((state) => ({
-                    ...state,
-                    address: {
-                      ...state.address,
-                      other: e.target.value,
-                    },
-                  }))
-                }
-              />
-              <TextField
-                id="apartment"
-                label="Апартамент"
-                value={address?.other || ""}
-                onChange={(e) =>
-                  setReceiver((state) => ({
-                    ...state,
-                    address: {
-                      ...state.address,
-                      other: e.target.value,
-                    },
-                  }))
-                }
-              />
+              <div className="flex flex-col">
+                <label
+                  htmlFor="Building"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  Блок
+                </label>
+                <input
+                  id="Building"
+                  type="text"
+                  value={address?.other || ""}
+                  onChange={(e) =>
+                    setReceiver((state) => ({
+                      ...state,
+                      address: {
+                        ...state.address,
+                        other: e.target.value,
+                      },
+                    }))
+                  }
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label
+                  htmlFor="entrance"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  Вход
+                </label>
+                <input
+                  id="entrance"
+                  type="text"
+                  value={address?.other || ""}
+                  onChange={(e) =>
+                    setReceiver((state) => ({
+                      ...state,
+                      address: {
+                        ...state.address,
+                        other: e.target.value,
+                      },
+                    }))
+                  }
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label
+                  htmlFor="floor"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  Етаж
+                </label>
+                <input
+                  id="floor"
+                  type="text"
+                  value={address?.other || ""}
+                  onChange={(e) =>
+                    setReceiver((state) => ({
+                      ...state,
+                      address: {
+                        ...state.address,
+                        other: e.target.value,
+                      },
+                    }))
+                  }
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label
+                  htmlFor="apartment"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  Апартамент
+                </label>
+                <input
+                  id="apartment"
+                  type="text"
+                  value={address?.other || ""}
+                  onChange={(e) =>
+                    setReceiver((state) => ({
+                      ...state,
+                      address: {
+                        ...state.address,
+                        other: e.target.value,
+                      },
+                    }))
+                  }
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
             </div>
           </div>
         </CSSTransition>

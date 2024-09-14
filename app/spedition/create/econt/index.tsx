@@ -1,10 +1,9 @@
 import { PackageDataFields } from "./packageDataFields";
 import { ReceiverFields } from "./receiverFields";
 import { AdditionalServices } from "./additionalServices";
-import { Button } from "@mui/material";
 import { FormEvent, useState } from "react";
 import { useCreateEcontPackage } from "./useCreateEcontPackage";
-import { createLabel } from "./services/utils";
+import { EcontUtils } from "./services/utils";
 import { SenderFields } from "./senderFields";
 
 export const CreateEcontPackage = () => {
@@ -14,7 +13,7 @@ export const CreateEcontPackage = () => {
 
   const submitHandler = (e: FormEvent<HTMLElement>) => {
     e.preventDefault();
-    const result = createLabel(receiver)
+    const result = EcontUtils.createLabel(receiver)
       .then((res) => {
         console.log(res, "res");
         return res;
@@ -38,9 +37,12 @@ export const CreateEcontPackage = () => {
       />
       <PackageDataFields />
       <AdditionalServices />
-      <Button type="submit" className="w-44 self-center" variant="contained">
+      <button
+        type="submit"
+        className="w-44 self-center bg-blue-600 text-white py-2 px-4 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+      >
         Създай
-      </Button>
+      </button>
     </form>
   );
 };

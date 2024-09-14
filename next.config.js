@@ -8,6 +8,11 @@ const nextConfig = {
         hostname: "satecma.bg",
         pathname: "/wp-content/**",
       },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        pathname: "/**",
+      },
     ],
   },
 };

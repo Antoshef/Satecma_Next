@@ -2,17 +2,8 @@
 
 import React, { useState } from "react";
 import { Company } from "@/create/invoice/types";
-import {
-  TextField,
-  Button,
-  Grid,
-  Typography,
-  Paper,
-  Avatar,
-  CircularProgress,
-  Container,
-} from "@mui/material";
 import { useUser } from "@auth0/nextjs-auth0/client";
+import Image from "next/image";
 
 interface ProfileDetailsProps {
   companies: Company;
@@ -47,169 +38,186 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ companies }) => {
 
   if (isLoading) {
     return (
-      <Container className="flex justify-center items-center h-screen">
-        <CircularProgress />
-      </Container>
+      <div className="flex justify-center items-center h-screen">
+        <div className="loader"></div>
+      </div>
     );
   }
 
   return (
-    <Paper elevation={3} className="p-6 max-w-4xl mx-auto mt-5">
-      <Grid container spacing={4}>
+    <div className="bg-white shadow-md rounded-lg p-6 max-w-4xl mx-auto mt-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* User Data Column */}
-        <Grid item xs={12} md={6}>
-          <Typography variant="h6" gutterBottom>
-            User Information
-          </Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Typography variant="body1" align="center">
-                <strong>Profile Image</strong>
-              </Typography>
-            </Grid>
-            <Grid item xs={12} container justifyContent="center">
-              <Avatar
+        <div>
+          <h2 className="text-xl font-semibold mb-4">User Information</h2>
+          <div className="grid grid-cols-1 gap-2">
+            <div className="text-center">
+              <strong>Profile Image</strong>
+            </div>
+            <div className="flex justify-center">
+              <Image
                 src={user?.picture || ""}
                 alt={user?.name || ""}
-                sx={{ width: 100, height: 100 }}
+                className="w-24 h-24 rounded-full"
+                width={96}
+                height={96}
+                priority
               />
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body1" align="center">
-                <strong>Name:</strong> {user?.name || ""}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body1" align="center">
-                <strong>Email:</strong> {user?.email || ""}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body1" align="center">
-                <strong>Nickname:</strong> {user?.nickname || ""}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body1" align="center">
-                <strong>Email Verified:</strong>{" "}
-                {user?.email_verified ? "Yes" : "No"}
-              </Typography>
-            </Grid>
-          </Grid>
-        </Grid>
+            </div>
+            <div className="text-center">
+              <strong>Name:</strong> {user?.name || ""}
+            </div>
+            <div className="text-center">
+              <strong>Email:</strong> {user?.email || ""}
+            </div>
+            <div className="text-center">
+              <strong>Nickname:</strong> {user?.nickname || ""}
+            </div>
+            <div className="text-center">
+              <strong>Email Verified:</strong>{" "}
+              {user?.email_verified ? "Yes" : "No"}
+            </div>
+          </div>
+        </div>
 
         {/* Provider Data Column */}
-        <Grid item xs={12} md={6}>
-          <Typography variant="h6" gutterBottom>
-            Company Information
-          </Typography>
+        <div>
+          <h2 className="text-xl font-semibold mb-4">Company Information</h2>
           <form onSubmit={handleSubmit}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Company"
+            <div className="grid grid-cols-1 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Company
+                </label>
+                <input
+                  type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="EIK"
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  EIK
+                </label>
+                <input
+                  type="text"
                   name="eik"
                   value={formData.eik}
                   onChange={handleChange}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="VAT"
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  VAT
+                </label>
+                <input
+                  type="text"
                   name="VAT"
                   value={formData.VAT}
                   onChange={handleChange}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="City"
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  City
+                </label>
+                <input
+                  type="text"
                   name="city"
                   value={formData.city}
                   onChange={handleChange}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Address"
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Address
+                </label>
+                <input
+                  type="text"
                   name="address"
                   value={formData.address}
                   onChange={handleChange}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Director"
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Director
+                </label>
+                <input
+                  type="text"
                   name="director"
                   value={formData.director}
                   onChange={handleChange}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Phone"
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Phone
+                </label>
+                <input
+                  type="text"
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Bank Name"
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Bank Name
+                </label>
+                <input
+                  type="text"
                   name="bankName"
                   value={formData.bankName}
                   onChange={handleChange}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="IBAN"
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  IBAN
+                </label>
+                <input
+                  type="text"
                   name="iban"
                   value={formData.iban}
                   onChange={handleChange}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="SWIFT"
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  SWIFT
+                </label>
+                <input
+                  type="text"
                   name="swift"
                   value={formData.swift}
                   onChange={handleChange}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <Button
+              </div>
+              <div>
+                <button
                   type="submit"
-                  variant="contained"
-                  color="primary"
-                  fullWidth
+                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
                   Update Profile
-                </Button>
-              </Grid>
-            </Grid>
+                </button>
+              </div>
+            </div>
           </form>
-        </Grid>
-      </Grid>
-    </Paper>
+        </div>
+      </div>
+    </div>
   );
 };
 

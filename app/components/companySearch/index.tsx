@@ -6,15 +6,6 @@ import {
   fetchCompanyByNameOrId,
   CompanySummary,
 } from "@/utils/companyRegistry";
-import {
-  TextField,
-  Button,
-  Grid,
-  Typography,
-  Paper,
-  CircularProgress,
-  Alert,
-} from "@mui/material";
 
 const CompanySearch: React.FC = () => {
   const [companyId, setCompanyId] = useState<string>(""); // ID field
@@ -60,82 +51,100 @@ const CompanySearch: React.FC = () => {
   };
 
   return (
-    <Paper elevation={3} className="p-6 max-w-lg mx-auto mt-5">
-      <Typography variant="h6" gutterBottom>
+    <div className="bg-white shadow-md rounded-lg p-6 max-w-lg mx-auto mt-5">
+      <h2 className="text-xl font-semibold mb-4">
         Search Bulgarian Company Registry
-      </Typography>
+      </h2>
       <form onSubmit={handleSearch}>
-        <Grid container spacing={2}>
+        <div className="grid grid-cols-1 gap-4">
           {/* Company ID Field */}
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Enter Company ID"
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Enter Company ID
+            </label>
+            <input
+              type="text"
               value={companyId}
               onChange={handleCompanyIdChange}
               disabled={companyName.length > 0} // Disable if name is filled
               placeholder="Enter company ID"
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
-          </Grid>
+          </div>
 
           {/* Company Name Field */}
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Enter Company Name"
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Enter Company Name
+            </label>
+            <input
+              type="text"
               value={companyName}
               onChange={handleCompanyNameChange}
               disabled={companyId.length > 0} // Disable if ID is filled
               placeholder="Enter company name"
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
-          </Grid>
+          </div>
 
           {/* Search Button */}
-          <Grid item xs={12}>
-            <Button type="submit" variant="contained" color="primary" fullWidth>
+          <div>
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
               Search
-            </Button>
-          </Grid>
-        </Grid>
+            </button>
+          </div>
+        </div>
       </form>
 
       {loading && (
         <div className="flex justify-center items-center mt-5">
-          <CircularProgress />
+          <div className="loader"></div>
         </div>
       )}
 
       {error && (
-        <Alert severity="error" className="mt-5">
+        <div
+          className="mt-5 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+          role="alert"
+        >
           {error}
-        </Alert>
+        </div>
       )}
 
       {results && results.length > 0 && (
         <div className="mt-5">
-          <Typography variant="h6">Search Results:</Typography>
+          <h2 className="text-xl font-semibold mb-4">Search Results:</h2>
           {results.map((company) => (
-            <Paper key={company.ident} elevation={2} className="p-4 mt-2">
-              <Typography variant="body1">
+            <div
+              key={company.ident}
+              className="bg-white shadow-md rounded-lg p-4 mt-2"
+            >
+              <p className="text-sm font-medium text-gray-700">
                 <strong>Company ID:</strong> {company.ident}
-              </Typography>
-              <Typography variant="body1">
+              </p>
+              <p className="text-sm font-medium text-gray-700">
                 <strong>Name:</strong> {company.name}
-              </Typography>
-              <Typography variant="body1">
+              </p>
+              <p className="text-sm font-medium text-gray-700">
                 <strong>Full Name:</strong> {company.companyFullName}
-              </Typography>
-            </Paper>
+              </p>
+            </div>
           ))}
         </div>
       )}
 
       {results && results.length === 0 && (
-        <Alert severity="info" className="mt-5">
+        <div
+          className="mt-5 bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative"
+          role="alert"
+        >
           No results found for your query.
-        </Alert>
+        </div>
       )}
-    </Paper>
+    </div>
   );
 };
 

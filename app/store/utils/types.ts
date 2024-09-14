@@ -1,8 +1,8 @@
 import { Product } from "@/create/invoice/types";
-import { AlertProps } from "@mui/material";
 
+export type ToastSeverity = "success" | "error" | "info" | "warning";
 export interface ToastMessage {
-  severity: AlertProps["severity"];
+  severity: ToastSeverity;
   text?: string;
 }
 

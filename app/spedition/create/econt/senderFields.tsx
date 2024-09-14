@@ -1,5 +1,4 @@
 import { Input, itemHandler } from "@/components/input";
-import { TextField, Typography } from "@mui/material";
 import { Sender } from "./types";
 import { City } from "./services/shipments/types";
 
@@ -18,17 +17,25 @@ export const SenderFields = ({
 }: Props) => {
   return (
     <article className="flex flex-col gap-4">
-      <Typography className="bg-gray-800 text-white px-2 py-1" variant="h6">
+      <h6 className="bg-gray-800 text-white px-2 py-1 text-lg font-semibold">
         Подател
-      </Typography>
+      </h6>
       <section className="flex flex-row gap-4">
-        <TextField
-          id="senderName"
-          label="Упълномощено лице"
-          type="text"
-          required
-          value={name}
-        />
+        <div className="flex flex-col">
+          <label
+            htmlFor="senderName"
+            className="text-sm font-medium text-gray-700"
+          >
+            Упълномощено лице
+          </label>
+          <input
+            id="senderName"
+            type="text"
+            required
+            value={name}
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          />
+        </div>
         <Input
           label="Град"
           required

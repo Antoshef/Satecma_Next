@@ -7,7 +7,6 @@ import {
   useState,
   Dispatch,
 } from "react";
-import { TextField, TextFieldVariants } from "@mui/material";
 import { useMergedRef } from "../useMergedRefs/useMergedRefs";
 
 export function itemHandler<T, K extends keyof T>(
@@ -29,23 +28,13 @@ export interface InputProps {
   data: { name?: string }[];
   selectedItem: { name?: string } | null;
   className?: string;
-  variant?: TextFieldVariants;
   size?: "small" | "medium";
   setSelectedItem: (name: string) => void;
 }
 
 export const Input = forwardRef<{}, InputProps>(
   (
-    {
-      label,
-      required,
-      data,
-      selectedItem,
-      className,
-      size,
-      variant,
-      setSelectedItem,
-    },
+    { label, required, data, selectedItem, className, size, setSelectedItem },
     ref,
   ) => {
     const [input, setInput] = useState("");
@@ -111,39 +100,23 @@ export const Input = forwardRef<{}, InputProps>(
         style={{ position: "relative" }}
         ref={mergedRefs}
       >
-        <TextField
-          label={label}
+        <label className="block text-sm font-medium text-gray-700">
+          {label}
+        </label>
+        <input
           type="text"
           value={input}
           required={required}
-          size={size}
-          variant={variant}
+          className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+            size === "small" ? "text-sm" : "text-base"
+          }`}
           autoComplete="off"
-          className="input-field"
           onFocus={() => setShowSuggestions(true)}
           onChange={onChange}
         />
         {showSuggestions && suggestions.length > 0 && (
-          <div
-            style={{
-              position: "absolute",
-              zIndex: "100",
-              width: "100%", // Ensure the dropdown width matches the input field
-              backgroundColor: "white",
-              boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-              maxHeight: "300px",
-              overflowY: "auto", // Scroll for long lists
-              border: "1px solid #ddd",
-              borderTopWidth: "0",
-            }}
-          >
-            <ul
-              style={{
-                listStyleType: "none",
-                padding: "0",
-                margin: "0",
-              }}
-            >
+          <div className="absolute z-10 w-full bg-white shadow-lg max-h-60 overflow-y-auto border border-gray-300">
+            <ul className="list-none p-0 m-0">
               {suggestions.map((name, index) => (
                 <li
                   key={index}
@@ -152,12 +125,9 @@ export const Input = forwardRef<{}, InputProps>(
                       data.find((item) => item.name === name)?.name || "",
                     )
                   }
-                  style={{
-                    padding: "10px",
-                    cursor: "pointer",
-                    borderBottom: "1px solid #ddd",
-                    backgroundColor: index % 2 ? "white" : "#f6f6f6", // Zebra striping
-                  }}
+                  className={`p-2 cursor-pointer ${
+                    index % 2 ? "bg-white" : "bg-gray-100"
+                  }`}
                 >
                   {name}
                 </li>
@@ -169,3 +139,5 @@ export const Input = forwardRef<{}, InputProps>(
     );
   },
 );
+
+Input.displayName = "Input";

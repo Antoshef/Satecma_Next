@@ -2,7 +2,6 @@
 
 import { InputWrapper } from "@/components/input/wrapper";
 import { TextField } from "@/components/textField/TextField";
-import { Button, Typography } from "@mui/material";
 import { FormEvent, useRef, useState } from "react";
 import { SATECMA_LOGO } from "../invoice/constants";
 import { Product } from "../invoice/types";
@@ -296,17 +295,17 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
                 />{" "}
                 години
               </p>
-              <Typography variant="body1" className="pt-4">
+              <p className="pt-4">
                 След завършване на обекта с протокол акт 19, <br />
                 се измерват всички количества. <br />
                 За всички допълнителни СМР-та, се издават анекси.
-              </Typography>
+              </p>
             </>
           )}
-          <Typography variant="body1" className="pt-4">
+          <p className="pt-4">
             За информация относно продуктите и услугите, <br />
             моля свържете се с нас на телефон: {provider.phone}
-          </Typography>
+          </p>
         </div>
         <div className="flex flex-col text-end mt-6 mb-2">
           <span className="red-span">гр. {provider.city.split(",")[0]}</span>
@@ -322,13 +321,13 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
         </div>
       </div>
       <div className="invoice__button">
-        <Button
-          variant="contained"
+        <button
+          className="bg-blue-600 text-white py-2 px-4 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
           disabled={error || isFieldsDisabled}
           type="submit"
         >
           Създай
-        </Button>
+        </button>
       </div>
     </form>
   );

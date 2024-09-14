@@ -1,8 +1,9 @@
-import EditIcon from "@mui/icons-material/Edit";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import DeleteIcon from "@mui/icons-material/Delete";
+import PencilIcon from "/public/assets/svg/pencil.svg";
+import TrashIcon from "/public/assets/svg/trash.svg";
+import FilterIcon from "/public/assets/svg/filterHorizontal.svg";
 import { FC } from "react";
-import { Tooltip } from "@mui/material";
+import Image from "next/image";
+import Tooltip from "@/components/tooltip";
 
 interface EnhancedTableToolbarProps {
   title: string;
@@ -35,29 +36,29 @@ export const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = ({
       <div className="flex items-center space-x-2">
         {isSelected ? (
           <>
-            <Tooltip title="Edit">
-              <button
-                onClick={() => onEdit?.(true)}
-                className="p-2 rounded-full hover:bg-gray-200"
-              >
-                <EditIcon />
-              </button>
-            </Tooltip>
-            <Tooltip title="Delete">
-              <button
-                onClick={onDelete}
-                className="p-2 rounded-full hover:bg-gray-200"
-              >
-                <DeleteIcon />
-              </button>
-            </Tooltip>
+            <button
+              onClick={() => onEdit?.(true)}
+              className="p-2 rounded-full hover:bg-gray-200 relative group"
+            >
+              <Tooltip text="Edit">
+                <Image src={PencilIcon} alt="Edit" />
+              </Tooltip>
+            </button>
+            <button
+              onClick={onDelete}
+              className="p-2 rounded-full hover:bg-gray-200 relative group"
+            >
+              <Tooltip text="Delete">
+                <Image src={TrashIcon} alt="Delete" />
+              </Tooltip>
+            </button>
           </>
         ) : (
-          <Tooltip title="Filter list">
-            <button className="p-2 rounded-full hover:bg-gray-200">
-              <FilterListIcon />
-            </button>
-          </Tooltip>
+          <button className="p-2 rounded-full hover:bg-gray-200 relative group">
+            <Tooltip text="Filter list">
+              <Image src={FilterIcon} alt="Filter" />
+            </Tooltip>
+          </button>
         )}
       </div>
     </div>

@@ -49,10 +49,12 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ companies }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* User Data Column */}
         <div>
-          <h2 className="text-xl font-semibold mb-4">User Information</h2>
+          <h2 className="text-xl font-semibold mb-4">
+            Информация за потребителя
+          </h2>
           <div className="grid grid-cols-1 gap-2">
             <div className="text-center">
-              <strong>Profile Image</strong>
+              <strong>Профилна снимка</strong>
             </div>
             <div className="flex justify-center">
               <Image
@@ -65,29 +67,31 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ companies }) => {
               />
             </div>
             <div className="text-center">
-              <strong>Name:</strong> {user?.name || ""}
+              <strong>Име:</strong> {user?.name || ""}
             </div>
             <div className="text-center">
-              <strong>Email:</strong> {user?.email || ""}
+              <strong>Имейл:</strong> {user?.email || ""}
             </div>
             <div className="text-center">
-              <strong>Nickname:</strong> {user?.nickname || ""}
+              <strong>Псевдоним:</strong> {user?.nickname || ""}
             </div>
             <div className="text-center">
-              <strong>Email Verified:</strong>{" "}
-              {user?.email_verified ? "Yes" : "No"}
+              <strong>Имейлът е потвърден:</strong>{" "}
+              {user?.email_verified ? "Да" : "Не"}
             </div>
           </div>
         </div>
 
         {/* Provider Data Column */}
         <div>
-          <h2 className="text-xl font-semibold mb-4">Company Information</h2>
+          <h2 className="text-xl font-semibold mb-4">
+            Информация за компанията
+          </h2>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Company
+                  Компания
                 </label>
                 <input
                   type="text"
@@ -99,7 +103,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ companies }) => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  EIK
+                  ЕИК
                 </label>
                 <input
                   type="text"
@@ -111,7 +115,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ companies }) => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  VAT
+                  ДДС
                 </label>
                 <input
                   type="text"
@@ -123,7 +127,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ companies }) => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  City
+                  Град
                 </label>
                 <input
                   type="text"
@@ -135,7 +139,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ companies }) => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Address
+                  Адрес
                 </label>
                 <input
                   type="text"
@@ -147,7 +151,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ companies }) => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Director
+                  Директор
                 </label>
                 <input
                   type="text"
@@ -159,7 +163,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ companies }) => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Phone
+                  Телефон
                 </label>
                 <input
                   type="text"
@@ -171,7 +175,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ companies }) => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Bank Name
+                  Име на банката
                 </label>
                 <input
                   type="text"
@@ -210,7 +214,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ companies }) => {
                   type="submit"
                   className="w-full bg-blue-600 text-white py-2 px-4 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
-                  Update Profile
+                  Актуализиране на профила
                 </button>
               </div>
             </div>

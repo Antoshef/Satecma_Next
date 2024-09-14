@@ -231,7 +231,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Comfortaa", cursive !important;
+  font-family: "Comfortaa", cursive;
 }
 
 p,
@@ -240,5 +240,38 @@ a,
 label,
 input,
 button {
-  font-family: "Inter Tight", sans-serif !important;
+  font-family: "Inter Tight", sans-serif;
+}
+
+/* Set default font sizes for main tags */
+h1 {
+  font-size: 2.25rem; /* Equivalent to 36px */
+}
+
+h2 {
+  font-size: 1.875rem; /* Equivalent to 30px */
+}
+
+h3 {
+  font-size: 1.5rem; /* Equivalent to 24px */
+}
+
+h4 {
+  font-size: 1.25rem; /* Equivalent to 20px */
+}
+
+h5 {
+  font-size: 1.125rem; /* Equivalent to 18px */
+}
+
+h6 {
+  font-size: 1rem; /* Equivalent to 16px */
+}
+
+p {
+  font-size: 1rem; /* Equivalent to 16px */
+}
+
+small {
+  font-size: 0.875rem; /* Equivalent to 14px */
 }

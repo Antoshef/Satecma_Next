@@ -1,29 +1,14 @@
 "use client";
 
-import {
-  Box,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TablePagination,
-  TableRow,
-  Checkbox,
-  Paper,
-  IconButton,
-  Tooltip,
-  Button,
-  Grid,
-  FormControlLabel,
-  Switch,
-} from "@mui/material";
 import { useState, useMemo, MouseEvent, ChangeEvent } from "react";
-import { Download as DownloadIcon } from "@mui/icons-material";
+import DownloadIcon from "/public/assets/svg/download.svg";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { EnhancedTableHead, HeadCell } from "@/store/utils/enhancedTableHead";
 import { Order } from "@/store/utils/types";
 import { InvoiceData } from "@/create/invoice/types";
+import Image from "next/image";
+import Tooltip from "@/components/tooltip";
 
 interface InvoicesTableProps {
   data: InvoiceData[];
@@ -108,7 +93,7 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLSelectElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -166,22 +151,21 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
   };
 
   return (
-    <Box>
+    <div className="p-4">
       {/* Button to download selected invoices as zip */}
       {selected.length > 1 && (
-        <Grid container justifyContent="flex-end" sx={{ mb: 2 }}>
-          <Button
-            variant="contained"
-            color="primary"
+        <div className="flex justify-end mb-4">
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600"
             onClick={handleDownloadSelectedAsZip}
           >
             Download Selected as ZIP
-          </Button>
-        </Grid>
+          </button>
+        </div>
       )}
-      <Paper sx={{ width: "100%", mb: 2 }}>
-        <TableContainer>
-          <Table size={dense ? "small" : "medium"} sx={{ minWidth: 750 }}>
+      <div className="bg-white shadow-md rounded-lg mb-4">
+        <div className="overflow-x-auto">
+          <table className={`min-w-full ${dense ? "text-sm" : "text-base"}`}>
             <EnhancedTableHead
               headCells={invoiceHeadCells}
               order={order}
@@ -191,49 +175,59 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
               numSelected={selected.length}
               rowCount={data.length}
             />
-            <TableBody>
+            <tbody>
               {visibleRows.map((row, index) => {
                 const isItemSelected = isSelected(row.invoice_id);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
-                  <TableRow
-                    hover
+                  <tr
+                    key={row.invoice_id}
+                    className={`hover:bg-gray-100 cursor-pointer ${
+                      isItemSelected ? "bg-gray-200" : ""
+                    }`}
                     onClick={(event) => handleClick(event, row)}
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
-                    key={row.invoice_id}
-                    selected={isItemSelected}
                   >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <input
+                        type="checkbox"
                         checked={isItemSelected}
-                        inputProps={{ "aria-labelledby": labelId }}
+                        onChange={() => {}}
+                        className="form-checkbox h-5 w-5 text-blue-600"
+                        aria-labelledby={labelId}
                       />
-                    </TableCell>
-                    <TableCell
-                      component="th"
+                    </td>
+                    <td
+                      className="px-6 py-4 whitespace-nowrap"
                       id={labelId}
                       scope="row"
-                      padding="none"
-                      align="right"
                     >
                       {row.invoice_id}
-                    </TableCell>
-                    <TableCell align="right">{row.date}</TableCell>
-                    <TableCell align="right">{row.client}</TableCell>
-                    <TableCell align="right">{row.eik}</TableCell>
-                    <TableCell align="right">{row.vat_number}</TableCell>
-                    <TableCell align="right">{row.amount.toFixed(2)}</TableCell>
-                    <TableCell align="right">{row.vat.toFixed(2)}</TableCell>
-                    <TableCell align="right">{row.total.toFixed(2)}</TableCell>
-                    {/* New column for the download button */}
-                    <TableCell align="right">
-                      <Tooltip title="Download PDF">
-                        <IconButton
-                          aria-label="download invoice"
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">{row.date}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {row.client}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">{row.eik}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {row.vat_number}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {row.amount.toFixed(2)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {row.vat.toFixed(2)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {row.total.toFixed(2)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <Tooltip text="Download">
+                        <button
+                          className="text-blue-600 hover:text-blue-800"
                           onClick={() =>
                             handleDownload(
                               "eko_invoices_sent",
@@ -245,30 +239,56 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
                             )
                           }
                         >
-                          <DownloadIcon />
-                        </IconButton>
+                          <Image src={DownloadIcon} alt="Download" />
+                        </button>
                       </Tooltip>
-                    </TableCell>
-                  </TableRow>
+                    </td>
+                  </tr>
                 );
               })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={data.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
+            </tbody>
+          </table>
+        </div>
+        <div className="flex justify-between items-center p-4">
+          <div>
+            <label className="mr-2">Rows per page:</label>
+            <select
+              value={rowsPerPage}
+              onChange={handleChangeRowsPerPage}
+              className="border border-gray-300 rounded-md p-2"
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+            </select>
+          </div>
+          <div>
+            <button
+              onClick={() => handleChangePage(null, page - 1)}
+              disabled={page === 0}
+              className="px-4 py-2 border border-gray-300 rounded-md mr-2"
+            >
+              Previous
+            </button>
+            <button
+              onClick={() => handleChangePage(null, page + 1)}
+              disabled={page >= Math.ceil(data.length / rowsPerPage) - 1}
+              className="px-4 py-2 border border-gray-300 rounded-md"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center">
+        <label className="mr-2">Dense padding</label>
+        <input
+          type="checkbox"
+          checked={dense}
+          onChange={handleChangeDense}
+          className="form-checkbox h-5 w-5 text-blue-600"
         />
-      </Paper>
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      />
-    </Box>
+      </div>
+    </div>
   );
 }

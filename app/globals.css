@@ -1,3 +1,6 @@
+@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -189,27 +192,53 @@ input:checked + .slider:before {
   opacity: 0;
   max-height: 0;
   overflow: hidden;
-  transition: opacity 300ms, max-height 300ms ease-in-out;
+  transition:
+    opacity 300ms,
+    max-height 300ms ease-in-out;
 }
 .address-enter-active {
   opacity: 1;
   max-height: 500px; /* Adjust this value based on the maximum expected height */
-  transition: opacity 300ms, max-height 300ms ease-in-out;
+  transition:
+    opacity 300ms,
+    max-height 300ms ease-in-out;
 }
 .address-exit {
   opacity: 1;
   max-height: 500px;
-  transition: opacity 300ms, max-height 300ms ease-in-out;
+  transition:
+    opacity 300ms,
+    max-height 300ms ease-in-out;
 }
 .address-exit-active {
   opacity: 0;
   max-height: 0;
   overflow: hidden;
-  transition: opacity 300ms, max-height 300ms ease-in-out;
+  transition:
+    opacity 300ms,
+    max-height 300ms ease-in-out;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Comfortaa", cursive !important;
+}
+
+p,
+span,
+a,
+label,
+input,
+button {
+  font-family: "Inter Tight", sans-serif !important;
 }

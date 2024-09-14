@@ -1,6 +1,5 @@
 "use client";
 
-import { ListItemIcon } from "@mui/material";
 import React, { useEffect, useState, useRef } from "react";
 
 export const EmailIcon = ({ isActive }: { isActive?: boolean }) => (
@@ -77,7 +76,7 @@ export const DashedLineIcon = ({
   }, []);
 
   return (
-    <ListItemIcon
+    <div
       style={{
         display: "flex",
         flexDirection: "column",
@@ -125,6 +124,6 @@ export const DashedLineIcon = ({
           />
         </>
       )}
-    </ListItemIcon>
+    </div>
   );
 };

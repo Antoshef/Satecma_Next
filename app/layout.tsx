@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import SidePanel from "./components/sidePanel";
 import "./globals.css";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import customTheme from "./theme";
 
 export const metadata: Metadata = {
   title: "Satecma - Industrias Químicas S.A.",
@@ -21,6 +23,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="h-full">
+        {/* <ThemeProvider theme={customTheme}> */}
+        <CssBaseline />
         <UserProvider>
           <div className="flex h-full">
             <SidePanel />
@@ -31,6 +35,7 @@ export default function RootLayout({
             </div>
           </div>
         </UserProvider>
+        {/* </ThemeProvider> */}
       </body>
     </html>
   );

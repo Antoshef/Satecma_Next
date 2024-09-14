@@ -1,17 +1,7 @@
 "use client";
 
+import Image from "next/image";
 import React, { useState } from "react";
-import {
-  Grid,
-  Typography,
-  Button,
-  List,
-  ListItem,
-  ListItemText,
-  Box,
-  Paper,
-  ListItemButton,
-} from "@mui/material";
 
 export const HeroBanner = () => {
   // State for dynamic text content on the right side
@@ -44,113 +34,58 @@ export const HeroBanner = () => {
   ];
 
   return (
-    <Paper
-      sx={{
-        my: 12,
-        borderRadius: 4,
-        boxShadow: 6,
-        background: "linear-gradient(135deg, #f0f4f8, #ffffff)",
-        maxWidth: "1440px",
-        mx: "auto",
-      }}
-    >
-      <Grid container spacing={0}>
+    <div className="my-12 mx-auto max-w-6xl rounded-2xl shadow-lg bg-gradient-to-br from-gray-100 to-white">
+      <div className="grid grid-cols-1 md:grid-cols-2">
         {/* Left Side */}
-        <Grid item xs={12} md={6} sx={{ p: 4 }}>
+        <div className="p-8">
           {/* Title */}
-          <Typography
-            variant="h3"
-            sx={{
-              fontWeight: "bold",
-              color: "text.primary",
-              letterSpacing: "0.05em",
-              mb: 2,
-            }}
-          >
+          <h3 className="text-3xl font-bold text-gray-900 tracking-wide mb-2">
             Управление на Проекти
-          </Typography>
+          </h3>
 
           {/* Subtitle */}
-          <Typography
-            variant="subtitle1"
-            sx={{ color: "text.secondary", mb: 4 }}
-          >
+          <p className="text-lg text-gray-600 mb-4">
             Управлявайте вашите проекти ефективно и лесно
-          </Typography>
+          </p>
 
           {/* Price */}
-          <Typography
-            variant="h4"
-            sx={{ fontWeight: "bold", color: "text.primary", mb: 2 }}
-          >
-            $29 / месец
-          </Typography>
+          <h4 className="text-2xl font-bold text-gray-900 mb-2">$29 / месец</h4>
 
           {/* CTA Button */}
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{
-              mb: 4,
-              p: 2,
-              borderRadius: 3,
-              backgroundColor: "#3b82f6",
-              backgroundImage: "linear-gradient(135deg, #3b82f6, #1e40af)",
-              color: "white",
-              boxShadow: 4,
-              transition: "transform 0.4s, background 0.3s ease-in-out",
-              "&:hover": {
-                transform: "scale(1.07)",
-                backgroundImage: "linear-gradient(135deg, #1e40af, #3b82f6)",
-              },
-            }}
-          >
+          <button className="mb-4 px-6 py-3 rounded-lg bg-blue-500 bg-gradient-to-br from-blue-500 to-blue-900 text-white shadow-md transition-transform transform hover:scale-105 hover:bg-gradient-to-br hover:from-blue-900 hover:to-blue-500">
             Запазете демо
-          </Button>
+          </button>
 
           {/* List of clickable options */}
-          <List sx={{ listStyle: "none", p: 0 }}>
+          <ul className="list-none p-0">
             {contentOptions.map((option, index) => (
-              <ListItemButton
-                key={index}
-                onClick={() => setSelectedContent(option.content)}
-              >
-                <ListItemText primary={option.label} />
-              </ListItemButton>
+              <li key={index}>
+                <button
+                  className="w-full text-left py-2 px-4 hover:bg-gray-200"
+                  onClick={() => setSelectedContent(option.content)}
+                >
+                  {option.label}
+                </button>
+              </li>
             ))}
-          </List>
-        </Grid>
+          </ul>
+        </div>
 
         {/* Right Side */}
-        <Grid
-          item
-          xs={12}
-          md={6}
-          sx={{
-            background: "#0d1328",
-            color: "white",
-            borderRadius: 2,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            p: 4,
-          }}
-        >
+        <div className="bg-gray-900 text-white rounded-2xl flex flex-col justify-center items-center p-8">
           {/* Example image - replace with actual image */}
-          <Box
-            component="img"
+          <Image
             src="/path-to-image.png"
             alt="Project Management Image"
-            sx={{ mb: 3, width: "100px", height: "auto" }}
+            className="mb-3 w-24 h-auto"
+            width={96}
+            height={96}
           />
 
           {/* Dynamic Text */}
-          <Typography variant="body1" textAlign="center">
-            {selectedContent}
-          </Typography>
-        </Grid>
-      </Grid>
-    </Paper>
+          <p className="text-center">{selectedContent}</p>
+        </div>
+      </div>
+    </div>
   );
 };

@@ -1,12 +1,4 @@
 "use client";
-import {
-  Paper,
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  Grid,
-} from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { DashedLineIcon } from "./dashedLineIcon"; // Import the DashedLineIcon component
 
@@ -62,92 +54,43 @@ export const ScrollableText = () => {
   }, []);
 
   return (
-    <Paper
-      sx={{
-        my: 18,
-        borderRadius: 0,
-        boxShadow: 0,
-      }}
-    >
-      <Grid
-        container
-        px={16}
-        sx={{
-          minHeight: "50vh",
-        }}
-      >
+    <div className="my-18 rounded-none shadow-none">
+      <div className="container px-16 min-h-[50vh] flex flex-wrap">
         {/* Left Column: Large Title */}
-        <Grid item xs={12} md={6}>
-          <div
-            style={{
-              position: "sticky",
-              top: "40%",
-              zIndex: 1,
-              transform: "translateY(-10%)",
-            }}
-          >
-            <Typography
-              variant="h2"
-              component="h2"
-              sx={{
-                fontWeight: "bold",
-                color: "darkgreen",
-                letterSpacing: "0.05em",
-              }}
-            >
+        <div className="w-full md:w-1/2">
+          <div className="sticky top-[40%] z-10 transform -translate-y-1/10">
+            <h2 className="font-bold text-darkgreen tracking-wide">
               Процес на управление на проекти
-            </Typography>
+            </h2>
           </div>
-        </Grid>
+        </div>
 
         {/* Right Column: Icons with Titles/Subtitles */}
-        <Grid
-          item
-          xs={12}
-          md={6}
-          pl={12}
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-          }}
-        >
-          <List>
+        <div className="w-full md:w-1/2 pl-12 flex flex-col justify-center">
+          <ul>
             {items.map((item, index) => (
-              <ListItem
+              <li
                 key={index}
                 ref={(el) => {
                   listItemRefs.current[index] = el;
                   return undefined;
                 }}
-                sx={{
-                  alignItems: "flex-start",
-                  gap: 2,
-                  py: 0,
-                }}
+                className="flex items-start gap-2 py-0"
               >
                 {/* DashedLineIcon with the isActive prop */}
                 <DashedLineIcon
                   disableLine={index >= items.length - 1}
                   isActive={activeIndices.includes(index)}
                 />
-                <ListItemText
-                  primary={item.primary}
-                  secondary={item.secondary}
-                  sx={{
-                    "& .MuiListItemText-primary": {
-                      color: "rgb(0, 61, 45)", // Dark green color for primary text
-                    },
-                    "& .MuiListItemText-secondary": {
-                      color: "rgb(34, 139, 34)", // Slightly lighter green for secondary text
-                    },
-                  }}
-                />
-              </ListItem>
+                <div>
+                  <p className="text-darkgreen">{item.primary}</p>
+                  <p className="text-green-700">{item.secondary}</p>
+                </div>
+              </li>
             ))}
-          </List>
-        </Grid>
-      </Grid>
-    </Paper>
+          </ul>
+        </div>
+      </div>
+    </div>
   );
 };

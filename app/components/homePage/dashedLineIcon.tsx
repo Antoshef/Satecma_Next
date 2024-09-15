@@ -1,50 +1,56 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from 'react';
 
-export const EmailIcon = ({ isActive }: { isActive?: boolean }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="40"
-    height="40"
-    viewBox="0 0 100 100"
-    id="emailIcon"
-  >
-    {/* Outer Circle */}
-    <circle
-      cx="50"
-      cy="50"
-      r="48"
-      stroke={isActive ? "darkgreen" : "black"}
-      strokeWidth="2"
-      fill="none"
-      id="outerCircle"
-    />
+export const EmailIcon = ({ isActive }: { isActive?: boolean }) => {
+  const activeClass = 'text-theme-light-primary dark:text-theme-dark-primary';
+  const inactiveClass =
+    'text-theme-light-secondary dark:text-theme-dark-secondary';
 
-    {/* Inner Circle (changes when active) */}
-    <circle
-      cx="50"
-      cy="50"
-      r="38"
-      fill={isActive ? "darkgreen" : "none"}
-      id="innerCircle"
-    />
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="40"
+      height="40"
+      viewBox="0 0 100 100"
+      id="emailIcon"
+      className={isActive ? activeClass : inactiveClass}
+    >
+      {/* Outer Circle */}
+      <circle
+        cx="50"
+        cy="50"
+        r="48"
+        stroke="currentColor" // Uses the theme color
+        strokeWidth="2"
+        fill="none"
+        id="outerCircle"
+      />
 
-    {/* Email Icon (Envelope) */}
-    <path
-      d="M30 35 L50 50 L70 35 V65 H30 Z M30 35 H70 L50 50 Z"
-      stroke={isActive ? "white" : "black"}
-      strokeWidth="2"
-      fill="none"
-      id="envelope"
-    />
-  </svg>
-);
+      {/* Inner Circle */}
+      <circle
+        cx="50"
+        cy="50"
+        r="38"
+        fill={isActive ? 'currentColor' : 'none'} // Inner circle uses current color if active
+        id="innerCircle"
+      />
 
-// DashedLineIcon Component
+      {/* Email Icon (Envelope) */}
+      <path
+        d="M30 35 L50 50 L70 35 V65 H30 Z M30 35 H70 L50 50 Z"
+        stroke={isActive ? 'white' : 'currentColor'} // Uses current theme color
+        strokeWidth="2"
+        fill="none"
+        id="envelope"
+      />
+    </svg>
+  );
+};
+
 export const DashedLineIcon = ({
   isActive,
-  disableLine,
+  disableLine
 }: {
   isActive: boolean;
   disableLine: boolean;
@@ -59,7 +65,6 @@ export const DashedLineIcon = ({
       const rect = element.getBoundingClientRect();
       const middleOfScreen = window.innerHeight / 2;
 
-      // Adjust the height of the solid line based on scroll position
       if (rect.top < middleOfScreen) {
         const percentageSolid =
           ((middleOfScreen - rect.top) / rect.height) * 100;
@@ -69,22 +74,14 @@ export const DashedLineIcon = ({
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        position: "relative",
-        height: "120px",
-      }}
-    >
+    <div className="flex flex-col items-center relative h-32">
       {/* Render Email Icon */}
       <EmailIcon isActive={isActive} />
 
@@ -92,35 +89,13 @@ export const DashedLineIcon = ({
       {!disableLine && (
         <>
           {/* Dashed Line */}
-          <span
-            style={{
-              zIndex: 1,
-              position: "absolute",
-              top: "40px", // Start from bottom of the icon
-              left: "50%",
-              transform: "translateX(-50%)",
-              borderLeft: "1px dashed rgb(0, 61, 45)",
-              height: "80px", // Fixed height for the dashed line
-              width: "1px",
-              opacity: 0.5,
-            }}
-          />
+          <span className="absolute top-10 left-1/2 transform -translate-x-1/2 border-l border-dashed border-theme-light-primary dark:border-theme-dark-primary opacity-50 h-20" />
 
           {/* Solid Line - Height changes dynamically */}
           <span
             ref={lineRef}
-            style={{
-              zIndex: 1,
-              position: "absolute",
-              top: "40px", // Start from bottom of the icon
-              left: "50%",
-              transform: "translateX(-50%)",
-              borderLeft: "1px solid rgb(0, 61, 45)",
-              height: `${solidHeight}%`, // Dynamic height from 0% to 100%
-              width: "1px",
-              transition: "height 0.1s ease",
-              maxHeight: "80px", // Fixed height for the solid line
-            }}
+            className="absolute top-10 left-1/2 transform -translate-x-1/2 border-l border-solid border-theme-light-primary dark:border-theme-dark-primary transition-all duration-100 ease-linear"
+            style={{ height: `${solidHeight}%`, maxHeight: '80px' }} // Dynamic height for the solid line
           />
         </>
       )}

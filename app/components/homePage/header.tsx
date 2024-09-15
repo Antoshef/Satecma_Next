@@ -1,8 +1,8 @@
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
 export const Header = () => (
-  <header className="relative w-full h-[80vh] flex items-center justify-between p-4">
+  <header className="relative w-full h-[80vh] flex items-center justify-between p-4 bg-theme-light-background dark:bg-theme-dark-background">
     {/* Background Image */}
     <Image
       src="/assets/header-bg.jpg"
@@ -13,20 +13,20 @@ export const Header = () => (
     />
 
     {/* Left-side content */}
-    <div className="relative z-10 max-w-full md:max-w-1/2 text-white backdrop-blur-lg rounded-lg p-4">
-      <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-black to-pink-500 bg-clip-text text-transparent">
+    <div className="relative z-10 max-w-full md:max-w-1/2 text-theme-light-primary dark:text-theme-dark-primary backdrop-blur-lg rounded-lg p-4">
+      <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-theme-light-primary to-theme-light-secondary bg-clip-text text-transparent dark:from-theme-dark-primary dark:to-theme-dark-secondary">
         Добре дошли в нашето приложение за управление на бизнес
       </h1>
-      <p className="mt-2 text-lg md:text-xl text-gray-300 bg-gradient-to-r from-black to-pink-500 bg-clip-text text-transparent">
+      <p className="mt-2 text-lg md:text-xl text-theme-light-tertiary bg-gradient-to-r from-theme-light-primary to-theme-light-secondary bg-clip-text text-transparent dark:text-theme-dark-tertiary dark:from-theme-dark-primary dark:to-theme-dark-secondary">
         Оптимизирайте бизнес операциите си с лекота
       </p>
 
       {/* Buttons for Sign Up and Book a Demo */}
       <div className="mt-4 flex gap-2">
-        <button className="bg-blue-600 px-4 py-1.5 rounded-lg text-white text-lg">
+        <button className="bg-theme-light-primary px-4 py-1.5 rounded-lg text-white text-lg dark:bg-theme-dark-primary">
           <Link href="/api/auth/login">Вход</Link>
         </button>
-        <button className="border border-white text-white px-4 py-1.5 rounded-lg text-lg hover:border-blue-600">
+        <button className="border border-theme-light-primary text-theme-light-primary px-4 py-1.5 rounded-lg text-lg hover:border-theme-light-secondary dark:border-theme-dark-primary dark:text-theme-dark-primary dark:hover:border-theme-dark-secondary">
           Виж Демо
         </button>
       </div>

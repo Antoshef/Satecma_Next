@@ -1,28 +1,28 @@
-"use client";
-import { useEffect, useRef, useState } from "react";
-import { DashedLineIcon } from "./dashedLineIcon"; // Import the DashedLineIcon component
+'use client';
+import { useEffect, useRef, useState } from 'react';
+import { DashedLineIcon } from './dashedLineIcon'; // Import the DashedLineIcon component
 
 const items = [
   {
-    primary: "Регистрация на екип",
-    secondary: "Добавяне на членове към проекта",
+    primary: 'Регистрация на екип',
+    secondary: 'Добавяне на членове към проекта'
   },
   {
-    primary: "Подписване на договор",
-    secondary: "Използвайте готови или персонализирани договори",
+    primary: 'Подписване на договор',
+    secondary: 'Използвайте готови или персонализирани договори'
   },
   {
-    primary: "Изпращане на фактура",
-    secondary: "Екипът изпраща фактури за одобрение",
+    primary: 'Изпращане на фактура',
+    secondary: 'Екипът изпраща фактури за одобрение'
   },
   {
-    primary: "Одобряване на фактура",
-    secondary: "Извършете плащане по фактурата",
+    primary: 'Одобряване на фактура',
+    secondary: 'Извършете плащане по фактурата'
   },
   {
-    primary: "Получаване на плащане",
-    secondary: "Екипът получава заплащането в избраната валута",
-  },
+    primary: 'Получаване на плащане',
+    secondary: 'Екипът получава заплащането в избраната валута'
+  }
 ];
 
 export const ScrollableText = () => {
@@ -47,19 +47,19 @@ export const ScrollableText = () => {
       setActiveIndices(newActiveIndices);
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
   return (
-    <div className="my-18 rounded-none shadow-none">
+    <div className="my-40 rounded-none shadow-none">
       <div className="container px-16 min-h-[50vh] flex flex-wrap">
         {/* Left Column: Large Title */}
         <div className="w-full md:w-1/2">
           <div className="sticky top-[40%] z-10 transform -translate-y-1/10">
-            <h2 className="font-bold text-darkgreen tracking-wide">
+            <h2 className="text-5xl font-bold text-theme-light-primary dark:text-theme-dark-primary tracking-wide">
               Процес на управление на проекти
             </h2>
           </div>
@@ -83,8 +83,12 @@ export const ScrollableText = () => {
                   isActive={activeIndices.includes(index)}
                 />
                 <div>
-                  <p className="text-darkgreen">{item.primary}</p>
-                  <p className="text-green-700">{item.secondary}</p>
+                  <p className="text-theme-light-primary dark:text-theme-dark-primary">
+                    {item.primary}
+                  </p>
+                  <p className="text-theme-light-tertiary dark:text-theme-dark-tertiary">
+                    {item.secondary}
+                  </p>
                 </div>
               </li>
             ))}

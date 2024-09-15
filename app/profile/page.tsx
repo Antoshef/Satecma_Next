@@ -1,13 +1,13 @@
-import { fetchData } from "@/utils/fetchData";
-import { Company } from "@/create/invoice/types";
-import ProfileDetails from "./profileDetails";
-import { Suspense } from "react";
-import Loading from "@/loading";
-import CompanySearch from "./companySearch";
+import { fetchData } from '@/utils/fetchData';
+import { Company } from '@/create/invoice/types';
+import { ProfileDetails } from './profileDetails';
+import { Suspense } from 'react';
+import Loading from '@/loading';
+import CompanySearch from './companySearch';
 
 export default async function ProfilePage() {
   const companies = await fetchData<Company>(
-    "http://localhost:3000/api/company",
+    'http://localhost:3000/api/company'
   )
     .then((data) => data.data)
     .catch((error) => {

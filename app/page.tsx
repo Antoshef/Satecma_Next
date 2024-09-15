@@ -1,13 +1,13 @@
-import VerifyEmailModal from "./verificationPage";
-import { getSession } from "@auth0/nextjs-auth0";
-import { User } from "./api/auth/[auth0]/types";
-import { fetchData } from "./utils/fetchData";
-import { SEOAccordion } from "./components/seoAccordion";
-import { Header } from "./components/homePage/header";
-import { ScrollableText } from "./components/homePage/scrollableText";
-import { HeroBanner } from "./components/homePage/heroBanner";
-import { Intro } from "./components/homePage/intro";
-import { StartNow } from "./components/homePage/startNow";
+import VerifyEmailModal from './verificationPage';
+import { getSession } from '@auth0/nextjs-auth0';
+import { User } from './api/auth/[auth0]/types';
+import { fetchData } from './utils/fetchData';
+import { SEOAccordion } from './components/seoAccordion';
+import { Header } from './components/homePage/header';
+import { ScrollableText } from './components/homePage/scrollableText';
+import { HeroBanner } from './components/homePage/heroBanner';
+import { Intro } from './components/homePage/intro';
+import { StartNow } from './components/homePage/startNow';
 
 export default async function HomePage() {
   const session = await getSession();
@@ -21,9 +21,9 @@ export default async function HomePage() {
         `https://${process.env.AUTH0_DOMAIN}/userinfo`,
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
+            Authorization: `Bearer ${accessToken}`
+          }
+        }
       );
 
       if (response.ok) {
@@ -34,37 +34,35 @@ export default async function HomePage() {
           const userExistsResponse = await fetchData(
             `/api/profile?sub=${user.sub}`,
             {
-              method: "GET",
+              method: 'GET',
               headers: {
-                "Content-Type": "application/json",
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           );
 
           if (!userExistsResponse.data) {
             // User does not exist, proceed with POST request
-            await fetchData("/api/profile", {
-              method: "POST",
+            await fetchData('/api/profile', {
+              method: 'POST',
               headers: {
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json'
               },
-              body: JSON.stringify(user),
+              body: JSON.stringify(user)
             });
           }
         }
       }
     } catch (error) {
-      console.error("Error fetching user info or checking existence:", error);
+      console.error('Error fetching user info or checking existence:', error);
     }
   }
 
   return (
     <div className="bg-gray-100 min-h-screen">
       {user && user.email_verified && <VerifyEmailModal user={user} />}
-
       {/* Header section with full-width image */}
       <Header />
-
       <div className="p-6 bg-gray-100 min-h-screen">
         <Intro />
         <HeroBanner />
@@ -78,6 +76,21 @@ export default async function HomePage() {
           <SEOAccordion />
         </div>
       </div>
+      <a
+        href="https://iconscout.com/illustrations/business"
+        className="text-underline font-size-sm"
+        target="_blank"
+      >
+        Illustrations provided
+      </a>{' '}
+      by{' '}
+      <a
+        href="https://iconscout.com/contributors/vectory"
+        className="text-underline font-size-sm"
+        target="_blank"
+      >
+        Iconscout
+      </a>
     </div>
   );
 }

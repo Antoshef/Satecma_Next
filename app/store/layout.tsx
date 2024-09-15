@@ -1,17 +1,14 @@
-import { Product } from "@/create/invoice/types";
-import { fetchData } from "@/utils/fetchData";
-import { Suspense } from "react";
-import Store from "./page";
+import { Suspense } from 'react';
+import Store from './page';
+import { baseUrl } from '@/constants';
 
 export default async function StoreLayout({
-  children,
+  children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const data = await fetchData<Product[]>(
-    "http://localhost:3000/api/products/get",
-  )
-    .then((data) => data.data)
+  const data = await fetch(`${baseUrl}/api/products/get`)
+    .then((data) => data.json())
     .catch((error) => {
       console.error(error);
       return [];

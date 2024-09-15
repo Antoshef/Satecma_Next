@@ -1,58 +1,49 @@
-import { fetchData } from "@/utils/fetchData";
-import { InvoiceData, Product, Company } from "./invoice/types";
-import { getInvoiceNumber } from "./invoice/utils";
-import { Client } from "@/clients/utils/types";
-import { cloneElement } from "react";
+import { baseUrl } from '@/constants';
+import { Company } from './invoice/types';
+import { getInvoiceNumber } from './invoice/utils';
+import { cloneElement } from 'react';
 
 export default async function CreateLayout({
-  children,
+  children
 }: Readonly<{
   children: React.ReactElement;
 }>) {
-  const products = await fetchData<Product[]>(
-    "http://localhost:3000/api/products/get",
-  )
-    .then((res) => res.data)
+  const products = await fetch(`${baseUrl}/api/products/get`)
+    .then((res) => res.json())
     .catch((error) => {
-      console.error("Error:", error);
+      console.error('Error:', error);
       return [];
     });
 
-  const clients = await fetchData<Client[]>("http://localhost:3000/api/clients")
-    .then((data) => data.data)
+  const clients = await fetch(`${baseUrl}/api/clients`)
+    .then((data) => data.json())
     .catch((error) => {
       console.error(error);
       return [];
     });
 
-  const invoiceIds = await fetchData<InvoiceData[]>(
-    `http://localhost:3000/api/create/invoice`,
-  )
-    .then((data) => getInvoiceNumber(data.data))
+  const invoiceIds = await fetch(`${baseUrl}/api/create/invoice`)
+    .then(async (data) => getInvoiceNumber(await data.json()))
     .catch((error) => {
-      console.error("Error:", error);
+      console.error('Error:', error);
       return {
-        current: "1000000000",
-        previous: "0000100000",
-        proforma: "0000000000",
+        current: '1000000000',
+        previous: '0000100000',
+        proforma: '0000000000'
       };
     });
 
-  // const provider = await fetchData<Company>(
-  //   "http://localhost:3000/api/company",
-  // ).then((res) => res.data);
-
   const provider: Company = {
-    name: "Сатекма",
-    city: "София",
-    address: "ул. Люлин 33",
+    name: 'Сатекма',
+    city: 'София',
+    address: 'ул. Люлин 33',
     eik: 123456789,
-    VAT: "BG123456789",
-    director: "Стефан Стефанов",
-    phone: "0888888888",
-    iban: "BG123456789",
-    swift: "SWIFT",
-    bankName: "Банка",
+    VAT: 'BG123456789',
+    director: 'Стефан Стефанов',
+    phone: '0888888888',
+    iban: 'BG123456789',
+    swift: 'SWIFT',
+    bankName: 'Банка'
   };
 
   return (
@@ -61,7 +52,7 @@ export default async function CreateLayout({
         products,
         clients,
         invoiceIds,
-        provider,
+        provider
       })}
     </article>
   );

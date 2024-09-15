@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import { headCells } from "@/store/utils/constants";
-import { EnhancedTableHead } from "@/store/utils/enhancedTableHead";
-import { EnhancedTableToolbar } from "@/store/utils/enhancedTableToolbar";
-import { ProductEditor } from "@/store/utils/productEditor";
+import { headCells } from '@/store/utils/constants';
+import { EnhancedTableHead } from '@/store/utils/enhancedTableHead';
+import { EnhancedTableToolbar } from '@/store/utils/enhancedTableToolbar';
+import { ProductEditor } from '@/store/utils/productEditor';
 import {
   InvoiceProductData,
   Order,
   StoreProduct,
-  StoreUnits,
-} from "@/store/utils/types";
-import { handleProductsMap } from "@/store/utils/utils";
-import { fetchData } from "@/utils/fetchData";
-import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from "react";
-import FileUpload from "./utils/fileUpload";
-import useToast from "./utils/useToast";
-import { Product } from "@/create/invoice/types";
-import { ProductsDialog } from "./utils/productsDialog";
+  StoreUnits
+} from '@/store/utils/types';
+import { handleProductsMap } from '@/store/utils/utils';
+import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from 'react';
+import FileUpload from './utils/fileUpload';
+import useToast from './utils/useToast';
+import { Product } from '@/create/invoice/types';
+import { ProductsDialog } from './utils/productsDialog';
+import { baseUrl } from '@/constants';
 
 export function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -30,12 +30,12 @@ export function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 
 export function getComparator<Key extends keyof any>(
   order: Order,
-  orderBy: Key,
+  orderBy: Key
 ): (
   a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string },
+  b: { [key in Key]: number | string }
 ) => number {
-  return order === "desc"
+  return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
@@ -49,11 +49,11 @@ export default function Store({ data }: Props) {
   const [productMap, setProductMap] = useState(new Map<string, StoreProduct>());
   const [categories, setCategories] = useState<string[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<StoreProduct[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [isFetching, setIsFetching] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [order, setOrder] = useState<Order>("asc");
-  const [orderBy, setOrderBy] = useState<keyof StoreProduct>("name");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [order, setOrder] = useState<Order>('asc');
+  const [orderBy, setOrderBy] = useState<keyof StoreProduct>('name');
   const [selected, setSelected] = useState<StoreProduct[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
@@ -66,10 +66,10 @@ export default function Store({ data }: Props) {
 
   const handleRequestSort = (
     event: MouseEvent<unknown>,
-    property: keyof StoreProduct,
+    property: keyof StoreProduct
   ) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
@@ -95,7 +95,7 @@ export default function Store({ data }: Props) {
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
+        selected.slice(selectedIndex + 1)
       );
     }
 
@@ -104,18 +104,18 @@ export default function Store({ data }: Props) {
 
   const handleDelete = async () => {
     try {
-      await fetchData("/api/products/delete", {
-        method: "DELETE",
-        body: JSON.stringify({ products: selected }),
+      await fetch(`${baseUrl}/api/products/delete`, {
+        method: 'DELETE',
+        body: JSON.stringify({ products: selected })
       });
       const updatedProducts = products.filter(
-        (product) => !selected.includes(product),
+        (product) => !selected.includes(product)
       );
       setProducts(updatedProducts);
       setSelected([]);
-      notify("Products deleted", "success");
+      notify('Products deleted', 'success');
     } catch (error) {
-      notify("Error deleting products", "error");
+      notify('Error deleting products', 'error');
     }
   };
 
@@ -130,12 +130,12 @@ export default function Store({ data }: Props) {
 
   const sortAndFilterProducts = (
     products: StoreProduct[],
-    category: string,
+    category: string
   ) => {
     let sortedProducts = products.sort((a, b) => a.name.localeCompare(b.name));
-    if (category !== "all") {
+    if (category !== 'all') {
       sortedProducts = sortedProducts.filter(
-        (product) => product.category === category,
+        (product) => product.category === category
       );
     }
     setFilteredProducts(sortedProducts);
@@ -152,30 +152,30 @@ export default function Store({ data }: Props) {
   };
 
   const handleSearch = function (e: React.ChangeEvent<HTMLInputElement>) {
-    setSelectedCategory("all");
+    setSelectedCategory('all');
     setPage(0);
     const _searchTerm = e.target.value.toLowerCase();
     setSearchTerm(_searchTerm);
     const filtered = products.filter((product) =>
-      product.name.toLowerCase().includes(_searchTerm.toLowerCase()),
+      product.name.toLowerCase().includes(_searchTerm.toLowerCase())
     );
     setFilteredProducts(filtered);
   };
 
   const onEditSubmit = async (product: StoreProduct) => {
     try {
-      await fetchData("/api/products/get", {
-        method: "PUT",
-        body: JSON.stringify({ product }),
+      await fetch(`${baseUrl}/api/products/get`, {
+        method: 'PUT',
+        body: JSON.stringify({ product })
       });
       const updatedProducts = products.map((p) =>
-        p.code === product.code && p.package === product.package ? product : p,
+        p.code === product.code && p.package === product.package ? product : p
       );
       setProducts(updatedProducts);
       setSelected([]);
-      notify("StoreProduct updated", "success");
+      notify('StoreProduct updated', 'success');
     } catch (error) {
-      notify("Error updating product", "error");
+      notify('Error updating product', 'error');
     }
   };
 
@@ -190,27 +190,31 @@ export default function Store({ data }: Props) {
       filteredProducts
         .sort(getComparator(order, orderBy))
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [order, orderBy, page, rowsPerPage, filteredProducts],
+    [order, orderBy, page, rowsPerPage, filteredProducts]
   );
 
   const uploadProductsHandler = async () => {
     if (!productsToUpdate) return;
     setIsFetching(true);
     try {
-      await fetchData("/api/products/add", {
-        method: "PUT",
-        body: JSON.stringify({ items: productsToUpdate }),
+      await fetch(`${baseUrl}/api/products/add`, {
+        method: 'PUT',
+        body: JSON.stringify({ items: productsToUpdate })
       });
-      const { data } = await fetchData<Product[]>("/api/products/get");
-      setProducts(handleProductsMap(data));
-      const uniqueCategories = Array.from(new Set(data.map((p) => p.category)));
+      const products = (await fetch(`${baseUrl}/api/products/get`).then((res) =>
+        res.json()
+      )) as Product[];
+      setProducts(handleProductsMap(products));
+      const uniqueCategories = Array.from(
+        new Set(products.map((p) => p.category))
+      );
       setCategories(uniqueCategories);
       notify(
         `${productsToUpdate.length} products added successfully`,
-        "success",
+        'success'
       );
     } catch (error) {
-      notify("Error updating products", "error");
+      notify('Error updating products', 'error');
     } finally {
       setProductsToUpdate(null);
       setOpenCheckProductsDialog(false);
@@ -220,10 +224,10 @@ export default function Store({ data }: Props) {
 
   useEffect(() => {
     const uniqueCategories = Array.from(
-      new Set(products.map((p) => p.category)),
+      new Set(products.map((p) => p.category))
     );
     setCategories(uniqueCategories);
-    sortAndFilterProducts(products, "all");
+    sortAndFilterProducts(products, 'all');
   }, [products]);
 
   useEffect(() => {
@@ -232,7 +236,7 @@ export default function Store({ data }: Props) {
       setProductMap(map.set(`${p.code}-${p.package}`, p));
       return {
         ...p,
-        total: p.unit === StoreUnits.pcs ? p.quantity : p.quantity * p.package,
+        total: p.unit === StoreUnits.pcs ? p.quantity : p.quantity * p.package
       };
     });
     setFilteredProducts(filtered);
@@ -329,7 +333,7 @@ export default function Store({ data }: Props) {
                     key={row.code + index}
                     onClick={(event) => handleClick(event, row)}
                     className={`cursor-pointer ${
-                      isItemSelected ? "bg-gray-100" : ""
+                      isItemSelected ? 'bg-gray-100' : ''
                     }`}
                     role="checkbox"
                     aria-checked={isItemSelected}
@@ -352,7 +356,7 @@ export default function Store({ data }: Props) {
                       {(row.price * row.percentage_increase).toFixed(2)} лв.
                     </td>
                     <td className="p-2 text-right">
-                      {(row.packagePrice * row.percentage_increase).toFixed(2)}{" "}
+                      {(row.packagePrice * row.percentage_increase).toFixed(2)}{' '}
                       лв.
                     </td>
                     <td className="p-2 text-right">
@@ -368,7 +372,7 @@ export default function Store({ data }: Props) {
               {emptyRows > 0 && (
                 <tr
                   style={{
-                    height: 33 * emptyRows,
+                    height: 33 * emptyRows
                   }}
                 >
                   <td colSpan={6} />
@@ -399,7 +403,7 @@ export default function Store({ data }: Props) {
               Previous
             </button>
             <span>
-              Page {page + 1} of{" "}
+              Page {page + 1} of{' '}
               {Math.ceil(filteredProducts.length / rowsPerPage)}
             </span>
             <button

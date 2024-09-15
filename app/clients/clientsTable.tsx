@@ -2,7 +2,7 @@
 import { getComparator } from '@/store/page';
 import { EnhancedTableHead } from '@/store/utils/enhancedTableHead';
 import { EnhancedTableToolbar } from '@/store/utils/enhancedTableToolbar';
-import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, MouseEvent, useMemo, useState } from 'react';
 import { headCells } from './utils/constants';
 import { Client } from './utils/types';
 import { ClientEditor } from './utils/clientEditor';
@@ -102,12 +102,6 @@ export default function ClientsTable({ data }: PageProps) {
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
     [order, orderBy, page, rowsPerPage, filteredClients]
   );
-
-  useEffect(() => {
-    console.log('Clients loaded', selected);
-    setEditMode(!!selected);
-    notify('Клиентите са заредени успешно', 'success');
-  }, [selected, notify]);
 
   return (
     <div className="p-4">

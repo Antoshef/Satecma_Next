@@ -1,17 +1,14 @@
-import { fetchData } from '@/utils/fetchData';
-import { Product, Company } from '../invoice/types';
+import { baseUrl } from '@/constants';
 import { OfferBox } from './offerBox';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 
 export default withPageAuthRequired(async function OfferPage() {
-  const provider = await fetchData<Company>(
-    'http://localhost:3000/api/company'
-  ).then((res) => res.data);
+  const provider = await fetch(`${baseUrl}/api/company`).then((res) =>
+    res.json()
+  );
 
-  const products = await fetchData<Product[]>(
-    'http://localhost:3000/api/products/get'
-  )
-    .then((res) => res.data)
+  const products = await fetch(`${baseUrl}/api/products/get`)
+    .then((res) => res.json())
     .catch((error) => {
       console.error('Error:', error);
       return [];

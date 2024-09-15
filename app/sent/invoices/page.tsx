@@ -1,13 +1,10 @@
-import { fetchData } from '@/utils/fetchData';
+import { baseUrl } from '@/constants';
 import InvoicesTable from './invoicesTable';
-import { InvoiceData } from '@/create/invoice/types';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 
 export default withPageAuthRequired(async function InvoicesPage() {
-  const invoices = await fetchData<InvoiceData[]>(
-    'http://localhost:3000/api/create/invoice'
-  )
-    .then((res) => res.data)
+  const invoices = await fetch(`${baseUrl}/api/create/invoice`)
+    .then((res) => res.json())
     .catch((err) => {
       console.error(err);
       return [];

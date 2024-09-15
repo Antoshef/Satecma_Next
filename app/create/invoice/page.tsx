@@ -1,27 +1,25 @@
-import { fetchData } from '@/utils/fetchData';
-import { Product, Company, InvoiceData } from '../invoice/types';
-import { Client } from '@/clients/utils/types';
+import { baseUrl } from '@/constants';
 import InvoiceBox from './invoiceBox';
 import { getInvoiceNumber } from './utils';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 
 export default withPageAuthRequired(async function InvoicePage() {
-  const products = await fetchData<Product[]>('/api/products/get')
-    .then((res) => res.data)
+  const products = await fetch(`${baseUrl}/api/products/get`)
+    .then((res) => res.json())
     .catch((error) => {
       console.error('Error:', error);
       return [];
     });
 
-  const clients = await fetchData<Client[]>('/api/clients')
-    .then((data) => data.data)
+  const clients = await fetch(`${baseUrl}/api/clients`)
+    .then((data) => data.json())
     .catch((error) => {
       console.error(error);
       return [];
     });
 
-  const invoiceIds = await fetchData<InvoiceData[]>(`/api/create/invoice`)
-    .then((data) => getInvoiceNumber(data.data))
+  const invoiceIds = await fetch(`${baseUrl}/api/create/invoice`)
+    .then(async (data) => getInvoiceNumber(await data.json()))
     .catch((error) => {
       console.error('Error:', error);
       return {
@@ -31,8 +29,8 @@ export default withPageAuthRequired(async function InvoicePage() {
       };
     });
 
-  const provider = await fetchData<Company>('/api/company').then(
-    (res) => res.data
+  const provider = await fetch(`${baseUrl}/api/company`).then((res) =>
+    res.json()
   );
 
   return (

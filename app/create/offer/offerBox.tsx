@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { InputWrapper } from "@/components/input/wrapper";
-import { TextField } from "@/components/textField/TextField";
-import { FormEvent, useRef, useState } from "react";
-import { SATECMA_LOGO } from "../invoice/constants";
-import { Product } from "../invoice/types";
-import { TableItems } from "../table/tableItems";
-import { TableServices } from "../table/tableServices";
-import { useTableItems } from "../table/useTableItems";
-import useToast from "@/store/utils/useToast";
-import { fetchData } from "@/utils/fetchData";
-import Image from "next/image";
+import { InputWrapper } from '@/components/input/wrapper';
+import { TextField } from '@/components/textField/TextField';
+import { FormEvent, useRef, useState } from 'react';
+import { SATECMA_LOGO } from '../invoice/constants';
+import { Product } from '../invoice/types';
+import { TableItems } from '../table/tableItems';
+import { TableServices } from '../table/tableServices';
+import { useTableItems } from '../table/useTableItems';
+import useToast from '@/store/utils/useToast';
+import Image from 'next/image';
+import { baseUrl } from '@/constants';
 
 interface OfferBoxProps {
   provider: any;
@@ -21,18 +21,18 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [application, setApplication] = useState({
     warranty: 0,
-    delivery: 0,
+    delivery: 0
   });
   const [showApplication, setShowApplication] = useState(false);
   const [error, setError] = useState<boolean>(false);
   const offerRef = useRef<HTMLTableElement>(null);
   const [isFieldsDisabled, setIsFieldsDisabled] = useState<boolean>(false);
-  const [heading, setHeading] = useState("Заглавие на офертата");
+  const [heading, setHeading] = useState('Заглавие на офертата');
   const { Toast, notify } = useToast();
   const [recipient, setRecipient] = useState({
-    name: "",
-    phone: "",
-    email: "",
+    name: '',
+    phone: '',
+    email: ''
   });
   const {
     items,
@@ -43,34 +43,34 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
     itemSelectHandler,
     removeItem,
     serviceChangeHandler,
-    serviceSelectHandler,
+    serviceSelectHandler
   } = useTableItems({ selectedProduct, setSelectedProduct });
 
   const productChangeHandler = (name: string | null) => {
     setSelectedProduct(
-      products.find((product) => product.name === name) || null,
+      products.find((product) => product.name === name) || null
     );
   };
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsFieldsDisabled(true);
-    const css = await fetch("/globals.css").then((res) => res.text());
+    const css = await fetch('/globals.css').then((res) => res.text());
     try {
-      await fetchData("/api/create/offer", {
-        method: "POST",
+      await fetch(`${baseUrl}/api/create/offer`, {
+        method: 'POST',
         body: JSON.stringify({
           email: recipient.email,
           name: recipient.name,
           html: offerRef.current?.outerHTML,
           css,
           providerName: provider?.name,
-          heading,
-        }),
+          heading
+        })
       });
-      notify("Офертата беше успешно изпратена.", "success");
+      notify('Офертата беше успешно изпратена.', 'success');
     } catch (error) {
-      notify("Грешка при изпращането на офертата.", "error");
+      notify('Грешка при изпращането на офертата.', 'error');
     }
   };
 
@@ -87,14 +87,14 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
                     <tr>
                       <td className="title">
                         <Image
-                          style={{ height: "auto", width: "auto" }}
+                          style={{ height: 'auto', width: 'auto' }}
                           src={SATECMA_LOGO}
                           alt="Satecma logo"
                           width={420}
                           height={95}
                         />
                         <br />
-                        Получател:{" "}
+                        Получател:{' '}
                         <TextField
                           type="text"
                           name="name"
@@ -103,12 +103,12 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
                           onChange={(e) =>
                             setRecipient({
                               ...recipient,
-                              name: e.target.value,
+                              name: e.target.value
                             })
                           }
                         />
                         <br />
-                        Телефон:{" "}
+                        Телефон:{' '}
                         <TextField
                           type="text"
                           name="phone"
@@ -117,12 +117,12 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
                           onChange={(e) =>
                             setRecipient({
                               ...recipient,
-                              phone: e.target.value,
+                              phone: e.target.value
                             })
                           }
                         />
                         <br />
-                        Е-Поща:{" "}
+                        Е-Поща:{' '}
                         <TextField
                           type="text"
                           name="email"
@@ -131,7 +131,7 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
                           onChange={(e) => {
                             setRecipient({
                               ...recipient,
-                              email: e.target.value,
+                              email: e.target.value
                             });
                           }}
                         />
@@ -202,7 +202,6 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
 
             <InputWrapper
               size="small"
-              variant="standard"
               isFieldsDisabled={isFieldsDisabled}
               data={products}
               selectedItem={selectedProduct}
@@ -262,7 +261,7 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
                 <br /> 30% междинно плащане и 20% при издаване на обекта;
               </p>
               <p>
-                Срок на изпълнение: до{" "}
+                Срок на изпълнение: до{' '}
                 <TextField
                   type="text"
                   name="delivery"
@@ -272,14 +271,14 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
                   onChange={(e) =>
                     setApplication({
                       ...application,
-                      delivery: +e.target.value,
+                      delivery: +e.target.value
                     })
                   }
-                />{" "}
+                />{' '}
                 работни дни;
               </p>
               <p>
-                Гаранция по изпълнение:{" "}
+                Гаранция по изпълнение:{' '}
                 <TextField
                   type="text"
                   name="warranty"
@@ -289,10 +288,10 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
                   onChange={(e) =>
                     setApplication({
                       ...application,
-                      warranty: +e.target.value,
+                      warranty: +e.target.value
                     })
                   }
-                />{" "}
+                />{' '}
                 години
               </p>
               <p className="pt-4">
@@ -308,14 +307,14 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
           </p>
         </div>
         <div className="flex flex-col text-end mt-6 mb-2">
-          <span className="red-span">гр. {provider.city.split(",")[0]}</span>
+          <span className="red-span">гр. {provider.city.split(',')[0]}</span>
           <span>
-            Дата:{" "}
-            {new Date().toLocaleDateString("bg-BG", {
-              year: "numeric",
-              month: "numeric",
-              day: "numeric",
-              timeZone: "Europe/Sofia",
+            Дата:{' '}
+            {new Date().toLocaleDateString('bg-BG', {
+              year: 'numeric',
+              month: 'numeric',
+              day: 'numeric',
+              timeZone: 'Europe/Sofia'
             })}
           </span>
         </div>

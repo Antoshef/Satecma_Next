@@ -56,7 +56,7 @@ export const HeroBanner = () => {
   const [selectedImage, setSelectedImage] = useState(BusinessPresentation);
 
   return (
-    <div className="my-12 mx-auto max-w-6xl rounded-2xl shadow-lg bg-theme-light-background dark:bg-theme-dark-background">
+    <div className="my-12 mx-auto max-w-7xl rounded-2xl shadow-lg bg-theme-light-background dark:bg-theme-dark-background">
       <div className="grid grid-cols-1 md:grid-cols-2">
         {/* Left Side */}
         <div className="p-8">

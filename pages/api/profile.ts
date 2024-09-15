@@ -1,12 +1,12 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import { queryAsync } from "../../utils/db";
-import { User } from "@/api/auth/[auth0]/types";
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { queryAsync } from '../../utils/db';
+import { Claims } from '@auth0/nextjs-auth0';
 
 interface TypedNextApiRequest extends NextApiRequest {
-  body: User;
+  body: Claims;
 }
 
-const tableName = "profile";
+const tableName = 'profile';
 
 async function createTableIfNotExists() {
   const createTableQuery = `
@@ -25,7 +25,7 @@ async function createTableIfNotExists() {
   await queryAsync(createTableQuery);
 }
 
-function isValidUser(user: User): boolean {
+function isValidUser(user: Claims): boolean {
   return (
     !!user.sub &&
     !!user.nickname &&
@@ -38,29 +38,29 @@ function isValidUser(user: User): boolean {
 
 export default async function handler(
   req: TypedNextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
   const { method } = req;
 
   await createTableIfNotExists();
 
-  if (method === "POST") {
+  if (method === 'POST') {
     try {
-      const userData: User = req.body;
+      const userData: Claims = req.body;
 
-      console.log("userData", userData);
+      console.log('userData', userData);
       if (!isValidUser(userData)) {
-        return res.status(400).json({ message: "Invalid user data" });
+        return res.status(400).json({ message: 'Invalid user data' });
       }
 
       // Check if user already exists
       const checkUserQuery = `SELECT * FROM ${tableName} WHERE sub = ?`;
-      const existingUser = await queryAsync<User[]>(checkUserQuery, [
-        userData.sub,
+      const existingUser = await queryAsync<Claims[]>(checkUserQuery, [
+        userData.sub
       ]);
 
       if (existingUser.length > 0) {
-        return res.status(409).json({ message: "User already exists" });
+        return res.status(409).json({ message: 'User already exists' });
       }
 
       const insertQuery = `
@@ -77,35 +77,35 @@ export default async function handler(
         userData.picture,
         userData.updated_at,
         userData.email,
-        userData.email_verified,
+        userData.email_verified
       ];
 
-      const result = await queryAsync<User>(insertQuery, values);
+      const result = await queryAsync<Claims>(insertQuery, values);
       return res.status(201).json({ data: result });
     } catch (error) {
-      console.error("POST error:", error);
-      return res.status(500).json({ message: "Internal server error" });
+      console.error('POST error:', error);
+      return res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (method === "GET") {
+  } else if (method === 'GET') {
     try {
       const { sub } = req.query;
       if (!sub) {
-        return res.status(400).json({ message: "Missing sub parameter" });
+        return res.status(400).json({ message: 'Missing sub parameter' });
       }
 
       const getUserQuery = `SELECT * FROM ${tableName} WHERE sub = ?`;
-      const user = await queryAsync<User[]>(getUserQuery, [sub]);
+      const user = await queryAsync<Claims[]>(getUserQuery, [sub]);
 
       if (user.length === 0) {
-        return res.status(404).json({ message: "User not found" });
+        return res.status(200).json({ data: {} });
       }
 
       return res.status(200).json({ data: user[0] });
     } catch (error) {
-      console.error("GET error:", error);
-      return res.status(500).json({ message: "Internal server error" });
+      console.error('GET error:', error);
+      return res.status(500).json({ message: 'Internal server error' });
     }
   } else {
-    return res.status(405).json({ message: "Method Not Allowed" });
+    return res.status(405).json({ message: 'Method Not Allowed' });
   }
 }

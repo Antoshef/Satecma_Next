@@ -55,7 +55,7 @@ export const ScrollableText = () => {
 
   return (
     <div className="my-40 rounded-none shadow-none">
-      <div className="container px-16 min-h-[50vh] flex flex-wrap">
+      <div className="container px-16 min-h-[50vh] flex flex-wrap  mx-auto">
         {/* Left Column: Large Title */}
         <div className="w-full md:w-1/2">
           <div className="sticky top-[40%] z-10 transform -translate-y-1/10">

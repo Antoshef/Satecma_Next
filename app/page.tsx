@@ -1,6 +1,6 @@
+import { redirect } from 'next/navigation';
 import VerifyEmailModal from './verificationPage';
 import { getSession } from '@auth0/nextjs-auth0';
-import { User } from './api/auth/[auth0]/types';
 import { fetchData } from './utils/fetchData';
 import { SEOAccordion } from './components/seoAccordion';
 import { Header } from './components/homePage/header';
@@ -12,55 +12,53 @@ import { StartNow } from './components/homePage/startNow';
 export default async function HomePage() {
   const session = await getSession();
 
-  let user: User | null = null;
+  console.log('SESSION', session);
   if (session) {
     const { accessToken } = session;
 
-    try {
-      const response = await fetch(
-        `https://${process.env.AUTH0_DOMAIN}/userinfo`,
+    const response = await fetch(
+      `https://${process.env.AUTH0_DOMAIN}/userinfo`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
+
+    const result = await response.json();
+    console.log('RESULT', result);
+    if (result.sub) {
+      const userExistsResponse = await fetchData(
+        `/api/profile?sub=${session.user?.sub}`,
         {
+          method: 'GET',
           headers: {
-            Authorization: `Bearer ${accessToken}`
+            'Content-Type': 'application/json'
           }
         }
       );
 
-      if (response.ok) {
-        user = await response.json();
-
-        if (user?.email_verified) {
-          // Check if user already exists
-          const userExistsResponse = await fetchData(
-            `/api/profile?sub=${user.sub}`,
-            {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            }
-          );
-
-          if (!userExistsResponse.data) {
-            // User does not exist, proceed with POST request
-            await fetchData('/api/profile', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(user)
-            });
-          }
-        }
+      if (
+        userExistsResponse.data &&
+        Object.keys(userExistsResponse.data).length === 0
+      ) {
+        // User does not exist, proceed with POST request
+        await fetchData('/api/profile', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(session.user)
+        });
       }
-    } catch (error) {
-      console.error('Error fetching user info or checking existence:', error);
+
+      redirect('/store');
     }
   }
 
   return (
     <div className="bg-gray-100 min-h-screen">
-      {user && user.email_verified && <VerifyEmailModal user={user} />}
+      {session && session.user && <VerifyEmailModal user={session.user} />}
       {/* Header section with full-width image */}
       <Header />
       <div className="p-6 bg-gray-100 min-h-screen">
@@ -69,7 +67,7 @@ export default async function HomePage() {
         <ScrollableText />
         <StartNow />
 
-        <div className="my-12 p-8 rounded-lg shadow-lg bg-gradient-to-br from-gray-100 to-white max-w-6xl mx-auto">
+        <div className="my-12 p-8 rounded-lg shadow-lg bg-gradient-to-br from-gray-100 to-white max-w-7xl mx-auto">
           <h2 className="font-bold text-primary tracking-wide text-center mb-6">
             Защо да изберете нашето приложение?
           </h2>

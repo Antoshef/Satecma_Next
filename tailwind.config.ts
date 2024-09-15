@@ -12,14 +12,14 @@ const config: Config = {
     extend: {
       colors: {
         'theme-light': {
-          ...adobeColors.tropicalScrapbook
+          ...adobeColors.speedBoat
         },
         'theme-dark': {
           ...adobeColors.ocenArtLuxury
         },
         darkGrey: 'rgb(31 41 55 / 0.9)'
       },
-      darkMode: 'class',
+      darkMode: 'dark',
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':

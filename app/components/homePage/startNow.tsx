@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export const StartNow = () => {
   return (
-    <div className="my-12 p-8 rounded-lg shadow-lg bg-theme-light-background dark:bg-theme-dark-background max-w-6xl mx-auto">
+    <div className="my-12 p-8 rounded-lg shadow-lg bg-theme-light-background dark:bg-theme-dark-background max-w-7xl mx-auto">
       <h2 className="font-bold text-theme-light-primary dark:text-theme-dark-primary tracking-wide text-center">
         Започнете сега
       </h2>

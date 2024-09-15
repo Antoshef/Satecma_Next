@@ -13,7 +13,7 @@ export const Header = () => (
     />
 
     {/* Left-side content */}
-    <div className="relative z-10 max-w-full md:max-w-1/2 text-theme-light-primary dark:text-theme-dark-primary backdrop-blur-lg rounded-lg p-4">
+    <div className="relative z-10 max-w-2xl text-theme-light-primary dark:text-theme-dark-primary backdrop-blur-lg rounded-lg p-4">
       <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-theme-light-primary to-theme-light-secondary bg-clip-text text-transparent dark:from-theme-dark-primary dark:to-theme-dark-secondary">
         Добре дошли в нашето приложение за управление на бизнес
       </h1>
@@ -26,9 +26,9 @@ export const Header = () => (
         <button className="bg-theme-light-primary px-4 py-1.5 rounded-lg text-white text-lg dark:bg-theme-dark-primary">
           <Link href="/api/auth/login">Вход</Link>
         </button>
-        <button className="border border-theme-light-primary text-theme-light-primary px-4 py-1.5 rounded-lg text-lg hover:border-theme-light-secondary dark:border-theme-dark-primary dark:text-theme-dark-primary dark:hover:border-theme-dark-secondary">
-          Виж Демо
-        </button>
+        {/* <button className="border border-theme-light-primary text-theme-light-primary px-4 py-1.5 rounded-lg text-lg hover:border-theme-light-secondary dark:border-theme-dark-primary dark:text-theme-dark-primary dark:hover:border-theme-dark-secondary">
+          <Link href="/api/auth/signup">Регистрация</Link>
+        </button> */}
       </div>
 
       {/* Awards/Badges section */}

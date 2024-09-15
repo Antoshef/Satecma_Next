@@ -1,10 +1,11 @@
-import { fetchData } from "@/utils/fetchData";
-import InvoicesTable from "./invoicesTable";
-import { InvoiceData } from "@/create/invoice/types";
+import { fetchData } from '@/utils/fetchData';
+import InvoicesTable from './invoicesTable';
+import { InvoiceData } from '@/create/invoice/types';
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 
-async function InvoicesPage() {
+export default withPageAuthRequired(async function InvoicesPage() {
   const invoices = await fetchData<InvoiceData[]>(
-    "http://localhost:3000/api/create/invoice",
+    'http://localhost:3000/api/create/invoice'
   )
     .then((res) => res.data)
     .catch((err) => {
@@ -14,10 +15,8 @@ async function InvoicesPage() {
 
   return (
     <div>
-      <h1>Invoices</h1>
+      <h1>Фактури</h1>
       <InvoicesTable data={invoices} />
     </div>
   );
-}
-
-export default InvoicesPage;
+});

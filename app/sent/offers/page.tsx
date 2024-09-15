@@ -1,8 +1,10 @@
-async function OffersPage() {
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
+
+export default withPageAuthRequired(async function OffersPage() {
   const offers = await fetchOffers();
   return (
     <div>
-      <h1>Offers</h1>
+      <h1>Оферти</h1>
       <ul>
         {offers.map((offer) => (
           <li key={offer.id}>
@@ -12,6 +14,4 @@ async function OffersPage() {
       </ul>
     </div>
   );
-}
-
-export default OffersPage;
+});

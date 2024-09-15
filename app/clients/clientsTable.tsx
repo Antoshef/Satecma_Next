@@ -1,14 +1,13 @@
-"use client";
-import { getComparator } from "@/store/page";
-import { EnhancedTableHead } from "@/store/utils/enhancedTableHead";
-import { EnhancedTableToolbar } from "@/store/utils/enhancedTableToolbar";
-import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from "react";
-import { headCells } from "./utils/constants";
-import { Client } from "./utils/types";
-import { ClientEditor } from "./utils/clientEditor";
-import useToast from "@/store/utils/useToast";
-import { fetchData } from "@/utils/fetchData";
-import Link from "next/link";
+'use client';
+import { getComparator } from '@/store/page';
+import { EnhancedTableHead } from '@/store/utils/enhancedTableHead';
+import { EnhancedTableToolbar } from '@/store/utils/enhancedTableToolbar';
+import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from 'react';
+import { headCells } from './utils/constants';
+import { Client } from './utils/types';
+import { ClientEditor } from './utils/clientEditor';
+import useToast from '@/store/utils/useToast';
+import Link from 'next/link';
 
 const createKey = (client: Client) => `${client.name}-${client.eik}`;
 
@@ -18,24 +17,23 @@ interface PageProps {
 
 export default function ClientsTable({ data }: PageProps) {
   const [filteredClients, setFilteredClients] = useState(data);
-  const [order, setOrder] = useState<"asc" | "desc">("asc");
-  const [orderBy, setOrderBy] = useState<keyof Client>("name");
+  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+  const [orderBy, setOrderBy] = useState<keyof Client>('name');
   const [selected, setSelected] = useState<Client | undefined>(undefined);
   const [page, setPage] = useState(0);
-  const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [editMode, setEditMode] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const { Toast, notify } = useToast();
 
   const isSelected = (eik: string) => selected?.eik === eik;
 
   const handleRequestSort = (
     event: MouseEvent<unknown>,
-    property: keyof Client,
+    property: keyof Client
   ) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
@@ -44,13 +42,9 @@ export default function ClientsTable({ data }: PageProps) {
     const _searchTerm = e.target.value.toLowerCase();
     setSearchTerm(_searchTerm);
     const filtered = data.filter((client) =>
-      client.name.toLowerCase().includes(_searchTerm.toLowerCase()),
+      client.name.toLowerCase().includes(_searchTerm.toLowerCase())
     );
     setFilteredClients(filtered);
-  };
-
-  const handleChangeDense = (event: ChangeEvent<HTMLInputElement>) => {
-    setDense(event.target.checked);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -64,10 +58,20 @@ export default function ClientsTable({ data }: PageProps) {
 
   const onEditSubmit = async (client: Client) => {
     try {
-      await fetchData("/api/clients", {
-        method: "PUT",
-        body: JSON.stringify(client),
+      const response = await fetch('/api/clients', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(client)
       });
+
+      if (!response.ok) {
+        const data = await response.json();
+        const errorMessage = data.message || 'Something went wrong';
+        throw new Error(errorMessage + ` (Status ${response.status})`);
+      }
+
       const index = filteredClients.findIndex((c) => c.eik === client.eik);
       if (index >= 0) {
         const newClients = [...filteredClients];
@@ -75,9 +79,9 @@ export default function ClientsTable({ data }: PageProps) {
         setFilteredClients(newClients);
       }
       setEditMode(false);
-      notify("Клиентът е редактиран успешно", "success");
+      notify('Клиентът е редактиран успешно', 'success');
     } catch (error) {
-      notify("Грешка при редакцията на клиента", "error");
+      notify('Грешка при редакцията на клиента', 'error');
     }
   };
 
@@ -96,13 +100,13 @@ export default function ClientsTable({ data }: PageProps) {
       filteredClients
         .sort(getComparator(order, orderBy))
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [order, orderBy, page, rowsPerPage, filteredClients],
+    [order, orderBy, page, rowsPerPage, filteredClients]
   );
 
   useEffect(() => {
-    console.log("Clients loaded", selected);
+    console.log('Clients loaded', selected);
     setEditMode(!!selected);
-    notify("Клиентите са заредени успешно", "success");
+    notify('Клиентите са заредени успешно', 'success');
   }, [selected, notify]);
 
   return (
@@ -131,7 +135,7 @@ export default function ClientsTable({ data }: PageProps) {
           />
         </div>
         <div className="overflow-x-auto">
-          <table className={`min-w-full ${dense ? "text-sm" : "text-base"}`}>
+          <table className={'min-w-full text-sm'}>
             <EnhancedTableHead
               headCells={headCells}
               order={order}
@@ -160,7 +164,7 @@ export default function ClientsTable({ data }: PageProps) {
                       })
                     }
                     className={`cursor-pointer ${
-                      isItemSelected ? "bg-gray-100" : ""
+                      isItemSelected ? 'bg-gray-100' : ''
                     }`}
                     role="checkbox"
                     aria-checked={isItemSelected}
@@ -208,7 +212,7 @@ export default function ClientsTable({ data }: PageProps) {
               {emptyRows > 0 && (
                 <tr
                   style={{
-                    height: (dense ? 33 : 53) * emptyRows,
+                    height: 33 * emptyRows
                   }}
                 >
                   <td colSpan={9} />
@@ -219,7 +223,7 @@ export default function ClientsTable({ data }: PageProps) {
         </div>
         <div className="flex justify-between items-center p-4">
           <div>
-            <label className="mr-2">Rows per page:</label>
+            <label className="mr-2">Брой редове:</label>
             <select
               value={rowsPerPage}
               onChange={handleChangeRowsPerPage}
@@ -236,10 +240,10 @@ export default function ClientsTable({ data }: PageProps) {
               disabled={page === 0}
               className="p-2 border rounded mr-2"
             >
-              Previous
+              Предишна
             </button>
             <span>
-              Page {page + 1} of{" "}
+              Страница {page + 1} от{' '}
               {Math.ceil(filteredClients.length / rowsPerPage)}
             </span>
             <button
@@ -249,18 +253,9 @@ export default function ClientsTable({ data }: PageProps) {
               }
               className="p-2 border rounded ml-2"
             >
-              Next
+              Следваща
             </button>
           </div>
-        </div>
-        <div className="flex items-center p-4">
-          <label className="mr-2">Dense padding</label>
-          <input
-            type="checkbox"
-            checked={dense}
-            onChange={handleChangeDense}
-            className="form-checkbox h-5 w-5 text-blue-600"
-          />
         </div>
       </div>
     </div>

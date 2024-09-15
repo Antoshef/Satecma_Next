@@ -4,8 +4,9 @@ import { ProfileDetails } from './profileDetails';
 import { Suspense } from 'react';
 import Loading from '@/loading';
 import CompanySearch from './companySearch';
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 
-export default async function ProfilePage() {
+export default withPageAuthRequired(async function ProfilePage() {
   const companies = await fetchData<Company>(
     'http://localhost:3000/api/company'
   )
@@ -23,4 +24,4 @@ export default async function ProfilePage() {
       </div>
     </Suspense>
   );
-}
+});

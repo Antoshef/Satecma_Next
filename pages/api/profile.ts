@@ -48,7 +48,6 @@ export default async function handler(
     try {
       const userData: Claims = req.body;
 
-      console.log('userData', userData);
       if (!isValidUser(userData)) {
         return res.status(400).json({ message: 'Invalid user data' });
       }
@@ -65,8 +64,7 @@ export default async function handler(
 
       const insertQuery = `
         INSERT INTO ${tableName} (sub, given_name, family_name, nickname, name, picture, updated_at, email, email_verified)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        RETURNING *;
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
       `;
       const values = [
         userData.sub,
@@ -88,21 +86,47 @@ export default async function handler(
     }
   } else if (method === 'GET') {
     try {
-      const { sub } = req.query;
-      if (!sub) {
-        return res.status(400).json({ message: 'Missing sub parameter' });
+      const { email } = req.query;
+      if (!email) {
+        return res.status(400).json({ message: 'Missing email parameter' });
       }
 
-      const getUserQuery = `SELECT * FROM ${tableName} WHERE sub = ?`;
-      const user = await queryAsync<Claims[]>(getUserQuery, [sub]);
+      const getUserQuery = `SELECT * FROM ${tableName} WHERE email = ?`;
+      const user = await queryAsync<Claims[]>(getUserQuery, [email]);
 
       if (user.length === 0) {
-        return res.status(200).json({ data: {} });
+        return res.status(200).json({});
       }
 
-      return res.status(200).json({ data: user[0] });
+      return res.status(200).json(user[0]);
     } catch (error) {
       console.error('GET error:', error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+  } else if (method === 'PUT') {
+    try {
+      const { email, email_verified } = req.body;
+      if (!email || typeof email_verified !== 'boolean') {
+        return res.status(400).json({ message: 'Invalid request data' });
+      }
+
+      const updateUserQuery = `
+        UPDATE ${tableName}
+        SET email_verified = ?
+        WHERE email = ?;
+      `;
+      await queryAsync(updateUserQuery, [email_verified, email]);
+
+      const getUserQuery = `SELECT * FROM ${tableName} WHERE email = ?`;
+      const updatedUser = await queryAsync<Claims[]>(getUserQuery, [email]);
+
+      if (updatedUser.length === 0) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      return res.status(200).json({ data: updatedUser[0] });
+    } catch (error) {
+      console.error('PUT error:', error);
       return res.status(500).json({ message: 'Internal server error' });
     }
   } else {

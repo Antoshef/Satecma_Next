@@ -10,6 +10,7 @@ export const Header = () => (
       fill
       quality={100}
       className="z-0 w-full h-full object-cover"
+      priority
     />
 
     {/* Left-side content */}
@@ -27,7 +28,9 @@ export const Header = () => (
           <Link href="/api/auth/login">Вход</Link>
         </button>
         {/* <button className="border border-theme-light-primary text-theme-light-primary px-4 py-1.5 rounded-lg text-lg hover:border-theme-light-secondary dark:border-theme-dark-primary dark:text-theme-dark-primary dark:hover:border-theme-dark-secondary">
-          <Link href="/api/auth/signup">Регистрация</Link>
+          <Link href={`${process.env.AUTH0_ISSUER_BASE_URL}/signup`}>
+            Регистрация
+          </Link>
         </button> */}
       </div>
 

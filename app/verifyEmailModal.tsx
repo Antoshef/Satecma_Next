@@ -1,7 +1,7 @@
 'use client';
 
 import { Claims } from '@auth0/nextjs-auth0';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function VerifyEmailModal({ user }: { user: Claims }) {
   const [loading, setLoading] = useState(false);
@@ -38,14 +38,25 @@ export default function VerifyEmailModal({ user }: { user: Claims }) {
     }
   };
 
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
+
   return (
     <div
-      className={`fixed inset-0 flex items-center justify-center ${
-        !user.email_verified ? 'block' : 'hidden'
+      className={`z-50 fixed inset-0 flex items-center justify-center ${
+        !user.email_verified ? 'block overflow-hidden' : 'hidden'
       }`}
       aria-labelledby="verify-email-modal"
     >
-      <div className="bg-white shadow-lg rounded-lg p-6 text-center">
+      {/* Overlay */}
+      <div className="fixed inset-0 bg-black opacity-50 z-40"></div>
+
+      {/* Modal Content */}
+      <div className="relative z-50 bg-white shadow-lg rounded-lg p-6 text-center">
         <h2 className="text-xl font-semibold" id="verify-email-modal">
           Моля, потвърдете имейла си
         </h2>

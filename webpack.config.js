@@ -1,25 +1,25 @@
-const path = require("path");
+import path from 'path';
 
 module.exports = {
-  entry: "./pages/createTemplate.ts",
+  entry: './pages/createTemplate.ts',
   output: {
-    filename: "bundle.js",
-    path: path.resolve(__dirname, "dist"),
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist')
   },
   module: {
     rules: [
       {
         test: /\.html$/,
-        use: "html-loader",
+        use: 'html-loader'
       },
       {
         test: /\.ts$/,
-        use: "ts-loader",
-        exclude: /node_modules/,
-      },
-    ],
+        use: 'ts-loader',
+        exclude: /node_modules/
+      }
+    ]
   },
   resolve: {
-    extensions: [".ts", ".js"],
-  },
+    extensions: ['.ts', '.js']
+  }
 };

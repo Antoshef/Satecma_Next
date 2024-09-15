@@ -1,9 +1,9 @@
-import Link from "next/link";
-import SubMenu from "./subMenu";
-import { getSession } from "@auth0/nextjs-auth0";
+import Link from 'next/link';
+import SubMenu from './subMenu';
+import { getSession } from '@auth0/nextjs-auth0';
 
 export function classNames(classes: string[]) {
-  return [...(classes || "")].filter(Boolean).join(" ");
+  return [...(classes || '')].filter(Boolean).join(' ');
 }
 
 export interface NavigationItem {
@@ -13,17 +13,17 @@ export interface NavigationItem {
 }
 
 const navigation: NavigationItem[] = [
-  { name: "Склад", href: "/store" },
-  { name: "Клиенти", href: "/clients" },
-  { name: "Фактури", href: "/sent/invoices" },
+  { name: 'Склад', href: '/store' },
+  { name: 'Клиенти', href: '/clients' },
+  { name: 'Фактури', href: '/sent/invoices' },
   // { name: "Оферти", href: "/sent/offers" },
   {
-    name: "Създай",
+    name: 'Създай',
     subItems: [
-      { name: "Фактура", href: "/create/invoice" },
-      { name: "Оферта", href: "/create/offer" },
-    ],
-  },
+      { name: 'Фактура', href: '/create/invoice' },
+      { name: 'Оферта', href: '/create/offer' }
+    ]
+  }
 ];
 
 export default async function SidePanel() {
@@ -78,15 +78,15 @@ export default async function SidePanel() {
                 ) : (
                   <Link
                     key={item.name}
-                    href={item.href || "#"}
+                    href={item.href || '#'}
                     className={classNames([
-                      "text-gray-300 hover:bg-gray-700 hover:text-white",
-                      "rounded-md px-3 py-2 text-sm font-medium cursor-pointer uppercase",
+                      'text-gray-300 hover:bg-gray-700 hover:text-white',
+                      'rounded-md px-3 py-2 text-sm font-medium cursor-pointer uppercase'
                     ])}
                   >
                     {item.name}
                   </Link>
-                ),
+                )
               )}
             </div>
           </div>
@@ -94,8 +94,8 @@ export default async function SidePanel() {
             <Link
               href="/api/auth/logout"
               className={classNames([
-                "text-gray-300 hover:bg-gray-700 hover:text-white",
-                "rounded-md px-3 py-2 text-sm font-medium cursor-pointer uppercase block",
+                'text-gray-300 hover:bg-gray-700 hover:text-white',
+                'rounded-md px-3 py-2 text-sm font-medium cursor-pointer uppercase block'
               ])}
             >
               Изход

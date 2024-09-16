@@ -4,41 +4,14 @@ import { headCells } from '@/store/utils/constants';
 import { EnhancedTableHead } from '@/store/utils/enhancedTableHead';
 import { EnhancedTableToolbar } from '@/store/utils/enhancedTableToolbar';
 import { ProductEditor } from '@/store/utils/productEditor';
-import {
-  InvoiceProductData,
-  Order,
-  StoreProduct,
-  StoreUnits
-} from '@/store/utils/types';
+import { Order, StoreProduct, StoreUnits } from '@/store/utils/types';
 import { handleProductsMap } from '@/store/utils/utils';
 import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from 'react';
-import FileUpload from './utils/fileUpload';
 import useToast from './utils/useToast';
 import { Product } from '@/create/invoice/types';
-import { ProductsDialog } from './utils/productsDialog';
 import { baseUrl } from '@/constants';
-
-export function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-export function getComparator<Key extends keyof any>(
-  order: Order,
-  orderBy: Key
-): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string }
-) => number {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
+import { RowsPerPage } from '@/components/rowsPerPage';
+import { getComparator } from '@/utils/getComparator';
 
 interface Props {
   data: Product[];
@@ -46,11 +19,9 @@ interface Props {
 
 export default function Store({ data }: Props) {
   const [products, setProducts] = useState<StoreProduct[]>([]);
-  const [productMap, setProductMap] = useState(new Map<string, StoreProduct>());
   const [categories, setCategories] = useState<string[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<StoreProduct[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [isFetching, setIsFetching] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState<keyof StoreProduct>('name');
@@ -58,10 +29,7 @@ export default function Store({ data }: Props) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [editMode, setEditMode] = useState(false);
-  const [productsToUpdate, setProductsToUpdate] = useState<
-    InvoiceProductData[] | null
-  >(null);
-  const [openCheckProductsDialog, setOpenCheckProductsDialog] = useState(false);
+
   const { Toast, notify } = useToast();
 
   const handleRequestSort = (
@@ -193,35 +161,6 @@ export default function Store({ data }: Props) {
     [order, orderBy, page, rowsPerPage, filteredProducts]
   );
 
-  const uploadProductsHandler = async () => {
-    if (!productsToUpdate) return;
-    setIsFetching(true);
-    try {
-      await fetch(`${baseUrl}/api/products/add`, {
-        method: 'PUT',
-        body: JSON.stringify({ items: productsToUpdate })
-      });
-      const products = (await fetch(`${baseUrl}/api/products/get`).then((res) =>
-        res.json()
-      )) as Product[];
-      setProducts(handleProductsMap(products));
-      const uniqueCategories = Array.from(
-        new Set(products.map((p) => p.category))
-      );
-      setCategories(uniqueCategories);
-      notify(
-        `${productsToUpdate.length} products added successfully`,
-        'success'
-      );
-    } catch (error) {
-      notify('Error updating products', 'error');
-    } finally {
-      setProductsToUpdate(null);
-      setOpenCheckProductsDialog(false);
-      setIsFetching(false);
-    }
-  };
-
   useEffect(() => {
     const uniqueCategories = Array.from(
       new Set(products.map((p) => p.category))
@@ -231,9 +170,7 @@ export default function Store({ data }: Props) {
   }, [products]);
 
   useEffect(() => {
-    const map = new Map<string, StoreProduct>();
     const filtered = products.map((p) => {
-      setProductMap(map.set(`${p.code}-${p.package}`, p));
       return {
         ...p,
         total: p.unit === StoreUnits.pcs ? p.quantity : p.quantity * p.package
@@ -247,33 +184,12 @@ export default function Store({ data }: Props) {
   }, [selected]);
 
   useEffect(() => {
-    if (productsToUpdate) {
-      setOpenCheckProductsDialog(true);
-    } else {
-      setOpenCheckProductsDialog(false);
-    }
-  }, [productsToUpdate]);
-
-  useEffect(() => {
     setProducts(handleProductsMap(data));
   }, [data]);
 
   return (
     <div className="m-4">
       <Toast />
-      <ProductsDialog
-        isOpen={openCheckProductsDialog}
-        setIsOpen={setOpenCheckProductsDialog}
-        onConfirm={uploadProductsHandler}
-        isFetching={isFetching}
-        productMap={productMap}
-        productsToUpdate={productsToUpdate}
-      />
-      <FileUpload
-        data={productsToUpdate}
-        setData={setProductsToUpdate}
-        setOpenDialog={setOpenCheckProductsDialog}
-      />
       <div className="w-full mb-4 bg-white shadow rounded-lg">
         <EnhancedTableToolbar
           title="Склад"
@@ -381,42 +297,13 @@ export default function Store({ data }: Props) {
             </tbody>
           </table>
         </div>
-        <div className="flex justify-between items-center p-4">
-          <div>
-            <label className="mr-2">Rows per page:</label>
-            <select
-              value={rowsPerPage}
-              onChange={handleChangeRowsPerPage}
-              className="border rounded p-2"
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={25}>25</option>
-            </select>
-          </div>
-          <div>
-            <button
-              onClick={() => handleChangePage(null, page - 1)}
-              disabled={page === 0}
-              className="p-2 border rounded mr-2"
-            >
-              Previous
-            </button>
-            <span>
-              Page {page + 1} of{' '}
-              {Math.ceil(filteredProducts.length / rowsPerPage)}
-            </span>
-            <button
-              onClick={() => handleChangePage(null, page + 1)}
-              disabled={
-                page >= Math.ceil(filteredProducts.length / rowsPerPage) - 1
-              }
-              className="p-2 border rounded ml-2"
-            >
-              Next
-            </button>
-          </div>
-        </div>
+        <RowsPerPage
+          data={filteredProducts}
+          handleChangePage={handleChangePage}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+          page={page}
+          rowsPerPage={rowsPerPage}
+        />
       </div>
     </div>
   );

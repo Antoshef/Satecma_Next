@@ -1,46 +1,39 @@
-import { HeadCell, StoreProduct } from "./types";
+import { HeadCell, StoreProduct } from './types';
 
 export const headCells: readonly HeadCell<StoreProduct>[] = [
   {
-    id: "code",
+    id: 'code',
     numeric: true,
-    disablePadding: false,
-    label: "Код",
+    label: 'Код'
   },
   {
-    id: "name",
+    id: 'name',
     numeric: false,
-    disablePadding: true,
-    label: "Продукт",
+    label: 'Продукт'
   },
   {
-    id: "price",
+    id: 'price',
     numeric: true,
-    disablePadding: true,
-    label: "Цена кг./л./бр.",
+    label: 'Цена кг./л./бр.'
   },
   {
-    id: "packagePrice",
+    id: 'packagePrice',
     numeric: true,
-    disablePadding: true,
-    label: "Цена опаковка",
+    label: 'Цена опаковка'
   },
   {
-    id: "package",
+    id: 'package',
     numeric: true,
-    disablePadding: false,
-    label: "Опаковка",
+    label: 'Опаковка'
   },
   {
-    id: "quantity",
+    id: 'quantity',
     numeric: true,
-    disablePadding: false,
-    label: "Количество",
+    label: 'Количество'
   },
   {
-    id: "totalQuantity",
+    id: 'totalQuantity',
     numeric: true,
-    disablePadding: false,
-    label: "Общо",
-  },
+    label: 'Общо'
+  }
 ];

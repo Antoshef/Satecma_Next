@@ -1,33 +1,29 @@
-import { HeadCell } from "@/store/utils/types";
-import { Client } from "./types";
+import { HeadCell } from '@/store/utils/types';
+import { Client } from './types';
 
 export const headCells: readonly HeadCell<Client>[] = [
   {
-    id: "name",
+    id: 'name',
     numeric: false,
-    disablePadding: true,
-    label: "Име",
+    label: 'Име'
   },
-  { id: "phone", numeric: false, disablePadding: false, label: "Телефон" },
-  { id: "email", numeric: false, disablePadding: false, label: "Имейл" },
-  { id: "city", numeric: false, disablePadding: false, label: "Град" },
-  { id: "address", numeric: false, disablePadding: false, label: "Адрес" },
+  { id: 'phone', numeric: false, label: 'Телефон' },
+  { id: 'email', numeric: false, label: 'Имейл' },
+  { id: 'city', numeric: false, label: 'Град' },
+  { id: 'address', numeric: false, label: 'Адрес' },
   {
-    id: "director",
+    id: 'director',
     numeric: false,
-    disablePadding: false,
-    label: "Директор",
+    label: 'Директор'
   },
   {
-    id: "eik",
+    id: 'eik',
     numeric: true,
-    disablePadding: false,
-    label: "ЕИК",
+    label: 'ЕИК'
   },
   {
-    id: "vat",
+    id: 'vat',
     numeric: false,
-    disablePadding: false,
-    label: "ДДС",
-  },
+    label: 'ДДС'
+  }
 ];

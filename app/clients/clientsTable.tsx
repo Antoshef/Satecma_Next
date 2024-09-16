@@ -1,5 +1,4 @@
 'use client';
-import { getComparator } from '@/store/page';
 import { EnhancedTableHead } from '@/store/utils/enhancedTableHead';
 import { EnhancedTableToolbar } from '@/store/utils/enhancedTableToolbar';
 import { ChangeEvent, MouseEvent, useMemo, useState } from 'react';
@@ -8,6 +7,8 @@ import { Client } from './utils/types';
 import { ClientEditor } from './utils/clientEditor';
 import useToast from '@/store/utils/useToast';
 import Link from 'next/link';
+import { RowsPerPage } from '@/components/rowsPerPage';
+import { getComparator } from '@/utils/getComparator';
 
 const createKey = (client: Client) => `${client.name}-${client.eik}`;
 
@@ -215,42 +216,13 @@ export default function ClientsTable({ data }: PageProps) {
             </tbody>
           </table>
         </div>
-        <div className="flex justify-between items-center p-4">
-          <div>
-            <label className="mr-2">Брой редове:</label>
-            <select
-              value={rowsPerPage}
-              onChange={handleChangeRowsPerPage}
-              className="border rounded p-2"
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={25}>25</option>
-            </select>
-          </div>
-          <div>
-            <button
-              onClick={() => handleChangePage(null, page - 1)}
-              disabled={page === 0}
-              className="p-2 border rounded mr-2"
-            >
-              Предишна
-            </button>
-            <span>
-              Страница {page + 1} от{' '}
-              {Math.ceil(filteredClients.length / rowsPerPage)}
-            </span>
-            <button
-              onClick={() => handleChangePage(null, page + 1)}
-              disabled={
-                page >= Math.ceil(filteredClients.length / rowsPerPage) - 1
-              }
-              className="p-2 border rounded ml-2"
-            >
-              Следваща
-            </button>
-          </div>
-        </div>
+        <RowsPerPage
+          data={filteredClients}
+          handleChangePage={handleChangePage}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+          page={page}
+          rowsPerPage={rowsPerPage}
+        />
       </div>
     </div>
   );

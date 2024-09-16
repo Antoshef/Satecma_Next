@@ -1,13 +1,5 @@
-import { MouseEvent, ChangeEvent } from "react";
-import { Order } from "./types";
-
-// Define a generic interface for head cells
-export interface HeadCell<T> {
-  id: keyof T;
-  numeric: boolean;
-  disablePadding: boolean;
-  label: string;
-}
+import { MouseEvent, ChangeEvent } from 'react';
+import { HeadCell, Order } from './types';
 
 // Define generic props for the EnhancedTableHead component
 export interface EnhancedTableHeadProps<T> {
@@ -27,7 +19,7 @@ export const EnhancedTableHead = <T,>({
   onRequestSort,
   onSelectAllClick, // Handle select all click
   numSelected, // Number of selected items
-  rowCount, // Total row count
+  rowCount // Total row count
 }: EnhancedTableHeadProps<T>) => {
   const createSortHandler =
     (property: keyof T) => (event: MouseEvent<unknown>) => {
@@ -38,10 +30,10 @@ export const EnhancedTableHead = <T,>({
     <thead className="bg-gray-50">
       <tr>
         {/* Checkbox for selecting all rows */}
-        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+        <th className="p-2 flex">
           <input
             type="checkbox"
-            className="form-checkbox h-4 w-4 text-blue-600"
+            className="form-checkbox h-5 w-5 text-blue-600"
             checked={rowCount > 0 && numSelected === rowCount} // If all rows are selected
             ref={(input) => {
               if (input)
@@ -54,18 +46,16 @@ export const EnhancedTableHead = <T,>({
         {headCells.map((headCell, index) => (
           <th
             key={`${(headCell.id, index)}`}
-            className={`px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider ${
-              headCell.disablePadding ? "p-0" : "p-4"
-            }`}
+            className={`p-2 'text-right' text-xs font-medium text-gray-500 uppercase tracking-wider`}
           >
             <div
-              className="flex items-center justify-end cursor-pointer"
+              className={`flex items-center ${headCell.centered ? 'justify-center' : 'justify-end'} cursor-pointer`}
               onClick={createSortHandler(headCell.id)}
             >
               {headCell.label}
               {orderBy === headCell.id ? (
                 <span className="ml-2">
-                  {order === "desc" ? (
+                  {order === 'desc' ? (
                     <svg
                       className="w-4 h-4"
                       fill="none"

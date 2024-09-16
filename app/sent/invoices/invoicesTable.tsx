@@ -1,14 +1,14 @@
-"use client";
-
-import { useState, useMemo, MouseEvent, ChangeEvent } from "react";
-import DownloadIcon from "/public/assets/svg/download.svg";
-import JSZip from "jszip";
-import { saveAs } from "file-saver";
-import { EnhancedTableHead, HeadCell } from "@/store/utils/enhancedTableHead";
-import { Order } from "@/store/utils/types";
-import { InvoiceData } from "@/create/invoice/types";
-import Image from "next/image";
-import Tooltip from "@/components/tooltip";
+'use client';
+import { EnhancedTableHead } from '@/store/utils/enhancedTableHead';
+import { ChangeEvent, MouseEvent, useMemo, useState } from 'react';
+import { RowsPerPage } from '@/components/rowsPerPage';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
+import { HeadCell, Order } from '@/store/utils/types';
+import { InvoiceData } from '@/create/invoice/types';
+import Tooltip from '@/components/tooltip';
+import Image from 'next/image';
+import DownloadIcon from '/public/assets/svg/download-blue-green.svg';
 
 interface InvoicesTableProps {
   data: InvoiceData[];
@@ -16,43 +16,44 @@ interface InvoicesTableProps {
 
 const invoiceHeadCells: HeadCell<InvoiceData>[] = [
   {
-    id: "invoice_id",
+    id: 'invoice_id',
     numeric: false,
-    disablePadding: false,
-    label: "Invoice ID",
+    label: 'Invoice ID'
   },
-  { id: "date", numeric: false, disablePadding: false, label: "Date" },
-  { id: "client", numeric: false, disablePadding: false, label: "Client" },
-  { id: "eik", numeric: false, disablePadding: false, label: "EIK" },
+  { id: 'date', numeric: false, label: 'Date' },
+  { id: 'client', numeric: false, label: 'Client' },
+  { id: 'eik', numeric: false, label: 'EIK' },
   {
-    id: "vat_number",
+    id: 'vat_number',
     numeric: false,
-    disablePadding: false,
-    label: "VAT Number",
+    label: 'VAT Number'
   },
-  { id: "amount", numeric: true, disablePadding: false, label: "Amount" },
-  { id: "vat", numeric: true, disablePadding: false, label: "VAT" },
-  { id: "total", numeric: true, disablePadding: false, label: "Total" },
-  { id: "file_path", numeric: false, disablePadding: false, label: "Download" },
+  { id: 'amount', numeric: true, label: 'Amount' },
+  { id: 'vat', numeric: true, label: 'VAT' },
+  { id: 'total', numeric: true, label: 'Total' },
+  { id: 'file_path', numeric: false, label: 'Download', centered: true }
 ];
 
 export default function InvoicesTable({ data }: InvoicesTableProps) {
-  const [order, setOrder] = useState<Order>("asc");
-  const [orderBy, setOrderBy] = useState<keyof InvoiceData>("invoice_id");
+  const [order, setOrder] = useState<Order>('asc');
+  const [orderBy, setOrderBy] = useState<keyof InvoiceData>('invoice_id');
   const [selected, setSelected] = useState<InvoiceData[]>([]);
-  const [dense, setDense] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
 
   const isSelected = (invoice_id: string) =>
     selected.some((invoice) => invoice.invoice_id === invoice_id);
 
+  // Avoid a layout jump when reaching the last page with empty rows.
+  const emptyRows =
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
+
   const handleRequestSort = (
     event: MouseEvent<unknown>,
-    property: keyof InvoiceData,
+    property: keyof InvoiceData
   ) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
@@ -64,13 +65,9 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
     }
   };
 
-  const handleChangeDense = (event: ChangeEvent<HTMLInputElement>) => {
-    setDense(event.target.checked);
-  };
-
   const handleClick = (event: MouseEvent<unknown>, row: InvoiceData) => {
     const selectedIndex = selected.findIndex(
-      (invoice) => invoice.invoice_id === row.invoice_id,
+      (invoice) => invoice.invoice_id === row.invoice_id
     );
     let newSelected: InvoiceData[] = [];
 
@@ -83,7 +80,7 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
+        selected.slice(selectedIndex + 1)
       );
     }
     setSelected(newSelected);
@@ -98,29 +95,28 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
     setPage(0);
   };
 
-  const visibleRows = useMemo(
-    () =>
-      data
-        .sort((a, b) =>
-          order === "desc"
-            ? a.invoice_id.localeCompare(b.invoice_id)
-            : b.invoice_id.localeCompare(a.invoice_id),
-        )
-        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [order, page, rowsPerPage, data],
-  );
+  const visibleRows = useMemo(() => {
+    if (!data) return [] as InvoiceData[];
+    return data
+      .sort((a, b) =>
+        order === 'desc'
+          ? a.invoice_id.localeCompare(b.invoice_id)
+          : b.invoice_id.localeCompare(a.invoice_id)
+      )
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  }, [order, page, rowsPerPage, data]);
 
   // Handle file download for a single PDF
   const handleDownload = (
     company: string,
     year: string,
     month: string,
-    invoiceName: string,
+    invoiceName: string
   ) => {
     // Send the necessary parameters to the backend
-    const link = document.createElement("a");
+    const link = document.createElement('a');
     link.href = `/api/invoices/download?company=${encodeURIComponent(company)}&year=${year}&month=${month}&invoiceName=${encodeURIComponent(invoiceName)}`;
-    link.setAttribute("download", `${invoiceName}.pdf`);
+    link.setAttribute('download', `${invoiceName}.pdf`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -133,22 +129,26 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
     // Add each selected invoice to the zip
     for (const invoice of selected) {
       try {
-        const response = await fetch(invoice.file_path || ""); // Fetch the file from the path
+        const response = await fetch(invoice.file_path || ''); // Fetch the file from the path
         const blob = await response.blob(); // Convert it to a Blob
         zip.file(`${invoice.invoice_id}.pdf`, blob); // Add the blob to the zip file
       } catch (error) {
         console.error(
           `Failed to fetch or add invoice ${invoice.invoice_id}: `,
-          error,
+          error
         );
       }
     }
 
     // Generate the zip file and trigger download
-    zip.generateAsync({ type: "blob" }).then((content) => {
-      saveAs(content, "invoices.zip"); // Download the zip file
+    zip.generateAsync({ type: 'blob' }).then((content) => {
+      saveAs(content, 'invoices.zip'); // Download the zip file
     });
   };
+
+  if (!data.length) {
+    return <h3 className="p-4">Няма намерени фактури</h3>;
+  }
 
   return (
     <div className="p-4">
@@ -163,9 +163,9 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
           </button>
         </div>
       )}
-      <div className="bg-white shadow-md rounded-lg mb-4">
+      <div className="w-full mb-2 bg-white shadow rounded-lg">
         <div className="overflow-x-auto">
-          <table className={`min-w-full ${dense ? "text-sm" : "text-base"}`}>
+          <table className="min-w-full text-sm">
             <EnhancedTableHead
               headCells={invoiceHeadCells}
               order={order}
@@ -176,22 +176,22 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
               rowCount={data.length}
             />
             <tbody>
-              {visibleRows.map((row, index) => {
+              {visibleRows?.map((row, index) => {
                 const isItemSelected = isSelected(row.invoice_id);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
                   <tr
                     key={row.invoice_id}
-                    className={`hover:bg-gray-100 cursor-pointer ${
-                      isItemSelected ? "bg-gray-200" : ""
+                    className={`cursor-pointer ${
+                      isItemSelected ? 'bg-gray-100' : ''
                     }`}
                     onClick={(event) => handleClick(event, row)}
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
                   >
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="p-2">
                       <input
                         type="checkbox"
                         checked={isItemSelected}
@@ -200,93 +200,61 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
                         aria-labelledby={labelId}
                       />
                     </td>
-                    <td
-                      className="px-6 py-4 whitespace-nowrap"
-                      id={labelId}
-                      scope="row"
-                    >
+                    <td className="p-2 text-right" id={labelId}>
                       {row.invoice_id}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">{row.date}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {row.client}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">{row.eik}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {row.vat_number}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {row.amount.toFixed(2)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {row.vat.toFixed(2)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {row.total.toFixed(2)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="p-2 text-right">{row.date}</td>
+                    <td className="p-2 text-right">{row.client}</td>
+                    <td className="p-2 text-right">{row.eik}</td>
+                    <td className="p-2 text-right">{row.vat_number}</td>
+                    <td className="p-2 text-right">{row.amount.toFixed(2)}</td>
+                    <td className="p-2 text-right">{row.vat.toFixed(2)}</td>
+                    <td className="p-2 text-right">{row.total.toFixed(2)}</td>
+                    <td className="p-2 text-center">
                       <Tooltip text="Download">
                         <button
                           className="text-blue-600 hover:text-blue-800"
                           onClick={() =>
                             handleDownload(
-                              "eko_invoices_sent",
-                              new Date(row.date).toLocaleString("default", {
-                                month: "long",
+                              'eko_invoices_sent',
+                              new Date(row.date).toLocaleString('default', {
+                                month: 'long'
                               }),
                               new Date(row.date).getFullYear().toString(),
-                              row.invoice_id,
+                              row.invoice_id
                             )
                           }
                         >
-                          <Image src={DownloadIcon} alt="Download" />
+                          <Image
+                            src={DownloadIcon}
+                            width={20}
+                            height={20}
+                            alt="Download"
+                          />
                         </button>
                       </Tooltip>
                     </td>
                   </tr>
                 );
               })}
+              {emptyRows > 0 && (
+                <tr
+                  style={{
+                    height: 33 * emptyRows
+                  }}
+                >
+                  <td colSpan={10} />
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
-        <div className="flex justify-between items-center p-4">
-          <div>
-            <label className="mr-2">Rows per page:</label>
-            <select
-              value={rowsPerPage}
-              onChange={handleChangeRowsPerPage}
-              className="border border-gray-300 rounded-md p-2"
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={25}>25</option>
-            </select>
-          </div>
-          <div>
-            <button
-              onClick={() => handleChangePage(null, page - 1)}
-              disabled={page === 0}
-              className="px-4 py-2 border border-gray-300 rounded-md mr-2"
-            >
-              Previous
-            </button>
-            <button
-              onClick={() => handleChangePage(null, page + 1)}
-              disabled={page >= Math.ceil(data.length / rowsPerPage) - 1}
-              className="px-4 py-2 border border-gray-300 rounded-md"
-            >
-              Next
-            </button>
-          </div>
-        </div>
-      </div>
-      <div className="flex items-center">
-        <label className="mr-2">Dense padding</label>
-        <input
-          type="checkbox"
-          checked={dense}
-          onChange={handleChangeDense}
-          className="form-checkbox h-5 w-5 text-blue-600"
+        <RowsPerPage
+          data={data}
+          handleChangePage={handleChangePage}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+          page={page}
+          rowsPerPage={rowsPerPage}
         />
       </div>
     </div>

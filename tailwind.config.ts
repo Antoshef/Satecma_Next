@@ -12,7 +12,9 @@ const config: Config = {
     extend: {
       colors: {
         'theme-light': {
-          ...adobeColors.speedBoat
+          ...adobeColors.fantasticSunset,
+          white: 'rgb(255, 255, 255)',
+          dark: '#010D26'
         },
         'theme-dark': {
           ...adobeColors.ocenArtLuxury

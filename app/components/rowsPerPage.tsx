@@ -27,13 +27,15 @@ export const RowsPerPage = ({
   const totalPages = Math.ceil(data.length / rowsPerPage);
 
   return (
-    <div className="flex justify-between items-center p-4">
+    <div className="flex justify-between items-center p-4 bg-theme-light-background dark:bg-theme-dark-background">
       <div>
-        <label className="mr-2 text-base">Брой редове:</label>
+        <label className="mr-2 text-base text-theme-light-primary dark:text-theme-dark-primary">
+          Брой редове:
+        </label>
         <select
           value={rowsPerPage}
           onChange={handleChangeRowsPerPage}
-          className="border rounded p-1 text-base text-center"
+          className="border rounded p-1 text-base text-center text-theme-light-primary dark:text-theme-dark-primary bg-theme-light-background dark:bg-theme-dark-background border-theme-light-secondary dark:border-theme-dark-secondary"
           style={{ backgroundImage: 'none' }}
         >
           <option value={5}>5</option>
@@ -68,7 +70,7 @@ export const RowsPerPage = ({
             height={36}
           />
         </button>
-        <span className="self-center text-base">
+        <span className="self-center text-base text-theme-light-primary dark:text-theme-dark-primary">
           Страница {page + 1} от {totalPages}
         </span>
         <button

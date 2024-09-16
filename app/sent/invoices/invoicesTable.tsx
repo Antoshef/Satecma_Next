@@ -156,14 +156,14 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
       {selected.length > 1 && (
         <div className="flex justify-end mb-4">
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600"
+            className="bg-theme-light-primary dark:bg-theme-dark-primary text-white px-4 py-2 rounded-md shadow-md hover:bg-theme-light-secondary dark:hover:bg-theme-dark-secondary"
             onClick={handleDownloadSelectedAsZip}
           >
             Download Selected as ZIP
           </button>
         </div>
       )}
-      <div className="w-full mb-2 bg-white shadow rounded-lg">
+      <div className="w-full mb-2 bg-theme-light-background dark:bg-theme-dark-background shadow rounded-lg">
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm">
             <EnhancedTableHead
@@ -184,7 +184,9 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
                   <tr
                     key={row.invoice_id}
                     className={`cursor-pointer ${
-                      isItemSelected ? 'bg-gray-100' : ''
+                      isItemSelected
+                        ? 'bg-theme-light-secondary dark:bg-theme-dark-secondary'
+                        : ''
                     }`}
                     onClick={(event) => handleClick(event, row)}
                     role="checkbox"
@@ -196,7 +198,7 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
                         type="checkbox"
                         checked={isItemSelected}
                         onChange={() => {}}
-                        className="form-checkbox h-5 w-5 text-blue-600"
+                        className="form-checkbox h-5 w-5 text-theme-light-primary dark:text-theme-dark-primary"
                         aria-labelledby={labelId}
                       />
                     </td>
@@ -213,7 +215,7 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
                     <td className="p-2 text-center">
                       <Tooltip text="Изтегли">
                         <button
-                          className="text-blue-600 hover:text-blue-800"
+                          className="text-theme-light-primary dark:text-theme-dark-primary hover:text-theme-light-secondary dark:hover:text-theme-dark-secondary"
                           onClick={() =>
                             handleDownload(
                               'eko_invoices_sent',

@@ -108,7 +108,7 @@ export default function ClientsTable({ data }: PageProps) {
   return (
     <div className="p-4">
       <Toast />
-      <div className="w-full mb-2 bg-white shadow rounded-lg">
+      <div className="w-full mb-2 bg-theme-light-background dark:bg-theme-dark-background shadow rounded-lg">
         <EnhancedTableToolbar
           title="Клиенти"
           isSelected={selected.length > 0}
@@ -122,13 +122,15 @@ export default function ClientsTable({ data }: PageProps) {
           setEditMode={setEditMode}
         />
         <div className="flex items-baseline p-4">
-          <span className="mr-2 ml-2 text-lg">Намери клиент:</span>
+          <span className="mr-2 ml-2 text-lg text-theme-light-primary dark:text-theme-dark-primary">
+            Намери клиент:
+          </span>
           <input
             type="text"
             placeholder="Търси по име"
             value={searchTerm}
             onChange={handleSearch}
-            className="ml-4 p-2 border rounded"
+            className="ml-4 p-2 border rounded text-theme-light-primary dark:text-theme-dark-primary bg-theme-light-background dark:bg-theme-dark-background border-theme-light-secondary dark:border-theme-dark-secondary"
           />
         </div>
         <div className="overflow-x-auto">
@@ -163,7 +165,9 @@ export default function ClientsTable({ data }: PageProps) {
                       })
                     }
                     className={`cursor-pointer ${
-                      isItemSelected ? 'bg-gray-100' : ''
+                      isItemSelected
+                        ? 'bg-theme-light-secondary dark:bg-theme-dark-secondary'
+                        : ''
                     }`}
                     role="checkbox"
                     aria-checked={isItemSelected}
@@ -174,7 +178,7 @@ export default function ClientsTable({ data }: PageProps) {
                         type="checkbox"
                         checked={isItemSelected}
                         onChange={() => {}}
-                        className="form-checkbox h-5 w-5 text-blue-600"
+                        className="form-checkbox h-5 w-5 text-theme-light-primary dark:text-theme-dark-primary"
                         aria-labelledby={labelId}
                       />
                     </td>
@@ -185,7 +189,7 @@ export default function ClientsTable({ data }: PageProps) {
                       <Link
                         onClick={linkClickHandler}
                         href={`tel:${row.phone}`}
-                        className="text-blue-600 hover:underline"
+                        className="text-theme-light-primary dark:text-theme-dark-primary hover:underline"
                       >
                         {row.phone}
                       </Link>
@@ -195,7 +199,7 @@ export default function ClientsTable({ data }: PageProps) {
                         onClick={linkClickHandler}
                         target="_blank"
                         href={`mailto:${row.email}`}
-                        className="text-blue-600 hover:underline"
+                        className="text-theme-light-primary dark:text-theme-dark-primary hover:underline"
                       >
                         {row.email}
                       </Link>

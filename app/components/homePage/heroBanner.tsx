@@ -66,7 +66,7 @@ export const HeroBanner = () => {
           </h3>
 
           {/* Subtitle */}
-          <p className="text-lg text-theme-light-tertiary dark:text-theme-dark-tertiary mb-4">
+          <p className="text-lg text-theme-light-secondary dark:text-theme-dark-tertiary mb-4">
             Управлявайте вашите проекти ефективно и лесно
           </p>
 
@@ -91,7 +91,7 @@ export const HeroBanner = () => {
                   className={`w-full text-left py-2 px-4 transition-all duration-300 border-l-2 ${
                     selectedOptionIndex === index
                       ? 'border-theme-light-primary text-theme-light-primary dark:border-theme-dark-primary dark:text-theme-dark-primary'
-                      : 'border-theme-light-secondary text-theme-light-tertiary dark:border-theme-dark-secondary dark:text-theme-dark-tertiary'
+                      : 'border-theme-light-tertiary text-theme-light-secondary dark:border-theme-dark-secondary dark:text-theme-dark-tertiary'
                   }`}
                   onClick={() => {
                     setSelectedContent(option.content);
@@ -107,7 +107,7 @@ export const HeroBanner = () => {
         </div>
 
         {/* Right Side */}
-        <div className="bg-theme-light-quaternary dark:bg-theme-dark-quaternary rounded-2xl flex flex-col justify-center items-center p-8">
+        <div className="bg-theme-light-secondary dark:bg-theme-dark-quaternary rounded-2xl flex flex-col justify-center items-center p-8">
           {/* Dynamic Image */}
           <Image
             src={selectedImage}
@@ -117,7 +117,7 @@ export const HeroBanner = () => {
             height={300}
           />
           {/* Dynamic Text */}
-          <p className="text-center text-theme-light-primary dark:text-theme-dark-primary">
+          <p className="text-center text-theme-light-white dark:text-theme-dark-primary">
             {selectedContent}
           </p>
         </div>

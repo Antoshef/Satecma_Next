@@ -41,11 +41,11 @@ export const adobeColors: AdobeColors = {
     background: 'rgba(224, 255, 255, 0.3)' // Light cyan
   },
   fantasticSunset: {
-    primary: '#011640',
-    secondary: '#010D26',
-    tertiary: '#048C8C',
-    quaternary: '#F2CA99',
-    danger: '#F26938',
+    primary: '#011640', // Dark blue
+    secondary: '#048C8C', // Dark cyan
+    tertiary: '#08A0A8', // Light cyan
+    quaternary: '#F2CA99', // Light orange
+    danger: '#011640', // Light orange
     background: 'rgba(255, 245, 238, 0.3)' // Seashell
   },
   tropicalScrapbook: {

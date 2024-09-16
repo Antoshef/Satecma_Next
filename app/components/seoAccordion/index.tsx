@@ -18,7 +18,7 @@ export const SEOAccordion = () => {
         >
           <button
             onClick={() => toggleTab(index)}
-            className="flex justify-between items-center w-full p-4 text-left text-lg font-medium text-theme-light-primary dark:text-theme-dark-primary bg-theme-light-background hover:bg-theme-light-secondary dark:bg-theme-dark-background dark:hover:bg-theme-dark-secondary focus:outline-none"
+            className="flex justify-between items-center w-full p-4 text-left text-lg font-medium text-theme-light-primary dark:text-theme-dark-primary bg-theme-light-background hover:bg-theme-light-secondary hover:text-theme-light-white  dark:bg-theme-dark-background dark:hover:bg-theme-dark-secondary focus:outline-none"
             aria-controls={`panel${index}-content`}
             id={`panel${index}-header`}
           >
@@ -46,7 +46,7 @@ export const SEOAccordion = () => {
             id={`panel${index}-content`}
             className={`transition-max-height duration-200 overflow-hidden ${
               openTab === index ? 'max-h-screen p-4' : 'max-h-0'
-            } bg-theme-light-background dark:bg-theme-dark-background text-theme-light-tertiary dark:text-theme-dark-tertiary`}
+            } bg-theme-light-background dark:bg-theme-dark-background text-theme-light-secondary dark:text-theme-dark-tertiary`}
           >
             <p>{item.content}</p>
           </div>

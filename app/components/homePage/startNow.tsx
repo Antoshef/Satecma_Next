@@ -7,7 +7,7 @@ export const StartNow = () => {
         Започнете сега
       </h2>
 
-      <p className="mt-6 text-lg text-theme-light-tertiary dark:text-theme-dark-tertiary text-center leading-relaxed">
+      <p className="mt-6 text-lg text-theme-light-secondary dark:text-theme-dark-tertiary text-center leading-relaxed">
         Готови ли сте да оптимизирате бизнес операциите си? Разгледайте
         различните секции на нашето приложение:
       </p>

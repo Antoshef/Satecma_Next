@@ -4,7 +4,7 @@ export const Intro = () => {
       <h2 className="font-bold text-theme-light-primary dark:text-theme-dark-primary text-2xl md:text-3xl lg:text-4xl text-center tracking-wide">
         За нашето приложение
       </h2>
-      <p className="mt-6 text-lg md:text-xl text-theme-light-tertiary dark:text-theme-dark-tertiary text-center leading-relaxed">
+      <p className="mt-6 text-lg md:text-xl text-theme-light-secondary dark:text-theme-dark-tertiary text-center leading-relaxed">
         Нашето приложение е създадено, за да помогне на бизнеса да управлява
         своите операции ефективно. С функции като създаване на оферти,
         фактуриране, съхранение на продукти и управление на клиентска база

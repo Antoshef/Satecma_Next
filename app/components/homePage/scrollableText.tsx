@@ -86,7 +86,7 @@ export const ScrollableText = () => {
                   <p className="text-theme-light-primary dark:text-theme-dark-primary">
                     {item.primary}
                   </p>
-                  <p className="text-theme-light-tertiary dark:text-theme-dark-tertiary">
+                  <p className="text-theme-light-secondary dark:text-theme-dark-tertiary">
                     {item.secondary}
                   </p>
                 </div>

@@ -211,7 +211,7 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
                     <td className="p-2 text-right">{row.vat.toFixed(2)}</td>
                     <td className="p-2 text-right">{row.total.toFixed(2)}</td>
                     <td className="p-2 text-center">
-                      <Tooltip text="Download">
+                      <Tooltip text="Изтегли">
                         <button
                           className="text-blue-600 hover:text-blue-800"
                           onClick={() =>

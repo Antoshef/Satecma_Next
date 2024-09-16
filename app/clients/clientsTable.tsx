@@ -20,14 +20,15 @@ export default function ClientsTable({ data }: PageProps) {
   const [filteredClients, setFilteredClients] = useState(data);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof Client>('name');
-  const [selected, setSelected] = useState<Client | undefined>(undefined);
+  const [selected, setSelected] = useState<Client[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [editMode, setEditMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const { Toast, notify } = useToast();
 
-  const isSelected = (eik: string) => selected?.eik === eik;
+  const isSelected = (eik: string) =>
+    selected.some((client) => client.eik === eik);
 
   const handleRequestSort = (
     event: MouseEvent<unknown>,
@@ -110,12 +111,13 @@ export default function ClientsTable({ data }: PageProps) {
       <div className="w-full mb-2 bg-white shadow rounded-lg">
         <EnhancedTableToolbar
           title="Клиенти"
-          isSelected={!!selected}
+          isSelected={selected.length > 0}
           onEdit={setEditMode}
+          selectedCount={selected.length}
         />
         <ClientEditor
           editMode={editMode}
-          selected={selected}
+          selected={selected[0]}
           onSubmit={onEditSubmit}
           setEditMode={setEditMode}
         />
@@ -137,7 +139,7 @@ export default function ClientsTable({ data }: PageProps) {
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
               onSelectAllClick={() => {}}
-              numSelected={0}
+              numSelected={selected.length}
               rowCount={filteredClients.length}
             />
             <tbody>
@@ -150,11 +152,13 @@ export default function ClientsTable({ data }: PageProps) {
                     key={createKey(row)}
                     onClick={() =>
                       setSelected((state) => {
-                        if (state === row) {
+                        if (state.some((client) => client.eik === row.eik)) {
                           setEditMode(false);
-                          return undefined;
+                          return state.filter(
+                            (client) => client.eik !== row.eik
+                          );
                         } else {
-                          return row;
+                          return [...state, row];
                         }
                       })
                     }

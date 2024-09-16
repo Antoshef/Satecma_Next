@@ -27,14 +27,18 @@ export const EnhancedTableHead = <T,>({
     };
 
   return (
-    <thead className="bg-gray-50">
+    <thead className="bg-theme-light-background dark:bg-theme-dark-background">
       <tr>
         {/* Checkbox for selecting all rows */}
         <th className="p-2 flex">
           <input
             type="checkbox"
-            className="form-checkbox h-5 w-5 text-blue-600"
-            checked={rowCount > 0 && numSelected === rowCount} // If all rows are selected
+            className="form-checkbox h-5 w-5 text-theme-light-primary dark:text-theme-dark-primary"
+            checked={
+              numSelected === 0
+                ? false
+                : rowCount > 0 && numSelected === rowCount
+            } // Explicitly set to false when no items are selected
             ref={(input) => {
               if (input)
                 input.indeterminate = numSelected > 0 && numSelected < rowCount;
@@ -46,7 +50,7 @@ export const EnhancedTableHead = <T,>({
         {headCells.map((headCell, index) => (
           <th
             key={`${(headCell.id, index)}`}
-            className={`p-2 'text-right' text-xs font-medium text-gray-500 uppercase tracking-wider`}
+            className={`p-2 text-right text-xs font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary uppercase tracking-wider`}
           >
             <div
               className={`flex items-center ${headCell.centered ? 'justify-center' : 'justify-end'} cursor-pointer`}

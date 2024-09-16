@@ -1,12 +1,13 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useState } from "react";
-import { classNames, NavigationItem } from ".";
+import Link from 'next/link';
+import { useState } from 'react';
+import { NavigationItem } from './ClientSideNavigation';
+import { classNames } from '@/utils/classNames';
 
 interface SubMenuProps {
   name: string;
-  subItems: Pick<NavigationItem, "name" | "href">[];
+  subItems: Pick<NavigationItem, 'name' | 'href'>[];
 }
 
 const SubMenu: React.FC<SubMenuProps> = ({ name, subItems }) => {
@@ -21,8 +22,8 @@ const SubMenu: React.FC<SubMenuProps> = ({ name, subItems }) => {
       <button
         onClick={toggleSubMenu}
         className={classNames([
-          "text-gray-300 hover:bg-gray-700 hover:text-white",
-          "rounded-md w-full justify-between px-3 py-2 text-sm font-medium cursor-pointer uppercase flex items-center",
+          'text-gray-300 hover:bg-gray-700 hover:text-white',
+          'rounded-md w-full justify-between px-3 py-2 text-sm font-medium cursor-pointer uppercase flex items-center'
         ])}
       >
         {name}
@@ -48,10 +49,10 @@ const SubMenu: React.FC<SubMenuProps> = ({ name, subItems }) => {
             {subItems.map((subItem) => (
               <Link
                 key={subItem.name}
-                href={subItem.href || "#"}
+                href={subItem.href || '#'}
                 className={classNames([
-                  "text-gray-300 hover:bg-gray-700 hover:text-white",
-                  "rounded-md pl-4 pr-3 py-2 text-sm font-medium cursor-pointer capitalize block",
+                  'text-gray-300 hover:bg-gray-700 hover:text-white',
+                  'rounded-md pl-4 pr-3 py-2 text-sm font-medium cursor-pointer capitalize block'
                 ])}
               >
                 {subItem.name}

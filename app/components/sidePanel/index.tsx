@@ -1,10 +1,7 @@
 import Link from 'next/link';
-import SubMenu from './subMenu';
 import { getSession } from '@auth0/nextjs-auth0';
-
-export function classNames(classes: string[]) {
-  return [...(classes || '')].filter(Boolean).join(' ');
-}
+import { classNames } from '@/utils/classNames';
+import ClientSideNavigation from './ClientSideNavigation';
 
 export interface NavigationItem {
   name: string;
@@ -35,17 +32,17 @@ export default async function SidePanel() {
 
   return (
     <div className="relative z-10 flex h-full">
-      <nav className="bg-gray-800 w-64 h-full fixed">
+      <nav className="bg-theme-light-background dark:bg-theme-dark-background w-64 h-full fixed">
         <div className="flex flex-col h-full">
-          <div className="flex items-center justify-between p-4 bg-gray-900">
+          <div className="flex items-center justify-between p-4 bg-theme-light-secondary dark:bg-theme-dark-secondary">
             <Link href="/profile">
-              <span className="text-white text-lg font-semibold">
+              <span className="text-theme-light-primary dark:text-theme-dark-primary text-lg font-semibold">
                 Твоето лого
               </span>
             </Link>
             <button
               type="button"
-              className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+              className="relative rounded-full bg-theme-light-background dark:bg-theme-dark-background p-1 text-theme-light-tertiary dark:text-theme-dark-tertiary hover:text-theme-light-primary dark:hover:text-theme-dark-primary focus:outline-none focus:ring-2 focus:ring-theme-light-primary dark:focus:ring-theme-dark-primary focus:ring-offset-2 focus:ring-offset-theme-light-background dark:focus:ring-offset-theme-dark-background"
             >
               <span className="absolute -inset-1.5" />
               <span className="sr-only">Виж съобщения</span>
@@ -67,34 +64,13 @@ export default async function SidePanel() {
             </button>
           </div>
           <div className="flex-1 overflow-y-auto">
-            <div role="navigation" className="flex flex-col space-y-1 p-4">
-              {navigation.map((item) =>
-                item.subItems ? (
-                  <SubMenu
-                    key={item.name}
-                    name={item.name}
-                    subItems={item.subItems}
-                  />
-                ) : (
-                  <Link
-                    key={item.name}
-                    href={item.href || '#'}
-                    className={classNames([
-                      'text-gray-300 hover:bg-gray-700 hover:text-white',
-                      'rounded-md px-3 py-2 text-sm font-medium cursor-pointer uppercase'
-                    ])}
-                  >
-                    {item.name}
-                  </Link>
-                )
-              )}
-            </div>
+            <ClientSideNavigation navigation={navigation} />
           </div>
           <div className="p-4 w-full">
             <Link
               href="/api/auth/logout"
               className={classNames([
-                'text-gray-300 hover:bg-gray-700 hover:text-white',
+                'text-theme-light-tertiary dark:text-theme-dark-tertiary hover:bg-theme-light-secondary dark:hover:bg-theme-dark-secondary hover:text-theme-light-primary dark:hover:text-theme-dark-primary',
                 'rounded-md px-3 py-2 text-sm font-medium cursor-pointer uppercase block'
               ])}
             >

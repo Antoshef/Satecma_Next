@@ -165,11 +165,6 @@ export default function Store({ data }: Props) {
     const uniqueCategories = Array.from(
       new Set(products.map((p) => p.category))
     );
-    setCategories(uniqueCategories);
-    sortAndFilterProducts(products, 'all');
-  }, [products]);
-
-  useEffect(() => {
     const filtered = products.map((p) => {
       return {
         ...p,
@@ -177,11 +172,9 @@ export default function Store({ data }: Props) {
       };
     });
     setFilteredProducts(filtered);
+    setCategories(uniqueCategories);
+    sortAndFilterProducts(products, 'all');
   }, [products]);
-
-  useEffect(() => {
-    setEditMode(selected.length === 1);
-  }, [selected]);
 
   useEffect(() => {
     setProducts(handleProductsMap(data));
@@ -190,12 +183,13 @@ export default function Store({ data }: Props) {
   return (
     <div className="m-4">
       <Toast />
-      <div className="w-full mb-4 bg-white shadow rounded-lg">
+      <div className="w-full mb-4 bg-theme-light-background dark:bg-theme-dark-background shadow rounded-lg">
         <EnhancedTableToolbar
           title="Склад"
           isSelected={!!selected.length}
           onEdit={setEditMode}
           onDelete={handleDelete}
+          selectedCount={selected.length}
         />
         <ProductEditor
           editMode={editMode}
@@ -204,12 +198,14 @@ export default function Store({ data }: Props) {
           onSubmit={onEditSubmit}
         />
         <div className="flex items-baseline p-4">
-          <span className="mr-2 ml-2 text-lg">Избери категория:</span>
+          <span className="mr-2 ml-2 text-lg text-theme-light-primary dark:text-theme-dark-primary">
+            Избери категория:
+          </span>
           <select
             id="category-select"
             onChange={handleCategoryChange}
             value={selectedCategory}
-            className="ml-4 p-2 border rounded"
+            className="ml-4 p-2 border rounded text-theme-light-primary dark:text-theme-dark-primary bg-theme-light-background dark:bg-theme-dark-background border-theme-light-secondary dark:border-theme-dark-secondary"
           >
             <option key="all" value="all">
               Всички
@@ -225,7 +221,7 @@ export default function Store({ data }: Props) {
             placeholder="Търси по име"
             value={searchTerm}
             onChange={handleSearch}
-            className="ml-4 p-2 border rounded"
+            className="ml-4 p-2 border rounded text-theme-light-primary dark:text-theme-dark-primary bg-theme-light-background dark:bg-theme-dark-background border-theme-light-secondary dark:border-theme-dark-secondary"
           />
         </div>
         <div className="overflow-x-auto">
@@ -249,7 +245,9 @@ export default function Store({ data }: Props) {
                     key={row.code + index}
                     onClick={(event) => handleClick(event, row)}
                     className={`cursor-pointer ${
-                      isItemSelected ? 'bg-gray-100' : ''
+                      isItemSelected
+                        ? 'bg-theme-light-secondary dark:bg-theme-dark-secondary'
+                        : ''
                     }`}
                     role="checkbox"
                     aria-checked={isItemSelected}
@@ -260,7 +258,7 @@ export default function Store({ data }: Props) {
                         type="checkbox"
                         checked={isItemSelected}
                         onChange={() => {}}
-                        className="form-checkbox h-5 w-5 text-blue-600"
+                        className="form-checkbox h-5 w-5 text-theme-light-primary dark:text-theme-dark-primary"
                         aria-labelledby={labelId}
                       />
                     </td>

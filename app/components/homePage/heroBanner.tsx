@@ -5,11 +5,11 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 
 // Import the images
-import BusinessPresentation from '/public/assets/svg/business-presentation.svg';
-import FinanceInsurance from '/public/assets/svg/finance-insurance.svg';
-import BusinessmanExplainingStrategy from '/public/assets/svg/businessman-explaining-the-strategy.svg';
-import BusinessPeopleDiscussing from '/public/assets/svg/business-people-discussing-on-analysis-graph.svg';
-import ManDevelopingSite from '/public/assets/svg/man-developing-website-on-desk.svg';
+import BusinessPresentation from '/public/assets/illustrations/business-presentation.svg';
+import ManagingResources from '/public/assets/illustrations/man-uploading-data.svg';
+import BusinessmanExplainingStrategy from '/public/assets/illustrations/businessman-explaining-the-strategy.svg';
+import BusinessPeopleDiscussing from '/public/assets/illustrations/business-people-discussing-on-analysis-graph.svg';
+import SystemIntegrations from '/public/assets/illustrations/cloud-data-transfer.svg';
 
 // Array to hold the clickable options and their respective content and images
 const contentOptions = [
@@ -23,7 +23,7 @@ const contentOptions = [
     label: 'Управление на ресурси',
     content:
       'Оптимизирайте използването на вашите ресурси, за да осигурите навременно изпълнение на всички проекти.',
-    image: FinanceInsurance
+    image: ManagingResources
   },
   {
     label: 'Комуникация в екипа',
@@ -41,7 +41,7 @@ const contentOptions = [
     label: 'Интеграция с други системи',
     content:
       'Лесна интеграция с други популярни системи за управление, за да създадете пълноценна екосистема за вашите нужди.',
-    image: ManDevelopingSite
+    image: SystemIntegrations
   }
 ];
 
@@ -107,7 +107,7 @@ export const HeroBanner = () => {
         </div>
 
         {/* Right Side */}
-        <div className="bg-theme-light-secondary dark:bg-theme-dark-quaternary rounded-2xl flex flex-col justify-center items-center p-8">
+        <div className="bg-theme-light-tertiary dark:bg-theme-dark-quaternary rounded-2xl flex flex-col justify-center items-center p-8">
           {/* Dynamic Image */}
           <Image
             src={selectedImage}

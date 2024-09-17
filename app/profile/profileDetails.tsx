@@ -118,7 +118,7 @@ export const ProfileDetails: React.FC<ProfileDetailsProps> = ({
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-4">
               <div>
-                <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-quaternary">
+                <label className="block text-sm font-medium text-theme-light-secondary dark:text-theme-dark-quaternary">
                   Компания
                 </label>
                 <input
@@ -130,7 +130,7 @@ export const ProfileDetails: React.FC<ProfileDetailsProps> = ({
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-quaternary">
+                <label className="block text-sm font-medium text-theme-light-secondary dark:text-theme-dark-quaternary">
                   ЕИК
                 </label>
                 <input
@@ -142,7 +142,7 @@ export const ProfileDetails: React.FC<ProfileDetailsProps> = ({
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-quaternary">
+                <label className="block text-sm font-medium text-theme-light-secondary dark:text-theme-dark-quaternary">
                   ДДС
                 </label>
                 <input
@@ -154,7 +154,7 @@ export const ProfileDetails: React.FC<ProfileDetailsProps> = ({
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-quaternary">
+                <label className="block text-sm font-medium text-theme-light-secondary dark:text-theme-dark-quaternary">
                   Град
                 </label>
                 <input
@@ -166,7 +166,7 @@ export const ProfileDetails: React.FC<ProfileDetailsProps> = ({
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-quaternary">
+                <label className="block text-sm font-medium text-theme-light-secondary dark:text-theme-dark-quaternary">
                   Адрес
                 </label>
                 <input
@@ -178,7 +178,7 @@ export const ProfileDetails: React.FC<ProfileDetailsProps> = ({
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-quaternary">
+                <label className="block text-sm font-medium text-theme-light-secondary dark:text-theme-dark-quaternary">
                   Директор
                 </label>
                 <input
@@ -190,7 +190,7 @@ export const ProfileDetails: React.FC<ProfileDetailsProps> = ({
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-quaternary">
+                <label className="block text-sm font-medium text-theme-light-secondary dark:text-theme-dark-quaternary">
                   Телефон
                 </label>
                 <input
@@ -202,7 +202,7 @@ export const ProfileDetails: React.FC<ProfileDetailsProps> = ({
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-quaternary">
+                <label className="block text-sm font-medium text-theme-light-secondary dark:text-theme-dark-quaternary">
                   Име на банката
                 </label>
                 <input
@@ -214,7 +214,7 @@ export const ProfileDetails: React.FC<ProfileDetailsProps> = ({
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-quaternary">
+                <label className="block text-sm font-medium text-theme-light-secondary dark:text-theme-dark-quaternary">
                   IBAN
                 </label>
                 <input
@@ -226,7 +226,7 @@ export const ProfileDetails: React.FC<ProfileDetailsProps> = ({
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-quaternary">
+                <label className="block text-sm font-medium text-theme-light-secondary dark:text-theme-dark-quaternary">
                   SWIFT
                 </label>
                 <input

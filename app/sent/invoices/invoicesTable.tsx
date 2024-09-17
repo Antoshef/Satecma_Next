@@ -8,7 +8,7 @@ import { HeadCell, Order } from '@/store/utils/types';
 import { InvoiceData } from '@/create/invoice/types';
 import Tooltip from '@/components/tooltip';
 import Image from 'next/image';
-import DownloadIcon from '/public/assets/svg/download-blue-green.svg';
+import DownloadIcon from '/public/assets/svg/download-laptop.svg';
 
 interface InvoicesTableProps {
   data: InvoiceData[];

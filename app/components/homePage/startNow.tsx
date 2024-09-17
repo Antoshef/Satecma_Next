@@ -24,7 +24,7 @@ export const StartNow = () => {
               <Link
                 href={item.href}
                 passHref
-                className="block w-full p-2 rounded-lg bg-theme-light-primary bg-gradient-to-br from-theme-light-primary to-theme-light-secondary text-white shadow-md transition-transform duration-300 ease-in-out transform hover:scale-105 hover:from-theme-light-secondary hover:to-theme-light-primary dark:bg-theme-dark-primary dark:from-theme-dark-primary dark:to-theme-dark-secondary dark:hover:from-theme-dark-secondary dark:hover:to-theme-dark-primary"
+                className="block w-full p-2 rounded-lg bg-theme-light-primary bg-gradient-to-br from-theme-light-primary to-theme-light-tertiary text-white shadow-md transition-transform duration-300 ease-in-out transform hover:scale-105 hover:from-theme-light-secondary hover:to-theme-light-primary dark:bg-theme-dark-primary dark:from-theme-dark-primary dark:to-theme-dark-secondary dark:hover:from-theme-dark-secondary dark:hover:to-theme-dark-primary"
               >
                 <span className="font-medium text-base tracking-wide">
                   {item.text}

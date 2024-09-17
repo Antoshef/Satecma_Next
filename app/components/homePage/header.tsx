@@ -1,24 +1,16 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import Banner from '/public/assets/svg/gear.svg';
+import './styles.css';
 
 export const Header = () => (
-  <header className="relative w-full h-[80vh] flex items-center justify-between p-4 bg-theme-light-background dark:bg-theme-dark-background">
-    {/* Background Image */}
-    <Image
-      src="/assets/header-bg.jpg"
-      alt="Business Management App Background"
-      fill
-      quality={100}
-      className="z-0 w-full h-full object-cover"
-      priority
-    />
-
+  <header className="relative dash-background w-full h-[80vh] flex items-center justify-between p-4 bg-theme-light-background dark:bg-theme-dark-background">
     {/* Left-side content */}
-    <div className="relative z-10 max-w-2xl text-theme-light-primary dark:text-theme-dark-primary backdrop-blur-lg rounded-lg p-4">
-      <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-theme-light-primary to-theme-light-secondary bg-clip-text text-transparent dark:from-theme-dark-primary dark:to-theme-dark-secondary">
+    <div className="relative z-10 max-w-2xl text-theme-light-primary dark:text-theme-dark-primary p-4">
+      <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-theme-light-quaternary to-theme-light-danger bg-clip-text text-transparent dark:from-theme-dark-primary dark:to-theme-dark-secondary">
         Добре дошли в нашето приложение за управление на бизнес
       </h1>
-      <p className="mt-2 text-lg md:text-xl text-theme-light-tertiary bg-gradient-to-r from-theme-light-primary to-theme-light-secondary bg-clip-text text-transparent dark:text-theme-dark-tertiary dark:from-theme-dark-primary dark:to-theme-dark-secondary">
+      <p className="mt-2 text-lg md:text-xl text-theme-light-white bg-gradient-to-r from-theme-light-primary to-theme-light-secondary bg-clip-text dark:text-theme-dark-tertiary dark:from-theme-dark-primary dark:to-theme-dark-secondary">
         Оптимизирайте бизнес операциите си с лекота
       </p>
 
@@ -27,11 +19,9 @@ export const Header = () => (
         <button className="bg-theme-light-primary px-4 py-1.5 rounded-lg text-white text-lg dark:bg-theme-dark-primary">
           <Link href="/api/auth/login">Вход</Link>
         </button>
-        {/* <button className="border border-theme-light-primary text-theme-light-primary px-4 py-1.5 rounded-lg text-lg hover:border-theme-light-secondary dark:border-theme-dark-primary dark:text-theme-dark-primary dark:hover:border-theme-dark-secondary">
-          <Link href={`${process.env.AUTH0_ISSUER_BASE_URL}/signup`}>
-            Регистрация
-          </Link>
-        </button> */}
+        <button className="border border-theme-light-primary text-theme-light-primary px-4 py-1.5 rounded-lg text-lg hover:border-theme-light-secondary dark:border-theme-dark-primary dark:text-theme-dark-primary dark:hover:border-theme-dark-secondary">
+          <Link href="">Виж Демо</Link>
+        </button>
       </div>
 
       {/* Awards/Badges section */}
@@ -55,15 +45,15 @@ export const Header = () => (
     </div>
 
     {/* Right-side image */}
-    {/* <div className="hidden md:block relative z-10 w-2/5 h-auto">
+    <div className="hidden md:block relative z-10 w-2/5 h-auto">
       <Image
-        src="/girl-transparent.png" // Add the right-side image you want here
+        src={Banner}
         alt="girl image"
         layout="responsive"
         width={500}
         height={500}
         className="object-contain"
       />
-    </div> */}
+    </div>
   </header>
 );

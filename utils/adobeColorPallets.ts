@@ -44,7 +44,8 @@ export const adobeColors: AdobeColors = {
     primary: '#011640', // Dark blue
     // secondary: '#048C8C', // Dark cyan
     secondary: '#025F76', // Dark cyan
-    tertiary: '#08A0A8', // Light cyan
+    tertiary: 'rgba(2, 95, 118, 0.6)', // Light cyan
+    // tertiary: '#08A0A8', // Light cyan
     quaternary: '#F2CA99', // Light orange
     danger: '#F2EB8D', // Light orange
     background: 'rgba(255, 245, 238, 0.3)' // Seashell

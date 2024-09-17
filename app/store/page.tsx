@@ -183,7 +183,7 @@ export default function Store({ data }: Props) {
   return (
     <div className="m-4">
       <Toast />
-      <div className="w-full mb-4 bg-theme-light-background dark:bg-theme-dark-background shadow rounded-lg">
+      <div className="w-full rounded-b-xl bg-theme-light-background dark:bg-theme-dark-background shadow">
         <EnhancedTableToolbar
           title="Склад"
           isSelected={!!selected.length}
@@ -246,7 +246,7 @@ export default function Store({ data }: Props) {
                     onClick={(event) => handleClick(event, row)}
                     className={`cursor-pointer ${
                       isItemSelected
-                        ? 'bg-theme-light-secondary dark:bg-theme-dark-secondary'
+                        ? 'bg-theme-light-secondary text-theme-light-white dark:bg-theme-dark-secondary'
                         : ''
                     }`}
                     role="checkbox"

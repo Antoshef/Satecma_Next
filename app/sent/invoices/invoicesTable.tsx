@@ -18,20 +18,20 @@ const invoiceHeadCells: HeadCell<InvoiceData>[] = [
   {
     id: 'invoice_id',
     numeric: false,
-    label: 'Invoice ID'
+    label: 'Фактура №'
   },
-  { id: 'date', numeric: false, label: 'Date' },
-  { id: 'client', numeric: false, label: 'Client' },
-  { id: 'eik', numeric: false, label: 'EIK' },
+  { id: 'date', numeric: false, label: 'Дата' },
+  { id: 'client', numeric: false, label: 'Клиент' },
+  { id: 'eik', numeric: false, label: 'ЕИК' },
   {
     id: 'vat_number',
     numeric: false,
-    label: 'VAT Number'
+    label: 'ДДС номер'
   },
-  { id: 'amount', numeric: true, label: 'Amount' },
-  { id: 'vat', numeric: true, label: 'VAT' },
-  { id: 'total', numeric: true, label: 'Total' },
-  { id: 'file_path', numeric: false, label: 'Download', centered: true }
+  { id: 'amount', numeric: true, label: 'Сума' },
+  { id: 'vat', numeric: true, label: 'ДДС' },
+  { id: 'total', numeric: true, label: 'Общо' },
+  { id: 'file_path', numeric: false, label: 'Изтегли', centered: true }
 ];
 
 export default function InvoicesTable({ data }: InvoicesTableProps) {
@@ -134,7 +134,7 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
         zip.file(`${invoice.invoice_id}.pdf`, blob); // Add the blob to the zip file
       } catch (error) {
         console.error(
-          `Failed to fetch or add invoice ${invoice.invoice_id}: `,
+          `Неуспешно изтегляне или добавяне на фактура ${invoice.invoice_id}: `,
           error
         );
       }
@@ -142,7 +142,7 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
 
     // Generate the zip file and trigger download
     zip.generateAsync({ type: 'blob' }).then((content) => {
-      saveAs(content, 'invoices.zip'); // Download the zip file
+      saveAs(content, 'фактури.zip'); // Download the zip file
     });
   };
 
@@ -159,13 +159,13 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
             className="bg-theme-light-primary dark:bg-theme-dark-primary text-white px-4 py-2 rounded-md shadow-md hover:bg-theme-light-secondary dark:hover:bg-theme-dark-secondary"
             onClick={handleDownloadSelectedAsZip}
           >
-            Download Selected as ZIP
+            Изтегли избраните като ZIP
           </button>
         </div>
       )}
       <div className="w-full mb-2 bg-theme-light-background dark:bg-theme-dark-background shadow rounded-lg">
         <div className="overflow-x-auto">
-          <table className="min-w-full text-sm">
+          <table className="min-w-full text-sm rounded-xl overflow-hidden">
             <EnhancedTableHead
               headCells={invoiceHeadCells}
               order={order}
@@ -185,7 +185,7 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
                     key={row.invoice_id}
                     className={`cursor-pointer ${
                       isItemSelected
-                        ? 'bg-theme-light-secondary dark:bg-theme-dark-secondary'
+                        ? 'bg-theme-light-secondary text-theme-light-white dark:bg-theme-dark-secondary'
                         : ''
                     }`}
                     onClick={(event) => handleClick(event, row)}
@@ -231,7 +231,7 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
                             src={DownloadIcon}
                             width={20}
                             height={20}
-                            alt="Download"
+                            alt="Изтегли"
                           />
                         </button>
                       </Tooltip>

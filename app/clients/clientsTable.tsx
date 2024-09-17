@@ -39,6 +39,14 @@ export default function ClientsTable({ data }: PageProps) {
     setOrderBy(property);
   };
 
+  const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      setSelected(data);
+    } else {
+      setSelected([]);
+    }
+  };
+
   const handleSearch = function (e: React.ChangeEvent<HTMLInputElement>) {
     setPage(0);
     const _searchTerm = e.target.value.toLowerCase();
@@ -108,7 +116,7 @@ export default function ClientsTable({ data }: PageProps) {
   return (
     <div className="p-4">
       <Toast />
-      <div className="w-full mb-2 bg-theme-light-background dark:bg-theme-dark-background shadow rounded-lg">
+      <div className="w-full rounded-b-xl bg-theme-light-background dark:bg-theme-dark-background shadow">
         <EnhancedTableToolbar
           title="Клиенти"
           isSelected={selected.length > 0}
@@ -140,7 +148,7 @@ export default function ClientsTable({ data }: PageProps) {
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
-              onSelectAllClick={() => {}}
+              onSelectAllClick={handleSelectAllClick}
               numSelected={selected.length}
               rowCount={filteredClients.length}
             />
@@ -166,7 +174,7 @@ export default function ClientsTable({ data }: PageProps) {
                     }
                     className={`cursor-pointer ${
                       isItemSelected
-                        ? 'bg-theme-light-secondary dark:bg-theme-dark-secondary'
+                        ? 'bg-theme-light-secondary text-theme-light-white dark:bg-theme-dark-secondary'
                         : ''
                     }`}
                     role="checkbox"
@@ -189,7 +197,7 @@ export default function ClientsTable({ data }: PageProps) {
                       <Link
                         onClick={linkClickHandler}
                         href={`tel:${row.phone}`}
-                        className="text-theme-light-primary dark:text-theme-dark-primary hover:underline"
+                        className={`${isItemSelected && 'text-theme-light-white'} text-theme-light-primary dark:text-theme-dark-primary hover:underline`}
                       >
                         {row.phone}
                       </Link>
@@ -199,7 +207,7 @@ export default function ClientsTable({ data }: PageProps) {
                         onClick={linkClickHandler}
                         target="_blank"
                         href={`mailto:${row.email}`}
-                        className="text-theme-light-primary dark:text-theme-dark-primary hover:underline"
+                        className={`${isItemSelected && 'text-theme-light-white'}text-theme-light-primary dark:text-theme-dark-primary hover:underline`}
                       >
                         {row.email}
                       </Link>

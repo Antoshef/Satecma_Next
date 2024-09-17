@@ -1,15 +1,14 @@
 import { MouseEvent, ChangeEvent } from 'react';
 import { HeadCell, Order } from './types';
 
-// Define generic props for the EnhancedTableHead component
-export interface EnhancedTableHeadProps<T> {
-  headCells: readonly HeadCell<T>[]; // Array of head cells specific to the data type
+interface EnhancedTableHeadProps<T> {
+  order: Order;
+  orderBy: keyof T;
+  headCells: readonly HeadCell<T>[];
   onRequestSort: (event: MouseEvent<unknown>, property: keyof T) => void;
-  order: Order; // Sorting order ('asc' or 'desc')
-  orderBy: keyof T; // The field currently being sorted by
-  onSelectAllClick: (event: ChangeEvent<HTMLInputElement>) => void; // New: select all functionality
-  numSelected: number; // New: number of selected rows
-  rowCount: number; // New: total number of rows
+  onSelectAllClick: (event: ChangeEvent<HTMLInputElement>) => void;
+  numSelected: number;
+  rowCount: number;
 }
 
 export const EnhancedTableHead = <T,>({
@@ -17,9 +16,9 @@ export const EnhancedTableHead = <T,>({
   orderBy,
   headCells,
   onRequestSort,
-  onSelectAllClick, // Handle select all click
-  numSelected, // Number of selected items
-  rowCount // Total row count
+  onSelectAllClick,
+  numSelected,
+  rowCount
 }: EnhancedTableHeadProps<T>) => {
   const createSortHandler =
     (property: keyof T) => (event: MouseEvent<unknown>) => {
@@ -27,13 +26,13 @@ export const EnhancedTableHead = <T,>({
     };
 
   return (
-    <thead className="bg-theme-light-background dark:bg-theme-dark-background">
+    <thead className="bg-theme-light-primary dark:bg-theme-dark-background rounded-t-xl">
       <tr>
         {/* Checkbox for selecting all rows */}
         <th className="p-2 flex">
           <input
             type="checkbox"
-            className="form-checkbox h-5 w-5 text-theme-light-primary dark:text-theme-dark-primary"
+            className="form-checkbox h-5 w-5 text-theme-light-tertiary dark:text-theme-dark-primary"
             checked={
               numSelected === 0
                 ? false
@@ -43,14 +42,14 @@ export const EnhancedTableHead = <T,>({
               if (input)
                 input.indeterminate = numSelected > 0 && numSelected < rowCount;
             }} // If some rows are selected but not all
-            onChange={onSelectAllClick} // Handle the select all click
+            onChange={onSelectAllClick}
             aria-label="select all invoices"
           />
         </th>
         {headCells.map((headCell, index) => (
           <th
             key={`${(headCell.id, index)}`}
-            className={`p-2 text-right text-xs font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary uppercase tracking-wider`}
+            className={`p-2 text-right text-xs font-medium text-theme-light-white dark:text-theme-dark-tertiary uppercase tracking-wider`}
           >
             <div
               className={`flex items-center ${headCell.centered ? 'justify-center' : 'justify-end'} cursor-pointer`}

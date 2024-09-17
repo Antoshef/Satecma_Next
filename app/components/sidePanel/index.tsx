@@ -32,20 +32,18 @@ export default async function SidePanel() {
 
   return (
     <div className="relative z-10 flex h-full">
-      <nav className="bg-theme-light-background dark:bg-theme-dark-background w-64 h-full fixed">
+      <nav className="bg-theme-light-primary dark:bg-theme-dark-background w-64 h-full fixed">
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-between p-4 bg-theme-light-secondary dark:bg-theme-dark-secondary">
             <Link href="/profile">
-              <span className="text-theme-light-primary dark:text-theme-dark-primary text-lg font-semibold">
+              <span className="text-theme-light-white dark:text-theme-dark-primary text-lg font-semibold">
                 Твоето лого
               </span>
             </Link>
             <button
               type="button"
-              className="relative rounded-full bg-theme-light-background dark:bg-theme-dark-background p-1 text-theme-light-tertiary dark:text-theme-dark-tertiary hover:text-theme-light-primary dark:hover:text-theme-dark-primary focus:outline-none focus:ring-2 focus:ring-theme-light-primary dark:focus:ring-theme-dark-primary focus:ring-offset-2 focus:ring-offset-theme-light-background dark:focus:ring-offset-theme-dark-background"
+              className="relative rounded-full bg-theme-light-background dark:bg-theme-dark-background p-1 text-theme-light-white dark:text-theme-dark-tertiary hover:text-theme-light-primary dark:hover:text-theme-dark-primary focus:outline-none focus:ring-2 focus:ring-theme-light-primary dark:focus:ring-theme-dark-primary focus:ring-offset-2 focus:ring-offset-theme-light-background dark:focus:ring-offset-theme-dark-background"
             >
-              <span className="absolute -inset-1.5" />
-              <span className="sr-only">Виж съобщения</span>
               <svg
                 className="h-6 w-6"
                 xmlns="http://www.w3.org/2000/svg"
@@ -70,7 +68,7 @@ export default async function SidePanel() {
             <Link
               href="/api/auth/logout"
               className={classNames([
-                'text-theme-light-tertiary dark:text-theme-dark-tertiary hover:bg-theme-light-secondary dark:hover:bg-theme-dark-secondary hover:text-theme-light-primary dark:hover:text-theme-dark-primary',
+                'text-theme-light-white dark:text-theme-dark-tertiary hover:bg-theme-light-secondary dark:hover:bg-theme-dark-secondary hover:text-theme-light-white dark:hover:text-theme-dark-primary',
                 'rounded-md px-3 py-2 text-sm font-medium cursor-pointer uppercase block'
               ])}
             >

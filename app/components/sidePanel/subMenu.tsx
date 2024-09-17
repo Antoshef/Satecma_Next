@@ -22,8 +22,8 @@ const SubMenu: React.FC<SubMenuProps> = ({ name, subItems }) => {
       <button
         onClick={toggleSubMenu}
         className={classNames([
-          'text-gray-300 hover:bg-gray-700 hover:text-white',
-          'rounded-md w-full justify-between px-3 py-2 text-sm font-medium cursor-pointer uppercase flex items-center'
+          'rounded-md w-full justify-between px-3 py-2 text-sm font-medium cursor-pointer uppercase flex items-center',
+          'text-theme-light-white dark:text-theme-dark-tertiary hover:bg-theme-light-secondary dark:hover:bg-theme-dark-secondary hover:text-theme-light-white dark:hover:text-theme-dark-primary'
         ])}
       >
         {name}
@@ -44,15 +44,15 @@ const SubMenu: React.FC<SubMenuProps> = ({ name, subItems }) => {
         </svg>
       </button>
       {isOpen && (
-        <div className="mt-1 rounded-md shadow-lg text-gray-300">
+        <div className="mt-1 rounded-md shadow-lg">
           <div className="py-1">
             {subItems.map((subItem) => (
               <Link
                 key={subItem.name}
                 href={subItem.href || '#'}
                 className={classNames([
-                  'text-gray-300 hover:bg-gray-700 hover:text-white',
-                  'rounded-md pl-4 pr-3 py-2 text-sm font-medium cursor-pointer capitalize block'
+                  'rounded-md pl-4 pr-3 py-2 text-sm font-medium cursor-pointer capitalize block',
+                  'text-theme-light-white dark:text-theme-dark-tertiary hover:bg-theme-light-secondary dark:hover:bg-theme-dark-secondary hover:text-theme-light-white dark:hover:text-theme-dark-primary'
                 ])}
               >
                 {subItem.name}

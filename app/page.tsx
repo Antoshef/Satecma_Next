@@ -75,7 +75,7 @@ const Component = ({ user }: { user: Claims | null }) => (
       <HeroBanner />
       <ScrollableText />
       <StartNow />
-      <div className="my-12 p-8 rounded-lg shadow-lg bg-gradient-to-br from-gray-100 to-white max-w-6xl mx-auto">
+      <div className="my-12 p-8 rounded-lg shadow-lg bg-gradient-to-br from-gray-100 to-white max-w-screen-2xl mx-auto">
         <h2 className="font-bold text-primary tracking-wide text-center mb-6">
           Защо да изберете нашето приложение?
         </h2>

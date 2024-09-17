@@ -1,5 +1,5 @@
-import { ChangeEvent } from "react";
-import { classNames } from "../sidePanel";
+import { classNames } from '@/utils/classNames';
+import { ChangeEvent } from 'react';
 
 interface SelectFieldProps {
   name?: string;
@@ -29,7 +29,7 @@ export const SelectField = ({
     ) : (
       <select
         {...props}
-        className={classNames(["input-field", className ? className : ""])}
+        className={classNames(['input-field', className ? className : ''])}
         name={name}
         value={value}
         onChange={onChange}

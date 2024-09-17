@@ -1,14 +1,15 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import Banner from '/public/assets/svg/gear.svg';
+import Banner from '/public/assets/illustrations/business-people-discussing-on-analysis-graph.svg';
 import './styles.css';
 
 export const Header = () => (
-  <header className="relative dash-background w-full h-[80vh] flex items-center justify-between p-4 bg-theme-light-background dark:bg-theme-dark-background">
+  <header className="relative dash-background w-full h-[80vh] flex items-center justify-around p-4 bg-theme-light-background dark:bg-theme-dark-background">
     {/* Left-side content */}
     <div className="relative z-10 max-w-2xl text-theme-light-primary dark:text-theme-dark-primary p-4">
+      <p className="text-8xl text-theme-light-white">ОРГАНИЗАТОР.БГ</p>
       <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-theme-light-quaternary to-theme-light-danger bg-clip-text text-transparent dark:from-theme-dark-primary dark:to-theme-dark-secondary">
-        Добре дошли в нашето приложение за управление на бизнес
+        Професионално приложение за управление на вашия бизнес
       </h1>
       <p className="mt-2 text-lg md:text-xl text-theme-light-white bg-gradient-to-r from-theme-light-primary to-theme-light-secondary bg-clip-text dark:text-theme-dark-tertiary dark:from-theme-dark-primary dark:to-theme-dark-secondary">
         Оптимизирайте бизнес операциите си с лекота
@@ -16,10 +17,10 @@ export const Header = () => (
 
       {/* Buttons for Sign Up and Book a Demo */}
       <div className="mt-4 flex gap-2">
-        <button className="bg-theme-light-primary px-4 py-1.5 rounded-lg text-white text-lg dark:bg-theme-dark-primary">
+        <button className="bg-theme-light-quaternary px-8 py-2 rounded-lg text-theme-light-primary text-lg dark:bg-theme-dark-primary hover:bg-theme-light-primary hover:text-theme-light-white dark:hover:bg-theme-dark-secondary dark:hover:text-theme-dark-primary">
           <Link href="/api/auth/login">Вход</Link>
         </button>
-        <button className="border border-theme-light-primary text-theme-light-primary px-4 py-1.5 rounded-lg text-lg hover:border-theme-light-secondary dark:border-theme-dark-primary dark:text-theme-dark-primary dark:hover:border-theme-dark-secondary">
+        <button className="border border-theme-light-white text-theme-light-white px-8 py-2 rounded-lg text-lg dark:border-theme-dark-primary dark:text-theme-dark-primary hover:bg-theme-light-white hover:text-theme-light-secondary dark:hover:bg-theme-dark-secondary dark:hover:text-theme-dark-primary">
           <Link href="">Виж Демо</Link>
         </button>
       </div>

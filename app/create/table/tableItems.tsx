@@ -1,8 +1,8 @@
-import { Button } from "@/components/button";
-import { SelectField } from "@/components/selectField/SelectField";
-import { TextField } from "@/components/textField/TextField";
-import { StoreUnits } from "@/store/utils/types";
-import { Item } from "../invoice/types";
+import { Button } from '@/components/button';
+import { SelectField } from '@/components/selectField/SelectField';
+import { TextField } from '@/components/textField/TextField';
+import { StoreUnits } from '@/store/utils/types';
+import { Item } from '../invoice/types';
 
 interface TableItemsProps {
   items: Item[];
@@ -19,7 +19,7 @@ export const TableItems = ({
   className,
   itemChangeHandler,
   itemSelectHandler,
-  removeItem,
+  removeItem
 }: TableItemsProps) => {
   return items.map(
     ({
@@ -31,9 +31,9 @@ export const TableItems = ({
       quantity,
       price,
       totalPrice,
-      unit,
+      unit
     }) => (
-      <tr className={className} key={code}>
+      <tr className={className} key={`${code}_${name}`}>
         <td>
           <Button
             isFieldsDisabled={isFieldsDisabled}
@@ -60,7 +60,7 @@ export const TableItems = ({
             data-code={code}
             isFieldsDisabled={isFieldsDisabled}
             value={currentPackage.toString()}
-            values={packing.split(", ")}
+            values={packing.split(', ')}
             onChange={itemSelectHandler}
           />
           {` ${unit}`}
@@ -77,7 +77,7 @@ export const TableItems = ({
             isFieldsDisabled={isFieldsDisabled}
             onChange={itemChangeHandler}
           />
-          {"  %"}
+          {'  %'}
         </td>
         <td>
           <SelectField
@@ -85,15 +85,15 @@ export const TableItems = ({
             data-code={code}
             isFieldsDisabled={isFieldsDisabled}
             value="20"
-            values={["20"]}
+            values={['20']}
             onChange={itemSelectHandler}
           />
-          {" %"}
+          {' %'}
         </td>
-        <td className={!Number(totalPrice) ? "invoiceBox__zero-amount" : ""}>
+        <td className={!Number(totalPrice) ? 'invoiceBox__zero-amount' : ''}>
           {totalPrice} лв.
         </td>
       </tr>
-    ),
+    )
   );
 };

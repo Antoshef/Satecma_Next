@@ -1,5 +1,5 @@
+import { classNames } from "@/utils/classNames";
 import { ChangeEvent } from "react";
-import { classNames } from "../sidePanel";
 
 interface TextFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   isFieldsDisabled: boolean;

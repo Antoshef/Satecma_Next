@@ -26,7 +26,7 @@ const invoiceHeadCells: HeadCell<InvoiceData>[] = [
   {
     id: 'vat_number',
     numeric: false,
-    label: 'ДДС номер'
+    label: 'ДДС №'
   },
   { id: 'amount', numeric: true, label: 'Сума' },
   { id: 'vat', numeric: true, label: 'ДДС' },

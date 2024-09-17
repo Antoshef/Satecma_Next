@@ -1,4 +1,4 @@
-import { classNames } from "../sidePanel";
+import { classNames } from '@/utils/classNames';
 
 interface ButtonProps {
   isFieldsDisabled: boolean;
@@ -11,9 +11,9 @@ export const Button = ({
   isFieldsDisabled,
   value,
   className,
-  onClick,
+  onClick
 }: ButtonProps) => {
-  const classes = classNames([className ? className : "", "button"]);
+  const classes = classNames([className ? className : '', 'button']);
   return (
     <>
       {isFieldsDisabled ? (

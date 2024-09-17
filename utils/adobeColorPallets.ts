@@ -16,6 +16,16 @@ interface AdobeColors {
 }
 
 export const adobeColors: AdobeColors = {
+  fantasticSunset: {
+    primary: '#011640', // Dark blue
+    // secondary: '#048C8C', // Dark cyan
+    secondary: '#025F76', // Dark cyan
+    tertiary: 'rgba(2, 95, 118, 0.6)', // Light cyan
+    // tertiary: '#08A0A8', // Light cyan
+    quaternary: '#F2CA99', // Light orange
+    danger: '#F2EB8D', // Light orange
+    background: 'rgba(255, 245, 238, 0.3)' // Seashell
+  },
   ocenArtLuxury: {
     primary: '#002538', // Dark blue
     secondary: '#025F76', // Dark cyan
@@ -40,16 +50,7 @@ export const adobeColors: AdobeColors = {
     danger: '#F2F2F2', // White
     background: 'rgba(224, 255, 255, 0.3)' // Light cyan
   },
-  fantasticSunset: {
-    primary: '#011640', // Dark blue
-    // secondary: '#048C8C', // Dark cyan
-    secondary: '#025F76', // Dark cyan
-    tertiary: 'rgba(2, 95, 118, 0.6)', // Light cyan
-    // tertiary: '#08A0A8', // Light cyan
-    quaternary: '#F2CA99', // Light orange
-    danger: '#F2EB8D', // Light orange
-    background: 'rgba(255, 245, 238, 0.3)' // Seashell
-  },
+
   tropicalScrapbook: {
     primary: '#9DE4CE', // Light cyan
     secondary: '#A0A676', // Dark khaki

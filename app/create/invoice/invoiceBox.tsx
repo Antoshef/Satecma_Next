@@ -9,9 +9,7 @@ import {
   VAT_PREFIX
 } from './constants';
 import {
-  IInvoiceIds,
   InvoiceData,
-  InvoiceIdType,
   InvoiceReceiver,
   InvoiceType,
   LatestInvoices,
@@ -24,17 +22,18 @@ import { InputWrapper } from '@/components/input/wrapper';
 import { SelectField } from '@/components/selectField/SelectField';
 import { TableItems } from '../table/tableItems';
 import { TableServices } from '../table/tableServices';
-import CompanySuggestions from './CompanySuggestions';
 import { TextField } from '@/components/textField/TextField';
 import Image from 'next/image';
 import { createInvoice, getClientData, updateProducts } from './actions';
 import { InvoiceRequestBody } from '../../../pages/api/create/types';
+import ClientInvoiceData from './clientInvoiceData';
+import { InvoicePriceData } from './invoicePriceData';
 
 interface InvoiceBoxProps {
   provider: Company;
   clients: Client[];
   products: Product[];
-  invoiceIds: IInvoiceIds;
+  invoiceIds: LatestInvoices;
 }
 
 const InvoiceBox = ({
@@ -53,12 +52,8 @@ const InvoiceBox = ({
   const [receiver, setReceiver] = useState<InvoiceReceiver>(INIT_RECEIVER);
   const [latestInvoiceNumbers, setLatestInvoiceNumbers] =
     useState<LatestInvoices>({
-      ...invoiceIds,
-      manual: ''
+      ...invoiceIds
     });
-  const [invoiceIdType, setInvoiceIdType] = useState<InvoiceIdType>(
-    InvoiceIdType.current
-  );
   const [invoiceType, setInvoiceType] = useState<InvoiceType>(
     InvoiceType.proforma
   );
@@ -70,17 +65,11 @@ const InvoiceBox = ({
   const { Toast, notify } = useToast();
 
   const invoiceNumber = useMemo(() => {
-    if (invoiceIdType === InvoiceIdType.manual) {
-      return latestInvoiceNumbers.manual || '';
-    }
     if (invoiceType === InvoiceType.proforma) {
       return latestInvoiceNumbers.proforma;
     }
-    if (invoiceIdType === InvoiceIdType.current) {
-      return latestInvoiceNumbers.current;
-    }
-    return latestInvoiceNumbers.previous;
-  }, [invoiceIdType, latestInvoiceNumbers, invoiceType]);
+    return latestInvoiceNumbers.original;
+  }, [latestInvoiceNumbers, invoiceType]);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -118,11 +107,6 @@ const InvoiceBox = ({
     }
   };
 
-  const invoiceTypeValues =
-    invoiceType === InvoiceType.original
-      ? [InvoiceIdType.current, InvoiceIdType.previous, InvoiceIdType.manual]
-      : [InvoiceIdType.current, InvoiceIdType.manual];
-
   const {
     items,
     services,
@@ -147,10 +131,6 @@ const InvoiceBox = ({
       ...state,
       [name]: value
     }));
-  };
-
-  const paymentMethodHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setPaymentMethod(e.target.value);
   };
 
   useEffect(() => {
@@ -179,9 +159,9 @@ const InvoiceBox = ({
   }, [receiver, total, invoiceNumber, items]);
 
   return (
-    <div>
-      <form className="p-4" onSubmit={onSubmit} id="invoice">
-        <Toast />
+    <div className="flex flex-col align-middle">
+      <Toast />
+      <form className="p-4 max-w-5xl w-full" onSubmit={onSubmit} id="invoice">
         <div ref={invoiceRef} className="send-box">
           <table cellPadding="0" cellSpacing="0">
             <tbody>
@@ -192,13 +172,13 @@ const InvoiceBox = ({
                       <tr>
                         <td className="title">
                           <Image
-                            style={{ height: 'auto', width: 'auto' }}
                             src={SATECMA_LOGO}
                             alt="Satecma logo"
-                            width={420}
-                            height={95}
+                            width={300}
+                            height={65}
                           />
                           <br />
+                          <span>Фактура </span>
                           <SelectField
                             isFieldsDisabled={isFieldsDisabled}
                             value={invoiceType}
@@ -206,49 +186,31 @@ const InvoiceBox = ({
                               InvoiceType.original,
                               InvoiceType.proforma
                             ]}
-                            displayValues={[
-                              'Фактура Оригинал',
-                              'Проформа Фактура'
-                            ]}
-                            className="text-3xl mb"
+                            displayValues={['Оригинал', 'Проформа']}
+                            className="mb-2"
                             onChange={(e) =>
                               setInvoiceType(e.target.value as InvoiceType)
                             }
                           />
                           <br />
-                          {!isFieldsDisabled && (
-                            <SelectField
-                              isFieldsDisabled={isFieldsDisabled}
-                              value={invoiceIdType}
-                              values={invoiceTypeValues}
-                              onChange={(e) =>
-                                setInvoiceIdType(
-                                  e.target.value as InvoiceIdType
-                                )
-                              }
-                            />
-                          )}
-                          <br />
+
                           <span>
                             Фактура №:{' '}
-                            {invoiceIdType === InvoiceIdType.manual ? (
-                              <TextField
-                                name="invoiceNumber"
-                                type="text"
-                                placeholder="0000000001"
-                                value={invoiceNumber}
-                                isFieldsDisabled={isFieldsDisabled}
-                                maxLength={10}
-                                onChange={(e) =>
-                                  setLatestInvoiceNumbers((state) => ({
-                                    ...state,
-                                    manual: e.target.value
-                                  }))
-                                }
-                              />
-                            ) : (
-                              invoiceNumber
-                            )}
+                            <TextField
+                              name="invoiceNumber"
+                              type="text"
+                              placeholder="0000000001"
+                              value={invoiceNumber}
+                              isFieldsDisabled={isFieldsDisabled}
+                              maxLength={10}
+                              className="mb-2"
+                              onChange={(e) =>
+                                setLatestInvoiceNumbers((state) => ({
+                                  ...state,
+                                  manual: e.target.value
+                                }))
+                              }
+                            />
                             {invoiceNumber.length !== 10 && (
                               <>
                                 <br />
@@ -298,47 +260,12 @@ const InvoiceBox = ({
                 </td>
               </tr>
 
-              <tr className="information">
-                <td colSpan={8}>
-                  <table>
-                    <tbody>
-                      <tr>
-                        <td>
-                          Данъчна основа без отстъпка:{' '}
-                          {total.amountWithoutDiscount.toFixed(2)} BGN
-                          <br />
-                          Отстъпка: {total.discount.toFixed(2)} BGN
-                          <br />
-                          Общо НЕТО: {total.netAmount.toFixed(2)} BGN
-                          <br />
-                          Начислен ДДС (20.00 %): {total.VAT.toFixed(2)} BGN
-                          <br />
-                          Сума за плащане: {total.paid.toFixed(2)} BGN
-                          <br />
-                          Словом:{' '}
-                          <TextField
-                            name="wordPrice"
-                            type="text"
-                            placeholder="Сума на думи"
-                            value={wordPrice}
-                            isFieldsDisabled={isFieldsDisabled}
-                            onChange={(e) => setWordPrice(e.target.value)}
-                          />
-                          {!wordPrice.length && (
-                            <>
-                              <br />
-                              <span className="invoiceBox__error">
-                                Полето не може да бъде празно
-                              </span>
-                            </>
-                          )}
-                          <br />
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </td>
-              </tr>
+              <InvoicePriceData
+                total={total}
+                wordPrice={wordPrice}
+                setWordPrice={setWordPrice}
+                isFieldsDisabled={isFieldsDisabled}
+              />
 
               <tr className="bg-gray-700 text-white">
                 <td>№</td>
@@ -378,137 +305,46 @@ const InvoiceBox = ({
                 setSelectedItem={productChangeHandler}
               />
 
-              <tr className="invoiceBox__companyData">
-                <td colSpan={4}>
-                  Получател:
-                  <br />
-                  Име на фирма:{' '}
-                  <CompanySuggestions
-                    clients={clients}
-                    receiver={receiver}
-                    setReceiver={setReceiver}
-                    isFieldsDisabled={isFieldsDisabled}
-                  />
-                  <br />
-                  Град:{' '}
-                  <TextField
-                    name="city"
-                    type="text"
-                    placeholder="Град"
-                    value={receiver.city}
-                    isFieldsDisabled={isFieldsDisabled}
-                    onChange={onChange}
-                  />
-                  <br />
-                  Адрес:{' '}
-                  <TextField
-                    name="address"
-                    type="text"
-                    placeholder="Адрес"
-                    value={receiver.address}
-                    isFieldsDisabled={isFieldsDisabled}
-                    onChange={onChange}
-                  />
-                  <br />
-                  ЕИК:{' '}
-                  <TextField
-                    name="EIK"
-                    type="text"
-                    placeholder="ЕИК"
-                    value={receiver.EIK}
-                    isFieldsDisabled={isFieldsDisabled}
-                    onChange={onChange}
-                  />
-                  <br />
-                  ДДС №:{' '}
-                  <TextField
-                    name="VAT"
-                    type="text"
-                    placeholder="ДДС №"
-                    value={receiver.VAT}
-                    isFieldsDisabled={isFieldsDisabled}
-                    onChange={onChange}
-                  />
-                  <br />
-                  МОЛ:{' '}
-                  <TextField
-                    name="director"
-                    type="text"
-                    placeholder="МОЛ"
-                    value={receiver.director}
-                    isFieldsDisabled={isFieldsDisabled}
-                    onChange={onChange}
-                  />
-                  <br />
-                  Е-Поща:{' '}
-                  <TextField
-                    name="email"
-                    type="text"
-                    placeholder="Е-Поща"
-                    value={receiver.email}
-                    isFieldsDisabled={isFieldsDisabled}
-                    onChange={onChange}
-                  />
-                </td>
-                <td colSpan={4}>
-                  Начин на плащане:
-                  <SelectField
-                    isFieldsDisabled={isFieldsDisabled}
-                    value={paymentMethod}
-                    values={['По Банка', 'В Брой']}
-                    onChange={paymentMethodHandler}
-                  />
-                  <br />
-                  {paymentMethod === 'По Банка' && (
-                    <>
-                      Банкови реквизити: {provider.bankName}
-                      <br />
-                      BIC: {provider.swift}
-                      <br />
-                      IBAN: {provider.iban}
-                      <br />
-                    </>
-                  )}
-                  Основание на сделка по ЗДДС:
-                  <br />
-                  <TextField
-                    name="reason"
-                    type="text"
-                    placeholder="Основание на сделка по ЗДДС"
-                    value={reason}
-                    isFieldsDisabled={isFieldsDisabled}
-                    onChange={(e) => setReason(e.target.value)}
-                  />
-                </td>
-              </tr>
+              <ClientInvoiceData
+                clients={clients}
+                receiver={receiver}
+                setReceiver={setReceiver}
+                isFieldsDisabled={isFieldsDisabled}
+                paymentMethod={paymentMethod}
+                setPaymentMethod={setPaymentMethod}
+                provider={provider}
+                reason={reason}
+                setReason={setReason}
+                onChange={onChange}
+              />
             </tbody>
           </table>
         </div>
-        <div className="flex justify-center items-center my-2">
-          <div
-            className="cursor-pointer flex items-center"
-            onClick={() => setSendMailToRecepient(!sendMailToRecepient)}
-          >
-            <input
-              type="checkbox"
-              checked={sendMailToRecepient}
-              onChange={() => setSendMailToRecepient(!sendMailToRecepient)}
-              className="form-checkbox h-5 w-5 text-blue-600"
-              aria-label="controlled"
-            />
-            <span className="ml-2 text-sm">Изпрати до получател</span>
-          </div>
-        </div>
-        <div className="invoice__button">
-          <button
-            className="bg-blue-600 text-white py-2 px-4 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-            disabled={error || isFieldsDisabled}
-            type="submit"
-          >
-            Създай
-          </button>
-        </div>
       </form>
+      <div className="flex justify-center items-center my-2">
+        <div
+          className="cursor-pointer flex items-center"
+          onClick={() => setSendMailToRecepient(!sendMailToRecepient)}
+        >
+          <input
+            type="checkbox"
+            checked={sendMailToRecepient}
+            onChange={() => setSendMailToRecepient(!sendMailToRecepient)}
+            className="form-checkbox h-5 w-5 text-blue-600"
+            aria-label="controlled"
+          />
+          <span className="ml-2 text-sm">Изпрати до получател</span>
+        </div>
+      </div>
+      <div className="invoice__button">
+        <button
+          className="bg-blue-600 text-white py-2 px-4 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+          disabled={error || isFieldsDisabled}
+          type="submit"
+        >
+          Създай
+        </button>
+      </div>
     </div>
   );
 };

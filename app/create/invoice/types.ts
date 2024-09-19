@@ -1,7 +1,7 @@
-import { StoreUnits } from "../../store/utils/types";
+import { StoreUnits } from '../../store/utils/types';
 
 export interface Item
-  extends Pick<Product, "name" | "code" | "price" | "unit" | "packing"> {
+  extends Pick<Product, 'name' | 'code' | 'price' | 'unit' | 'packing'> {
   quantity: number;
   currentPackage: number;
   totalPrice: string;
@@ -58,26 +58,19 @@ export interface InvoiceData {
   file_path?: string;
 }
 
-export type IInvoiceIds = Pick<
-  LatestInvoices,
-  "current" | "previous" | "proforma"
->;
-
 export interface LatestInvoices {
-  current: string;
-  previous: string;
+  original: string;
   proforma: string;
-  manual: string;
 }
 
 export enum InvoiceIdType {
-  current = "Текущ номер",
-  previous = "Предходен номер",
-  proforma = "Текущ номер",
-  manual = "Въведи номер",
+  current = 'Текущ номер',
+  previous = 'Предходен номер',
+  proforma = 'Текущ номер',
+  manual = 'Въведи номер'
 }
 
 export enum InvoiceType {
-  original = "original",
-  proforma = "proforma",
+  original = 'original',
+  proforma = 'proforma'
 }

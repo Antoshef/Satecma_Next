@@ -37,7 +37,6 @@ select:focus {
 }
 
 .send-box {
-  max-width: 800px;
   min-width: max-content;
   margin: auto;
   padding: 30px;
@@ -134,6 +133,13 @@ select:focus {
 .input-field {
   border: 1px solid #ccc;
   border-radius: 5px;
+  padding: 0.1rem 0.25rem;
+}
+
+.select-field {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 0.1rem 2rem 0.1rem 0.25rem;
 }
 
 .input-field:hover {

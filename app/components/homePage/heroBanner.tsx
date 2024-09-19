@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 // Import the images
 import BusinessPresentation from '/public/assets/illustrations/business-presentation.svg';
@@ -55,6 +55,43 @@ export const HeroBanner = () => {
   // State for dynamic image
   const [selectedImage, setSelectedImage] = useState(BusinessPresentation);
 
+  // Ref to track hover state
+  const uListRef = useRef<HTMLUListElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    const handleMouseEnter = () => setIsHovered(true);
+    const handleMouseLeave = () => setIsHovered(false);
+
+    const imageElement = uListRef.current;
+    if (imageElement) {
+      imageElement.addEventListener('mouseenter', handleMouseEnter);
+      imageElement.addEventListener('mouseleave', handleMouseLeave);
+    }
+
+    return () => {
+      if (imageElement) {
+        imageElement.removeEventListener('mouseenter', handleMouseEnter);
+        imageElement.removeEventListener('mouseleave', handleMouseLeave);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!isHovered) {
+        setSelectedOptionIndex((prevIndex) => {
+          const newIndex = (prevIndex + 1) % contentOptions.length;
+          setSelectedContent(contentOptions[newIndex].content);
+          setSelectedImage(contentOptions[newIndex].image);
+          return newIndex;
+        });
+      }
+    }, 2500);
+
+    return () => clearInterval(interval);
+  }, [isHovered]);
+
   return (
     <div className="my-12 mx-auto max-w-screen-2xl rounded-2xl shadow-lg bg-theme-light-background dark:bg-theme-dark-background">
       <div className="grid grid-cols-1 md:grid-cols-2">
@@ -84,7 +121,7 @@ export const HeroBanner = () => {
           </Link>
 
           {/* List of clickable options */}
-          <ul className="list-none p-0">
+          <ul className="list-none p-0" ref={uListRef}>
             {contentOptions.map((option, index) => (
               <li key={index}>
                 <button
@@ -107,17 +144,19 @@ export const HeroBanner = () => {
         </div>
 
         {/* Right Side */}
-        <div className="bg-theme-light-tertiary dark:bg-theme-dark-quaternary rounded-2xl flex flex-col justify-center items-center p-8">
+        <div className="bg-theme-light-tertiary dark:bg-theme-dark-quaternary rounded-2xl flex flex-col justify-center items-center p-8 lg:h-[450px]">
           {/* Dynamic Image */}
-          <Image
-            src={selectedImage}
-            alt="Project Management Image"
-            className="mb-3 h-auto"
-            width={300}
-            height={300}
-          />
+          <div className="flex-grow flex items-center justify-center">
+            <Image
+              src={selectedImage}
+              alt="Project Management Image"
+              className="mb-3 h-auto"
+              width={300}
+              height={300}
+            />
+          </div>
           {/* Dynamic Text */}
-          <p className="text-center text-theme-light-white dark:text-theme-dark-primary">
+          <p className="mt-auto text-center text-theme-light-white dark:text-theme-dark-primary">
             {selectedContent}
           </p>
         </div>

@@ -1,27 +1,37 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { DashedLineIcon } from './dashedLineIcon'; // Import the DashedLineIcon component
+import { EmailIcon } from './icons/emailIcon';
+import { OfferIcon } from './icons/offerIcon';
+import { InvoiceIcon } from './icons/invoiceIcon';
+import { ClientIcon } from './icons/clientIcon';
+import { ProductIcon } from './icons/productIcon';
 
 const items = [
   {
-    primary: 'Регистрация на екип',
-    secondary: 'Добавяне на членове към проекта'
+    primary: 'Създаване на фактури',
+    secondary: 'База данни и управление на вашите фактури',
+    Icon: InvoiceIcon
   },
   {
-    primary: 'Подписване на договор',
-    secondary: 'Използвайте готови или персонализирани договори'
+    primary: 'Създаване на оферти',
+    secondary: 'Бази данни и управление на оферти',
+    Icon: OfferIcon
   },
   {
-    primary: 'Изпращане на фактура',
-    secondary: 'Екипът изпраща фактури за одобрение'
+    primary: 'Автоматично изпращане на документи',
+    secondary: 'Възможност за изпращане на създадени документи на клиентите',
+    Icon: EmailIcon
   },
   {
-    primary: 'Одобряване на фактура',
-    secondary: 'Извършете плащане по фактурата'
+    primary: 'Управление данни на клиенти',
+    secondary: 'Възможност за управление на данни на клиентите',
+    Icon: ClientIcon
   },
   {
-    primary: 'Получаване на плащане',
-    secondary: 'Екипът получава заплащането в избраната валута'
+    primary: 'Управление на бази данни на продукти',
+    secondary: 'Възможност за управление на бази данни на продукти',
+    Icon: ProductIcon
   }
 ];
 
@@ -69,28 +79,15 @@ export const ScrollableText = () => {
         <div className="w-full md:w-1/2 pl-12 flex flex-col justify-center">
           <ul>
             {items.map((item, index) => (
-              <li
+              <DashedLineIcon
                 key={index}
-                ref={(el) => {
-                  listItemRefs.current[index] = el;
-                  return undefined;
-                }}
-                className="flex items-start gap-2 py-0"
-              >
-                {/* DashedLineIcon with the isActive prop */}
-                <DashedLineIcon
-                  disableLine={index >= items.length - 1}
-                  isActive={activeIndices.includes(index)}
-                />
-                <div>
-                  <p className="text-theme-light-primary dark:text-theme-dark-primary">
-                    {item.primary}
-                  </p>
-                  <p className="text-theme-light-secondary dark:text-theme-dark-tertiary">
-                    {item.secondary}
-                  </p>
-                </div>
-              </li>
+                Icon={item.Icon}
+                disableLine={index >= items.length - 1}
+                isActive={activeIndices.includes(index)}
+                item={item}
+                index={index}
+                listItemRefs={listItemRefs}
+              />
             ))}
           </ul>
         </div>

@@ -29,7 +29,7 @@ export const SelectField = ({
     ) : (
       <select
         {...props}
-        className={classNames(['input-field', className ? className : ''])}
+        className={classNames(['select-field', className ? className : ''])}
         name={name}
         value={value}
         onChange={onChange}

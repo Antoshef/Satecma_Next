@@ -2,60 +2,27 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 
-export const EmailIcon = ({ isActive }: { isActive?: boolean }) => {
-  const activeClass = 'text-theme-light-primary dark:text-theme-dark-primary';
-  const inactiveClass =
-    'text-theme-light-secondary dark:text-theme-dark-secondary';
-
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="40"
-      height="40"
-      viewBox="0 0 100 100"
-      id="emailIcon"
-      className={isActive ? activeClass : inactiveClass}
-    >
-      {/* Outer Circle */}
-      <circle
-        cx="50"
-        cy="50"
-        r="48"
-        stroke="currentColor" // Uses the theme color
-        strokeWidth="2"
-        fill="none"
-        id="outerCircle"
-      />
-
-      {/* Inner Circle */}
-      <circle
-        cx="50"
-        cy="50"
-        r="38"
-        fill={isActive ? 'currentColor' : 'none'} // Inner circle uses current color if active
-        id="innerCircle"
-      />
-
-      {/* Email Icon (Envelope) */}
-      <path
-        d="M30 35 L50 50 L70 35 V65 H30 Z M30 35 H70 L50 50 Z"
-        stroke={isActive ? 'white' : 'currentColor'} // Uses current theme color
-        strokeWidth="2"
-        fill="none"
-        id="envelope"
-      />
-    </svg>
-  );
-};
-
-export const DashedLineIcon = ({
-  isActive,
-  disableLine
-}: {
+interface DashedLineIconProps {
+  Icon: React.FC<{ isActive?: boolean }>;
   isActive: boolean;
   disableLine: boolean;
+  item: {
+    primary: string;
+    secondary: string;
+  };
+  index: number;
+  listItemRefs: React.MutableRefObject<(HTMLLIElement | null)[]>;
+}
+
+export const DashedLineIcon: React.FC<DashedLineIconProps> = ({
+  Icon,
+  isActive,
+  disableLine,
+  item,
+  index,
+  listItemRefs
 }) => {
-  const lineRef = useRef<HTMLDivElement>(null);
+  const lineRef = useRef<HTMLSpanElement>(null);
   const [solidHeight, setSolidHeight] = useState(0);
 
   useEffect(() => {
@@ -81,24 +48,39 @@ export const DashedLineIcon = ({
   }, []);
 
   return (
-    <div className="flex flex-col items-center relative h-32">
-      {/* Render Email Icon */}
-      <EmailIcon isActive={isActive} />
+    <li
+      ref={(el) => {
+        listItemRefs.current[index] = el;
+        return undefined;
+      }}
+      className="flex items-start gap-2 py-0"
+    >
+      <div className="flex flex-col items-center relative h-32">
+        <Icon isActive={isActive} />
 
-      {/* Dashed and Solid Line */}
-      {!disableLine && (
-        <>
-          {/* Dashed Line */}
-          <span className="absolute top-10 left-1/2 transform -translate-x-1/2 border-l border-dashed border-theme-light-primary dark:border-theme-dark-primary opacity-50 h-20" />
+        {/* Dashed and Solid Line */}
+        {!disableLine && (
+          <>
+            {/* Dashed Line */}
+            <span className="absolute top-10 left-1/2 transform -translate-x-1/2 border-l border-dashed border-theme-light-primary dark:border-theme-dark-primary opacity-50 h-20" />
 
-          {/* Solid Line - Height changes dynamically */}
-          <span
-            ref={lineRef}
-            className="absolute top-10 left-1/2 transform -translate-x-1/2 border-l border-solid border-theme-light-primary dark:border-theme-dark-primary transition-all duration-100 ease-linear"
-            style={{ height: `${solidHeight}%`, maxHeight: '80px' }} // Dynamic height for the solid line
-          />
-        </>
-      )}
-    </div>
+            {/* Solid Line - Height changes dynamically */}
+            <span
+              ref={lineRef}
+              className="absolute top-10 left-1/2 transform -translate-x-1/2 border-l border-solid border-theme-light-primary dark:border-theme-dark-primary transition-all duration-100 ease-linear"
+              style={{ height: `${solidHeight}%`, maxHeight: '80px' }} // Dynamic height for the solid line
+            />
+          </>
+        )}
+      </div>
+      <div>
+        <p className="text-theme-light-primary dark:text-theme-dark-primary">
+          {item.primary}
+        </p>
+        <p className="text-theme-light-secondary dark:text-theme-dark-tertiary">
+          {item.secondary}
+        </p>
+      </div>
+    </li>
   );
 };

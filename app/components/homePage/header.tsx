@@ -1,7 +1,8 @@
-import Image from 'next/image';
 import Link from 'next/link';
-import Banner from '/public/assets/illustrations/business-people-discussing-on-analysis-graph.svg';
 import './styles.css';
+import dynamic from 'next/dynamic';
+
+const LottieAnimation = dynamic(() => import('./Lottie'), { ssr: false });
 
 export const Header = () => (
   <header className="relative dash-background w-full h-[80vh] flex items-center justify-around p-4 bg-theme-light-background dark:bg-theme-dark-background">
@@ -46,15 +47,10 @@ export const Header = () => (
     </div>
 
     {/* Right-side image */}
-    <div className="hidden md:block relative z-10 w-2/5 h-auto">
-      <Image
-        src={Banner}
-        alt="girl image"
-        layout="responsive"
-        width={500}
-        height={500}
-        className="object-contain"
-      />
+    <div className="hidden md:block relative z-10 w-2/5 h-full">
+      <div style={{ top: '125px' }} className="absolute">
+        <LottieAnimation />
+      </div>
     </div>
   </header>
 );

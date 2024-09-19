@@ -1,13 +1,13 @@
 'use client';
-import { EnhancedTableHead } from '@/store/utils/enhancedTableHead';
-import { ChangeEvent, MouseEvent, useMemo, useState } from 'react';
 import { RowsPerPage } from '@/components/rowsPerPage';
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
-import { HeadCell, Order } from '@/store/utils/types';
-import { InvoiceData } from '@/create/invoice/types';
 import Tooltip from '@/components/tooltip';
+import { InvoiceData } from '@/create/invoice/types';
+import { EnhancedTableHead } from '@/products/utils/enhancedTableHead';
+import { HeadCell, Order } from '@/products/utils/types';
+import { saveAs } from 'file-saver';
+import JSZip from 'jszip';
 import Image from 'next/image';
+import { ChangeEvent, MouseEvent, useMemo, useState } from 'react';
 import DownloadIcon from '/public/assets/svg/download-laptop.svg';
 
 interface InvoicesTableProps {

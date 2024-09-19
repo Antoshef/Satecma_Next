@@ -11,25 +11,27 @@ const DeleteModal: FC<DeleteModalProps> = ({ isOpen, onClose, onConfirm }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg overflow-hidden shadow-lg w-1/3">
-        <div className="bg-gray-900 p-4">
-          <h2 className="text-white text-lg font-semibold">
+      <div className="bg-theme-light-white dark:bg-theme-dark-background rounded-lg overflow-hidden shadow-lg w-1/3">
+        <div className="bg-theme-light-primary dark:bg-theme-dark-primary p-4">
+          <h2 className="text-theme-light-white dark:text-theme-dark-primary text-lg font-semibold">
             Потвърдете изтриването
           </h2>
         </div>
         <div className="p-4">
-          <p>Сигурни ли сте, че искате да изтриете този елемент?</p>
+          <p className="text-theme-light-primary dark:text-theme-dark-primary">
+            Сигурни ли сте, че искате да изтриете този елемент?
+          </p>
         </div>
         <div className="flex justify-end p-4 space-x-2">
           <button
             onClick={onClose}
-            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded"
+            className="bg-theme-light-secondary dark:bg-theme-dark-secondary hover:bg-theme-light-tertiary dark:hover:bg-theme-dark-tertiary text-theme-light-primary dark:text-theme-dark-primary font-semibold py-2 px-4 rounded"
           >
             Отказ
           </button>
           <button
             onClick={onConfirm}
-            className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded"
+            className="bg-theme-light-danger hover:bg-theme-light-quaternary text-theme-light-primary font-semibold py-2 px-4 rounded"
           >
             Изтрий
           </button>

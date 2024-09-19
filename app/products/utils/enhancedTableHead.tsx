@@ -25,6 +25,9 @@ export const EnhancedTableHead = <T,>({
       onRequestSort(event, property);
     };
 
+  const checked =
+    numSelected === 0 ? false : rowCount > 0 && numSelected === rowCount;
+
   return (
     <thead className="bg-theme-light-primary dark:bg-theme-dark-background rounded-t-xl">
       <tr>
@@ -33,11 +36,7 @@ export const EnhancedTableHead = <T,>({
           <input
             type="checkbox"
             className="form-checkbox h-5 w-5 text-theme-light-tertiary dark:text-theme-dark-primary"
-            checked={
-              numSelected === 0
-                ? false
-                : rowCount > 0 && numSelected === rowCount
-            } // Explicitly set to false when no items are selected
+            checked={checked}
             ref={(input) => {
               if (input)
                 input.indeterminate = numSelected > 0 && numSelected < rowCount;

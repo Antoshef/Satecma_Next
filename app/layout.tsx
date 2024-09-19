@@ -5,6 +5,7 @@ import SidePanel from './components/sidePanel';
 import './globals.css';
 import { ErrorBoundary } from 'next/dist/client/components/error-boundary';
 import GlobalError from './global-error';
+import Loading from './loading';
 
 export const metadata: Metadata = {
   title: 'Satecma - Industrias Químicas S.A.',
@@ -28,7 +29,7 @@ export default function RootLayout({
             <SidePanel />
             <ErrorBoundary errorComponent={GlobalError}>
               <div className="flex-1 relative">
-                <Suspense>
+                <Suspense fallback={<Loading />}>
                   <main>{children}</main>
                 </Suspense>
               </div>

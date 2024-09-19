@@ -17,7 +17,7 @@ export const StartNow = () => {
           {[
             { href: '/create/offer', text: 'Оферти' },
             { href: '/create/invoice', text: 'Фактури' },
-            { href: '/store', text: 'Продуктово Съхранение' },
+            { href: '/products', text: 'Продуктово Съхранение' },
             { href: '/clients', text: 'Клиенти' }
           ].map((item, index) => (
             <li key={index} className="mb-3">

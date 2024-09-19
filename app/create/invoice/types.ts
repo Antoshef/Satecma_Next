@@ -1,4 +1,4 @@
-import { StoreUnits } from '../../store/utils/types';
+import { StoreUnits } from '../../products/utils/types';
 
 export interface Item
   extends Pick<Product, 'name' | 'code' | 'price' | 'unit' | 'packing'> {

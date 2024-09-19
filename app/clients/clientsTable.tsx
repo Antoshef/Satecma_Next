@@ -1,14 +1,14 @@
 'use client';
-import { EnhancedTableHead } from '@/store/utils/enhancedTableHead';
-import { EnhancedTableToolbar } from '@/store/utils/enhancedTableToolbar';
+import { RowsPerPage } from '@/components/rowsPerPage';
+import { EnhancedTableHead } from '@/products/utils/enhancedTableHead';
+import { EnhancedTableToolbar } from '@/products/utils/enhancedTableToolbar';
+import useToast from '@/products/utils/useToast';
+import { getComparator } from '@/utils/getComparator';
+import Link from 'next/link';
 import { ChangeEvent, MouseEvent, useMemo, useState } from 'react';
+import { ClientEditor } from './utils/clientEditor';
 import { headCells } from './utils/constants';
 import { Client } from './utils/types';
-import { ClientEditor } from './utils/clientEditor';
-import useToast from '@/store/utils/useToast';
-import Link from 'next/link';
-import { RowsPerPage } from '@/components/rowsPerPage';
-import { getComparator } from '@/utils/getComparator';
 
 const createKey = (client: Client) => `${client.name}-${client.eik}`;
 

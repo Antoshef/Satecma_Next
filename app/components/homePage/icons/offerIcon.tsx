@@ -44,8 +44,8 @@ export const OfferIcon = ({ isActive }: { isActive?: boolean }) => {
         />
         <path
           stroke={isActive ? '#fff' : 'currentColor'}
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           fill="none"
           d="M22 12H17C14.2386 12 12 14.2386 12 17V22"
         />

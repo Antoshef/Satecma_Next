@@ -1,20 +1,20 @@
-import { StoreUnits } from "../../store/utils/types";
-import { IInvoiceIds, InvoiceData, Item } from "./types";
+import { StoreUnits } from '../../products/utils/types';
+import { IInvoiceIds, InvoiceData, Item } from './types';
 
 const bankCodes = {
-  STSA: { name: "Банка ДСК", swift: "STSABGSF" },
-  BNPA: { name: "БНП Париба", swift: "BNPABGSF" },
-  FINV: { name: "Първа Инвестиционна Банка", swift: "FINVBGSF" },
-  BPBI: { name: "Пощенска Банка", swift: "BPBIBGSF" },
-  UNCR: { name: "Уникредит Булбанк", swift: "UNCRBGSF" },
-  CECB: { name: "Централна Кооперативна Банка", swift: "CECBBGSF" },
-  DEMI: { name: "Търговска Банка Д", swift: "DEMIBGSF" },
-  BGUS: { name: "Българо-Американска Кредитна Банка", swift: "BGUSBGSF" },
-  BNBG: { name: "Българска Народна Банка", swift: "BNBGBGSF" },
-  NASB: { name: "Българска Банка за Развитие", swift: "NASBBGSF" },
-  BUIN: { name: "Алианц България", swift: "BUINBGSF" },
-  RZBB: { name: "Обединена Българска Банка", swift: "RZBBBGSF" },
-  UBBS: { name: "Обединена Българска Банка", swift: "UBBSBGSF" },
+  STSA: { name: 'Банка ДСК', swift: 'STSABGSF' },
+  BNPA: { name: 'БНП Париба', swift: 'BNPABGSF' },
+  FINV: { name: 'Първа Инвестиционна Банка', swift: 'FINVBGSF' },
+  BPBI: { name: 'Пощенска Банка', swift: 'BPBIBGSF' },
+  UNCR: { name: 'Уникредит Булбанк', swift: 'UNCRBGSF' },
+  CECB: { name: 'Централна Кооперативна Банка', swift: 'CECBBGSF' },
+  DEMI: { name: 'Търговска Банка Д', swift: 'DEMIBGSF' },
+  BGUS: { name: 'Българо-Американска Кредитна Банка', swift: 'BGUSBGSF' },
+  BNBG: { name: 'Българска Народна Банка', swift: 'BNBGBGSF' },
+  NASB: { name: 'Българска Банка за Развитие', swift: 'NASBBGSF' },
+  BUIN: { name: 'Алианц България', swift: 'BUINBGSF' },
+  RZBB: { name: 'Обединена Българска Банка', swift: 'RZBBBGSF' },
+  UBBS: { name: 'Обединена Българска Банка', swift: 'UBBSBGSF' }
 };
 
 export const getBankDetailsFromIban = (iban: string) => {
@@ -24,9 +24,9 @@ export const getBankDetailsFromIban = (iban: string) => {
 
   return {
     iban,
-    name: error ? "" : bank?.name || "",
-    swift: error ? "" : bank?.swift || "",
-    error,
+    name: error ? '' : bank?.name || '',
+    swift: error ? '' : bank?.swift || '',
+    error
   };
 };
 
@@ -40,31 +40,31 @@ export const calculateItemPrice = (item: Item) => {
 };
 
 export const getInvoiceNumber = (data: InvoiceData[]): IInvoiceIds => {
-  const proformaInvoices = data.filter((d) => d.type === "proforma");
+  const proformaInvoices = data.filter((d) => d.type === 'proforma');
   const filteredCurrentInvoice = data.filter((d) =>
-    d.invoice_id.startsWith("10000"),
+    d.invoice_id.startsWith('10000')
   );
 
   const latestCurrentInvoice = filteredCurrentInvoice.reduce(
     (acc, curr) =>
       Number(acc.invoice_id) > Number(curr.invoice_id) ? acc : curr,
-    { invoice_id: "1000000000" },
+    { invoice_id: '1000000000' }
   );
 
   const filteredPreviousInvoice = data.filter((d) =>
-    d.invoice_id.startsWith("00001"),
+    d.invoice_id.startsWith('00001')
   );
 
   const latestProformaInvoice = proformaInvoices.reduce(
     (acc, curr) =>
       Number(acc.invoice_id) > Number(curr.invoice_id) ? acc : curr,
-    { invoice_id: "0000000000" },
+    { invoice_id: '0000000000' }
   );
 
   const latestPreviousInvoice = filteredPreviousInvoice.reduce(
     (acc, curr) =>
       Number(acc.invoice_id) > Number(curr.invoice_id) ? acc : curr,
-    { invoice_id: "0000000000" },
+    { invoice_id: '0000000000' }
   );
 
   const addZeros = (invoice: string) => {
@@ -77,18 +77,18 @@ export const getInvoiceNumber = (data: InvoiceData[]): IInvoiceIds => {
   };
 
   const current = addZeros(
-    (Number(latestCurrentInvoice.invoice_id) + 1).toString(),
+    (Number(latestCurrentInvoice.invoice_id) + 1).toString()
   );
   const previous = addZeros(
-    (Number(latestPreviousInvoice.invoice_id) + 1).toString(),
+    (Number(latestPreviousInvoice.invoice_id) + 1).toString()
   );
   const proforma = addZeros(
-    (Number(latestProformaInvoice.invoice_id) + 1).toString(),
+    (Number(latestProformaInvoice.invoice_id) + 1).toString()
   );
 
   return {
     current,
     previous,
-    proforma,
+    proforma
   };
 };

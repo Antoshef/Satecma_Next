@@ -10,7 +10,7 @@ export interface NavigationItem {
 }
 
 const navigation: NavigationItem[] = [
-  { name: 'Склад', href: '/store' },
+  { name: 'Склад', href: '/products' },
   { name: 'Клиенти', href: '/clients' },
   { name: 'Фактури', href: '/sent/invoices' },
   // { name: "Оферти", href: "/sent/offers" },

@@ -1,7 +1,7 @@
-import { StoreUnits } from "@/store/utils/types";
-import { useCallback, useEffect, useState } from "react";
-import { Item, Product } from "../invoice/types";
-import { calculateItemPrice } from "../invoice/utils";
+import { StoreUnits } from '@/products/utils/types';
+import { useCallback, useEffect, useState } from 'react';
+import { Item, Product } from '../invoice/types';
+import { calculateItemPrice } from '../invoice/utils';
 
 interface TableItemsProps {
   selectedProduct: Product | null;
@@ -10,7 +10,7 @@ interface TableItemsProps {
 
 export const useTableItems = ({
   selectedProduct,
-  setSelectedProduct,
+  setSelectedProduct
 }: TableItemsProps) => {
   const [items, setItems] = useState<Item[]>([]);
   const [services, setServices] = useState<Item[]>([]);
@@ -19,7 +19,7 @@ export const useTableItems = ({
     discount: 0,
     netAmount: 0,
     VAT: 0,
-    paid: 0,
+    paid: 0
   });
 
   const itemChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,7 +48,7 @@ export const useTableItems = ({
     const { name, value, dataset } = e.target;
     const newServices = [...services];
     const currentService = newServices.find(
-      (item) => item.code === dataset.code,
+      (item) => item.code === dataset.code
     );
     if (currentService) {
       (currentService as any)[name] = value;
@@ -63,7 +63,7 @@ export const useTableItems = ({
     const { value, dataset } = e.target;
     const newServices = [...services];
     const currentService = newServices.find(
-      (item) => item.code === dataset.code,
+      (item) => item.code === dataset.code
     );
     if (currentService) {
       currentService.VAT = value;
@@ -76,18 +76,18 @@ export const useTableItems = ({
       const { unit, code, name, price, packing, percentage_increase } =
         selectedProduct;
       const salePrice = price * percentage_increase;
-      const VAT = "20";
+      const VAT = '20';
       const newItem: Item = {
         code: code || (items.length + services.length + 8000).toString(),
         name,
         packing,
-        currentPackage: Number(packing.split(", ")[0]),
+        currentPackage: Number(packing.split(', ')[0]),
         quantity: 1,
         unit,
         price: salePrice,
         discount: 0,
         VAT,
-        totalPrice: "0",
+        totalPrice: '0'
       };
       newItem.totalPrice = calculateItemPrice(newItem);
       setItems((state) => [...state, newItem]);
@@ -107,17 +107,17 @@ export const useTableItems = ({
       ...state,
       {
         code: (items.length + services.length + 9000).toString(),
-        name: "",
-        packing: "",
+        name: '',
+        packing: '',
         currentPackage: 0,
         unit: StoreUnits.pcs,
         quantity: 1,
         price: 0,
         unit_price: 0,
         discount: 0,
-        totalPrice: "0",
-        VAT: "0",
-      },
+        totalPrice: '0',
+        VAT: '0'
+      }
     ]);
   };
 
@@ -125,21 +125,21 @@ export const useTableItems = ({
     setTotal(() => {
       let amountWithoutDiscount = items.reduce(
         (acc, item) => acc + Number(item.totalPrice),
-        0,
+        0
       );
       amountWithoutDiscount += services.reduce(
         (acc, item) => acc + Number(item.totalPrice),
-        0,
+        0
       );
       let discount = items.reduce(
         (acc, item) =>
           acc + (Number(item.discount) / 100) * Number(item.totalPrice),
-        0,
+        0
       );
       discount += services.reduce(
         (acc, item) =>
           acc + (Number(item.discount) / 100) * Number(item.totalPrice),
-        0,
+        0
       );
       const netAmount = amountWithoutDiscount - discount;
       const VAT = 0.2 * netAmount;
@@ -150,7 +150,7 @@ export const useTableItems = ({
         discount,
         netAmount,
         VAT,
-        paid,
+        paid
       };
     });
   }, [items, services]);
@@ -164,6 +164,6 @@ export const useTableItems = ({
     serviceChangeHandler,
     serviceSelectHandler,
     addItem,
-    removeItem,
+    removeItem
   };
 };

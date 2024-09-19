@@ -1,7 +1,7 @@
 import { Button } from '@/components/button';
 import { SelectField } from '@/components/selectField/SelectField';
 import { TextField } from '@/components/textField/TextField';
-import { StoreUnits } from '@/store/utils/types';
+import { StoreUnits } from '@/products/utils/types';
 import { Item } from '../invoice/types';
 
 interface TableItemsProps {

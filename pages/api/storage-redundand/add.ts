@@ -1,7 +1,7 @@
-import { Product } from "@/create/invoice/types";
-import { InvoiceProductData, StoreProductData } from "@/store/utils/types";
-import { NextApiRequest, NextApiResponse } from "next";
-import { queryAsync } from "../../../utils/db";
+import { Product } from '@/create/invoice/types';
+import { InvoiceProductData, StoreProductData } from '@/products/utils/types';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { queryAsync } from '../../../utils/db';
 
 const COURSE_EVRO_LEVA = 2;
 const ITEM_PREFIX = (code: string, _package: number) => `${code}:${_package}`;
@@ -21,7 +21,7 @@ const processPriceItem = async ({ item, priceMap }: ProcessPriceItemProps) => {
       const params = [
         item.package.toString(),
         item.price * COURSE_EVRO_LEVA,
-        item.code,
+        item.code
       ];
       await queryAsync(query, params);
     } else {
@@ -29,7 +29,7 @@ const processPriceItem = async ({ item, priceMap }: ProcessPriceItemProps) => {
       const params = [item.price * COURSE_EVRO_LEVA, item.code];
       await queryAsync(query, params);
     }
-    console.log("Item updated in prices");
+    console.log('Item updated in prices');
   } else {
     const query = `INSERT INTO product_prices (code, name, packing, unit, color, percentage_increase, price, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
     const params = [
@@ -40,11 +40,11 @@ const processPriceItem = async ({ item, priceMap }: ProcessPriceItemProps) => {
       null,
       2.5,
       item.price * COURSE_EVRO_LEVA,
-      "Други",
+      'Други'
     ];
     await queryAsync(query, params);
   }
-  console.log("Item added in prices");
+  console.log('Item added in prices');
 };
 
 interface ProcessStoreItemProps {
@@ -54,7 +54,7 @@ interface ProcessStoreItemProps {
 
 const processStoreItem = async ({
   item,
-  storageMap,
+  storageMap
 }: ProcessStoreItemProps) => {
   const storageItem = storageMap[ITEM_PREFIX(item.code, item.package)];
   if (storageItem) {
@@ -69,26 +69,26 @@ const processStoreItem = async ({
       item.package,
       item.unit,
       item.quantity,
-      "Други",
+      'Други'
     ];
     queryAsync(query, params);
   }
-  console.log("Item added in storage");
+  console.log('Item added in storage');
 };
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
   const { method } = req;
-  if (method === "PUT") {
+  if (method === 'PUT') {
     const { items } = req.body as { items: InvoiceProductData[] };
 
     try {
       if (!items || items.length === 0) {
         return res
           .status(400)
-          .json({ message: "No items provided", status: 400 });
+          .json({ message: 'No items provided', status: 400 });
       }
 
       const error = items.some(
@@ -97,10 +97,10 @@ export default async function handler(
           !item.package ||
           !item.unit ||
           !item.description ||
-          !item.totalQuantity,
+          !item.totalQuantity
       );
       if (error) {
-        return res.status(400).json({ error: "Missing required fields" });
+        return res.status(400).json({ error: 'Missing required fields' });
       }
 
       const priceQuery = `SELECT * FROM product_prices`;
@@ -113,14 +113,14 @@ export default async function handler(
           acc[ITEM_PREFIX(item.code, item.package)] = item;
           return acc;
         },
-        {} as Record<string, StoreProductData>,
+        {} as Record<string, StoreProductData>
       );
       const priceMap = productPrices.reduce(
         (acc, item) => {
           acc[item.code] = item;
           return acc;
         },
-        {} as Record<string, Product>,
+        {} as Record<string, Product>
       );
 
       for (const item of items) {
@@ -129,16 +129,16 @@ export default async function handler(
       }
       return res
         .status(200)
-        .json({ message: "Store items updated", status: 200 });
+        .json({ message: 'Store items updated', status: 200 });
     } catch (error) {
-      console.error("PUT error:", error);
+      console.error('PUT error:', error);
       return res.status(500).json({
-        message: "Error while updating store items",
-        error: (error as any).message,
+        message: 'Error while updating store items',
+        error: (error as any).message
       });
     }
   } else {
-    res.setHeader("Allow", ["PUT"]);
+    res.setHeader('Allow', ['PUT']);
     res.status(405).end(`Method ${method} Not Allowed`);
   }
 }

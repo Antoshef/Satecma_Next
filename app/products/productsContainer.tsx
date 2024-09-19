@@ -1,23 +1,23 @@
 'use client';
 
-import { headCells } from '@/store/utils/constants';
-import { EnhancedTableHead } from '@/store/utils/enhancedTableHead';
-import { EnhancedTableToolbar } from '@/store/utils/enhancedTableToolbar';
-import { ProductEditor } from '@/store/utils/productEditor';
-import { Order, StoreProduct, StoreUnits } from '@/store/utils/types';
-import { handleProductsMap } from '@/store/utils/utils';
+import { RowsPerPage } from '@/components/rowsPerPage';
+import { baseUrl } from '@/constants';
+import { Product } from '@/create/invoice/types';
+import { headCells } from '@/products/utils/constants';
+import { EnhancedTableToolbar } from '@/products/utils/enhancedTableToolbar';
+import { ProductEditor } from '@/products/utils/productEditor';
+import { Order, StoreProduct, StoreUnits } from '@/products/utils/types';
+import { handleProductsMap } from '@/products/utils/utils';
+import { getComparator } from '@/utils/getComparator';
 import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from 'react';
 import useToast from './utils/useToast';
-import { Product } from '@/create/invoice/types';
-import { baseUrl } from '@/constants';
-import { RowsPerPage } from '@/components/rowsPerPage';
-import { getComparator } from '@/utils/getComparator';
+import ProductsTable from './productsTable';
 
 interface Props {
   data: Product[];
 }
 
-export default function Store({ data }: Props) {
+export default function ProductsContainer({ data }: Props) {
   const [products, setProducts] = useState<StoreProduct[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<StoreProduct[]>([]);
@@ -70,23 +70,6 @@ export default function Store({ data }: Props) {
     setSelected(newSelected);
   };
 
-  const handleDelete = async () => {
-    try {
-      await fetch(`${baseUrl}/api/products/delete`, {
-        method: 'DELETE',
-        body: JSON.stringify({ products: selected })
-      });
-      const updatedProducts = products.filter(
-        (product) => !selected.includes(product)
-      );
-      setProducts(updatedProducts);
-      setSelected([]);
-      notify('Products deleted', 'success');
-    } catch (error) {
-      notify('Error deleting products', 'error');
-    }
-  };
-
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
@@ -130,9 +113,23 @@ export default function Store({ data }: Props) {
     setFilteredProducts(filtered);
   };
 
+  // Avoid a layout jump when reaching the last page with empty rows.
+  const emptyRows =
+    page > 0
+      ? Math.max(0, (1 + page) * rowsPerPage - filteredProducts.length)
+      : 0;
+
+  const visibleRows = useMemo(
+    () =>
+      filteredProducts
+        .sort(getComparator(order, orderBy))
+        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
+    [order, orderBy, page, rowsPerPage, filteredProducts]
+  );
+
   const onEditSubmit = async (product: StoreProduct) => {
     try {
-      await fetch(`${baseUrl}/api/products/get`, {
+      await fetch(`${baseUrl}/api/products`, {
         method: 'PUT',
         body: JSON.stringify({ product })
       });
@@ -147,19 +144,22 @@ export default function Store({ data }: Props) {
     }
   };
 
-  // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    page > 0
-      ? Math.max(0, (1 + page) * rowsPerPage - filteredProducts.length)
-      : 0;
-
-  const visibleRows = useMemo(
-    () =>
-      filteredProducts
-        .sort(getComparator(order, orderBy))
-        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [order, orderBy, page, rowsPerPage, filteredProducts]
-  );
+  const handleDelete = async () => {
+    try {
+      await fetch(`${baseUrl}/api/products`, {
+        method: 'DELETE',
+        body: JSON.stringify({ products: selected })
+      });
+      const updatedProducts = products.filter(
+        (product) => !selected.includes(product)
+      );
+      setProducts(updatedProducts);
+      setSelected([]);
+      notify('Products deleted', 'success');
+    } catch (error) {
+      notify('Error deleting products', 'error');
+    }
+  };
 
   useEffect(() => {
     const uniqueCategories = Array.from(
@@ -224,77 +224,19 @@ export default function Store({ data }: Props) {
             className="ml-4 p-2 border rounded text-theme-light-primary dark:text-theme-dark-primary bg-theme-light-background dark:bg-theme-dark-background border-theme-light-secondary dark:border-theme-dark-secondary"
           />
         </div>
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-sm">
-            <EnhancedTableHead
-              headCells={headCells}
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={handleRequestSort}
-              onSelectAllClick={handleSelectAllClick}
-              numSelected={selected.length}
-              rowCount={filteredProducts.length}
-            />
-            <tbody>
-              {visibleRows.map((row, index) => {
-                const isItemSelected = isSelected(row);
-                const labelId = `enhanced-table-checkbox-${index}`;
-
-                return (
-                  <tr
-                    key={row.code + index}
-                    onClick={(event) => handleClick(event, row)}
-                    className={`cursor-pointer ${
-                      isItemSelected
-                        ? 'bg-theme-light-secondary text-theme-light-white dark:bg-theme-dark-secondary'
-                        : ''
-                    }`}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                  >
-                    <td className="p-2">
-                      <input
-                        type="checkbox"
-                        checked={isItemSelected}
-                        onChange={() => {}}
-                        className="form-checkbox h-5 w-5 text-theme-light-primary dark:text-theme-dark-primary"
-                        aria-labelledby={labelId}
-                      />
-                    </td>
-                    <td className="p-2 text-right">{row.code}</td>
-                    <td className="p-2 text-right" id={labelId}>
-                      {row.name}
-                    </td>
-                    <td className="p-2 text-right">
-                      {(row.price * row.percentage_increase).toFixed(2)} лв.
-                    </td>
-                    <td className="p-2 text-right">
-                      {(row.packagePrice * row.percentage_increase).toFixed(2)}{' '}
-                      лв.
-                    </td>
-                    <td className="p-2 text-right">
-                      {row.package} {row.unit}
-                    </td>
-                    <td className="p-2 text-right">{row.quantity} бр.</td>
-                    <td className="p-2 text-right">
-                      {row.totalQuantity} {row.unit}
-                    </td>
-                  </tr>
-                );
-              })}
-              {emptyRows > 0 && (
-                <tr
-                  style={{
-                    height: 33 * emptyRows
-                  }}
-                >
-                  <td colSpan={6} />
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+        <ProductsTable
+          headCells={headCells}
+          order={order}
+          orderBy={orderBy}
+          handleRequestSort={handleRequestSort}
+          handleSelectAllClick={handleSelectAllClick}
+          handleClick={handleClick}
+          isSelected={isSelected}
+          selected={selected}
+          filteredProducts={filteredProducts}
+          visibleRows={visibleRows}
+          emptyRows={emptyRows}
+        />
         <RowsPerPage
           data={filteredProducts}
           handleChangePage={handleChangePage}

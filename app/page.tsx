@@ -59,7 +59,7 @@ export default async function HomePage() {
         body: JSON.stringify({ email: result.email, email_verified: true })
       });
     }
-    redirect('/store');
+    redirect('/products');
   }
 
   return <Component user={session.user} />;

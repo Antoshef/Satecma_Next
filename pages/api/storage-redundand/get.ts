@@ -1,6 +1,6 @@
-import { StoreProductData } from "@/store/utils/types";
-import { NextApiRequest, NextApiResponse } from "next";
-import { queryAsync } from "../../../utils/db";
+import { StoreProductData } from '@/products/utils/types';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { queryAsync } from '../../../utils/db';
 
 export default async function handler(
   req: NextApiRequest,
@@ -8,28 +8,28 @@ export default async function handler(
 ) {
   const { method } = req;
 
-  if (method === "GET") {
+  if (method === 'GET') {
     try {
       const results = await queryAsync<StoreProductData[]>(
-        "SELECT * FROM products_storage"
+        'SELECT * FROM products_storage'
       );
       if (!results || results.length === 0) {
-        return res.status(404).json({ message: "Not found" });
+        return res.status(404).json({ message: 'Not found' });
       }
       return res.json({ data: results });
     } catch (error) {
-      console.error("GET error:", error);
+      console.error('GET error:', error);
       return res.status(500).json({
-        message: "Internal server error",
-        error: (error as any).message,
+        message: 'Internal server error',
+        error: (error as any).message
       });
     }
-  } else if (method === "PUT") {
+  } else if (method === 'PUT') {
     const { product } = req.body as { product: StoreProductData };
     if (!product.name || !product.code || !product.unit) {
       return res
         .status(400)
-        .json({ message: "Missing required product fields" });
+        .json({ message: 'Missing required product fields' });
     }
     try {
       const query = `UPDATE products_storage SET name = ?, unit = ?, quantity = ? WHERE code = ? AND package = ?`;
@@ -38,18 +38,18 @@ export default async function handler(
         product.unit,
         product.quantity,
         product.code,
-        product.package,
+        product.package
       ];
       await queryAsync<StoreProductData>(query, values);
-      return res.status(201).json({ message: "Product updated" });
+      return res.status(201).json({ message: 'Product updated' });
     } catch (error) {
-      console.error("PUT error:", error);
+      console.error('PUT error:', error);
       return res.status(500).json({
-        message: "Error while updating product",
-        error: (error as any).message,
+        message: 'Error while updating product',
+        error: (error as any).message
       });
     }
   } else {
-    return res.status(405).json({ message: "Method not allowed" });
+    return res.status(405).json({ message: 'Method not allowed' });
   }
 }

@@ -1,4 +1,4 @@
-import { HeadCell } from '@/store/utils/types';
+import { HeadCell } from '@/products/utils/types';
 import { Client } from './types';
 
 export const headCells: readonly HeadCell<Client>[] = [

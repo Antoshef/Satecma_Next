@@ -1,4 +1,4 @@
-import { Order } from '@/store/utils/types';
+import { Order } from '@/products/utils/types';
 
 export function getComparator<T, Key extends keyof T>(
   order: Order,

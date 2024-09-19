@@ -1,10 +1,8 @@
-import { baseUrl } from '@/constants';
-import { getInvoiceNumber } from './utils';
+import { Client } from '@/clients/utils/types';
+import { StoreUnits } from '@/products/utils/types';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import InvoiceBox from './invoiceBox';
-import { Client } from '@/clients/utils/types';
 import { Company, Product } from './types';
-import { StoreUnits } from '@/store/utils/types';
 
 // Mock data
 const mockProducts: Product[] = [

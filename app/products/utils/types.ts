@@ -36,6 +36,13 @@ export enum StoreUnits {
   pcs = 'бр.'
 }
 
+export enum EncancedMode {
+  Create = 'create',
+  Edit = 'edit',
+  Delete = 'delete',
+  None = 'none'
+}
+
 export interface HeadCell<T> {
   id: keyof T;
   label: string;

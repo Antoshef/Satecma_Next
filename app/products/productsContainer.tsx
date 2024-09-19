@@ -6,7 +6,12 @@ import { Product } from '@/create/invoice/types';
 import { headCells } from '@/products/utils/constants';
 import { EnhancedTableToolbar } from '@/products/utils/enhancedTableToolbar';
 import { ProductEditor } from '@/products/utils/productEditor';
-import { Order, StoreProduct, StoreUnits } from '@/products/utils/types';
+import {
+  EncancedMode,
+  Order,
+  StoreProduct,
+  StoreUnits
+} from '@/products/utils/types';
 import { handleProductsMap } from '@/products/utils/utils';
 import { getComparator } from '@/utils/getComparator';
 import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from 'react';
@@ -28,7 +33,7 @@ export default function ProductsContainer({ data }: Props) {
   const [selected, setSelected] = useState<StoreProduct[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
-  const [editMode, setEditMode] = useState(false);
+  const [mode, setMode] = useState<EncancedMode>(EncancedMode.None);
 
   const { Toast, notify } = useToast();
 
@@ -144,7 +149,7 @@ export default function ProductsContainer({ data }: Props) {
     }
   };
 
-  const handleDelete = async () => {
+  const deleteHandler = async () => {
     try {
       await fetch(`${baseUrl}/api/products`, {
         method: 'DELETE',
@@ -158,6 +163,34 @@ export default function ProductsContainer({ data }: Props) {
       notify('Products deleted', 'success');
     } catch (error) {
       notify('Error deleting products', 'error');
+    }
+  };
+
+  const createHandler = async (product: StoreProduct) => {
+    try {
+      await fetch(`${baseUrl}/api/products`, {
+        method: 'POST',
+        body: JSON.stringify({ product })
+      });
+      const updatedProducts = [...products, product];
+      setProducts(updatedProducts);
+      setSelected([]);
+      notify('Product created', 'success');
+    } catch (error) {
+      notify('Error creating product', 'error');
+    }
+  };
+
+  const submitHandler = async (product: StoreProduct) => {
+    switch (mode) {
+      case EncancedMode.Edit:
+        onEditSubmit(product);
+        break;
+      case EncancedMode.Create:
+        createHandler(product);
+        break;
+      default:
+        break;
     }
   };
 
@@ -187,15 +220,15 @@ export default function ProductsContainer({ data }: Props) {
         <EnhancedTableToolbar
           title="Склад"
           isSelected={!!selected.length}
-          onEdit={setEditMode}
-          onDelete={handleDelete}
+          setMode={setMode}
+          deleteHandler={deleteHandler}
           selectedCount={selected.length}
         />
         <ProductEditor
-          editMode={editMode}
+          mode={mode}
           selected={selected[0]}
-          setEditMode={setEditMode}
-          onSubmit={onEditSubmit}
+          setMode={setMode}
+          onSubmit={submitHandler}
         />
         <div className="flex items-baseline p-4">
           <span className="mr-2 ml-2 text-lg text-theme-light-primary dark:text-theme-dark-primary">

@@ -1,21 +1,23 @@
 import { Dispatch, FC, SetStateAction, useState } from 'react';
 import Tooltip from '@/components/tooltip';
 import DeleteModal from '@/components/modals/deleteModal';
+import { EncancedMode } from './types';
 
 interface EnhancedTableToolbarProps {
   title: string;
   isSelected: boolean;
-  onEdit?: Dispatch<SetStateAction<boolean>>;
-  onDelete?: () => void;
-  selectedCount: number; // New prop to track the number of selected items
+  mode?: EncancedMode;
+  setMode?: Dispatch<SetStateAction<EncancedMode>>;
+  deleteHandler?: () => void;
+  selectedCount: number;
 }
 
 export const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = ({
   title,
   isSelected,
-  onEdit,
-  onDelete,
-  selectedCount // Destructure the new prop
+  deleteHandler,
+  setMode,
+  selectedCount
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -29,7 +31,7 @@ export const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = ({
 
   const handleConfirmDelete = () => {
     setIsModalOpen(false);
-    onDelete?.();
+    deleteHandler?.();
   };
 
   return (
@@ -52,11 +54,44 @@ export const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = ({
         </h2>
       </div>
       <div className="flex items-center space-x-2">
+        <button
+          onClick={() =>
+            setMode?.((prev) =>
+              prev === EncancedMode.Create
+                ? EncancedMode.None
+                : EncancedMode.Create
+            )
+          }
+          className="p-2 rounded-full relative group text-theme-light-primary"
+        >
+          <Tooltip text="Създаване">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="size-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
+            </svg>
+          </Tooltip>
+        </button>
         {isSelected ? (
           <>
             {selectedCount === 1 && (
               <button
-                onClick={() => onEdit?.((edit) => !edit)}
+                onClick={() =>
+                  setMode?.((prev) =>
+                    prev === EncancedMode.Edit
+                      ? EncancedMode.None
+                      : EncancedMode.Edit
+                  )
+                }
                 className="p-2 rounded-full relative group text-theme-light-primary"
               >
                 <Tooltip text="Редакция">

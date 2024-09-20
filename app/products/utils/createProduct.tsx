@@ -56,46 +56,53 @@ export const CreateProduct = ({
     }
   };
 
-  const fields: GenericFormField[] = [
+  const fields: GenericFormField<StoreProduct>[] = [
     {
       label: 'Код',
       defaultValue: product?.code || '',
+      key: 'code',
       error: errors.code || '',
       type: 'text'
     },
     {
       label: 'Име',
       defaultValue: product?.name || '',
+      key: 'name',
       error: errors.name || '',
       type: 'text'
     },
     {
       label: 'Опаковка',
       defaultValue: product?.package || '',
+      key: 'package',
       error: errors.package || '',
       type: 'number'
     },
     {
       label: 'Количество',
       defaultValue: product?.quantity || '',
+      key: 'quantity',
       error: errors.quantity || '',
       type: 'number'
     },
     {
       label: 'Категория',
       defaultValue: product?.category || '',
+      key: 'category',
       error: errors.category || '',
       type: 'text'
     },
     {
       label: 'Цвят',
       defaultValue: product?.color || '',
+      key: 'color',
       error: errors.color || '',
       type: 'text'
     },
     {
       label: 'Единица',
       defaultValue: product?.unit || '',
+      key: 'unit',
       error: errors.unit || '',
       type: 'select',
       options: Object.values(StoreUnits)
@@ -103,32 +110,38 @@ export const CreateProduct = ({
     {
       label: 'Цена',
       defaultValue: product?.price || '',
+      key: 'price',
       error: errors.price || '',
       type: 'number'
     },
     {
       label: 'Процентно увеличение',
       defaultValue: product?.percentage_increase || '',
+      key: 'percentage_increase',
       error: errors.percentage_increase || '',
       type: 'number'
     },
     {
       label: 'Цена на опаковка',
       defaultValue: product?.packagePrice || '',
+      key: 'packagePrice',
       error: errors.packagePrice || '',
       type: 'number'
     },
     {
       label: 'Общо количество',
       defaultValue: product?.totalQuantity || '',
+      key: 'totalQuantity',
       error: errors.totalQuantity || '',
       type: 'number'
     }
   ];
 
-  const handleFieldChange = (index: number, value: string | number) => {
-    const fieldKey = Object.keys(product || {})[index] as keyof StoreProduct;
-    handleChange(fieldKey, value);
+  const handleFieldChange = (
+    key: keyof StoreProduct,
+    value: string | number
+  ) => {
+    handleChange(key, value);
   };
 
   return (

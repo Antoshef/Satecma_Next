@@ -20,7 +20,7 @@ const getProducts = async (res: NextApiResponse) => {
 };
 
 const updateProducts = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { items } = req.body as { items: Item[] };
+  const { items } = JSON.parse(req.body) as { items: Item[] };
 
   if (!items || items.length === 0) {
     return res.status(400).json({ message: 'No items provided', status: 400 });
@@ -74,7 +74,7 @@ const updateProducts = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const deleteProducts = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { products } = req.body as { products: string[] };
+  const { products } = JSON.parse(req.body) as { products: StoreProduct[] };
 
   if (!products || products.length === 0) {
     return res
@@ -83,9 +83,10 @@ const deleteProducts = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    const placeholders = products.map(() => '?').join(',');
+    const codes = products.map((product) => product.code);
+    const placeholders = codes.map(() => '?').join(',');
     const query = `DELETE FROM products WHERE code IN (${placeholders})`;
-    await queryAsync(query, products);
+    await queryAsync(query, codes);
 
     return res.status(200).json({ message: 'Products deleted', status: 200 });
   } catch (error) {
@@ -98,7 +99,7 @@ const deleteProducts = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { product } = req.body as { product: StoreProduct };
+  const { product } = JSON.parse(req.body) as { product: StoreProduct };
 
   const requiredFields: (keyof StoreProduct)[] = [
     'code',
@@ -123,22 +124,36 @@ const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
+    // Check if a product with the same code already exists
+    const checkQuery = 'SELECT COUNT(*) as count FROM products WHERE code = ?';
+    const checkValues = [product.code];
+    const result = await queryAsync<{ count: number }[]>(
+      checkQuery,
+      checkValues
+    );
+    const count = result[0].count;
+
+    if (count > 0) {
+      return res.status(400).json({
+        message: 'Product with the same code already exists',
+        status: 400
+      });
+    }
+
     const query = `
-      INSERT INTO products (code, name, package, quantity, category, unit, color, packagePrice, percentage_increase, price, totalQuantity)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO products (code, name, packing, unit, color, percentage_increase, price, category, quantity)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const values = [
       product.code,
       product.name,
       product.package,
-      product.quantity,
-      product.category,
       product.unit,
       product.color,
-      product.packagePrice,
       product.percentage_increase,
       product.price,
-      product.totalQuantity
+      product.category,
+      product.quantity
     ];
 
     await queryAsync(query, values);

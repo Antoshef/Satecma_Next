@@ -134,7 +134,7 @@ export default function ProductsContainer({ data }: Props) {
 
   const onEditSubmit = async (product: StoreProduct) => {
     try {
-      await fetch(`${baseUrl}/api/products`, {
+      await fetch(`${baseUrl}/api/products/${product.code}`, {
         method: 'PUT',
         body: JSON.stringify({ product })
       });

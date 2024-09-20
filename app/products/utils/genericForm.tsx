@@ -1,33 +1,34 @@
-export interface GenericFormField {
+export interface GenericFormField<T> {
   label: string;
   defaultValue: string | number;
+  key: keyof T;
   error: string;
   type: 'text' | 'number' | 'select';
   options?: string[]; // Only for select fields
 }
 
-interface GenericFormProps {
-  fields: GenericFormField[];
-  handleChange: (index: number, value: string | number) => void;
+interface GenericFormProps<T> {
+  fields: GenericFormField<T>[];
+  handleChange: (key: keyof T, value: string | number) => void;
   ProductActions: JSX.Element;
 }
 
-export const GenericForm = ({
+export const GenericForm = <T,>({
   fields,
   handleChange,
   ProductActions
-}: GenericFormProps) => {
+}: GenericFormProps<T>) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-theme-light-background dark:bg-theme-dark-background">
-      {fields.map((field, index) => (
-        <div key={index}>
+      {fields.map((field) => (
+        <div key={String(field.key)}>
           <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary">
             {field.label}
           </label>
           {field.type === 'select' ? (
             <select
               value={field.defaultValue}
-              onChange={(e) => handleChange(index, e.target.value)}
+              onChange={(e) => handleChange(field.key, e.target.value)}
               className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm sm:text-sm"
             >
               {field.options?.map((option, idx) => (
@@ -40,7 +41,7 @@ export const GenericForm = ({
             <input
               type={field.type}
               value={field.defaultValue}
-              onChange={(e) => handleChange(index, e.target.value)}
+              onChange={(e) => handleChange(field.key, e.target.value)}
               className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm sm:text-sm"
             />
           )}

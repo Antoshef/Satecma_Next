@@ -39,13 +39,11 @@ export const ProductEditor = ({
   const [product, setProduct] = useState<StoreProduct | undefined>();
 
   const handleChange = (key: keyof StoreProduct, value: string | number) => {
-    const updatedValue =
-      key === 'quantity' || key === 'code' ? Number(value) : value;
     setProduct(
       (prev) =>
         prev && {
           ...prev,
-          [key]: updatedValue
+          [key]: value
         }
     );
   };

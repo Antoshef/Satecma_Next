@@ -46,9 +46,9 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
     serviceSelectHandler
   } = useTableItems({ selectedProduct, setSelectedProduct });
 
-  const productChangeHandler = (name: string | null) => {
+  const productChangeHandler = (item: { name: string }) => {
     setSelectedProduct(
-      products.find((product) => product.name === name) || null
+      products.find((product) => product.name === item.name) || null
     );
   };
 
@@ -201,12 +201,12 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
             />
 
             <InputWrapper
-              size="small"
               isFieldsDisabled={isFieldsDisabled}
               data={products}
               selectedItem={selectedProduct}
               onSubmit={addItem}
               setSelectedItem={productChangeHandler}
+              displayProperty="name"
             />
 
             <tr className="border-gray-800 border-b text-right bg-gray-700 text-white">

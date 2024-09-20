@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 export interface GenericFormField<T> {
   label: string;
   defaultValue: string | number;
@@ -5,6 +7,8 @@ export interface GenericFormField<T> {
   error: string;
   type: 'text' | 'number' | 'select';
   options?: string[]; // Only for select fields
+  hint?: string;
+  render?: () => JSX.Element;
 }
 
 interface GenericFormProps<T> {
@@ -18,26 +22,64 @@ export const GenericForm = <T,>({
   handleChange,
   ProductActions
 }: GenericFormProps<T>) => {
+  const [hoveredField, setHoveredField] = useState<keyof T | null>(null);
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-theme-light-background dark:bg-theme-dark-background">
       {fields.map((field) => (
-        <div key={String(field.key)}>
-          <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary">
+        <div key={String(field.key)} className="relative">
+          <label className="text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary flex items-center">
             {field.label}
+            {field.hint && (
+              <div
+                className="ml-2 relative text-theme-light-secondary"
+                onMouseEnter={() => setHoveredField(field.key)}
+                onMouseLeave={() => setHoveredField(null)}
+              >
+                <svg
+                  className="w-4 h-4 cursor-pointer"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  ></circle>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 16v-4m0-4h.01"
+                  ></path>
+                </svg>
+                {hoveredField === field.key && (
+                  <div className="absolute left-1/2 -top-3 transform -translate-x-1/2 -translate-y-full mt-2 w-48 p-2 bg-white border border-gray-300 rounded-md shadow-lg text-sm text-theme-light-primary z-10">
+                    {field.hint}
+                  </div>
+                )}
+              </div>
+            )}
           </label>
-          {field.type === 'select' ? (
+          {field.render?.()}
+          {!field.render && field.type === 'select' && (
             <select
               value={field.defaultValue}
               onChange={(e) => handleChange(field.key, e.target.value)}
               className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm sm:text-sm"
             >
-              {field.options?.map((option, idx) => (
-                <option key={idx} value={option}>
+              {field.options?.map((option) => (
+                <option key={option} value={option}>
                   {option}
                 </option>
               ))}
             </select>
-          ) : (
+          )}
+          {!field.render && field.type !== 'select' && (
             <input
               type={field.type}
               value={field.defaultValue}

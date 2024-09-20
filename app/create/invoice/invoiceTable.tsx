@@ -21,7 +21,6 @@ import {
 } from './constants';
 import {
   Company,
-  IInvoiceIds,
   InvoiceData,
   InvoiceIdType,
   InvoiceReceiver,
@@ -34,7 +33,7 @@ interface InvoiceTableProps {
   provider: Company;
   clients: Client[];
   products: Product[];
-  invoiceIds: IInvoiceIds;
+  invoiceIds: LatestInvoices;
 }
 
 export const InvoiceTable = ({
@@ -52,10 +51,7 @@ export const InvoiceTable = ({
   const [error, setError] = useState<boolean>(false);
   const [receiver, setReceiver] = useState<InvoiceReceiver>(INIT_RECEIVER);
   const [latestInvoiceNumbers, setLatestInvoiceNumbers] =
-    useState<LatestInvoices>({
-      ...invoiceIds,
-      manual: ''
-    });
+    useState<LatestInvoices>(invoiceIds);
   const [invoiceIdType, setInvoiceIdType] = useState<InvoiceIdType>(
     InvoiceIdType.current
   );
@@ -70,16 +66,13 @@ export const InvoiceTable = ({
   const { Toast, notify } = useToast();
 
   const invoiceNumber = useMemo(() => {
-    if (invoiceIdType === InvoiceIdType.manual) {
-      return latestInvoiceNumbers.manual || '';
-    }
     if (invoiceType === InvoiceType.proforma) {
       return latestInvoiceNumbers.proforma;
     }
-    if (invoiceIdType === InvoiceIdType.current) {
-      return latestInvoiceNumbers.current;
+    if (invoiceType === InvoiceType.original) {
+      return latestInvoiceNumbers.original;
     }
-    return latestInvoiceNumbers.previous;
+    return latestInvoiceNumbers.original;
   }, [invoiceIdType, latestInvoiceNumbers, invoiceType]);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -135,9 +128,9 @@ export const InvoiceTable = ({
     serviceSelectHandler
   } = useTableItems({ selectedProduct, setSelectedProduct });
 
-  const productChangeHandler = (name: string | null) => {
+  const productChangeHandler = (item: { name: string }) => {
     setSelectedProduct(
-      products.find((product) => product.name === name) || null
+      products.find((product) => product.name === item.name) || null
     );
   };
 
@@ -338,12 +331,14 @@ export const InvoiceTable = ({
           />
 
           <InputWrapper
-            size="small"
             data={products}
             isFieldsDisabled={isFieldsDisabled}
             selectedItem={selectedProduct}
             onSubmit={addItem}
-            setSelectedItem={productChangeHandler}
+            setSelectedItem={
+              productChangeHandler as (item: { name: string }) => void
+            }
+            displayProperty="name"
           />
 
           {/* Client Data */}

@@ -55,33 +55,6 @@ const handlePutRequest = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-const handleDeleteRequest = async (
-  req: NextApiRequest,
-  res: NextApiResponse
-) => {
-  const code = req.query.code as string;
-
-  if (!code) {
-    return res.status(400).json({ message: 'Product code is required' });
-  }
-
-  try {
-    const product = await fetchProductByCode(code);
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
-
-    await removeProductByCode(code);
-    return res.status(200).json({ message: 'Product deleted' });
-  } catch (error) {
-    console.error('DELETE error:', error);
-    return res.status(500).json({
-      message: 'Error while deleting product',
-      error: error instanceof Error ? error.message : 'Unknown error'
-    });
-  }
-};
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -91,8 +64,6 @@ export default async function handler(
   switch (method) {
     case 'PUT':
       return await handlePutRequest(req, res);
-    case 'DELETE':
-      return await handleDeleteRequest(req, res);
     default:
       res.setHeader('Allow', ['GET', 'PUT', 'DELETE']);
       return res.status(405).json({ message: `Method ${method} not allowed` });

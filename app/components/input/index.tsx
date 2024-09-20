@@ -6,41 +6,51 @@ import {
   useRef,
   useState,
   Dispatch,
-} from "react";
-import { useMergedRef } from "../useMergedRefs/useMergedRefs";
+  KeyboardEvent
+} from 'react';
+import { useMergedRef } from '../useMergedRefs/useMergedRefs';
 
 export function itemHandler<T, K extends keyof T>(
   name: string,
   items: Array<{ name?: string }>,
   stateProperty: K,
-  handler: Dispatch<SetStateAction<T>>,
+  handler: Dispatch<SetStateAction<T>>
 ): void {
   const selected = items.find((item) => item.name === name);
   handler((prevState) => ({
     ...prevState,
-    [stateProperty]: selected || {},
+    [stateProperty]: selected || {}
   }));
 }
 
-export interface InputProps {
+export interface GenericInputProps<T> {
   label?: string;
   required?: boolean;
-  data: { name?: string }[];
-  selectedItem: { name?: string } | null;
+  data: T[];
+  selectedItem: T | null;
   className?: string;
-  size?: "small" | "medium";
-  setSelectedItem: (name: string) => void;
+  setSelectedItem: (item: T) => void;
+  displayProperty: keyof T;
 }
 
-export const Input = forwardRef<{}, InputProps>(
+export const GenericInput = forwardRef<unknown, GenericInputProps<any>>(
   (
-    { label, required, data, selectedItem, className, size, setSelectedItem },
-    ref,
+    {
+      label,
+      required,
+      data,
+      selectedItem,
+      className,
+      setSelectedItem,
+      displayProperty
+    },
+    ref
   ) => {
-    const [input, setInput] = useState("");
+    const [input, setInput] = useState('');
     const [uniqueNames, setUniqueNames] = useState<string[]>([]);
     const [suggestions, setSuggestions] = useState<string[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
+    const [highlightedIndex, setHighlightedIndex] = useState(-1);
     const inputRef = useRef<HTMLDivElement>(null);
     const mergedRefs = useMergedRef(ref, inputRef);
 
@@ -49,10 +59,11 @@ export const Input = forwardRef<{}, InputProps>(
       setInput(value);
       if (value.length > 0) {
         const filteredSuggestions = uniqueNames.filter((item) =>
-          item.toLowerCase().includes(value.toLowerCase()),
+          item.toLowerCase().includes(value.toLowerCase())
         );
         setSuggestions(filteredSuggestions);
         setShowSuggestions(true);
+        setHighlightedIndex(-1);
       } else {
         setSuggestions([]);
         setShowSuggestions(false);
@@ -60,10 +71,36 @@ export const Input = forwardRef<{}, InputProps>(
     };
 
     const selectItem = (name: string) => {
-      setSelectedItem(name);
-      setSuggestions([]);
-      setShowSuggestions(false);
-      setInput(name);
+      const selectedItem = data.find((item) => item[displayProperty] === name);
+      if (selectedItem) {
+        setSelectedItem(selectedItem);
+        setSuggestions([]);
+        setShowSuggestions(false);
+        setInput(name);
+        setHighlightedIndex(-1);
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+      if (showSuggestions) {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          setHighlightedIndex((prevIndex) =>
+            prevIndex < suggestions.length - 1 ? prevIndex + 1 : 0
+          );
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          setHighlightedIndex((prevIndex) =>
+            prevIndex > 0 ? prevIndex - 1 : suggestions.length - 1
+          );
+        } else if (e.key === 'Enter' && highlightedIndex >= 0) {
+          e.preventDefault();
+          selectItem(suggestions[highlightedIndex]);
+        } else if (e.key === 'Escape') {
+          e.preventDefault();
+          setShowSuggestions(false);
+        }
+      }
     };
 
     useEffect(() => {
@@ -74,45 +111,50 @@ export const Input = forwardRef<{}, InputProps>(
         }
       };
 
-      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside);
       return () =>
-        document.removeEventListener("mousedown", handleClickOutside);
+        document.removeEventListener('mousedown', handleClickOutside);
     }, [inputRef]);
 
     useEffect(() => {
-      const names = data.reduce((acc: string[], arr) => {
-        if (arr.name && !acc.includes(arr.name)) {
-          acc.push(arr?.name);
+      const names = data.reduce((acc: string[], item) => {
+        const name = item[displayProperty] as unknown as string;
+        if (name && !acc.includes(name)) {
+          acc.push(name);
         }
         return acc;
       }, []);
 
       setUniqueNames(names);
-    }, [data]);
+    }, [data, displayProperty]);
 
     useEffect(() => {
-      setInput(selectedItem?.name ? selectedItem.name : "");
-    }, [selectedItem]);
+      const name = selectedItem
+        ? (selectedItem[displayProperty] as unknown as string)
+        : '';
+      setInput(name);
+    }, [selectedItem, displayProperty]);
 
     return (
       <div
         className={className}
-        style={{ position: "relative" }}
+        style={{ position: 'relative' }}
         ref={mergedRefs}
       >
-        <label className="block text-sm font-medium text-gray-700">
-          {label}
-        </label>
+        {label && (
+          <label className="block text-sm font-medium text-gray-700">
+            {label}
+          </label>
+        )}
         <input
           type="text"
           value={input}
           required={required}
-          className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-            size === "small" ? "text-sm" : "text-base"
-          }`}
+          className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm sm:text-sm"
           autoComplete="off"
           onFocus={() => setShowSuggestions(true)}
           onChange={onChange}
+          onKeyDown={handleKeyDown}
         />
         {showSuggestions && suggestions.length > 0 && (
           <div className="absolute z-10 w-full bg-white shadow-lg max-h-60 overflow-y-auto border border-gray-300">
@@ -120,13 +162,13 @@ export const Input = forwardRef<{}, InputProps>(
               {suggestions.map((name, index) => (
                 <li
                   key={index}
-                  onClick={() =>
-                    selectItem(
-                      data.find((item) => item.name === name)?.name || "",
-                    )
-                  }
+                  onClick={() => selectItem(name)}
                   className={`p-2 cursor-pointer ${
-                    index % 2 ? "bg-white" : "bg-gray-100"
+                    index === highlightedIndex
+                      ? 'bg-indigo-600 text-white'
+                      : index % 2
+                        ? 'bg-white'
+                        : 'bg-gray-100'
                   }`}
                 >
                   {name}
@@ -137,7 +179,7 @@ export const Input = forwardRef<{}, InputProps>(
         )}
       </div>
     );
-  },
+  }
 );
 
-Input.displayName = "Input";
+GenericInput.displayName = 'GenericInput';

@@ -227,6 +227,7 @@ export default function ProductsContainer({ data }: Props) {
         <ProductEditor
           mode={mode}
           selected={selected[0]}
+          categories={categories}
           setMode={setMode}
           onSubmit={submitHandler}
         />

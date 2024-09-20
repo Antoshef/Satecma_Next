@@ -1,9 +1,11 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { EncancedMode, StoreProduct, StoreUnits } from './types';
 import { GenericForm, GenericFormField } from './genericForm';
+import { GenericInput } from '@/components/input';
 
-interface CreateProductProps {
+interface ProductFormProps {
   product: StoreProduct | undefined;
+  categories: string[];
   handleChange: (key: keyof StoreProduct, value: string | number) => void;
   submitHandler: () => void;
   setMode: Dispatch<SetStateAction<EncancedMode>>;
@@ -13,16 +15,20 @@ interface CreateProductProps {
   ) => JSX.Element;
 }
 
-export const CreateProduct = ({
+export const ProductForm = ({
   product,
+  categories,
   handleChange,
   submitHandler,
   setMode,
   ProductActions
-}: CreateProductProps) => {
+}: ProductFormProps) => {
   const [errors, setErrors] = useState<
     Partial<Record<keyof StoreProduct, string>>
   >({});
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(
+    product?.category || ''
+  );
 
   const validateFields = () => {
     const newErrors: Partial<Record<keyof StoreProduct, string>> = {};
@@ -56,48 +62,67 @@ export const CreateProduct = ({
     }
   };
 
+  const handleCategoryChange = (category: { name: string }) => {
+    setSelectedCategory(category.name);
+    handleChange('category', category.name);
+  };
+
   const fields: GenericFormField<StoreProduct>[] = [
     {
       label: 'Код',
       defaultValue: product?.code || '',
       key: 'code',
       error: errors.code || '',
-      type: 'text'
+      type: 'text',
+      hint: 'Кодът трябва да бъде уникален'
     },
     {
       label: 'Име',
       defaultValue: product?.name || '',
       key: 'name',
       error: errors.name || '',
-      type: 'text'
+      type: 'text',
+      hint: 'Въведете име на продукта'
     },
     {
       label: 'Опаковка',
       defaultValue: product?.package || '',
       key: 'package',
       error: errors.package || '',
-      type: 'number'
+      type: 'number',
+      hint: 'Въведете количеството което се съдържа във всяка опаковка'
     },
     {
       label: 'Количество',
       defaultValue: product?.quantity || '',
       key: 'quantity',
       error: errors.quantity || '',
-      type: 'number'
+      type: 'number',
+      hint: 'Въведете броя на опаковките'
     },
     {
       label: 'Категория',
-      defaultValue: product?.category || '',
+      defaultValue: selectedCategory || '',
       key: 'category',
       error: errors.category || '',
-      type: 'text'
+      type: 'text',
+      hint: 'Изберете категория от списъка с категории или въведете нова',
+      render: () => (
+        <GenericInput
+          data={categories.map((name) => ({ name }))}
+          selectedItem={{ name: selectedCategory }}
+          setSelectedItem={handleCategoryChange}
+          displayProperty="name"
+        />
+      )
     },
     {
       label: 'Цвят',
       defaultValue: product?.color || '',
       key: 'color',
       error: errors.color || '',
-      type: 'text'
+      type: 'text',
+      hint: 'Въведете цвят на продукта'
     },
     {
       label: 'Единица',
@@ -105,6 +130,7 @@ export const CreateProduct = ({
       key: 'unit',
       error: errors.unit || '',
       type: 'select',
+      hint: 'Изберете единица за измерване, например кг, л, м2, мл и други подобни',
       options: Object.values(StoreUnits)
     },
     {
@@ -112,28 +138,32 @@ export const CreateProduct = ({
       defaultValue: product?.price || '',
       key: 'price',
       error: errors.price || '',
-      type: 'number'
+      type: 'number',
+      hint: 'Въведете единична цена за вашия продукт, примерно за килограм или литър'
     },
     {
       label: 'Процентно увеличение',
       defaultValue: product?.percentage_increase || '',
       key: 'percentage_increase',
       error: errors.percentage_increase || '',
-      type: 'number'
+      type: 'number',
+      hint: 'Въведете процентното увеличение, което искате да добавите към цената на продукта, за да изчислите продажната му цена'
     },
     {
       label: 'Цена на опаковка',
       defaultValue: product?.packagePrice || '',
       key: 'packagePrice',
       error: errors.packagePrice || '',
-      type: 'number'
+      type: 'number',
+      hint: 'Въведете цената на опаковката, която сте закупили'
     },
     {
       label: 'Общо количество',
       defaultValue: product?.totalQuantity || '',
       key: 'totalQuantity',
       error: errors.totalQuantity || '',
-      type: 'number'
+      type: 'number',
+      hint: 'Въведете общото количество на продукта, което имате в наличност'
     }
   ];
 

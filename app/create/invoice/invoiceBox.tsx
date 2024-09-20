@@ -119,9 +119,9 @@ const InvoiceBox = ({
     serviceSelectHandler
   } = useTableItems({ selectedProduct, setSelectedProduct });
 
-  const productChangeHandler = (name: string | null) => {
+  const productChangeHandler = (item: { name: string }) => {
     setSelectedProduct(
-      products.find((product) => product.name === name) || null
+      products.find((product) => product.name === item.name) || null
     );
   };
 
@@ -297,12 +297,12 @@ const InvoiceBox = ({
               />
 
               <InputWrapper
-                size="small"
                 data={products}
                 isFieldsDisabled={isFieldsDisabled}
                 selectedItem={selectedProduct}
                 onSubmit={addItem}
                 setSelectedItem={productChangeHandler}
+                displayProperty="name"
               />
 
               <ClientInvoiceData

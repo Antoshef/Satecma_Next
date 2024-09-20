@@ -1,10 +1,10 @@
-import { Input, InputProps } from '.';
+import { GenericInput, GenericInputProps } from '.';
 
-interface InputWrapperProps extends InputProps {
+interface InputWrapperProps extends GenericInputProps<{ name: string }> {
   data: { name: string }[];
   selectedItem: { name: string } | null;
   isFieldsDisabled: boolean;
-  setSelectedItem: (name: string) => void;
+  setSelectedItem: (item: { name: string }) => void;
   onSubmit: () => void;
 }
 
@@ -12,7 +12,6 @@ export const InputWrapper = ({
   isFieldsDisabled,
   data,
   selectedItem,
-  size,
   label,
   required,
   onSubmit,
@@ -23,13 +22,13 @@ export const InputWrapper = ({
       <tr>
         <td></td>
         <td colSpan={1}>
-          <Input
-            size={size}
+          <GenericInput
             label={label}
             required={required}
             data={data}
             selectedItem={selectedItem}
             setSelectedItem={setSelectedItem}
+            displayProperty="name"
           />
         </td>
         <td colSpan={1}>

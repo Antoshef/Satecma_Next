@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { EncancedMode, StoreProduct, StoreUnits } from './types';
-import { CreateProduct } from './createProduct';
-import { EditProduct } from './editProduct';
+import { ProductForm } from './productForm';
 
 const ProductActions = (
   submitHandler: () => void,
@@ -26,6 +25,7 @@ const ProductActions = (
 interface ProductEditorProps {
   selected?: StoreProduct;
   mode: EncancedMode;
+  categories: string[];
   setMode: Dispatch<SetStateAction<EncancedMode>>;
   onSubmit: (product: StoreProduct) => Promise<void>;
 }
@@ -33,6 +33,7 @@ interface ProductEditorProps {
 export const ProductEditor = ({
   mode = EncancedMode.None,
   selected,
+  categories,
   setMode,
   onSubmit
 }: ProductEditorProps) => {
@@ -58,8 +59,8 @@ export const ProductEditor = ({
     switch (mode) {
       case EncancedMode.Create:
         setProduct({
-          category: 'Други',
-          code: '1000',
+          category: '',
+          code: '',
           name: '',
           package: 1,
           quantity: 0,
@@ -81,18 +82,10 @@ export const ProductEditor = ({
 
   return (
     <>
-      {mode === EncancedMode.Create && (
-        <CreateProduct
+      {(mode === EncancedMode.Create || mode === EncancedMode.Edit) && (
+        <ProductForm
           product={product}
-          handleChange={handleChange}
-          submitHandler={submitHandler}
-          setMode={setMode}
-          ProductActions={ProductActions}
-        />
-      )}
-      {mode === EncancedMode.Edit && (
-        <EditProduct
-          product={product}
+          categories={categories}
           handleChange={handleChange}
           submitHandler={submitHandler}
           setMode={setMode}

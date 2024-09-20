@@ -61,7 +61,7 @@ export const CreateProduct = ({
       label: 'Код',
       defaultValue: product?.code || '',
       error: errors.code || '',
-      type: 'number'
+      type: 'text'
     },
     {
       label: 'Име',

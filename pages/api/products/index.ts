@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { queryAsync } from '../../../utils/db';
 import { Item, Product } from '@/create/invoice/types';
+import { StoreProduct } from '@/products/utils/types';
 
 const getProducts = async (res: NextApiResponse) => {
   try {
@@ -96,6 +97,62 @@ const deleteProducts = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
+const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
+  const { product } = req.body as { product: StoreProduct };
+
+  const requiredFields: (keyof StoreProduct)[] = [
+    'code',
+    'name',
+    'package',
+    'quantity',
+    'category',
+    'unit',
+    'color',
+    'packagePrice',
+    'percentage_increase',
+    'price',
+    'totalQuantity'
+  ];
+
+  for (const field of requiredFields) {
+    if (!product[field]) {
+      return res
+        .status(400)
+        .json({ message: `Missing required field: ${field}`, status: 400 });
+    }
+  }
+
+  try {
+    const query = `
+      INSERT INTO products (code, name, package, quantity, category, unit, color, packagePrice, percentage_increase, price, totalQuantity)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    const values = [
+      product.code,
+      product.name,
+      product.package,
+      product.quantity,
+      product.category,
+      product.unit,
+      product.color,
+      product.packagePrice,
+      product.percentage_increase,
+      product.price,
+      product.totalQuantity
+    ];
+
+    await queryAsync(query, values);
+
+    return res.status(201).json({ message: 'Product created', status: 201 });
+  } catch (error) {
+    console.error('POST error:', error);
+    return res.status(500).json({
+      message: 'Error while creating product',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+};
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -109,6 +166,8 @@ export default async function handler(
       return await updateProducts(req, res);
     case 'DELETE':
       return await deleteProducts(req, res);
+    case 'POST':
+      return await createProduct(req, res);
     default:
       return res.status(405).json({ message: 'Method not allowed' });
   }

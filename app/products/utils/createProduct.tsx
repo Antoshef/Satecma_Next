@@ -1,5 +1,6 @@
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { EncancedMode, StoreProduct, StoreUnits } from './types';
+import { GenericForm, GenericFormField } from './genericForm';
 
 interface CreateProductProps {
   product: StoreProduct | undefined;
@@ -19,148 +20,122 @@ export const CreateProduct = ({
   setMode,
   ProductActions
 }: CreateProductProps) => {
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof StoreProduct, string>>
+  >({});
+
+  const validateFields = () => {
+    const newErrors: Partial<Record<keyof StoreProduct, string>> = {};
+    const requiredFields: (keyof StoreProduct)[] = [
+      'code',
+      'name',
+      'package',
+      'quantity',
+      'category',
+      'unit',
+      'color',
+      'packagePrice',
+      'percentage_increase',
+      'price',
+      'totalQuantity'
+    ];
+
+    requiredFields.forEach((field) => {
+      if (!product || !product[field]) {
+        newErrors[field] = 'Полето не може да бъде празно';
+      }
+    });
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = () => {
+    if (validateFields()) {
+      submitHandler();
+    }
+  };
+
+  const fields: GenericFormField[] = [
+    {
+      label: 'Код',
+      defaultValue: product?.code || '',
+      error: errors.code || '',
+      type: 'number'
+    },
+    {
+      label: 'Име',
+      defaultValue: product?.name || '',
+      error: errors.name || '',
+      type: 'text'
+    },
+    {
+      label: 'Опаковка',
+      defaultValue: product?.package || '',
+      error: errors.package || '',
+      type: 'number'
+    },
+    {
+      label: 'Количество',
+      defaultValue: product?.quantity || '',
+      error: errors.quantity || '',
+      type: 'number'
+    },
+    {
+      label: 'Категория',
+      defaultValue: product?.category || '',
+      error: errors.category || '',
+      type: 'text'
+    },
+    {
+      label: 'Цвят',
+      defaultValue: product?.color || '',
+      error: errors.color || '',
+      type: 'text'
+    },
+    {
+      label: 'Единица',
+      defaultValue: product?.unit || '',
+      error: errors.unit || '',
+      type: 'select',
+      options: Object.values(StoreUnits)
+    },
+    {
+      label: 'Цена',
+      defaultValue: product?.price || '',
+      error: errors.price || '',
+      type: 'number'
+    },
+    {
+      label: 'Процентно увеличение',
+      defaultValue: product?.percentage_increase || '',
+      error: errors.percentage_increase || '',
+      type: 'number'
+    },
+    {
+      label: 'Цена на опаковка',
+      defaultValue: product?.packagePrice || '',
+      error: errors.packagePrice || '',
+      type: 'number'
+    },
+    {
+      label: 'Общо количество',
+      defaultValue: product?.totalQuantity || '',
+      error: errors.totalQuantity || '',
+      type: 'number'
+    }
+  ];
+
+  const handleFieldChange = (index: number, value: string | number) => {
+    const fieldKey = Object.keys(product || {})[index] as keyof StoreProduct;
+    handleChange(fieldKey, value);
+  };
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-theme-light-background dark:bg-theme-dark-background">
-      <div>
-        <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary">
-          Код
-        </label>
-        <input
-          name="code"
-          placeholder="Код"
-          type="number"
-          value={product?.code}
-          onChange={(e) =>
-            handleChange(e.target.name as keyof StoreProduct, e.target.value)
-          }
-          className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm sm:text-sm"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary">
-          Име
-        </label>
-        <input
-          name="name"
-          placeholder="Име"
-          type="text"
-          value={product?.name}
-          onChange={(e) =>
-            handleChange(e.target.name as keyof StoreProduct, e.target.value)
-          }
-          className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm sm:text-sm"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary">
-          Опаковка
-        </label>
-        <input
-          name="package"
-          placeholder="Опаковка"
-          type="number"
-          value={product?.package}
-          onChange={(e) =>
-            handleChange(e.target.name as keyof StoreProduct, e.target.value)
-          }
-          className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm sm:text-sm"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary">
-          Количество
-        </label>
-        <input
-          name="quantity"
-          placeholder="Количество"
-          type="number"
-          value={product?.quantity}
-          onChange={(e) =>
-            handleChange(e.target.name as keyof StoreProduct, e.target.value)
-          }
-          className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm sm:text-sm"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary">
-          Категория
-        </label>
-        <input
-          name="category"
-          placeholder="Категория"
-          type="text"
-          value={product?.category}
-          onChange={(e) =>
-            handleChange(e.target.name as keyof StoreProduct, e.target.value)
-          }
-          className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm sm:text-sm"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary">
-          Цвят
-        </label>
-        <input
-          name="color"
-          placeholder="Цвят"
-          type="text"
-          value={product?.color}
-          onChange={(e) =>
-            handleChange(e.target.name as keyof StoreProduct, e.target.value)
-          }
-          className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm sm:text-sm"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary">
-          Единица
-        </label>
-        <select
-          name="unit"
-          value={product?.unit}
-          onChange={(e) =>
-            handleChange(e.target.name as keyof StoreProduct, e.target.value)
-          }
-          className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm sm:text-sm"
-        >
-          {Object.values(StoreUnits).map((unit) => (
-            <option key={unit} value={unit}>
-              {unit}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary">
-          Цена
-        </label>
-        <input
-          name="price"
-          placeholder="Цена"
-          type="number"
-          value={product?.price}
-          onChange={(e) =>
-            handleChange(e.target.name as keyof StoreProduct, e.target.value)
-          }
-          className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm sm:text-sm"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary">
-          Процентно увеличение
-        </label>
-        <input
-          name="percentage_increase"
-          placeholder="Процентно увеличение"
-          type="number"
-          value={product?.percentage_increase}
-          onChange={(e) =>
-            handleChange(e.target.name as keyof StoreProduct, e.target.value)
-          }
-          className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm sm:text-sm"
-        />
-      </div>
-      {ProductActions(submitHandler, setMode)}
-    </div>
+    <GenericForm
+      fields={fields}
+      handleChange={handleFieldChange}
+      ProductActions={ProductActions(handleSubmit, setMode)}
+    />
   );
 };

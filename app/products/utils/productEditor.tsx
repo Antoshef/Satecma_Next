@@ -60,16 +60,16 @@ export const ProductEditor = ({
     switch (mode) {
       case EncancedMode.Create:
         setProduct({
-          category: '',
-          code: '',
+          category: 'Други',
+          code: '1000',
           name: '',
-          package: 0,
+          package: 1,
           quantity: 0,
-          unit: StoreUnits.kg,
+          unit: StoreUnits.pcs,
           color: '',
-          packagePrice: 0,
-          percentage_increase: 0,
-          price: 0,
+          packagePrice: 1,
+          percentage_increase: 100,
+          price: 1,
           totalQuantity: 0
         });
         break;

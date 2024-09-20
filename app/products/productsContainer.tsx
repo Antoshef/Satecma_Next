@@ -218,7 +218,7 @@ export default function ProductsContainer({ data }: Props) {
       <Toast />
       <div className="w-full rounded-b-xl bg-theme-light-background dark:bg-theme-dark-background shadow">
         <EnhancedTableToolbar
-          title="Склад"
+          title="Продукти"
           isSelected={!!selected.length}
           setMode={setMode}
           deleteHandler={deleteHandler}

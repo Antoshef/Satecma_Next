@@ -1,23 +1,32 @@
-import { useEffect, useState } from 'react';
+import {
+  GenericForm,
+  GenericFormField
+} from '@/components/genericTable/genericForm';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Client } from './types';
+import { EnhancedMode } from '@/products/utils/types';
+import { GenericFormActions } from '@/components/genericTable/genericFormActions';
 
-interface Props {
+interface ClientEditorProps {
   selected?: Client;
-  editMode: boolean;
-  setEditMode: (editMode: boolean) => void;
+  mode: EnhancedMode;
+  setMode: Dispatch<SetStateAction<EnhancedMode>>;
   onSubmit: (client: Client) => Promise<void>;
 }
 
 export const ClientEditor = ({
-  editMode,
+  mode = EnhancedMode.None,
   selected,
-  setEditMode,
+  setMode,
   onSubmit
-}: Props) => {
-  const [client, setProduct] = useState<Client | undefined>(selected);
+}: ClientEditorProps) => {
+  const [client, setClient] = useState<Client | undefined>();
+  const [errors, setErrors] = useState<Partial<Record<keyof Client, string>>>(
+    {}
+  );
 
-  const handleChange = (key: keyof Client, value: string) => {
-    setProduct(
+  const handleChange = (key: keyof Client, value: string | number) => {
+    setClient(
       (prev) =>
         prev && {
           ...prev,
@@ -26,145 +35,156 @@ export const ClientEditor = ({
     );
   };
 
-  const submitHandler = () => {
-    if (client) {
+  const validateFields = () => {
+    const newErrors: Partial<Record<keyof Client, string>> = {};
+    const requiredFields: (keyof Client)[] = [
+      'name',
+      'city',
+      'address',
+      'eik',
+      'vat',
+      'director',
+      'email',
+      'phone'
+    ];
+
+    requiredFields.forEach((field) => {
+      if (!client || !client[field]) {
+        newErrors[field] = 'Полето не може да бъде празно';
+      }
+    });
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = () => {
+    if (validateFields() && client) {
       onSubmit(client);
+      if (mode === EnhancedMode.Create) {
+        setClient(undefined);
+      } else if (mode === EnhancedMode.Edit) {
+        setMode(EnhancedMode.None);
+      }
     }
   };
 
-  useEffect(() => {
-    setProduct(selected);
-  }, [selected]);
+  const fields: GenericFormField<Client>[] = [
+    {
+      label: 'Име',
+      defaultValue: client?.name || '',
+      name: 'name',
+      error: errors.name || '',
+      type: 'text',
+      hint: 'Въведете име на клиента',
+      required: true
+    },
+    {
+      label: 'Град',
+      defaultValue: client?.city || '',
+      name: 'city',
+      error: errors.city || '',
+      type: 'text',
+      hint: 'Въведете град на клиента',
+      required: true
+    },
+    {
+      label: 'Адрес',
+      defaultValue: client?.address || '',
+      name: 'address',
+      error: errors.address || '',
+      type: 'text',
+      hint: 'Въведете адрес на клиента',
+      required: true
+    },
+    {
+      label: 'ЕИК',
+      defaultValue: client?.eik || '',
+      name: 'eik',
+      error: errors.eik || '',
+      type: 'text',
+      hint:
+        mode === EnhancedMode.Edit
+          ? 'ЕИК не може да бъде променен след като веднъж е създаден.'
+          : 'ЕИК трябва да бъде уникален',
+      required: true,
+      disabled: mode === EnhancedMode.Edit
+    },
+    {
+      label: 'ДДС №',
+      defaultValue: client?.vat || '',
+      name: 'vat',
+      error: errors.vat || '',
+      type: 'text',
+      hint: 'Въведете ДДС № на клиента',
+      required: true,
+      disabled: mode === EnhancedMode.Edit
+    },
+    {
+      label: 'Директор',
+      defaultValue: client?.director || '',
+      name: 'director',
+      error: errors.director || '',
+      type: 'text',
+      hint: 'Въведете име на директора на клиента',
+      required: true
+    },
+    {
+      label: 'Е-Поща',
+      defaultValue: client?.email || '',
+      name: 'email',
+      error: errors.email || '',
+      type: 'text',
+      hint: 'Въведете е-поща на клиента',
+      required: true
+    },
+    {
+      label: 'Телефон',
+      defaultValue: client?.phone || '',
+      name: 'phone',
+      error: errors.phone || '',
+      type: 'text',
+      hint: 'Въведете телефон на клиента',
+      required: true
+    }
+  ];
 
-  return editMode ? (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-theme-light-background dark:bg-theme-dark-background">
-      <div>
-        <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary">
-          Име
-        </label>
-        <input
-          name="name"
-          placeholder="Име"
-          type="text"
-          value={client?.name}
-          onChange={(e) =>
-            handleChange(e.target.name as keyof Client, e.target.value)
-          }
-          className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm focus:ring-theme-light-primary focus:border-theme-light-primary dark:focus:ring-theme-dark-primary dark:focus:border-theme-dark-primary sm:text-sm"
+  const handleFieldChange = (name: keyof Client, value: string | number) => {
+    handleChange(name, value);
+  };
+
+  useEffect(() => {
+    switch (mode) {
+      case EnhancedMode.Create:
+        setClient({
+          name: '',
+          city: '',
+          address: '',
+          eik: '',
+          vat: '',
+          director: '',
+          email: '',
+          phone: ''
+        });
+        break;
+      case EnhancedMode.Edit:
+        setClient(selected);
+        break;
+      default:
+        break;
+    }
+  }, [selected, mode]);
+
+  return (
+    <>
+      {(mode === EnhancedMode.Create || mode === EnhancedMode.Edit) && (
+        <GenericForm
+          fields={fields}
+          handleChange={handleFieldChange}
+          ProductActions={GenericFormActions(handleSubmit, setMode)}
         />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary">
-          Град
-        </label>
-        <input
-          name="city"
-          placeholder="Град"
-          type="text"
-          value={client?.city}
-          onChange={(e) =>
-            handleChange(e.target.name as keyof Client, e.target.value)
-          }
-          className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm focus:ring-theme-light-primary focus:border-theme-light-primary dark:focus:ring-theme-dark-primary dark:focus:border-theme-dark-primary sm:text-sm"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary">
-          Адрес
-        </label>
-        <input
-          name="address"
-          placeholder="Адрес"
-          type="text"
-          value={client?.address}
-          onChange={(e) =>
-            handleChange(e.target.name as keyof Client, e.target.value)
-          }
-          className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm focus:ring-theme-light-primary focus:border-theme-light-primary dark:focus:ring-theme-dark-primary dark:focus:border-theme-dark-primary sm:text-sm"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary">
-          ЕИК
-        </label>
-        <p className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm sm:text-sm">
-          {client?.eik}
-        </p>
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary">
-          ДДС №
-        </label>
-        <input
-          name="vat"
-          placeholder="ДДС №"
-          type="text"
-          value={client?.vat}
-          onChange={(e) =>
-            handleChange(e.target.name as keyof Client, e.target.value)
-          }
-          className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm focus:ring-theme-light-primary focus:border-theme-light-primary dark:focus:ring-theme-dark-primary dark:focus:border-theme-dark-primary sm:text-sm"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary">
-          Директор
-        </label>
-        <input
-          name="director"
-          placeholder="Директор"
-          type="text"
-          value={client?.director}
-          onChange={(e) =>
-            handleChange(e.target.name as keyof Client, e.target.value)
-          }
-          className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm focus:ring-theme-light-primary focus:border-theme-light-primary dark:focus:ring-theme-dark-primary dark:focus:border-theme-dark-primary sm:text-sm"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary">
-          Е-Поща
-        </label>
-        <input
-          name="email"
-          placeholder="Е-Поща"
-          type="text"
-          value={client?.email}
-          onChange={(e) =>
-            handleChange(e.target.name as keyof Client, e.target.value)
-          }
-          className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm focus:ring-theme-light-primary focus:border-theme-light-primary dark:focus:ring-theme-dark-primary dark:focus:border-theme-dark-primary sm:text-sm"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary">
-          Телефон
-        </label>
-        <input
-          name="phone"
-          placeholder="Телефон"
-          type="text"
-          value={client?.phone}
-          onChange={(e) =>
-            handleChange(e.target.name as keyof Client, e.target.value)
-          }
-          className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm focus:ring-theme-light-primary focus:border-theme-light-primary dark:focus:ring-theme-dark-primary dark:focus:border-theme-dark-primary sm:text-sm"
-        />
-      </div>
-      <div className="col-span-2 flex justify-end space-x-4">
-        <button
-          onClick={submitHandler}
-          className="px-4 py-2 bg-theme-light-primary dark:bg-theme-dark-primary text-white rounded-md shadow-sm hover:bg-theme-light-secondary dark:hover:bg-theme-dark-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-theme-light-primary dark:focus:ring-theme-dark-primary"
-        >
-          Save
-        </button>
-        <button
-          onClick={() => setEditMode(false)}
-          className="px-4 py-2 bg-theme-light-secondary dark:bg-theme-dark-secondary text-white rounded-md shadow-sm hover:bg-theme-light-tertiary dark:hover:bg-theme-dark-tertiary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-theme-light-secondary dark:focus:ring-theme-dark-secondary"
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
-  ) : null;
+      )}
+      {mode === EnhancedMode.None && null}
+    </>
+  );
 };

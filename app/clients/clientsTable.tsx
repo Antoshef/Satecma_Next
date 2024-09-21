@@ -6,23 +6,24 @@ import { RowsPerPage } from '@/components/rowsPerPage';
 import { EnhancedMode } from '@/products/utils/types';
 import useToast from '@/products/utils/useToast';
 import { getComparator } from '@/utils/getComparator';
-import { ChangeEvent, MouseEvent, useMemo, useState } from 'react';
+import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from 'react';
 import { ClientEditor } from './utils/clientEditor';
 import { headCells } from './utils/constants';
 import { Client } from './utils/types';
 
 interface PageProps {
   data: Client[];
+  error?: string;
 }
 
-export default function ClientsTable({ data }: PageProps) {
-  const [filteredClients, setFilteredClients] = useState(data);
+export default function ClientsTable({ data, error }: PageProps) {
+  const [clients, setClients] = useState<Client[]>([]);
+  const [filteredClients, setFilteredClients] = useState<Client[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof Client>('name');
   const [selected, setSelected] = useState<Client[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
-  const [editMode, setEditMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [mode, setMode] = useState<EnhancedMode>(EnhancedMode.None);
   const { ToastContainer, notify } = useToast();
@@ -41,18 +42,18 @@ export default function ClientsTable({ data }: PageProps) {
 
   const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      setSelected(data);
+      setSelected(filteredClients);
     } else {
       setSelected([]);
     }
   };
 
-  const handleSearch = function (e: React.ChangeEvent<HTMLInputElement>) {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPage(0);
     const _searchTerm = e.target.value.toLowerCase();
     setSearchTerm(_searchTerm);
-    const filtered = data.filter((client) =>
-      client.name.toLowerCase().includes(_searchTerm.toLowerCase())
+    const filtered = clients.filter((client) =>
+      client.name.toLowerCase().includes(_searchTerm)
     );
     setFilteredClients(filtered);
   };
@@ -78,7 +79,8 @@ export default function ClientsTable({ data }: PageProps) {
 
       if (!response.ok) {
         const data = await response.json();
-        const errorMessage = data.message || 'Something went wrong';
+        const errorMessage =
+          data.message || 'Възникна грешка при редакция на клиента';
         throw new Error(errorMessage + ` (Status ${response.status})`);
       }
 
@@ -88,7 +90,7 @@ export default function ClientsTable({ data }: PageProps) {
         newClients[index] = client;
         setFilteredClients(newClients);
       }
-      setEditMode(false);
+      setMode(EnhancedMode.None);
       notify('Клиентът е редактиран успешно', 'success');
     } catch (error) {
       notify('Грешка при редакцията на клиента', 'error');
@@ -109,22 +111,42 @@ export default function ClientsTable({ data }: PageProps) {
     [order, orderBy, page, rowsPerPage, filteredClients]
   );
 
+  useEffect(() => {
+    if (searchTerm === '') {
+      setFilteredClients(clients);
+    } else {
+      setFilteredClients(
+        clients.filter((client) =>
+          client.name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      );
+    }
+  }, [searchTerm, clients]);
+
+  useEffect(() => {
+    if (error) {
+      notify(error, 'error');
+    } else {
+      setClients(data);
+      setFilteredClients(data);
+    }
+  }, [data, error, notify]);
+
   return (
     <div className="p-4">
       <ToastContainer />
       <div className="w-full rounded-b-xl bg-theme-light-background dark:bg-theme-dark-background shadow">
         <EnhancedTableToolbar
           title="Клиенти"
-          isSelected={selected.length > 0}
+          isSelected={!!selected.length}
           selectedCount={selected.length}
-          mode={mode}
           setMode={setMode}
         />
         <ClientEditor
-          editMode={editMode}
+          mode={mode}
           selected={selected[0]}
           onSubmit={onEditSubmit}
-          setEditMode={setEditMode}
+          setMode={setMode}
         />
         <div className="flex items-baseline p-4">
           <span className="mr-2 ml-2 text-lg text-theme-light-primary dark:text-theme-dark-primary">
@@ -147,7 +169,6 @@ export default function ClientsTable({ data }: PageProps) {
           handleClick={(event, client) =>
             setSelected((state) => {
               if (state.some((c) => c.eik === client.eik)) {
-                setEditMode(false);
                 return state.filter((c) => c.eik !== client.eik);
               } else {
                 return [...state, client];

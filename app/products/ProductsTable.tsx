@@ -16,7 +16,7 @@ interface Props {
   error?: string;
 }
 
-export default function ProductsContainer({ data, error }: Props) {
+export default function ProductsTable({ data, error }: Props) {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
@@ -78,7 +78,7 @@ export default function ProductsContainer({ data, error }: Props) {
     setPage(0);
   };
 
-  const handleSearch = function (e: React.ChangeEvent<HTMLInputElement>) {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedCategory('all');
     setPage(0);
     const _searchTerm = e.target.value.toLowerCase();

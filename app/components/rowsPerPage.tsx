@@ -1,7 +1,7 @@
 interface RowsPerPageProps {
   rowsPerPage: number;
   page: number;
-  data: object[];
+  data: readonly object[];
   handleChangeRowsPerPage: (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => void;

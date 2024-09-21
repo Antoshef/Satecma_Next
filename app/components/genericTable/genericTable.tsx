@@ -12,7 +12,7 @@ interface GenericTableProps<T> {
   handleClick: (event: MouseEvent<unknown>, item: T) => void;
   isSelected: (item: T) => boolean;
   selected: T[];
-  filteredItems: T[];
+  filteredItems: readonly T[];
   visibleRows: T[];
   emptyRows: number;
 }

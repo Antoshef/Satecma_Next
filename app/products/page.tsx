@@ -1,6 +1,6 @@
 import { baseUrl } from '@/constants';
 import { Suspense } from 'react';
-import ProductsContainer from './productsContainer';
+import ProductsTable from './ProductsTable';
 import Loading from '@/loading';
 
 export default async function ProductsPage() {
@@ -25,7 +25,7 @@ export default async function ProductsPage() {
   return (
     <section>
       <Suspense fallback={<Loading />}>
-        <ProductsContainer data={data} error={error} />
+        <ProductsTable data={data} error={error} />
       </Suspense>
     </section>
   );

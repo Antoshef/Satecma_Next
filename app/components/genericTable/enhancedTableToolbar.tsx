@@ -6,8 +6,7 @@ import { Dispatch, FC, SetStateAction, useState } from 'react';
 interface EnhancedTableToolbarProps {
   title: string;
   isSelected: boolean;
-  mode?: EnhancedMode;
-  setMode?: Dispatch<SetStateAction<EnhancedMode>>;
+  setMode: Dispatch<SetStateAction<EnhancedMode>>;
   deleteHandler?: () => void;
   selectedCount: number;
 }

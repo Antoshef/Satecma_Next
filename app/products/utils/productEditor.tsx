@@ -48,6 +48,7 @@ export const ProductEditor = ({
         }
     );
   };
+  console.log(product, 'DATA');
 
   const submitHandler = () => {
     if (product) {
@@ -61,15 +62,14 @@ export const ProductEditor = ({
         setProduct({
           code: '',
           name: '',
-          category: '',
+          category: 'Други',
           package: 1,
-          unit: '',
+          unit: 'л',
           color: '',
           buyPrice: 0,
           sellPrice: 1,
           percentageIncrease: 100,
-          quantity: 0,
-          totalQuantity: 0
+          quantity: 0
         });
         break;
       case EncancedMode.Edit:

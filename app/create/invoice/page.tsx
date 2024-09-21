@@ -1,43 +1,43 @@
 import { Client } from '@/clients/utils/types';
-import { StoreUnits } from '@/products/utils/types';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import InvoiceBox from './invoiceBox';
-import { Company, Product } from './types';
+import { Company } from './types';
+import { Product } from '@/products/utils/types';
 
 // Mock data
 const mockProducts: Product[] = [
   {
     code: 'P001',
     name: 'Product 1',
-    packing: 'Box',
-    unit: StoreUnits.kg,
+    package: 1,
+    unit: 'kg',
     color: 'Red',
-    percentage_increase: 10,
-    price: 10.0,
+    percentageIncrease: 10,
+    sellPrice: 10.0,
     category: 'Category 1',
-    quantity: '100'
+    quantity: 100
   },
   {
     code: 'P002',
     name: 'Product 2',
-    packing: 'Box',
-    unit: StoreUnits.kg,
+    package: 1,
+    unit: 'kg',
     color: 'Blue',
-    percentage_increase: 15,
-    price: 20.0,
+    percentageIncrease: 15,
+    sellPrice: 20.0,
     category: 'Category 2',
-    quantity: '200'
+    quantity: 200
   },
   {
     code: 'P003',
     name: 'Product 3',
-    packing: 'Box',
-    unit: StoreUnits.kg,
+    package: 1,
+    unit: 'kg',
     color: 'Green',
-    percentage_increase: 20,
-    price: 30.0,
+    percentageIncrease: 20,
+    sellPrice: 30.0,
     category: 'Category 3',
-    quantity: '300'
+    quantity: 300
   }
 ];
 

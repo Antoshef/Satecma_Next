@@ -1,7 +1,7 @@
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
-import { Client } from "@/clients/utils/types";
-import { TextField } from "@/components/textField/TextField";
-import { InvoiceReceiver } from "./types";
+import { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import { Client } from '@/clients/utils/types';
+import { TextField } from '@/components/textField/TextField';
+import { InvoiceReceiver } from './types';
 
 interface CompanySuggestionsProps {
   clients: Client[];
@@ -22,7 +22,7 @@ const CompanySuggestions = ({
   clients,
   receiver,
   setReceiver,
-  isFieldsDisabled,
+  isFieldsDisabled
 }: CompanySuggestionsProps) => {
   const [query, setQuery] = useState(receiver.company);
   const [filteredClients, setFilteredClients] = useState<Client[]>([]);
@@ -31,14 +31,14 @@ const CompanySuggestions = ({
   useEffect(() => {
     if (query.length && isMenuOpen) {
       const suggestions = clients.filter((client) =>
-        client.name.toLowerCase().includes(query.toLowerCase()),
+        client.name.toLowerCase().includes(query.toLowerCase())
       );
       setFilteredClients(suggestions);
     } else {
       setFilteredClients([]);
       setIsMenuOpen(false);
     }
-  }, [query, clients]);
+  }, [query, clients, isMenuOpen]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -54,7 +54,7 @@ const CompanySuggestions = ({
       EIK: client.eik,
       VAT: client.vat,
       director: client.director,
-      email: client.email,
+      email: client.email
     });
     setQuery(client.name);
     setFilteredClients([]);

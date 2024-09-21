@@ -6,7 +6,7 @@ import { Product } from '@/products/utils/types';
 const getProducts = async (res: NextApiResponse) => {
   try {
     const results = await queryAsync<Product[]>('SELECT * FROM products_test');
-    
+
     return res.json(results);
   } catch (error) {
     console.error('GET error:', error);
@@ -99,8 +99,7 @@ const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
     'buyPrice',
     'sellPrice',
     'percentageIncrease',
-    'quantity',
-    'totalQuantity'
+    'quantity'
   ];
 
   for (const field of requiredFields) {
@@ -113,7 +112,8 @@ const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
 
   try {
     // Check if a product with the same code already exists
-    const checkQuery = 'SELECT COUNT(*) as count FROM products_test WHERE code = ?';
+    const checkQuery =
+      'SELECT COUNT(*) as count FROM products_test WHERE code = ?';
     const checkValues = [product.code];
     const result = await queryAsync<{ count: number }[]>(
       checkQuery,
@@ -129,8 +129,8 @@ const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     const query = `
-      INSERT INTO products (code, name, package, unit, color, category, buyPrice, sellPrice, percentageIncrease, quantity, totalQuantity)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO products_test (code, name, package, unit, color, category, buyPrice, sellPrice, percentageIncrease, quantity)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const values = [
       product.code,
@@ -142,8 +142,7 @@ const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
       product.buyPrice,
       product.sellPrice,
       product.percentageIncrease,
-      product.quantity,
-      product.totalQuantity
+      product.quantity
     ];
 
     await queryAsync(query, values);

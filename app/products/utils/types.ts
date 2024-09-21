@@ -7,15 +7,14 @@ export interface ToastMessage {
 export interface Product {
   code: string;
   name: string;
-  package: number;
-  category: string;
   unit: string;
-  color: string;
-  buyPrice: number;
-  sellPrice: number;
-  percentageIncrease: number;
+  package: number;
   quantity: number;
-  totalQuantity: number;
+  color?: string;
+  buyPrice?: number;
+  percentageIncrease?: number;
+  sellPrice: number;
+  category?: string;
 }
 
 export interface InvoiceProductData

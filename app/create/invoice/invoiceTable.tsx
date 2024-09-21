@@ -22,12 +22,11 @@ import {
 import {
   Company,
   InvoiceData,
-  InvoiceIdType,
   InvoiceReceiver,
   InvoiceType,
-  LatestInvoices,
-  Product
+  LatestInvoices
 } from './types';
+import { Product } from '@/products/utils/types';
 
 interface InvoiceTableProps {
   provider: Company;
@@ -52,9 +51,6 @@ export const InvoiceTable = ({
   const [receiver, setReceiver] = useState<InvoiceReceiver>(INIT_RECEIVER);
   const [latestInvoiceNumbers, setLatestInvoiceNumbers] =
     useState<LatestInvoices>(invoiceIds);
-  const [invoiceIdType, setInvoiceIdType] = useState<InvoiceIdType>(
-    InvoiceIdType.current
-  );
   const [invoiceType, setInvoiceType] = useState<InvoiceType>(
     InvoiceType.proforma
   );
@@ -73,7 +69,7 @@ export const InvoiceTable = ({
       return latestInvoiceNumbers.original;
     }
     return latestInvoiceNumbers.original;
-  }, [invoiceIdType, latestInvoiceNumbers, invoiceType]);
+  }, [latestInvoiceNumbers, invoiceType]);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -110,11 +106,6 @@ export const InvoiceTable = ({
       setIsFieldsDisabled(false);
     }
   };
-
-  const invoiceTypeValues =
-    invoiceType === InvoiceType.original
-      ? [InvoiceIdType.current, InvoiceIdType.previous, InvoiceIdType.manual]
-      : [InvoiceIdType.current, InvoiceIdType.manual];
 
   const {
     items,
@@ -196,37 +187,23 @@ export const InvoiceTable = ({
                 onChange={(e) => setInvoiceType(e.target.value as InvoiceType)}
               />
               <br />
-              {!isFieldsDisabled && (
-                <SelectField
-                  isFieldsDisabled={isFieldsDisabled}
-                  value={invoiceIdType}
-                  values={invoiceTypeValues}
-                  onChange={(e) =>
-                    setInvoiceIdType(e.target.value as InvoiceIdType)
-                  }
-                />
-              )}
               <br />
               <span>
                 Фактура №:{' '}
-                {invoiceIdType === InvoiceIdType.manual ? (
-                  <TextField
-                    name="invoiceNumber"
-                    type="text"
-                    placeholder="0000000001"
-                    value={invoiceNumber}
-                    isFieldsDisabled={isFieldsDisabled}
-                    maxLength={10}
-                    onChange={(e) =>
-                      setLatestInvoiceNumbers((state) => ({
-                        ...state,
-                        manual: e.target.value
-                      }))
-                    }
-                  />
-                ) : (
-                  invoiceNumber
-                )}
+                <TextField
+                  name="invoiceNumber"
+                  type="text"
+                  placeholder="0000000001"
+                  value={invoiceNumber}
+                  isFieldsDisabled={isFieldsDisabled}
+                  maxLength={10}
+                  onChange={(e) =>
+                    setLatestInvoiceNumbers((state) => ({
+                      ...state,
+                      manual: e.target.value
+                    }))
+                  }
+                />
                 {invoiceNumber.length !== 10 && (
                   <>
                     <br />

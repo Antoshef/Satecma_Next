@@ -3,7 +3,7 @@ import { useState } from 'react';
 export interface GenericFormField<T> {
   label: string;
   defaultValue: string | number;
-  key: keyof T;
+  name: keyof T;
   error: string;
   type: 'text' | 'number' | 'select';
   options?: string[]; // Only for select fields
@@ -28,13 +28,13 @@ export const GenericForm = <T,>({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-theme-light-background dark:bg-theme-dark-background">
       {fields.map((field) => (
-        <div key={String(field.key)} className="relative">
+        <div key={String(field.name)} className="relative">
           <div className="text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary flex items-center">
             <label>{field.label}</label>
             {field.hint && (
               <div
                 className="ml-2 relative text-theme-light-secondary"
-                onMouseEnter={() => setHoveredField(field.key)}
+                onMouseEnter={() => setHoveredField(field.name)}
                 onMouseLeave={() => setHoveredField(null)}
               >
                 <svg
@@ -58,7 +58,7 @@ export const GenericForm = <T,>({
                     d="M12 16v-4m0-4h.01"
                   />
                 </svg>
-                {hoveredField === field.key && (
+                {hoveredField === field.name && (
                   <div className="absolute left-1/2 -top-3 transform -translate-x-1/2 -translate-y-full mt-2 w-48 p-2 bg-white border border-gray-300 rounded-md shadow-lg text-sm text-theme-light-primary z-10">
                     {field.hint}
                   </div>
@@ -70,7 +70,7 @@ export const GenericForm = <T,>({
           {!field.render && field.type === 'select' && (
             <select
               value={field.defaultValue}
-              onChange={(e) => handleChange(field.key, e.target.value)}
+              onChange={(e) => handleChange(field.name, e.target.value)}
               className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm sm:text-sm"
             >
               {field.options?.map((option) => (
@@ -84,7 +84,7 @@ export const GenericForm = <T,>({
             <input
               type={field.type}
               value={field.defaultValue}
-              onChange={(e) => handleChange(field.key, e.target.value)}
+              onChange={(e) => handleChange(field.name, e.target.value)}
               className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm sm:text-sm"
             />
           )}

@@ -25,9 +25,9 @@ import {
   InvoiceData,
   InvoiceReceiver,
   InvoiceType,
-  LatestInvoices,
-  Product
+  LatestInvoices
 } from './types';
+import { Product } from '@/products/utils/types';
 
 interface InvoiceBoxProps {
   provider: Company;

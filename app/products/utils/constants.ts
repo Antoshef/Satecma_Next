@@ -10,13 +10,7 @@ export const headCells: readonly HeadCell<Product>[] = [
   {
     id: 'name',
     numeric: false,
-    label: 'Наименувание',
-    visible: true
-  },
-  {
-    id: 'sellPrice',
-    numeric: true,
-    label: 'Продажна цена',
+    label: 'Име',
     visible: true
   },
   {
@@ -26,21 +20,15 @@ export const headCells: readonly HeadCell<Product>[] = [
     visible: true
   },
   {
+    id: 'unit',
+    numeric: false,
+    label: 'Единица',
+    visible: true
+  },
+  {
     id: 'quantity',
     numeric: true,
     label: 'Количество',
-    visible: true
-  },
-  {
-    id: 'totalQuantity',
-    numeric: true,
-    label: 'Общо',
-    visible: true
-  },
-  {
-    id: 'category',
-    numeric: false,
-    label: 'Категория',
     visible: true
   },
   {
@@ -50,21 +38,27 @@ export const headCells: readonly HeadCell<Product>[] = [
     visible: true
   },
   {
-    id: 'percentageIncrease',
-    numeric: true,
-    label: 'Процентно увеличение',
-    visible: true
-  },
-  {
     id: 'buyPrice',
     numeric: true,
     label: 'Цена на покупка',
     visible: true
   },
   {
-    id: 'unit',
+    id: 'percentageIncrease',
+    numeric: true,
+    label: 'Процентно увеличение',
+    visible: true
+  },
+  {
+    id: 'sellPrice',
+    numeric: true,
+    label: 'Продажна цена',
+    visible: true
+  },
+  {
+    id: 'category',
     numeric: false,
-    label: 'Единица',
+    label: 'Категория',
     visible: true
   }
 ];

@@ -1,12 +1,11 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { EncancedMode, Product } from './types';
 import { GenericForm, GenericFormField } from './genericForm';
-import { GenericInput } from '@/components/input';
 
 interface ProductFormProps {
   product: Product | undefined;
   categories: string[];
-  handleChange: (key: keyof Product, value: string | number) => void;
+  handleChange: (name: keyof Product, value: string | number) => void;
   submitHandler: () => void;
   setMode: Dispatch<SetStateAction<EncancedMode>>;
   ProductActions: (
@@ -17,7 +16,6 @@ interface ProductFormProps {
 
 export const ProductForm = ({
   product,
-  categories,
   handleChange,
   submitHandler,
   setMode,
@@ -25,9 +23,6 @@ export const ProductForm = ({
 }: ProductFormProps) => {
   const [errors, setErrors] = useState<Partial<Record<keyof Product, string>>>(
     {}
-  );
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(
-    product?.category || ''
   );
 
   const validateFields = () => {
@@ -41,8 +36,7 @@ export const ProductForm = ({
       'unit',
       'color',
       'percentageIncrease',
-      'sellPrice',
-      'totalQuantity'
+      'sellPrice'
     ];
 
     requiredFields.forEach((field) => {
@@ -61,16 +55,11 @@ export const ProductForm = ({
     }
   };
 
-  const handleCategoryChange = (category: { name: string }) => {
-    setSelectedCategory(category.name);
-    handleChange('category', category.name);
-  };
-
   const fields: GenericFormField<Product>[] = [
     {
       label: 'Код',
       defaultValue: product?.code || '',
-      key: 'code',
+      name: 'code',
       error: errors.code || '',
       type: 'text',
       hint: 'Кодът трябва да бъде уникален',
@@ -79,97 +68,91 @@ export const ProductForm = ({
     {
       label: 'Име',
       defaultValue: product?.name || '',
-      key: 'name',
+      name: 'name',
       error: errors.name || '',
       type: 'text',
       hint: 'Въведете име на продукта',
       required: true
     },
     {
+      label: 'Мерна единица',
+      defaultValue: product?.unit || '',
+      name: 'unit',
+      error: errors.unit || '',
+      type: 'select',
+      hint: 'Изберете единица за измерване, например кг, л, м2, мл и други подобни',
+      options: ['л', 'кг', 'м2', 'м3', 'бр'],
+      required: true
+    },
+    {
       label: 'Опаковка',
       defaultValue: product?.package || '',
-      key: 'package',
+      name: 'package',
       error: errors.package || '',
       type: 'number',
-      hint: 'Въведете количеството което се съдържа във всяка опаковка',
+      hint: 'Размер на опаковката на всеки продукт',
       required: true
     },
     {
       label: 'Количество',
       defaultValue: product?.quantity || '',
-      key: 'quantity',
+      name: 'quantity',
       error: errors.quantity || '',
       type: 'number',
       hint: 'Въведете броя на опаковките',
       required: false
     },
     {
-      label: 'Категория',
-      defaultValue: selectedCategory || '',
-      key: 'category',
-      error: errors.category || '',
-      type: 'text',
-      hint: 'Изберете категория от списъка с категории или въведете нова',
-      required: false,
-      render: () => (
-        <GenericInput
-          data={categories.map((name) => ({ name }))}
-          selectedItem={{ name: selectedCategory }}
-          setSelectedItem={handleCategoryChange}
-          displayProperty="name"
-        />
-      )
-    },
-    {
       label: 'Цвят',
       defaultValue: product?.color || '',
-      key: 'color',
+      name: 'color',
       error: errors.color || '',
       type: 'text',
       hint: 'Въведете цвят на продукта',
       required: false
     },
     {
-      label: 'Мерна единица',
-      defaultValue: product?.unit || '',
-      key: 'unit',
-      error: errors.unit || '',
-      type: 'select',
-      hint: 'Изберете единица за измерване, например кг, л, м2, мл и други подобни',
-      options: [],
-      required: true
-    },
-    {
-      label: 'Продажна цена',
-      defaultValue: product?.sellPrice || '',
-      key: 'sellPrice',
-      error: errors.sellPrice || '',
+      label: 'Доставна цена',
+      defaultValue: product?.buyPrice || '',
+      name: 'buyPrice',
+      error: errors.buyPrice || '',
       type: 'number',
-      hint: 'Въведете единична цена за вашия продукт, примерно за килограм или литър',
-      required: true
+      hint: 'Доставна единична цена за опаковка',
+      required: false
     },
     {
       label: 'Процентно увеличение',
       defaultValue: product?.percentageIncrease || '',
-      key: 'percentageIncrease',
+      name: 'percentageIncrease',
       error: errors.percentageIncrease || '',
       type: 'number',
       hint: 'Въведете процентното увеличение, което искате да добавите към цената на продукта, за да изчислите продажната му цена',
       required: false
     },
     {
-      label: 'Общо количество',
-      defaultValue: product?.totalQuantity || '',
-      key: 'totalQuantity',
-      error: errors.totalQuantity || '',
+      label: 'Продажна цена',
+      defaultValue: product?.sellPrice || '',
+      name: 'sellPrice',
+      error: errors.sellPrice || '',
       type: 'number',
-      hint: 'Въведете общото количество на продукта, което имате в наличност',
+      hint: 'Единична продажна цена за опаковка',
+      required: true
+    },
+    {
+      label: 'Категория',
+      defaultValue: product?.category || '',
+      name: 'category',
+      error: errors.category || '',
+      type: 'select',
+      options: ['Други'],
+      hint: 'Изберете категория от списъка с категории или въведете нова',
       required: false
     }
   ];
 
-  const handleFieldChange = (key: keyof Product, value: string | number) => {
-    handleChange(key, value);
+  const handleFieldChange = (name: keyof Product, value: string | number) => {
+    console.log(name, value, 'FIELD');
+    handleChange(name, value);
   };
 
   return (

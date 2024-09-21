@@ -1,53 +1,53 @@
-import { InvoiceData, InvoiceReceiver, InvoiceType, Company } from "./types";
-export const VAT_PREFIX = "BG";
+import { InvoiceData, InvoiceReceiver, InvoiceType, Company } from './types';
+export const VAT_PREFIX = 'BG';
 export const SATECMA_LOGO =
-  "https://satecma.bg/wp-content/uploads/2024/04/main-logo-dark.png";
+  'https://satecma.bg/wp-content/uploads/2024/04/main-logo-dark.png';
 
 export const SATECMA_COMPANY: Company = {
-  name: "Сатекма ЕООД",
+  name: 'Сатекма ЕООД',
   eik: 207756461,
-  VAT: "BG207756461",
-  city: "Ямбол, България",
-  address: "ул. Феризович №17",
-  director: "Антон Станев",
-  phone: "0886 858 601",
-  iban: "BG16BPBI79341038837501",
-  swift: "BPBIBGSF",
-  bankName: "Юробанк България АД",
+  VAT: 'BG207756461',
+  city: 'Ямбол, България',
+  address: 'ул. Феризович №17',
+  director: 'Антон Станев',
+  phone: '0886 858 601',
+  iban: 'BG16BPBI79341038837501',
+  swift: 'BPBIBGSF',
+  bankName: 'Юробанк България АД'
 };
 
 export const ECOHOME_COMPANY: Company = {
-  name: "Еко Хоум Трейд ЕООД",
+  name: 'Еко Хоум Трейд ЕООД',
   eik: 205711987,
-  VAT: "BG205711987",
-  city: "София, България",
-  address: "р-н Овча купел, ул.641-ва №2",
-  director: "Атанас Караджов",
-  phone: "0882 347 253",
-  iban: "BG79FINV91501017339942",
-  swift: "FINVBGSF",
-  bankName: "Първа Инвестиционна Банка",
+  VAT: 'BG205711987',
+  city: 'София, България',
+  address: 'р-н Овча купел, ул.641-ва №2',
+  director: 'Атанас Караджов',
+  phone: '0882 347 253',
+  iban: 'BG79FINV91501017339942',
+  swift: 'FINVBGSF',
+  bankName: 'Първа Инвестиционна Банка'
 };
 
 export const INVOICE_DATA_DEFAULT_VALUES: InvoiceData = {
   amount: 0,
-  client: "",
-  date: new Date().toISOString().split("T")[0],
+  client: '',
+  date: new Date().toISOString().split('T')[0],
   eik: 0,
-  invoice_id: "",
+  invoice_id: '',
   total: 0,
   vat: 0,
-  vat_number: "",
-  type: InvoiceType.proforma,
+  vat_number: '',
+  type: InvoiceType.proforma
 };
 
 export const INIT_RECEIVER: InvoiceReceiver = {
-  email: "",
-  phone: "",
-  company: "",
-  city: "",
-  address: "",
-  EIK: "",
-  VAT: "",
-  director: "",
+  email: '',
+  phone: '',
+  company: '',
+  city: '',
+  address: '',
+  EIK: '',
+  VAT: '',
+  director: ''
 };

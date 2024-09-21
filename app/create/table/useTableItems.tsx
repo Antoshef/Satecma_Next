@@ -1,7 +1,6 @@
-import { StoreUnits } from '@/products/utils/types';
 import { useCallback, useEffect, useState } from 'react';
-import { Item, Product } from '../invoice/types';
-import { calculateItemPrice } from '../invoice/utils';
+import { Item } from '../invoice/types';
+import { Product } from '@/products/utils/types';
 
 interface TableItemsProps {
   selectedProduct: Product | null;
@@ -28,7 +27,6 @@ export const useTableItems = ({
     const currentItem = newItems.find((item) => item.code === dataset.code);
     if (currentItem) {
       (currentItem as any)[name] = value;
-      currentItem.totalPrice = calculateItemPrice(currentItem);
       setItems(newItems);
     }
   };
@@ -39,7 +37,6 @@ export const useTableItems = ({
     const currentItem = newItems.find((item) => item.code === dataset.code);
     if (currentItem) {
       (currentItem as any)[name] = value;
-      currentItem.totalPrice = calculateItemPrice(currentItem);
       setItems(newItems);
     }
   };
@@ -52,9 +49,6 @@ export const useTableItems = ({
     );
     if (currentService) {
       (currentService as any)[name] = value;
-      currentService.totalPrice = (
-        currentService.quantity * currentService.price
-      ).toFixed(2);
       setServices(newServices);
     }
   };
@@ -66,59 +60,33 @@ export const useTableItems = ({
       (item) => item.code === dataset.code
     );
     if (currentService) {
-      currentService.VAT = value;
       setServices(newServices);
     }
   };
 
   const addItem = useCallback(() => {
     if (selectedProduct) {
-      const { unit, code, name, price, packing, percentage_increase } =
-        selectedProduct;
-      const salePrice = price * percentage_increase;
-      const VAT = '20';
+      const { unit, code, name, sellPrice, packing } = selectedProduct;
+      const VAT = 20;
       const newItem: Item = {
         code: code || (items.length + services.length + 8000).toString(),
         name,
         packing,
-        currentPackage: Number(packing.split(', ')[0]),
         quantity: 1,
         unit,
-        price: salePrice,
+        sellPrice,
         discount: 0,
         VAT,
-        totalPrice: '0'
+        totalPrice: 0
       };
-      newItem.totalPrice = calculateItemPrice(newItem);
       setItems((state) => [...state, newItem]);
       setSelectedProduct(null);
-    } else {
-      addService();
     }
   }, [items, selectedProduct, services, setSelectedProduct]);
 
   const removeItem = (code: string | number | null) => {
     setItems((state) => state.filter((item) => item.code !== code));
     setServices((state) => state.filter((item) => item.code !== code));
-  };
-
-  const addService = () => {
-    setServices((state) => [
-      ...state,
-      {
-        code: (items.length + services.length + 9000).toString(),
-        name: '',
-        packing: '',
-        currentPackage: 0,
-        unit: StoreUnits.pcs,
-        quantity: 1,
-        price: 0,
-        unit_price: 0,
-        discount: 0,
-        totalPrice: '0',
-        VAT: '0'
-      }
-    ]);
   };
 
   useEffect(() => {

@@ -7,7 +7,7 @@ export default withPageAuthRequired(async function OfferPage() {
     res.json()
   );
 
-  const products = await fetch(`${baseUrl}/api/products/get`)
+  const products = await fetch(`${baseUrl}/api/products`)
     .then((res) => res.json())
     .catch((error) => {
       console.error('Error:', error);

@@ -6,7 +6,6 @@ import { headCells } from '@/products/utils/constants';
 import { EnhancedTableToolbar } from '@/products/utils/enhancedTableToolbar';
 import { ProductEditor } from '@/products/utils/productEditor';
 import { EncancedMode, Order, Product } from '@/products/utils/types';
-import { handleProductsMap } from '@/products/utils/utils';
 import { getComparator } from '@/utils/getComparator';
 import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from 'react';
 import useToast from './utils/useToast';
@@ -117,6 +116,7 @@ export default function ProductsContainer({ data }: Props) {
   const visibleRows = useMemo(
     () =>
       filteredProducts
+        // @ts-expect-error ts-migrate(2531) FIXME: Object is possibly 'null'.
         .sort(getComparator(order, orderBy))
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
     [order, orderBy, page, rowsPerPage, filteredProducts]
@@ -129,7 +129,7 @@ export default function ProductsContainer({ data }: Props) {
         body: JSON.stringify({ product })
       });
       const updatedProducts = products.map((p) =>
-        p.code === product.code && p.package === product.package ? product : p
+        p.code === product.code && p.packing === product.packing ? product : p
       );
       setProducts(updatedProducts);
       setSelected([]);
@@ -194,7 +194,7 @@ export default function ProductsContainer({ data }: Props) {
   }, [products]);
 
   useEffect(() => {
-    setProducts(handleProductsMap(data));
+    setProducts(data);
   }, [data]);
 
   return (

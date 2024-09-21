@@ -30,7 +30,7 @@ export const ProductForm = ({
     const requiredFields: (keyof Product)[] = [
       'code',
       'name',
-      'package',
+      'packing',
       'quantity',
       'category',
       'unit',
@@ -86,9 +86,9 @@ export const ProductForm = ({
     },
     {
       label: 'Опаковка',
-      defaultValue: product?.package || '',
-      name: 'package',
-      error: errors.package || '',
+      defaultValue: product?.packing || '',
+      name: 'packing',
+      error: errors.packing || '',
       type: 'number',
       hint: 'Размер на опаковката на всеки продукт',
       required: true

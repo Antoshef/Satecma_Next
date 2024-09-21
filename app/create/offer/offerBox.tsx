@@ -7,9 +7,8 @@ import useToast from '@/products/utils/useToast';
 import Image from 'next/image';
 import { FormEvent, useRef, useState } from 'react';
 import { SATECMA_LOGO } from '../invoice/constants';
-import { Product } from '../invoice/types';
 import { TableItems } from '../table/tableItems';
-import { TableServices } from '../table/tableServices';
+import { Product } from '@/products/utils/types';
 import { useTableItems } from '../table/useTableItems';
 
 interface OfferBoxProps {
@@ -36,14 +35,11 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
   });
   const {
     items,
-    services,
     total,
     addItem,
     itemChangeHandler,
     itemSelectHandler,
-    removeItem,
-    serviceChangeHandler,
-    serviceSelectHandler
+    removeItem
   } = useTableItems({ selectedProduct, setSelectedProduct });
 
   const productChangeHandler = (item: { name: string }) => {
@@ -189,14 +185,6 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
               className="border-gray-800 border-b text-right"
               itemChangeHandler={itemChangeHandler}
               itemSelectHandler={itemSelectHandler}
-              removeItem={removeItem}
-            />
-            <TableServices
-              services={services}
-              isFieldsDisabled={isFieldsDisabled}
-              className="border-gray-800 border-b text-right"
-              serviceChangeHandler={serviceChangeHandler}
-              serviceSelectHandler={serviceSelectHandler}
               removeItem={removeItem}
             />
 

@@ -1,7 +1,6 @@
 import { Button } from '@/components/button';
 import { SelectField } from '@/components/selectField/SelectField';
 import { TextField } from '@/components/textField/TextField';
-import { StoreUnits } from '@/products/utils/types';
 import { Item } from '../invoice/types';
 
 interface TableItemsProps {
@@ -26,10 +25,9 @@ export const TableItems = ({
       code,
       name,
       packing,
-      currentPackage,
       discount,
       quantity,
-      price,
+      sellPrice,
       totalPrice,
       unit
     }) => (
@@ -52,21 +50,21 @@ export const TableItems = ({
             isFieldsDisabled={isFieldsDisabled}
             onChange={itemChangeHandler}
           />
-          {` ${StoreUnits.pcs}`}
+          {unit}
         </td>
         <td>
-          <SelectField
-            name="currentPackage"
+          {/* <SelectField
+            name="package"
             data-code={code}
             isFieldsDisabled={isFieldsDisabled}
-            value={currentPackage.toString()}
+            value={pkg}
             values={packing.split(', ')}
             onChange={itemSelectHandler}
           />
-          {` ${unit}`}
+          {` ${unit}`} */}
         </td>
 
-        <td>{`${(price * currentPackage).toFixed(2)} лв.`}</td>
+        <td>{`${sellPrice.toFixed(2)} лв.`}</td>
         <td>
           <TextField
             smallField

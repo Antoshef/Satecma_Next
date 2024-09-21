@@ -9,7 +9,7 @@ const mockProducts: Product[] = [
   {
     code: 'P001',
     name: 'Product 1',
-    package: 1,
+    packing: 1,
     unit: 'kg',
     color: 'Red',
     percentageIncrease: 10,
@@ -20,7 +20,7 @@ const mockProducts: Product[] = [
   {
     code: 'P002',
     name: 'Product 2',
-    package: 1,
+    packing: 1,
     unit: 'kg',
     color: 'Blue',
     percentageIncrease: 15,
@@ -31,7 +31,7 @@ const mockProducts: Product[] = [
   {
     code: 'P003',
     name: 'Product 3',
-    package: 1,
+    packing: 1,
     unit: 'kg',
     color: 'Green',
     percentageIncrease: 20,

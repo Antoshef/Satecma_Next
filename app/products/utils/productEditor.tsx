@@ -63,7 +63,7 @@ export const ProductEditor = ({
           code: '',
           name: '',
           category: 'Други',
-          package: 1,
+          packing: 1,
           unit: 'л',
           color: '',
           buyPrice: 0,

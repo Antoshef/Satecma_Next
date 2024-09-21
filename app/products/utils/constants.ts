@@ -14,7 +14,7 @@ export const headCells: readonly HeadCell<Product>[] = [
     visible: true
   },
   {
-    id: 'package',
+    id: 'packing',
     numeric: true,
     label: 'Опаковка',
     visible: true

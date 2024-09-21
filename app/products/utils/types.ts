@@ -8,7 +8,7 @@ export interface Product {
   code: string;
   name: string;
   unit: string;
-  package: number;
+  packing: number;
   quantity: number;
   color?: string;
   buyPrice?: number;
@@ -18,7 +18,7 @@ export interface Product {
 }
 
 export interface InvoiceProductData
-  extends Pick<Product, 'code' | 'package' | 'quantity' | 'unit'>,
+  extends Pick<Product, 'code' | 'packing' | 'quantity' | 'unit'>,
     Pick<Product, 'sellPrice'> {
   totalQuantity: number;
   totalPrice: number;

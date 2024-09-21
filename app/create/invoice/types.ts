@@ -3,10 +3,10 @@ import { Product } from '@/products/utils/types';
 export interface Item
   extends Pick<
     Product,
-    'name' | 'code' | 'sellPrice' | 'unit' | 'package' | 'quantity'
+    'name' | 'code' | 'sellPrice' | 'unit' | 'packing' | 'quantity'
   > {
-  totalPrice: string;
-  VAT: string;
+  totalPrice: number;
+  VAT: number;
   discount: number;
 }
 

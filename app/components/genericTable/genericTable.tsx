@@ -1,26 +1,24 @@
+// GenericTable.tsx
 import React, { MouseEvent, ChangeEvent } from 'react';
-import { EnhancedTableHead } from '@/products/utils/enhancedTableHead';
-import { Product, Order, HeadCell } from '@/products/utils/types';
-import { headCells } from '@/products/utils/constants';
+import { HeadCell, Order } from '@/products/utils/types';
+import { EnhancedTableHead } from './enhancedTableHead';
 
-interface ProductsTableProps {
-  headCells: readonly HeadCell<Product>[];
+interface GenericTableProps<T> {
+  headCells: readonly HeadCell<T>[];
   order: Order;
-  orderBy: keyof Product;
-  handleRequestSort: (
-    event: MouseEvent<unknown>,
-    property: keyof Product
-  ) => void;
+  orderBy: keyof T;
+  handleRequestSort: (event: MouseEvent<unknown>, property: keyof T) => void;
   handleSelectAllClick: (event: ChangeEvent<HTMLInputElement>) => void;
-  handleClick: (event: MouseEvent<unknown>, product: Product) => void;
-  isSelected: (product: Product) => boolean;
-  selected: Product[];
-  filteredProducts: Product[];
-  visibleRows: Product[];
+  handleClick: (event: MouseEvent<unknown>, item: T) => void;
+  isSelected: (item: T) => boolean;
+  selected: T[];
+  filteredItems: T[];
+  visibleRows: T[];
   emptyRows: number;
 }
 
-const ProductsTable: React.FC<ProductsTableProps> = ({
+const GenericTable = <T,>({
+  headCells,
   order,
   orderBy,
   handleRequestSort,
@@ -28,10 +26,10 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
   handleClick,
   isSelected,
   selected,
-  filteredProducts,
+  filteredItems,
   visibleRows,
   emptyRows
-}) => {
+}: GenericTableProps<T>) => {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full text-sm">
@@ -42,7 +40,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
           onRequestSort={handleRequestSort}
           onSelectAllClick={handleSelectAllClick}
           numSelected={selected.length}
-          rowCount={filteredProducts.length}
+          rowCount={filteredItems.length}
         />
         <tbody>
           {visibleRows.map((row, index) => {
@@ -51,7 +49,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
 
             return (
               <tr
-                key={row.code + index}
+                key={index}
                 onClick={(event) => handleClick(event, row)}
                 className={`cursor-pointer ${
                   isItemSelected
@@ -76,7 +74,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                     key={headCell.id as string}
                     className={`p-2 text-right ${headCell.numeric ? 'text-right' : 'text-left'}`}
                   >
-                    {row[headCell.id]}
+                    {row[headCell.id] as string}
                   </td>
                 ))}
               </tr>
@@ -97,4 +95,4 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
   );
 };
 
-export default ProductsTable;
+export default GenericTable;

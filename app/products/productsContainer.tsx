@@ -3,13 +3,13 @@
 import { RowsPerPage } from '@/components/rowsPerPage';
 import { baseUrl } from '@/constants';
 import { headCells } from '@/products/utils/constants';
-import { EnhancedTableToolbar } from '@/products/utils/enhancedTableToolbar';
 import { ProductEditor } from '@/products/utils/productEditor';
 import { EncancedMode, Order, Product } from '@/products/utils/types';
 import { getComparator } from '@/utils/getComparator';
 import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from 'react';
 import useToast from './utils/useToast';
-import ProductsTable from './productsTable';
+import { EnhancedTableToolbar } from '@/components/genericTable/enhancedTableToolbar';
+import GenericTable from '@/components/genericTable/genericTable';
 
 interface Props {
   data: Product[];
@@ -28,7 +28,7 @@ export default function ProductsContainer({ data }: Props) {
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [mode, setMode] = useState<EncancedMode>(EncancedMode.None);
 
-  const { Toast, notify } = useToast();
+  const { ToastContainer, notify } = useToast();
 
   const handleRequestSort = (
     event: MouseEvent<unknown>,
@@ -46,26 +46,6 @@ export default function ProductsContainer({ data }: Props) {
       return;
     }
     setSelected([]);
-  };
-
-  const handleClick = (event: MouseEvent<unknown>, product: Product) => {
-    const selectedIndex = selected.indexOf(product);
-    let newSelected: Product[] = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, product);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -87,7 +67,8 @@ export default function ProductsContainer({ data }: Props) {
     setFilteredProducts(sortedProducts);
   };
 
-  const isSelected = (product: Product) => selected.indexOf(product) !== -1;
+  const isSelected = (code: string) =>
+    selected.some((product) => product.code === code);
 
   const handleCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const category = event.target.value;
@@ -199,7 +180,7 @@ export default function ProductsContainer({ data }: Props) {
 
   return (
     <div className="m-4">
-      <Toast />
+      <ToastContainer />
       <div className="w-full rounded-b-xl bg-theme-light-background dark:bg-theme-dark-background shadow">
         <EnhancedTableToolbar
           title="Продукти"
@@ -242,16 +223,24 @@ export default function ProductsContainer({ data }: Props) {
             className="ml-4 p-2 border rounded text-theme-light-primary dark:text-theme-dark-primary bg-theme-light-background dark:bg-theme-dark-background border-theme-light-secondary dark:border-theme-dark-secondary"
           />
         </div>
-        <ProductsTable
+        <GenericTable<Product>
           headCells={headCells}
           order={order}
           orderBy={orderBy}
           handleRequestSort={handleRequestSort}
           handleSelectAllClick={handleSelectAllClick}
-          handleClick={handleClick}
-          isSelected={isSelected}
+          handleClick={(event, product) =>
+            setSelected((state) => {
+              if (state.some((p) => p.code === product.code)) {
+                return state.filter((p) => p.code !== product.code);
+              } else {
+                return [...state, product];
+              }
+            })
+          }
+          isSelected={(product) => isSelected(product.code)}
           selected={selected}
-          filteredProducts={filteredProducts}
+          filteredItems={filteredProducts}
           visibleRows={visibleRows}
           emptyRows={emptyRows}
         />

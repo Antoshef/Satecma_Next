@@ -30,7 +30,7 @@ const updateProducts = async (req: NextApiRequest, res: NextApiResponse) => {
     const products = await queryAsync<Product[]>('SELECT * FROM products_test');
 
     for (const item of filteredItems) {
-      if (!item.quantity || !item.code || !item.package) {
+      if (!item.quantity || !item.code || !item.packing) {
         return res
           .status(400)
           .json({ message: 'Missing required fields', status: 400 });
@@ -92,7 +92,7 @@ const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
   const requiredFields: (keyof Product)[] = [
     'code',
     'name',
-    'package',
+    'packing',
     'category',
     'unit',
     'color',
@@ -129,13 +129,13 @@ const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     const query = `
-      INSERT INTO products_test (code, name, package, unit, color, category, buyPrice, sellPrice, percentageIncrease, quantity)
+      INSERT INTO products_test (code, name, packing, unit, color, category, buyPrice, sellPrice, percentageIncrease, quantity)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const values = [
       product.code,
       product.name,
-      product.package,
+      product.packing,
       product.unit,
       product.color,
       product.category,

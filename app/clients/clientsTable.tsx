@@ -1,16 +1,15 @@
 'use client';
+
 import { RowsPerPage } from '@/components/rowsPerPage';
-import { EnhancedTableHead } from '@/products/utils/enhancedTableHead';
-import { EnhancedTableToolbar } from '@/products/utils/enhancedTableToolbar';
 import useToast from '@/products/utils/useToast';
 import { getComparator } from '@/utils/getComparator';
-import Link from 'next/link';
 import { ChangeEvent, MouseEvent, useMemo, useState } from 'react';
 import { ClientEditor } from './utils/clientEditor';
 import { headCells } from './utils/constants';
 import { Client } from './utils/types';
-
-const createKey = (client: Client) => `${client.name}-${client.eik}`;
+import { EncancedMode } from '@/products/utils/types';
+import { EnhancedTableToolbar } from '@/components/genericTable/enhancedTableToolbar';
+import GenericTable from '@/components/genericTable/genericTable';
 
 interface PageProps {
   data: Client[];
@@ -25,7 +24,8 @@ export default function ClientsTable({ data }: PageProps) {
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [editMode, setEditMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const { Toast, notify } = useToast();
+  const [mode, setMode] = useState<EncancedMode>(EncancedMode.None);
+  const { ToastContainer, notify } = useToast();
 
   const isSelected = (eik: string) =>
     selected.some((client) => client.eik === eik);
@@ -95,10 +95,6 @@ export default function ClientsTable({ data }: PageProps) {
     }
   };
 
-  const linkClickHandler = (e: MouseEvent<HTMLAnchorElement>) => {
-    e.stopPropagation();
-  };
-
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0
@@ -115,13 +111,14 @@ export default function ClientsTable({ data }: PageProps) {
 
   return (
     <div className="p-4">
-      <Toast />
+      <ToastContainer />
       <div className="w-full rounded-b-xl bg-theme-light-background dark:bg-theme-dark-background shadow">
         <EnhancedTableToolbar
           title="Клиенти"
           isSelected={selected.length > 0}
-          onEdit={setEditMode}
           selectedCount={selected.length}
+          mode={mode}
+          setMode={setMode}
         />
         <ClientEditor
           editMode={editMode}
@@ -141,97 +138,28 @@ export default function ClientsTable({ data }: PageProps) {
             className="ml-4 p-2 border rounded text-theme-light-primary dark:text-theme-dark-primary bg-theme-light-background dark:bg-theme-dark-background border-theme-light-secondary dark:border-theme-dark-secondary"
           />
         </div>
-        <div className="overflow-x-auto">
-          <table className={'min-w-full text-sm'}>
-            <EnhancedTableHead
-              headCells={headCells}
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={handleRequestSort}
-              onSelectAllClick={handleSelectAllClick}
-              numSelected={selected.length}
-              rowCount={filteredClients.length}
-            />
-            <tbody>
-              {visibleRows.map((row, index) => {
-                const isItemSelected = isSelected(row.eik);
-                const labelId = `enhanced-table-checkbox-${index}`;
-
-                return (
-                  <tr
-                    key={createKey(row)}
-                    onClick={() =>
-                      setSelected((state) => {
-                        if (state.some((client) => client.eik === row.eik)) {
-                          setEditMode(false);
-                          return state.filter(
-                            (client) => client.eik !== row.eik
-                          );
-                        } else {
-                          return [...state, row];
-                        }
-                      })
-                    }
-                    className={`cursor-pointer ${
-                      isItemSelected
-                        ? 'bg-theme-light-secondary text-theme-light-white dark:bg-theme-dark-secondary'
-                        : ''
-                    }`}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                  >
-                    <td className="p-2">
-                      <input
-                        type="checkbox"
-                        checked={isItemSelected}
-                        onChange={() => {}}
-                        className="form-checkbox h-5 w-5 text-theme-light-primary dark:text-theme-dark-primary"
-                        aria-labelledby={labelId}
-                      />
-                    </td>
-                    <td className="p-2" id={labelId}>
-                      {row.name}
-                    </td>
-                    <td className="p-2 text-right">
-                      <Link
-                        onClick={linkClickHandler}
-                        href={`tel:${row.phone}`}
-                        className={`${isItemSelected && 'text-theme-light-white'} text-theme-light-primary dark:text-theme-dark-primary hover:underline`}
-                      >
-                        {row.phone}
-                      </Link>
-                    </td>
-                    <td className="p-2 text-right">
-                      <Link
-                        onClick={linkClickHandler}
-                        target="_blank"
-                        href={`mailto:${row.email}`}
-                        className={`${isItemSelected && 'text-theme-light-white'}text-theme-light-primary dark:text-theme-dark-primary hover:underline`}
-                      >
-                        {row.email}
-                      </Link>
-                    </td>
-                    <td className="p-2 text-right">{row.city}</td>
-                    <td className="p-2 text-right">{row.address}</td>
-                    <td className="p-2 text-right">{row.director}</td>
-                    <td className="p-2 text-right">{row.eik}</td>
-                    <td className="p-2 text-right">{row.vat}</td>
-                  </tr>
-                );
-              })}
-              {emptyRows > 0 && (
-                <tr
-                  style={{
-                    height: 33 * emptyRows
-                  }}
-                >
-                  <td colSpan={9} />
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+        <GenericTable<Client>
+          headCells={headCells}
+          order={order}
+          orderBy={orderBy}
+          handleRequestSort={handleRequestSort}
+          handleSelectAllClick={handleSelectAllClick}
+          handleClick={(event, client) =>
+            setSelected((state) => {
+              if (state.some((c) => c.eik === client.eik)) {
+                setEditMode(false);
+                return state.filter((c) => c.eik !== client.eik);
+              } else {
+                return [...state, client];
+              }
+            })
+          }
+          isSelected={(client) => isSelected(client.eik)}
+          selected={selected}
+          filteredItems={filteredClients}
+          visibleRows={visibleRows}
+          emptyRows={emptyRows}
+        />
         <RowsPerPage
           data={filteredClients}
           handleChangePage={handleChangePage}

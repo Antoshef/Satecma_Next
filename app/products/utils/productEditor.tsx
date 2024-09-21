@@ -1,6 +1,9 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { EncancedMode, Product } from './types';
-import { ProductForm } from './productForm';
+import {
+  GenericForm,
+  GenericFormField
+} from '@/components/genericTable/genericForm';
 
 const ProductActions = (
   submitHandler: () => void,
@@ -33,11 +36,13 @@ interface ProductEditorProps {
 export const ProductEditor = ({
   mode = EncancedMode.None,
   selected,
-  categories,
   setMode,
   onSubmit
 }: ProductEditorProps) => {
   const [product, setProduct] = useState<Product | undefined>();
+  const [errors, setErrors] = useState<Partial<Record<keyof Product, string>>>(
+    {}
+  );
 
   const handleChange = (key: keyof Product, value: string | number) => {
     setProduct(
@@ -48,12 +53,134 @@ export const ProductEditor = ({
         }
     );
   };
-  console.log(product, 'DATA');
 
-  const submitHandler = () => {
-    if (product) {
+  const validateFields = () => {
+    const newErrors: Partial<Record<keyof Product, string>> = {};
+    const requiredFields: (keyof Product)[] = [
+      'code',
+      'name',
+      'packing',
+      'quantity',
+      'category',
+      'unit',
+      'color',
+      'percentageIncrease',
+      'sellPrice'
+    ];
+
+    requiredFields.forEach((field) => {
+      if (!product || !product[field]) {
+        newErrors[field] = 'Полето не може да бъде празно';
+      }
+    });
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = () => {
+    if (validateFields() && product) {
       onSubmit(product);
     }
+  };
+
+  const fields: GenericFormField<Product>[] = [
+    {
+      label: 'Код',
+      defaultValue: product?.code || '',
+      name: 'code',
+      error: errors.code || '',
+      type: 'text',
+      hint: 'Кодът трябва да бъде уникален',
+      required: true
+    },
+    {
+      label: 'Име',
+      defaultValue: product?.name || '',
+      name: 'name',
+      error: errors.name || '',
+      type: 'text',
+      hint: 'Въведете име на продукта',
+      required: true
+    },
+    {
+      label: 'Мерна единица',
+      defaultValue: product?.unit || '',
+      name: 'unit',
+      error: errors.unit || '',
+      type: 'select',
+      hint: 'Изберете единица за измерване, например кг, л, м2, мл и други подобни',
+      options: ['л', 'кг', 'м2', 'м3', 'бр'],
+      required: true
+    },
+    {
+      label: 'Опаковка',
+      defaultValue: product?.packing || '',
+      name: 'packing',
+      error: errors.packing || '',
+      type: 'number',
+      hint: 'Размер на опаковката на всеки продукт',
+      required: true
+    },
+    {
+      label: 'Количество',
+      defaultValue: product?.quantity || '',
+      name: 'quantity',
+      error: errors.quantity || '',
+      type: 'number',
+      hint: 'Въведете броя на опаковките',
+      required: false
+    },
+    {
+      label: 'Цвят',
+      defaultValue: product?.color || '',
+      name: 'color',
+      error: errors.color || '',
+      type: 'text',
+      hint: 'Въведете цвят на продукта',
+      required: false
+    },
+    {
+      label: 'Доставна цена',
+      defaultValue: product?.buyPrice || '',
+      name: 'buyPrice',
+      error: errors.buyPrice || '',
+      type: 'number',
+      hint: 'Доставна единична цена за опаковка',
+      required: false
+    },
+    {
+      label: 'Процентно увеличение',
+      defaultValue: product?.percentageIncrease || '',
+      name: 'percentageIncrease',
+      error: errors.percentageIncrease || '',
+      type: 'number',
+      hint: 'Въведете процентното увеличение, което искате да добавите към цената на продукта, за да изчислите продажната му цена',
+      required: false
+    },
+    {
+      label: 'Продажна цена',
+      defaultValue: product?.sellPrice || '',
+      name: 'sellPrice',
+      error: errors.sellPrice || '',
+      type: 'number',
+      hint: 'Единична продажна цена за опаковка',
+      required: true
+    },
+    {
+      label: 'Категория',
+      defaultValue: product?.category || '',
+      name: 'category',
+      error: errors.category || '',
+      type: 'select',
+      options: ['Други'],
+      hint: 'Изберете категория от списъка с категории или въведете нова',
+      required: false
+    }
+  ];
+
+  const handleFieldChange = (name: keyof Product, value: string | number) => {
+    handleChange(name, value);
   };
 
   useEffect(() => {
@@ -83,13 +210,10 @@ export const ProductEditor = ({
   return (
     <>
       {(mode === EncancedMode.Create || mode === EncancedMode.Edit) && (
-        <ProductForm
-          product={product}
-          categories={categories}
-          handleChange={handleChange}
-          submitHandler={submitHandler}
-          setMode={setMode}
-          ProductActions={ProductActions}
+        <GenericForm
+          fields={fields}
+          handleChange={handleFieldChange}
+          ProductActions={ProductActions(handleSubmit, setMode)}
         />
       )}
       {mode === EncancedMode.None && null}

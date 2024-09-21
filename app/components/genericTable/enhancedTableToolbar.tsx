@@ -1,7 +1,7 @@
 import { Dispatch, FC, SetStateAction, useState } from 'react';
 import Tooltip from '@/components/tooltip';
 import DeleteModal from '@/components/modals/deleteModal';
-import { EncancedMode } from './types';
+import { EncancedMode } from '@/products/utils/types';
 
 interface EnhancedTableToolbarProps {
   title: string;

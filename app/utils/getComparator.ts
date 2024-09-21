@@ -4,8 +4,8 @@ export function getComparator<T, Key extends keyof T>(
   order: Order,
   orderBy: Key
 ): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string }
+  a: { [key in Key]: number | string | undefined },
+  b: { [key in Key]: number | string | undefined }
 ) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)

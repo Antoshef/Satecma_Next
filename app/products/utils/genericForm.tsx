@@ -8,6 +8,7 @@ export interface GenericFormField<T> {
   type: 'text' | 'number' | 'select';
   options?: string[]; // Only for select fields
   hint?: string;
+  required: boolean;
   render?: () => JSX.Element;
 }
 
@@ -28,8 +29,8 @@ export const GenericForm = <T,>({
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-theme-light-background dark:bg-theme-dark-background">
       {fields.map((field) => (
         <div key={String(field.key)} className="relative">
-          <label className="text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary flex items-center">
-            {field.label}
+          <div className="text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary flex items-center">
+            <label>{field.label}</label>
             {field.hint && (
               <div
                 className="ml-2 relative text-theme-light-secondary"
@@ -55,7 +56,7 @@ export const GenericForm = <T,>({
                     strokeLinejoin="round"
                     strokeWidth="2"
                     d="M12 16v-4m0-4h.01"
-                  ></path>
+                  />
                 </svg>
                 {hoveredField === field.key && (
                   <div className="absolute left-1/2 -top-3 transform -translate-x-1/2 -translate-y-full mt-2 w-48 p-2 bg-white border border-gray-300 rounded-md shadow-lg text-sm text-theme-light-primary z-10">
@@ -64,7 +65,7 @@ export const GenericForm = <T,>({
                 )}
               </div>
             )}
-          </label>
+          </div>
           {field.render?.()}
           {!field.render && field.type === 'select' && (
             <select

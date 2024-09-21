@@ -1,12 +1,12 @@
 import { Dispatch, SetStateAction, useState } from 'react';
-import { EncancedMode, StoreProduct, StoreUnits } from './types';
+import { EncancedMode, Product } from './types';
 import { GenericForm, GenericFormField } from './genericForm';
 import { GenericInput } from '@/components/input';
 
 interface ProductFormProps {
-  product: StoreProduct | undefined;
+  product: Product | undefined;
   categories: string[];
-  handleChange: (key: keyof StoreProduct, value: string | number) => void;
+  handleChange: (key: keyof Product, value: string | number) => void;
   submitHandler: () => void;
   setMode: Dispatch<SetStateAction<EncancedMode>>;
   ProductActions: (
@@ -23,16 +23,16 @@ export const ProductForm = ({
   setMode,
   ProductActions
 }: ProductFormProps) => {
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof StoreProduct, string>>
-  >({});
+  const [errors, setErrors] = useState<Partial<Record<keyof Product, string>>>(
+    {}
+  );
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     product?.category || ''
   );
 
   const validateFields = () => {
-    const newErrors: Partial<Record<keyof StoreProduct, string>> = {};
-    const requiredFields: (keyof StoreProduct)[] = [
+    const newErrors: Partial<Record<keyof Product, string>> = {};
+    const requiredFields: (keyof Product)[] = [
       'code',
       'name',
       'package',
@@ -40,9 +40,8 @@ export const ProductForm = ({
       'category',
       'unit',
       'color',
-      'packagePrice',
-      'percentage_increase',
-      'price',
+      'percentageIncrease',
+      'sellPrice',
       'totalQuantity'
     ];
 
@@ -67,14 +66,15 @@ export const ProductForm = ({
     handleChange('category', category.name);
   };
 
-  const fields: GenericFormField<StoreProduct>[] = [
+  const fields: GenericFormField<Product>[] = [
     {
       label: 'Код',
       defaultValue: product?.code || '',
       key: 'code',
       error: errors.code || '',
       type: 'text',
-      hint: 'Кодът трябва да бъде уникален'
+      hint: 'Кодът трябва да бъде уникален',
+      required: true
     },
     {
       label: 'Име',
@@ -82,7 +82,8 @@ export const ProductForm = ({
       key: 'name',
       error: errors.name || '',
       type: 'text',
-      hint: 'Въведете име на продукта'
+      hint: 'Въведете име на продукта',
+      required: true
     },
     {
       label: 'Опаковка',
@@ -90,7 +91,8 @@ export const ProductForm = ({
       key: 'package',
       error: errors.package || '',
       type: 'number',
-      hint: 'Въведете количеството което се съдържа във всяка опаковка'
+      hint: 'Въведете количеството което се съдържа във всяка опаковка',
+      required: true
     },
     {
       label: 'Количество',
@@ -98,7 +100,8 @@ export const ProductForm = ({
       key: 'quantity',
       error: errors.quantity || '',
       type: 'number',
-      hint: 'Въведете броя на опаковките'
+      hint: 'Въведете броя на опаковките',
+      required: false
     },
     {
       label: 'Категория',
@@ -107,6 +110,7 @@ export const ProductForm = ({
       error: errors.category || '',
       type: 'text',
       hint: 'Изберете категория от списъка с категории или въведете нова',
+      required: false,
       render: () => (
         <GenericInput
           data={categories.map((name) => ({ name }))}
@@ -122,40 +126,36 @@ export const ProductForm = ({
       key: 'color',
       error: errors.color || '',
       type: 'text',
-      hint: 'Въведете цвят на продукта'
+      hint: 'Въведете цвят на продукта',
+      required: false
     },
     {
-      label: 'Единица',
+      label: 'Мерна единица',
       defaultValue: product?.unit || '',
       key: 'unit',
       error: errors.unit || '',
       type: 'select',
       hint: 'Изберете единица за измерване, например кг, л, м2, мл и други подобни',
-      options: Object.values(StoreUnits)
+      options: [],
+      required: true
     },
     {
-      label: 'Цена',
-      defaultValue: product?.price || '',
-      key: 'price',
-      error: errors.price || '',
+      label: 'Продажна цена',
+      defaultValue: product?.sellPrice || '',
+      key: 'sellPrice',
+      error: errors.sellPrice || '',
       type: 'number',
-      hint: 'Въведете единична цена за вашия продукт, примерно за килограм или литър'
+      hint: 'Въведете единична цена за вашия продукт, примерно за килограм или литър',
+      required: true
     },
     {
       label: 'Процентно увеличение',
-      defaultValue: product?.percentage_increase || '',
-      key: 'percentage_increase',
-      error: errors.percentage_increase || '',
+      defaultValue: product?.percentageIncrease || '',
+      key: 'percentageIncrease',
+      error: errors.percentageIncrease || '',
       type: 'number',
-      hint: 'Въведете процентното увеличение, което искате да добавите към цената на продукта, за да изчислите продажната му цена'
-    },
-    {
-      label: 'Цена на опаковка',
-      defaultValue: product?.packagePrice || '',
-      key: 'packagePrice',
-      error: errors.packagePrice || '',
-      type: 'number',
-      hint: 'Въведете цената на опаковката, която сте закупили'
+      hint: 'Въведете процентното увеличение, което искате да добавите към цената на продукта, за да изчислите продажната му цена',
+      required: false
     },
     {
       label: 'Общо количество',
@@ -163,14 +163,12 @@ export const ProductForm = ({
       key: 'totalQuantity',
       error: errors.totalQuantity || '',
       type: 'number',
-      hint: 'Въведете общото количество на продукта, което имате в наличност'
+      hint: 'Въведете общото количество на продукта, което имате в наличност',
+      required: false
     }
   ];
 
-  const handleFieldChange = (
-    key: keyof StoreProduct,
-    value: string | number
-  ) => {
+  const handleFieldChange = (key: keyof Product, value: string | number) => {
     handleChange(key, value);
   };
 

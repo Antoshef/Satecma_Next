@@ -2,16 +2,10 @@
 
 import { RowsPerPage } from '@/components/rowsPerPage';
 import { baseUrl } from '@/constants';
-import { Product } from '@/create/invoice/types';
 import { headCells } from '@/products/utils/constants';
 import { EnhancedTableToolbar } from '@/products/utils/enhancedTableToolbar';
 import { ProductEditor } from '@/products/utils/productEditor';
-import {
-  EncancedMode,
-  Order,
-  StoreProduct,
-  StoreUnits
-} from '@/products/utils/types';
+import { EncancedMode, Order, Product } from '@/products/utils/types';
 import { handleProductsMap } from '@/products/utils/utils';
 import { getComparator } from '@/utils/getComparator';
 import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from 'react';
@@ -23,14 +17,14 @@ interface Props {
 }
 
 export default function ProductsContainer({ data }: Props) {
-  const [products, setProducts] = useState<StoreProduct[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<StoreProduct[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [order, setOrder] = useState<Order>('asc');
-  const [orderBy, setOrderBy] = useState<keyof StoreProduct>('name');
-  const [selected, setSelected] = useState<StoreProduct[]>([]);
+  const [orderBy, setOrderBy] = useState<keyof Product>('name');
+  const [selected, setSelected] = useState<Product[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [mode, setMode] = useState<EncancedMode>(EncancedMode.None);
@@ -39,7 +33,7 @@ export default function ProductsContainer({ data }: Props) {
 
   const handleRequestSort = (
     event: MouseEvent<unknown>,
-    property: keyof StoreProduct
+    property: keyof Product
   ) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -55,9 +49,9 @@ export default function ProductsContainer({ data }: Props) {
     setSelected([]);
   };
 
-  const handleClick = (event: MouseEvent<unknown>, product: StoreProduct) => {
+  const handleClick = (event: MouseEvent<unknown>, product: Product) => {
     const selectedIndex = selected.indexOf(product);
-    let newSelected: StoreProduct[] = [];
+    let newSelected: Product[] = [];
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, product);
@@ -84,10 +78,7 @@ export default function ProductsContainer({ data }: Props) {
     setPage(0);
   };
 
-  const sortAndFilterProducts = (
-    products: StoreProduct[],
-    category: string
-  ) => {
+  const sortAndFilterProducts = (products: Product[], category: string) => {
     let sortedProducts = products.sort((a, b) => a.name.localeCompare(b.name));
     if (category !== 'all') {
       sortedProducts = sortedProducts.filter(
@@ -97,8 +88,7 @@ export default function ProductsContainer({ data }: Props) {
     setFilteredProducts(sortedProducts);
   };
 
-  const isSelected = (product: StoreProduct) =>
-    selected.indexOf(product) !== -1;
+  const isSelected = (product: Product) => selected.indexOf(product) !== -1;
 
   const handleCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const category = event.target.value;
@@ -132,7 +122,7 @@ export default function ProductsContainer({ data }: Props) {
     [order, orderBy, page, rowsPerPage, filteredProducts]
   );
 
-  const onEditSubmit = async (product: StoreProduct) => {
+  const onEditSubmit = async (product: Product) => {
     try {
       await fetch(`${baseUrl}/api/products/${product.code}`, {
         method: 'PUT',
@@ -143,7 +133,7 @@ export default function ProductsContainer({ data }: Props) {
       );
       setProducts(updatedProducts);
       setSelected([]);
-      notify('StoreProduct updated', 'success');
+      notify('Product updated', 'success');
     } catch (error) {
       notify('Error updating product', 'error');
     }
@@ -166,7 +156,7 @@ export default function ProductsContainer({ data }: Props) {
     }
   };
 
-  const createHandler = async (product: StoreProduct) => {
+  const createHandler = async (product: Product) => {
     try {
       await fetch(`${baseUrl}/api/products`, {
         method: 'POST',
@@ -181,7 +171,7 @@ export default function ProductsContainer({ data }: Props) {
     }
   };
 
-  const submitHandler = async (product: StoreProduct) => {
+  const submitHandler = async (product: Product) => {
     switch (mode) {
       case EncancedMode.Edit:
         onEditSubmit(product);
@@ -196,15 +186,9 @@ export default function ProductsContainer({ data }: Props) {
 
   useEffect(() => {
     const uniqueCategories = Array.from(
-      new Set(products.map((p) => p.category))
+      new Set(products.map((p) => p.category).filter((c) => c !== undefined))
     );
-    const filtered = products.map((p) => {
-      return {
-        ...p,
-        total: p.unit === StoreUnits.pcs ? p.quantity : p.quantity * p.package
-      };
-    });
-    setFilteredProducts(filtered);
+    setFilteredProducts(products);
     setCategories(uniqueCategories);
     sortAndFilterProducts(products, 'all');
   }, [products]);

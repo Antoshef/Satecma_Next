@@ -38,7 +38,7 @@ export const OfferIcon = ({ isActive }: { isActive?: boolean }) => {
       <g transform="scale(1.5) translate(10.5, 10.5)">
         <path
           stroke={isActive ? '#fff' : 'currentColor'}
-          stroke-linejoin="round"
+          strokeLinejoin="round"
           fill="none"
           d="M18 2H6C3.79086 2 2 3.79086 2 6V18C2 20.2091 3.79086 22 6 22H11.8431C12.904 22 13.9214 21.5786 14.6716 20.8284L20.8284 14.6716C21.5786 13.9214 22 12.904 22 11.8431V6C22 3.79086 20.2091 2 18 2Z"
         />

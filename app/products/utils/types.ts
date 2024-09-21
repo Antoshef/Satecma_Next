@@ -1,39 +1,29 @@
-import { Product } from '@/create/invoice/types';
-
 export type ToastSeverity = 'success' | 'error' | 'info' | 'warning';
 export interface ToastMessage {
   severity: ToastSeverity;
   text?: string;
 }
 
-export type StoreProduct = {
+export interface Product {
+  code: string;
+  name: string;
   package: number;
-  packagePrice: number;
+  category: string;
+  unit: string;
+  color: string;
+  buyPrice: number;
+  sellPrice: number;
+  percentageIncrease: number;
   quantity: number;
   totalQuantity: number;
-} & Pick<
-  Product,
-  | 'category'
-  | 'color'
-  | 'name'
-  | 'percentage_increase'
-  | 'price'
-  | 'unit'
-  | 'code'
->;
+}
 
 export interface InvoiceProductData
-  extends Pick<StoreProduct, 'code' | 'package' | 'quantity' | 'unit'>,
-    Pick<Product, 'price'> {
+  extends Pick<Product, 'code' | 'package' | 'quantity' | 'unit'>,
+    Pick<Product, 'sellPrice'> {
   totalQuantity: number;
   totalPrice: number;
   description: string;
-}
-
-export enum StoreUnits {
-  kg = 'кг.',
-  l = 'л.',
-  pcs = 'бр.'
 }
 
 export enum EncancedMode {
@@ -48,12 +38,7 @@ export interface HeadCell<T> {
   label: string;
   numeric: boolean;
   centered?: boolean;
+  visible?: boolean;
 }
 
 export type Order = 'asc' | 'desc';
-
-export enum SpanishUnits {
-  LITER = 'L',
-  KILOGRAM = 'K',
-  UNIT = 'U'
-}

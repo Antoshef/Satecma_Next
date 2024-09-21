@@ -1,14 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { queryAsync } from '../../../utils/db';
-import { Item, Product } from '@/create/invoice/types';
-import { StoreProduct } from '@/products/utils/types';
+import { Item } from '@/create/invoice/types';
+import { Product } from '@/products/utils/types';
 
 const getProducts = async (res: NextApiResponse) => {
   try {
-    const results = await queryAsync<Product[]>('SELECT * FROM products');
-    if (!results || results.length === 0) {
-      return res.status(404).json({ message: 'Not found' });
-    }
+    const results = await queryAsync<Product[]>('SELECT * FROM products_test');
+    
     return res.json(results);
   } catch (error) {
     console.error('GET error:', error);
@@ -26,15 +24,13 @@ const updateProducts = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({ message: 'No items provided', status: 400 });
   }
 
-  const filteredItems = items.filter(
-    (item) => item.quantity > 0 && item.code !== '0'
-  );
+  const filteredItems = items.filter((item) => item.quantity > 0);
 
   try {
-    const products = await queryAsync<Product[]>('SELECT * FROM products');
+    const products = await queryAsync<Product[]>('SELECT * FROM products_test');
 
     for (const item of filteredItems) {
-      if (!item.quantity || !item.code || !item.currentPackage) {
+      if (!item.quantity || !item.code || !item.package) {
         return res
           .status(400)
           .json({ message: 'Missing required fields', status: 400 });
@@ -49,16 +45,8 @@ const updateProducts = async (req: NextApiRequest, res: NextApiResponse) => {
         continue;
       }
 
-      const packingArr = productToUpdate.packing.split(',').map(Number);
-      const quantityArr = productToUpdate.quantity.split(',').map(Number);
-      const index = packingArr.indexOf(item.currentPackage);
-
-      if (index !== -1 && quantityArr && index >= 0) {
-        quantityArr[index] = quantityArr[index] - item.quantity;
-
-        const query = 'UPDATE products SET quantity = ? WHERE code = ?';
-        await queryAsync(query, [quantityArr.join(', '), item.code]);
-      }
+      const query = 'UPDATE products SET quantity = ? WHERE code = ?';
+      await queryAsync(query, [item.quantity, item.code]);
     }
 
     return res
@@ -74,7 +62,7 @@ const updateProducts = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const deleteProducts = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { products } = JSON.parse(req.body) as { products: StoreProduct[] };
+  const { products } = JSON.parse(req.body) as { products: Product[] };
 
   if (!products || products.length === 0) {
     return res
@@ -85,7 +73,7 @@ const deleteProducts = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const codes = products.map((product) => product.code);
     const placeholders = codes.map(() => '?').join(',');
-    const query = `DELETE FROM products WHERE code IN (${placeholders})`;
+    const query = `DELETE FROM products_test WHERE code IN (${placeholders})`;
     await queryAsync(query, codes);
 
     return res.status(200).json({ message: 'Products deleted', status: 200 });
@@ -99,19 +87,19 @@ const deleteProducts = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { product } = JSON.parse(req.body) as { product: StoreProduct };
+  const { product } = JSON.parse(req.body) as { product: Product };
 
-  const requiredFields: (keyof StoreProduct)[] = [
+  const requiredFields: (keyof Product)[] = [
     'code',
     'name',
     'package',
-    'quantity',
     'category',
     'unit',
     'color',
-    'packagePrice',
-    'percentage_increase',
-    'price',
+    'buyPrice',
+    'sellPrice',
+    'percentageIncrease',
+    'quantity',
     'totalQuantity'
   ];
 
@@ -125,7 +113,7 @@ const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
 
   try {
     // Check if a product with the same code already exists
-    const checkQuery = 'SELECT COUNT(*) as count FROM products WHERE code = ?';
+    const checkQuery = 'SELECT COUNT(*) as count FROM products_test WHERE code = ?';
     const checkValues = [product.code];
     const result = await queryAsync<{ count: number }[]>(
       checkQuery,
@@ -141,8 +129,8 @@ const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     const query = `
-      INSERT INTO products (code, name, packing, unit, color, percentage_increase, price, category, quantity)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO products (code, name, package, unit, color, category, buyPrice, sellPrice, percentageIncrease, quantity, totalQuantity)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const values = [
       product.code,
@@ -150,10 +138,12 @@ const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
       product.package,
       product.unit,
       product.color,
-      product.percentage_increase,
-      product.price,
       product.category,
-      product.quantity
+      product.buyPrice,
+      product.sellPrice,
+      product.percentageIncrease,
+      product.quantity,
+      product.totalQuantity
     ];
 
     await queryAsync(query, values);

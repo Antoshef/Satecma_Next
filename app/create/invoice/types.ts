@@ -1,24 +1,13 @@
-import { StoreUnits } from '../../products/utils/types';
+import { Product } from '@/products/utils/types';
 
 export interface Item
-  extends Pick<Product, 'name' | 'code' | 'price' | 'unit' | 'packing'> {
-  quantity: number;
-  currentPackage: number;
+  extends Pick<
+    Product,
+    'name' | 'code' | 'sellPrice' | 'unit' | 'package' | 'quantity'
+  > {
   totalPrice: string;
   VAT: string;
   discount: number;
-}
-
-export interface Product {
-  code: string;
-  name: string;
-  packing: string;
-  unit: StoreUnits;
-  color: string;
-  percentage_increase: number;
-  price: number;
-  category: string;
-  quantity: string;
 }
 
 export interface Company {
@@ -61,13 +50,6 @@ export interface InvoiceData {
 export interface LatestInvoices {
   original: string;
   proforma: string;
-}
-
-export enum InvoiceIdType {
-  current = 'Текущ номер',
-  previous = 'Предходен номер',
-  proforma = 'Текущ номер',
-  manual = 'Въведи номер'
 }
 
 export enum InvoiceType {

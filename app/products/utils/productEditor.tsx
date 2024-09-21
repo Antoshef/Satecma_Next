@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { EncancedMode, StoreProduct, StoreUnits } from './types';
+import { EncancedMode, Product } from './types';
 import { ProductForm } from './productForm';
 
 const ProductActions = (
@@ -23,11 +23,11 @@ const ProductActions = (
 );
 
 interface ProductEditorProps {
-  selected?: StoreProduct;
+  selected?: Product;
   mode: EncancedMode;
   categories: string[];
   setMode: Dispatch<SetStateAction<EncancedMode>>;
-  onSubmit: (product: StoreProduct) => Promise<void>;
+  onSubmit: (product: Product) => Promise<void>;
 }
 
 export const ProductEditor = ({
@@ -37,9 +37,9 @@ export const ProductEditor = ({
   setMode,
   onSubmit
 }: ProductEditorProps) => {
-  const [product, setProduct] = useState<StoreProduct | undefined>();
+  const [product, setProduct] = useState<Product | undefined>();
 
-  const handleChange = (key: keyof StoreProduct, value: string | number) => {
+  const handleChange = (key: keyof Product, value: string | number) => {
     setProduct(
       (prev) =>
         prev && {
@@ -59,16 +59,16 @@ export const ProductEditor = ({
     switch (mode) {
       case EncancedMode.Create:
         setProduct({
-          category: '',
           code: '',
           name: '',
+          category: '',
           package: 1,
-          quantity: 0,
-          unit: StoreUnits.pcs,
+          unit: '',
           color: '',
-          packagePrice: 1,
-          percentage_increase: 100,
-          price: 1,
+          buyPrice: 0,
+          sellPrice: 1,
+          percentageIncrease: 100,
+          quantity: 0,
           totalQuantity: 0
         });
         break;

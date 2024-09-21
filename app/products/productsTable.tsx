@@ -1,26 +1,26 @@
 import React, { MouseEvent, ChangeEvent } from 'react';
 import { EnhancedTableHead } from '@/products/utils/enhancedTableHead';
-import { StoreProduct, Order, HeadCell } from '@/products/utils/types';
+import { Product, Order, HeadCell } from '@/products/utils/types';
+import { headCells } from '@/products/utils/constants';
 
 interface ProductsTableProps {
-  headCells: readonly HeadCell<StoreProduct>[];
+  headCells: readonly HeadCell<Product>[];
   order: Order;
-  orderBy: keyof StoreProduct;
+  orderBy: keyof Product;
   handleRequestSort: (
     event: MouseEvent<unknown>,
-    property: keyof StoreProduct
+    property: keyof Product
   ) => void;
   handleSelectAllClick: (event: ChangeEvent<HTMLInputElement>) => void;
-  handleClick: (event: MouseEvent<unknown>, product: StoreProduct) => void;
-  isSelected: (product: StoreProduct) => boolean;
-  selected: StoreProduct[];
-  filteredProducts: StoreProduct[];
-  visibleRows: StoreProduct[];
+  handleClick: (event: MouseEvent<unknown>, product: Product) => void;
+  isSelected: (product: Product) => boolean;
+  selected: Product[];
+  filteredProducts: Product[];
+  visibleRows: Product[];
   emptyRows: number;
 }
 
 const ProductsTable: React.FC<ProductsTableProps> = ({
-  headCells,
   order,
   orderBy,
   handleRequestSort,
@@ -71,23 +71,14 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                     aria-labelledby={labelId}
                   />
                 </td>
-                <td className="p-2 text-right">{row.code}</td>
-                <td className="p-2 text-right" id={labelId}>
-                  {row.name}
-                </td>
-                <td className="p-2 text-right">
-                  {(row.price * row.percentage_increase).toFixed(2)} лв.
-                </td>
-                <td className="p-2 text-right">
-                  {(row.packagePrice * row.percentage_increase).toFixed(2)} лв.
-                </td>
-                <td className="p-2 text-right">
-                  {row.package} {row.unit}
-                </td>
-                <td className="p-2 text-right">{row.quantity} бр.</td>
-                <td className="p-2 text-right">
-                  {row.totalQuantity} {row.unit}
-                </td>
+                {headCells.map((headCell) => (
+                  <td
+                    key={headCell.id as string}
+                    className={`p-2 text-right ${headCell.numeric ? 'text-right' : 'text-left'}`}
+                  >
+                    {row[headCell.id]}
+                  </td>
+                ))}
               </tr>
             );
           })}
@@ -97,7 +88,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                 height: 33 * emptyRows
               }}
             >
-              <td colSpan={6} />
+              <td colSpan={headCells.length + 1} />
             </tr>
           )}
         </tbody>

@@ -1,17 +1,17 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { EncancedMode, Product } from './types';
 import {
   GenericForm,
   GenericFormField
 } from '@/components/genericTable/genericForm';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { EnhancedMode, Product } from './types';
 
 const ProductActions = (
   submitHandler: () => void,
-  setMode: Dispatch<SetStateAction<EncancedMode>>
+  setMode: Dispatch<SetStateAction<EnhancedMode>>
 ) => (
   <div className="col-span-2 flex justify-end space-x-4">
     <button
-      onClick={() => setMode(EncancedMode.None)}
+      onClick={() => setMode(EnhancedMode.None)}
       className="px-4 py-2 bg-theme-light-secondary dark:bg-theme-dark-secondary text-white rounded-md shadow-sm hover:bg-theme-light-tertiary dark:hover:bg-theme-dark-tertiary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-theme-light-secondary dark:focus:ring-theme-dark-secondary"
     >
       Откажи
@@ -27,14 +27,14 @@ const ProductActions = (
 
 interface ProductEditorProps {
   selected?: Product;
-  mode: EncancedMode;
+  mode: EnhancedMode;
   categories: string[];
-  setMode: Dispatch<SetStateAction<EncancedMode>>;
+  setMode: Dispatch<SetStateAction<EnhancedMode>>;
   onSubmit: (product: Product) => Promise<void>;
 }
 
 export const ProductEditor = ({
-  mode = EncancedMode.None,
+  mode = EnhancedMode.None,
   selected,
   setMode,
   onSubmit
@@ -81,6 +81,11 @@ export const ProductEditor = ({
   const handleSubmit = () => {
     if (validateFields() && product) {
       onSubmit(product);
+      if (mode === EnhancedMode.Create) {
+        setProduct(undefined);
+      } else if (mode === EnhancedMode.Edit) {
+        setMode(EnhancedMode.None);
+      }
     }
   };
 
@@ -91,8 +96,12 @@ export const ProductEditor = ({
       name: 'code',
       error: errors.code || '',
       type: 'text',
-      hint: 'Кодът трябва да бъде уникален',
-      required: true
+      hint:
+        mode === EnhancedMode.Edit
+          ? 'Кодът не може да бъде променен след като веднъж е създаден.'
+          : 'Кодът трябва да бъде уникален',
+      required: true,
+      disabled: mode === EnhancedMode.Edit
     },
     {
       label: 'Име',
@@ -185,7 +194,7 @@ export const ProductEditor = ({
 
   useEffect(() => {
     switch (mode) {
-      case EncancedMode.Create:
+      case EnhancedMode.Create:
         setProduct({
           code: '',
           name: '',
@@ -199,7 +208,7 @@ export const ProductEditor = ({
           quantity: 0
         });
         break;
-      case EncancedMode.Edit:
+      case EnhancedMode.Edit:
         setProduct(selected);
         break;
       default:
@@ -209,14 +218,14 @@ export const ProductEditor = ({
 
   return (
     <>
-      {(mode === EncancedMode.Create || mode === EncancedMode.Edit) && (
+      {(mode === EnhancedMode.Create || mode === EnhancedMode.Edit) && (
         <GenericForm
           fields={fields}
           handleChange={handleFieldChange}
           ProductActions={ProductActions(handleSubmit, setMode)}
         />
       )}
-      {mode === EncancedMode.None && null}
+      {mode === EnhancedMode.None && null}
     </>
   );
 };

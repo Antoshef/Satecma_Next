@@ -1,15 +1,15 @@
 'use client';
 
+import { EnhancedTableToolbar } from '@/components/genericTable/enhancedTableToolbar';
+import GenericTable from '@/components/genericTable/genericTable';
 import { RowsPerPage } from '@/components/rowsPerPage';
+import { EnhancedMode } from '@/products/utils/types';
 import useToast from '@/products/utils/useToast';
 import { getComparator } from '@/utils/getComparator';
 import { ChangeEvent, MouseEvent, useMemo, useState } from 'react';
 import { ClientEditor } from './utils/clientEditor';
 import { headCells } from './utils/constants';
 import { Client } from './utils/types';
-import { EncancedMode } from '@/products/utils/types';
-import { EnhancedTableToolbar } from '@/components/genericTable/enhancedTableToolbar';
-import GenericTable from '@/components/genericTable/genericTable';
 
 interface PageProps {
   data: Client[];
@@ -24,7 +24,7 @@ export default function ClientsTable({ data }: PageProps) {
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [editMode, setEditMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [mode, setMode] = useState<EncancedMode>(EncancedMode.None);
+  const [mode, setMode] = useState<EnhancedMode>(EnhancedMode.None);
   const { ToastContainer, notify } = useToast();
 
   const isSelected = (eik: string) =>

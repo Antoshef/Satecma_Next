@@ -25,7 +25,7 @@ export interface InvoiceProductData
   description: string;
 }
 
-export enum EncancedMode {
+export enum EnhancedMode {
   Create = 'create',
   Edit = 'edit',
   Delete = 'delete',

@@ -4,17 +4,28 @@ import ProductsContainer from './productsContainer';
 import Loading from '@/loading';
 
 export default async function ProductsPage() {
-  const data = await fetch(`${baseUrl}/api/products`)
-    .then((data) => data.json())
-    .catch((error) => {
-      console.error(error);
-      return [];
-    });
+  let data = [];
+  let error = undefined;
+
+  try {
+    const response = await fetch(`${baseUrl}/api/products`);
+
+    if (!response.ok) {
+      throw new Error(
+        `Неуспешно зареждане на продуктите: ${response.statusText}`
+      );
+    }
+
+    data = await response.json();
+  } catch (err) {
+    console.error('Грешка при зареждане на продуктите:', err);
+    error = 'Неуспешно зареждане на продуктите';
+  }
 
   return (
     <section>
       <Suspense fallback={<Loading />}>
-        <ProductsContainer data={data} />
+        <ProductsContainer data={data} error={error} />
       </Suspense>
     </section>
   );

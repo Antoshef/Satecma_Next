@@ -11,17 +11,19 @@ const getProducts = async (res: NextApiResponse) => {
   } catch (error) {
     console.error('GET error:', error);
     return res.status(500).json({
-      message: 'Internal server error',
-      error: error instanceof Error ? error.message : 'Unknown error'
+      message: 'Вътрешна грешка на сървъра',
+      error: error instanceof Error ? error.message : 'Неизвестна грешка'
     });
   }
 };
 
 const updateProducts = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { items } = JSON.parse(req.body) as { items: Item[] };
+  const { items } = req.body as { items: Item[] };
 
   if (!items || items.length === 0) {
-    return res.status(400).json({ message: 'No items provided', status: 400 });
+    return res
+      .status(400)
+      .json({ message: 'Няма предоставени артикули', status: 400 });
   }
 
   const filteredItems = items.filter((item) => item.quantity > 0);
@@ -33,7 +35,7 @@ const updateProducts = async (req: NextApiRequest, res: NextApiResponse) => {
       if (!item.quantity || !item.code || !item.packing) {
         return res
           .status(400)
-          .json({ message: 'Missing required fields', status: 400 });
+          .json({ message: 'Липсват задължителни полета', status: 400 });
       }
 
       const productToUpdate = products.find(
@@ -41,7 +43,7 @@ const updateProducts = async (req: NextApiRequest, res: NextApiResponse) => {
       );
 
       if (!productToUpdate) {
-        console.error('Product not found', item.code);
+        console.error('Продуктът не е намерен', item.code);
         continue;
       }
 
@@ -51,23 +53,23 @@ const updateProducts = async (req: NextApiRequest, res: NextApiResponse) => {
 
     return res
       .status(200)
-      .json({ message: 'Store items updated', status: 200 });
+      .json({ message: 'Артикулите в магазина са актуализирани', status: 200 });
   } catch (error) {
     console.error('PUT error:', error);
     return res.status(500).json({
-      message: 'Error while updating store items',
-      error: error instanceof Error ? error.message : 'Unknown error'
+      message: 'Грешка при актуализиране на артикулите в магазина',
+      error: error instanceof Error ? error.message : 'Неизвестна грешка'
     });
   }
 };
 
 const deleteProducts = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { products } = JSON.parse(req.body) as { products: Product[] };
+  const { products } = req.body as { products: Product[] };
 
   if (!products || products.length === 0) {
     return res
       .status(400)
-      .json({ message: 'No products provided', status: 400 });
+      .json({ message: 'Няма предоставени продукти', status: 400 });
   }
 
   try {
@@ -76,18 +78,20 @@ const deleteProducts = async (req: NextApiRequest, res: NextApiResponse) => {
     const query = `DELETE FROM products_test WHERE code IN (${placeholders})`;
     await queryAsync(query, codes);
 
-    return res.status(200).json({ message: 'Products deleted', status: 200 });
+    return res
+      .status(200)
+      .json({ message: 'Продуктите са изтрити', status: 200 });
   } catch (error) {
     console.error('DELETE error:', error);
     return res.status(500).json({
-      message: 'Error while deleting products',
-      error: error instanceof Error ? error.message : 'Unknown error'
+      message: 'Грешка при изтриване на продуктите',
+      error: error instanceof Error ? error.message : 'Неизвестна грешка'
     });
   }
 };
 
 const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { product } = JSON.parse(req.body) as { product: Product };
+  const { product } = req.body as { product: Product };
 
   const requiredFields: (keyof Product)[] = [
     'code',
@@ -106,7 +110,7 @@ const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!product[field]) {
       return res
         .status(400)
-        .json({ message: `Missing required field: ${field}`, status: 400 });
+        .json({ message: `Липсва задължително поле: ${field}`, status: 400 });
     }
   }
 
@@ -123,7 +127,7 @@ const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (count > 0) {
       return res.status(400).json({
-        message: 'Product with the same code already exists',
+        message: 'Продукт с този код вече съществува',
         status: 400
       });
     }
@@ -147,12 +151,14 @@ const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
 
     await queryAsync(query, values);
 
-    return res.status(201).json({ message: 'Product created', status: 201 });
+    return res
+      .status(201)
+      .json({ message: 'Продуктът е създаден', status: 201 });
   } catch (error) {
     console.error('POST error:', error);
     return res.status(500).json({
-      message: 'Error while creating product',
-      error: error instanceof Error ? error.message : 'Unknown error'
+      message: 'Грешка при създаване на продукта',
+      error: error instanceof Error ? error.message : 'Неизвестна грешка'
     });
   }
 };
@@ -173,6 +179,6 @@ export default async function handler(
     case 'POST':
       return await createProduct(req, res);
     default:
-      return res.status(405).json({ message: 'Method not allowed' });
+      return res.status(405).json({ message: 'Методът не е разрешен' });
   }
 }

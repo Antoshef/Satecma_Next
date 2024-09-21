@@ -1,3 +1,4 @@
+import { classNames } from '@/utils/classNames';
 import { useState } from 'react';
 
 export interface GenericFormField<T> {
@@ -9,6 +10,7 @@ export interface GenericFormField<T> {
   options?: string[]; // Only for select fields
   hint?: string;
   required: boolean;
+  disabled?: boolean;
   render?: () => JSX.Element;
 }
 
@@ -84,8 +86,14 @@ export const GenericForm = <T,>({
             <input
               type={field.type}
               value={field.defaultValue}
+              disabled={field.disabled}
               onChange={(e) => handleChange(field.name, e.target.value)}
-              className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm sm:text-sm"
+              className={classNames([
+                'mt-1 block w-full p-2 border rounded-md shadow-sm sm:text-sm',
+                !field.disabled
+                  ? 'border-theme-light-secondary dark:border-theme-dark-secondary'
+                  : 'border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed'
+              ])}
             />
           )}
           {field.error && (

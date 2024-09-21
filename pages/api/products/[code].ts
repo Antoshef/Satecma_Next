@@ -1,56 +1,68 @@
-import { Product } from '@/create/invoice/types';
-import { StoreProduct } from '@/products/utils/types';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { queryAsync } from '../../../utils/db';
+import { Product } from '@/products/utils/types';
 
 const fetchProductByCode = async (code: string): Promise<Product | null> => {
   const results = await queryAsync<Product[]>(
-    'SELECT * FROM products WHERE code = ?',
+    'SELECT * FROM products_test WHERE code = ?',
     [code]
   );
   return results.length > 0 ? results[0] : null;
 };
 
-const updateProduct = async (product: StoreProduct, code: string) => {
+const updateProduct = async (product: Product, code: string) => {
   const productToUpdate = await fetchProductByCode(code);
   if (!productToUpdate) {
-    throw new Error('Product not found');
+    throw new Error('Продуктът не е намерен');
   }
 
-  const packingArr = productToUpdate.packing.split(',').map(Number);
-  const quantityArr = productToUpdate.quantity.split(',').map(Number);
-  const index = packingArr.indexOf(product.package);
+  const query = `
+    UPDATE products_test
+    SET 
+      name = ?, 
+      unit = ?, 
+      packing = ?, 
+      quantity = ?, 
+      color = ?, 
+      buyPrice = ?, 
+      percentageIncrease = ?, 
+      sellPrice = ?, 
+      category = ? 
+    WHERE code = ?`;
 
-  if (index !== -1) {
-    quantityArr[index] = product.quantity;
-  }
+  const values = [
+    product.name,
+    product.unit,
+    product.packing,
+    product.quantity,
+    product.color,
+    product.buyPrice,
+    product.percentageIncrease,
+    product.sellPrice,
+    product.category,
+    code
+  ];
 
-  const query =
-    'UPDATE products SET name = ?, unit = ?, quantity = ? WHERE code = ?';
-  const values = [product.name, product.unit, quantityArr.join(', '), code];
   await queryAsync<Product>(query, values);
 };
 
-const removeProductByCode = async (code: string): Promise<void> => {
-  const query = 'DELETE FROM products WHERE code = ?';
-  await queryAsync(query, [code]);
-};
-
 const handlePutRequest = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { product } = JSON.parse(req.body) as { product: StoreProduct };
+  const { code } = req.query;
+  const { product } = req.body as { product: Product };
 
-  if (!product.name || !product.code || !product.unit) {
-    return res.status(400).json({ message: 'Missing required product fields' });
+  if (!product.name || !product.code || !code) {
+    return res
+      .status(400)
+      .json({ message: 'Липсват задължителни полета на продукта' });
   }
 
   try {
-    await updateProduct(product, product.code);
-    return res.status(201).json({ message: 'Product updated' });
+    await updateProduct(product, code as string);
+    return res.status(201).json({ message: 'Продуктът е актуализиран' });
   } catch (error) {
-    console.error('PUT error:', error);
     return res.status(500).json({
-      message: 'Error while updating product',
-      error: error instanceof Error ? error.message : 'Unknown error'
+      message: 'Грешка при актуализиране на продукта',
+      error: error instanceof Error ? error.message : 'Неизвестна грешка'
     });
   }
 };
@@ -65,7 +77,7 @@ export default async function handler(
     case 'PUT':
       return await handlePutRequest(req, res);
     default:
-      res.setHeader('Allow', ['GET', 'PUT', 'DELETE']);
-      return res.status(405).json({ message: `Method ${method} not allowed` });
+      res.setHeader('Allow', ['PUT']);
+      return res.status(405).json({ message: `Метод ${method} не е разрешен` });
   }
 }

@@ -1,21 +1,22 @@
 'use client';
 
+import { EnhancedTableToolbar } from '@/components/genericTable/enhancedTableToolbar';
+import GenericTable from '@/components/genericTable/genericTable';
 import { RowsPerPage } from '@/components/rowsPerPage';
 import { baseUrl } from '@/constants';
 import { headCells } from '@/products/utils/constants';
 import { ProductEditor } from '@/products/utils/productEditor';
-import { EncancedMode, Order, Product } from '@/products/utils/types';
+import { EnhancedMode, Order, Product } from '@/products/utils/types';
 import { getComparator } from '@/utils/getComparator';
 import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from 'react';
 import useToast from './utils/useToast';
-import { EnhancedTableToolbar } from '@/components/genericTable/enhancedTableToolbar';
-import GenericTable from '@/components/genericTable/genericTable';
 
 interface Props {
   data: Product[];
+  error?: string;
 }
 
-export default function ProductsContainer({ data }: Props) {
+export default function ProductsContainer({ data, error }: Props) {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
@@ -26,7 +27,7 @@ export default function ProductsContainer({ data }: Props) {
   const [selected, setSelected] = useState<Product[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
-  const [mode, setMode] = useState<EncancedMode>(EncancedMode.None);
+  const [mode, setMode] = useState<EnhancedMode>(EnhancedMode.None);
 
   const { ToastContainer, notify } = useToast();
 
@@ -105,59 +106,94 @@ export default function ProductsContainer({ data }: Props) {
 
   const onEditSubmit = async (product: Product) => {
     try {
-      await fetch(`${baseUrl}/api/products/${product.code}`, {
+      const response = await fetch(`${baseUrl}/api/products/${product.code}`, {
         method: 'PUT',
-        body: JSON.stringify({ product })
+        body: JSON.stringify({ product }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.message || 'Възникна грешка при обновяване на продукт'
+        );
+      }
+
       const updatedProducts = products.map((p) =>
-        p.code === product.code && p.packing === product.packing ? product : p
+        p.code === product.code ? product : p
       );
-      setProducts(updatedProducts);
+      setFilteredProducts(updatedProducts);
       setSelected([]);
       notify('Product updated', 'success');
     } catch (error) {
-      notify('Error updating product', 'error');
+      notify(
+        (error as Error)?.message ||
+          'Възникна грешка при обновяване на продукт',
+        'error'
+      );
     }
   };
 
   const deleteHandler = async () => {
     try {
-      await fetch(`${baseUrl}/api/products`, {
+      const response = await fetch(`${baseUrl}/api/products`, {
         method: 'DELETE',
-        body: JSON.stringify({ products: selected })
+        body: JSON.stringify({ products: selected }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Грешка при изтриване на продукт');
+      }
+
       const updatedProducts = products.filter(
         (product) => !selected.includes(product)
       );
-      setProducts(updatedProducts);
+      setFilteredProducts(updatedProducts);
       setSelected([]);
-      notify('Products deleted', 'success');
+      notify('Успешно изтрихте продукт', 'success');
     } catch (error) {
-      notify('Error deleting products', 'error');
+      notify('Възникна грешка при изтриване на продукт', 'error');
     }
   };
 
   const createHandler = async (product: Product) => {
     try {
-      await fetch(`${baseUrl}/api/products`, {
+      const response = await fetch(`${baseUrl}/api/products`, {
         method: 'POST',
-        body: JSON.stringify({ product })
+        body: JSON.stringify({ product }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.message || 'Възникна грешка при създаване на продукт'
+        );
+      }
+
       const updatedProducts = [...products, product];
-      setProducts(updatedProducts);
+      setFilteredProducts(updatedProducts);
       setSelected([]);
-      notify('Product created', 'success');
+      notify('Успешно създадохте продукт', 'success');
     } catch (error) {
-      notify('Error creating product', 'error');
+      notify('Възникна грешка при създаване на продукт', 'error');
     }
   };
 
   const submitHandler = async (product: Product) => {
     switch (mode) {
-      case EncancedMode.Edit:
+      case EnhancedMode.Edit:
         onEditSubmit(product);
         break;
-      case EncancedMode.Create:
+      case EnhancedMode.Create:
         createHandler(product);
         break;
       default:
@@ -175,8 +211,12 @@ export default function ProductsContainer({ data }: Props) {
   }, [products]);
 
   useEffect(() => {
-    setProducts(data);
-  }, [data]);
+    if (error) {
+      notify('Възникна грешка при зареждане на продуктите', 'error');
+    } else {
+      setProducts(data);
+    }
+  }, [data, error, notify]);
 
   return (
     <div className="m-4">

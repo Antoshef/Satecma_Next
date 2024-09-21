@@ -1,13 +1,13 @@
-import { Dispatch, FC, SetStateAction, useState } from 'react';
-import Tooltip from '@/components/tooltip';
 import DeleteModal from '@/components/modals/deleteModal';
-import { EncancedMode } from '@/products/utils/types';
+import Tooltip from '@/components/tooltip';
+import { EnhancedMode } from '@/products/utils/types';
+import { Dispatch, FC, SetStateAction, useState } from 'react';
 
 interface EnhancedTableToolbarProps {
   title: string;
   isSelected: boolean;
-  mode?: EncancedMode;
-  setMode?: Dispatch<SetStateAction<EncancedMode>>;
+  mode?: EnhancedMode;
+  setMode?: Dispatch<SetStateAction<EnhancedMode>>;
   deleteHandler?: () => void;
   selectedCount: number;
 }
@@ -57,9 +57,9 @@ export const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = ({
         <button
           onClick={() =>
             setMode?.((prev) =>
-              prev === EncancedMode.Create
-                ? EncancedMode.None
-                : EncancedMode.Create
+              prev === EnhancedMode.Create
+                ? EnhancedMode.None
+                : EnhancedMode.Create
             )
           }
           className="p-2 rounded-full relative group text-theme-light-primary"
@@ -87,9 +87,9 @@ export const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = ({
               <button
                 onClick={() =>
                   setMode?.((prev) =>
-                    prev === EncancedMode.Edit
-                      ? EncancedMode.None
-                      : EncancedMode.Edit
+                    prev === EnhancedMode.Edit
+                      ? EnhancedMode.None
+                      : EnhancedMode.Edit
                   )
                 }
                 className="p-2 rounded-full relative group text-theme-light-primary"

@@ -1,21 +1,12 @@
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { Client } from '@/clients/utils/types';
 import { TextField } from '@/components/textField/TextField';
-import { InvoiceReceiver } from './types';
 
 interface CompanySuggestionsProps {
   clients: Client[];
-  receiver: {
-    company: string;
-    city: string;
-    address: string;
-    EIK: string;
-    VAT: string;
-    director: string;
-    email: string;
-  };
-  setReceiver: Dispatch<SetStateAction<InvoiceReceiver>>;
-  isFieldsDisabled: boolean;
+  receiver: Client;
+  setReceiver: Dispatch<SetStateAction<Client>>;
+  isFieldsDisabled?: boolean;
 }
 
 const CompanySuggestions = ({
@@ -24,7 +15,7 @@ const CompanySuggestions = ({
   setReceiver,
   isFieldsDisabled
 }: CompanySuggestionsProps) => {
-  const [query, setQuery] = useState(receiver.company);
+  const [query, setQuery] = useState(receiver.name);
   const [filteredClients, setFilteredClients] = useState<Client[]>([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -48,11 +39,11 @@ const CompanySuggestions = ({
 
   const handleSuggestionClick = (client: Client) => {
     setReceiver({
-      company: client.name,
+      name: client.name,
       city: client.city,
       address: client.address,
-      EIK: client.eik,
-      VAT: client.vat,
+      eik: client.eik,
+      vat: client.vat,
       director: client.director,
       email: client.email
     });
@@ -64,7 +55,7 @@ const CompanySuggestions = ({
   return (
     <div className="relative inline">
       <TextField
-        name="company"
+        name="name"
         type="text"
         placeholder="Име на фирма"
         value={query}

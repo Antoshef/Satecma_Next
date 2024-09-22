@@ -1,17 +1,21 @@
 'use client';
+import { EnhancedTableToolbar } from '@/components/genericTable/enhancedTableToolbar';
+import GenericTable from '@/components/genericTable/genericTable';
 import { RowsPerPage } from '@/components/rowsPerPage';
 import Tooltip from '@/components/tooltip';
 import { InvoiceData } from '@/create/invoice/types';
-import { EnhancedTableHead } from '@/products/utils/enhancedTableHead';
-import { HeadCell, Order } from '@/products/utils/types';
+import { HeadCell, EnhancedMode, Order } from '@/products/utils/types';
+import { getComparator } from '@/utils/getComparator';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 import Image from 'next/image';
-import { ChangeEvent, MouseEvent, useMemo, useState } from 'react';
+import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from 'react';
 import DownloadIcon from '/public/assets/svg/download-laptop.svg';
+import useToast from '@/products/utils/useToast';
 
 interface InvoicesTableProps {
   data: InvoiceData[];
+  error?: string;
 }
 
 const invoiceHeadCells: HeadCell<InvoiceData>[] = [
@@ -34,19 +38,27 @@ const invoiceHeadCells: HeadCell<InvoiceData>[] = [
   { id: 'file_path', numeric: false, label: 'Изтегли', centered: true }
 ];
 
-export default function InvoicesTable({ data }: InvoicesTableProps) {
+export default function InvoicesTable({ data, error }: InvoicesTableProps) {
+  const [invoices, setInvoices] = useState<InvoiceData[]>([]);
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState<keyof InvoiceData>('invoice_id');
   const [selected, setSelected] = useState<InvoiceData[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
+  const [mode, setMode] = useState<EnhancedMode>(EnhancedMode.None);
+
+  const { ToastContainer, notify } = useToast();
+
+  useEffect(() => {
+    if (error) {
+      notify('Възникна грешка при зареждане на фактурите', 'error');
+    } else {
+      setInvoices(data);
+    }
+  }, [data, error, notify]);
 
   const isSelected = (invoice_id: string) =>
     selected.some((invoice) => invoice.invoice_id === invoice_id);
-
-  // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
   const handleRequestSort = (
     event: MouseEvent<unknown>,
@@ -59,7 +71,7 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
 
   const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      setSelected(data);
+      setSelected(invoices);
     } else {
       setSelected([]);
     }
@@ -96,15 +108,11 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
   };
 
   const visibleRows = useMemo(() => {
-    if (!data) return [] as InvoiceData[];
-    return data
-      .sort((a, b) =>
-        order === 'desc'
-          ? a.invoice_id.localeCompare(b.invoice_id)
-          : b.invoice_id.localeCompare(a.invoice_id)
-      )
+    if (!invoices) return [] as InvoiceData[];
+    return invoices
+      .sort(getComparator(order, orderBy))
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-  }, [order, page, rowsPerPage, data]);
+  }, [order, orderBy, page, rowsPerPage, invoices]);
 
   // Handle file download for a single PDF
   const handleDownload = (
@@ -146,113 +154,46 @@ export default function InvoicesTable({ data }: InvoicesTableProps) {
     });
   };
 
-  if (!data.length) {
+  if (!invoices.length) {
     return <h3 className="p-4">Няма намерени фактури</h3>;
   }
 
   return (
-    <div className="p-4">
-      {/* Button to download selected invoices as zip */}
-      {selected.length > 1 && (
+    <div className="m-4">
+      <ToastContainer />
+      <div className="w-full rounded-b-xl bg-theme-light-background dark:bg-theme-dark-background shadow">
+        <EnhancedTableToolbar
+          title="Фактури"
+          isSelected={!!selected.length}
+          setMode={setMode}
+          deleteHandler={() => {}}
+          selectedCount={selected.length}
+        />
         <div className="flex justify-end mb-4">
-          <button
-            className="bg-theme-light-primary dark:bg-theme-dark-primary text-white px-4 py-2 rounded-md shadow-md hover:bg-theme-light-secondary dark:hover:bg-theme-dark-secondary"
-            onClick={handleDownloadSelectedAsZip}
-          >
-            Изтегли избраните като ZIP
-          </button>
+          {selected.length > 1 && (
+            <button
+              className="bg-theme-light-primary dark:bg-theme-dark-primary text-white px-4 py-2 rounded-md shadow-md hover:bg-theme-light-secondary dark:hover:bg-theme-dark-secondary"
+              onClick={handleDownloadSelectedAsZip}
+            >
+              Изтегли избраните като ZIP
+            </button>
+          )}
         </div>
-      )}
-      <div className="w-full mb-2 bg-theme-light-background dark:bg-theme-dark-background shadow rounded-lg">
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-sm rounded-xl overflow-hidden">
-            <EnhancedTableHead
-              headCells={invoiceHeadCells}
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={handleRequestSort}
-              onSelectAllClick={handleSelectAllClick}
-              numSelected={selected.length}
-              rowCount={data.length}
-            />
-            <tbody>
-              {visibleRows?.map((row, index) => {
-                const isItemSelected = isSelected(row.invoice_id);
-                const labelId = `enhanced-table-checkbox-${index}`;
-
-                return (
-                  <tr
-                    key={row.invoice_id}
-                    className={`cursor-pointer ${
-                      isItemSelected
-                        ? 'bg-theme-light-secondary text-theme-light-white dark:bg-theme-dark-secondary'
-                        : ''
-                    }`}
-                    onClick={(event) => handleClick(event, row)}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                  >
-                    <td className="p-2">
-                      <input
-                        type="checkbox"
-                        checked={isItemSelected}
-                        onChange={() => {}}
-                        className="form-checkbox h-5 w-5 text-theme-light-primary dark:text-theme-dark-primary"
-                        aria-labelledby={labelId}
-                      />
-                    </td>
-                    <td className="p-2 text-right" id={labelId}>
-                      {row.invoice_id}
-                    </td>
-                    <td className="p-2 text-right">{row.date}</td>
-                    <td className="p-2 text-right">{row.client}</td>
-                    <td className="p-2 text-right">{row.eik}</td>
-                    <td className="p-2 text-right">{row.vat_number}</td>
-                    <td className="p-2 text-right">{row.amount.toFixed(2)}</td>
-                    <td className="p-2 text-right">{row.vat.toFixed(2)}</td>
-                    <td className="p-2 text-right">{row.total.toFixed(2)}</td>
-                    <td className="p-2 text-center">
-                      <Tooltip text="Изтегли">
-                        <button
-                          className="text-theme-light-primary dark:text-theme-dark-primary hover:text-theme-light-secondary dark:hover:text-theme-dark-secondary"
-                          onClick={() =>
-                            handleDownload(
-                              'eko_invoices_sent',
-                              new Date(row.date).toLocaleString('default', {
-                                month: 'long'
-                              }),
-                              new Date(row.date).getFullYear().toString(),
-                              row.invoice_id
-                            )
-                          }
-                        >
-                          <Image
-                            src={DownloadIcon}
-                            width={20}
-                            height={20}
-                            alt="Изтегли"
-                          />
-                        </button>
-                      </Tooltip>
-                    </td>
-                  </tr>
-                );
-              })}
-              {emptyRows > 0 && (
-                <tr
-                  style={{
-                    height: 33 * emptyRows
-                  }}
-                >
-                  <td colSpan={10} />
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+        <GenericTable<InvoiceData>
+          headCells={invoiceHeadCells}
+          order={order}
+          orderBy={orderBy}
+          handleRequestSort={handleRequestSort}
+          handleSelectAllClick={handleSelectAllClick}
+          handleClick={handleClick}
+          isSelected={(invoice) => isSelected(invoice.invoice_id)}
+          selected={selected}
+          filteredItems={invoices}
+          visibleRows={visibleRows}
+          emptyRows={Math.max(0, (1 + page) * rowsPerPage - invoices.length)}
+        />
         <RowsPerPage
-          data={data}
+          data={invoices}
           handleChangePage={handleChangePage}
           handleChangeRowsPerPage={handleChangeRowsPerPage}
           page={page}

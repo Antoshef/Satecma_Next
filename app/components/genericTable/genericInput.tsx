@@ -25,6 +25,7 @@ export function itemHandler<T, K extends keyof T>(
 
 export interface GenericInputProps<T> {
   label?: string;
+  placeholder?: string;
   required?: boolean;
   data: T[];
   selectedItem: T | null;
@@ -37,6 +38,7 @@ export const GenericInput = forwardRef<unknown, GenericInputProps<any>>(
   (
     {
       label,
+      placeholder,
       required,
       data,
       selectedItem,
@@ -148,9 +150,10 @@ export const GenericInput = forwardRef<unknown, GenericInputProps<any>>(
         )}
         <input
           type="text"
+          placeholder={placeholder}
           value={input}
           required={required}
-          className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm sm:text-sm"
+          className="block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm sm:text-sm"
           autoComplete="off"
           onFocus={() => setShowSuggestions(true)}
           onChange={onChange}

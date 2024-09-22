@@ -29,7 +29,6 @@ const processPriceItem = async ({ item, priceMap }: ProcessPriceItemProps) => {
       const params = [item.price * COURSE_EVRO_LEVA, item.code];
       await queryAsync(query, params);
     }
-    console.log('Item updated in prices');
   } else {
     const query = `INSERT INTO product_prices (code, name, packing, unit, color, percentage_increase, price, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
     const params = [
@@ -44,7 +43,6 @@ const processPriceItem = async ({ item, priceMap }: ProcessPriceItemProps) => {
     ];
     await queryAsync(query, params);
   }
-  console.log('Item added in prices');
 };
 
 interface ProcessStoreItemProps {
@@ -73,7 +71,6 @@ const processStoreItem = async ({
     ];
     queryAsync(query, params);
   }
-  console.log('Item added in storage');
 };
 
 export default async function handler(

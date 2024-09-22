@@ -15,11 +15,9 @@ export const CreateEcontPackage = () => {
     e.preventDefault();
     const result = EcontUtils.createLabel(receiver)
       .then((res) => {
-        console.log(res, "res");
         return res;
       })
       .catch((err) => err);
-    console.log(result, "submit");
   };
 
   return (

@@ -31,7 +31,6 @@ export default async function HomePage() {
   }
 
   const result = await response.json();
-  console.log(result, 'result');
 
   if (result.email_verified) {
     // Check if the user exists in your database

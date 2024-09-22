@@ -8,7 +8,6 @@ export default async function SpeditionLayout({
 }>) {
   const offices = await EcontUtils.getOffices();
   const cities = await EcontUtils.getCities();
-  console.log(offices, "Offices");
 
   return (
     <div className="p-4">

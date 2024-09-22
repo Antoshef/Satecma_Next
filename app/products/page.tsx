@@ -1,6 +1,6 @@
 import { baseUrl } from '@/constants';
 import { Suspense } from 'react';
-import ProductsTable from './ProductsTable';
+import ProductsTable from './productsTable';
 import Loading from '@/loading';
 
 export default async function ProductsPage() {

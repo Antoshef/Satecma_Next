@@ -9,7 +9,6 @@ import Image from 'next/image';
 import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { InvoiceRequestBody } from '../../../pages/api/create/types';
 import { TableItems } from '../table/tableItems';
-import { TableServices } from '../table/tableServices';
 import { useTableItems } from '../table/useTableItems';
 import { createInvoice, getClientData, updateProducts } from './actions';
 import ClientInvoiceData from './clientInvoiceData';
@@ -62,7 +61,7 @@ const InvoiceBox = ({
   const [invoiceData, setInvoiceData] = useState<InvoiceData>(
     INVOICE_DATA_DEFAULT_VALUES
   );
-  const { Toast, notify } = useToast();
+  const { ToastContainer, notify } = useToast();
 
   const invoiceNumber = useMemo(() => {
     if (invoiceType === InvoiceType.proforma) {
@@ -109,14 +108,11 @@ const InvoiceBox = ({
 
   const {
     items,
-    services,
     total,
     addItem,
     itemChangeHandler,
     itemSelectHandler,
-    removeItem,
-    serviceChangeHandler,
-    serviceSelectHandler
+    removeItem
   } = useTableItems({ selectedProduct, setSelectedProduct });
 
   const productChangeHandler = (item: { name: string }) => {
@@ -160,7 +156,7 @@ const InvoiceBox = ({
 
   return (
     <div className="flex flex-col align-middle">
-      <Toast />
+      <ToastContainer />
       <form className="p-4 max-w-5xl w-full" onSubmit={onSubmit} id="invoice">
         <div ref={invoiceRef} className="send-box">
           <table cellPadding="0" cellSpacing="0">
@@ -284,15 +280,6 @@ const InvoiceBox = ({
                 isFieldsDisabled={isFieldsDisabled}
                 itemChangeHandler={itemChangeHandler}
                 itemSelectHandler={itemSelectHandler}
-                removeItem={removeItem}
-              />
-
-              <TableServices
-                services={services}
-                className="border-gray-800 border-b text-right"
-                isFieldsDisabled={isFieldsDisabled}
-                serviceChangeHandler={serviceChangeHandler}
-                serviceSelectHandler={serviceSelectHandler}
                 removeItem={removeItem}
               />
 

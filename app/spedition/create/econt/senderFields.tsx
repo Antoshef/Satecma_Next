@@ -1,6 +1,6 @@
-import { Input, itemHandler } from "@/components/input";
-import { Sender } from "./types";
-import { City } from "./services/shipments/types";
+import { Input, itemHandler } from '@/components/genericTable/genericInput';
+import { City } from './services/shipments/types';
+import { Sender } from './types';
 
 interface Props extends Sender {
   cities: City[];
@@ -13,7 +13,7 @@ export const SenderFields = ({
   office,
   cities,
   currentCityOffices,
-  setSender,
+  setSender
 }: Props) => {
   return (
     <article className="flex flex-col gap-4">
@@ -42,7 +42,7 @@ export const SenderFields = ({
           data={cities}
           selectedItem={city}
           setSelectedItem={(name) =>
-            itemHandler(name, cities, "city", setSender)
+            itemHandler(name, cities, 'city', setSender)
           }
         />
         <Input
@@ -51,7 +51,7 @@ export const SenderFields = ({
           data={currentCityOffices}
           selectedItem={office}
           setSelectedItem={(name) =>
-            itemHandler(name, currentCityOffices, "office", setSender)
+            itemHandler(name, currentCityOffices, 'office', setSender)
           }
         />
       </section>

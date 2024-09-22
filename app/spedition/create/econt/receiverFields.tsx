@@ -1,8 +1,8 @@
-import { Input, itemHandler } from "@/components/input";
-import { City } from "./services/shipments/types";
-import { Receiver } from "./types";
-import { CSSTransition } from "react-transition-group";
-import { useRef } from "react";
+import { Input, itemHandler } from '@/components/genericTable/genericInput';
+import { useRef } from 'react';
+import { CSSTransition } from 'react-transition-group';
+import { City } from './services/shipments/types';
+import { Receiver } from './types';
 
 interface Props extends Receiver {
   cities: City[];
@@ -23,7 +23,7 @@ export const ReceiverFields = ({
   isAddressUsed,
   currentCityOffices,
   setIsAddressUsed,
-  setReceiver,
+  setReceiver
 }: Props) => {
   const addressRef = useRef<HTMLDivElement>(null);
   const officeRef = useRef<HTMLDivElement>(null);
@@ -65,7 +65,7 @@ export const ReceiverFields = ({
               onChange={(e) =>
                 setReceiver((state) => ({
                   ...state,
-                  phone: e.target.value,
+                  phone: e.target.value
                 }))
               }
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -83,7 +83,7 @@ export const ReceiverFields = ({
               onChange={(e) =>
                 setReceiver((state) => ({
                   ...state,
-                  name: e.target.value,
+                  name: e.target.value
                 }))
               }
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -103,7 +103,7 @@ export const ReceiverFields = ({
               onChange={(e) =>
                 setReceiver((state) => ({
                   ...state,
-                  email: e.target.value,
+                  email: e.target.value
                 }))
               }
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -128,7 +128,7 @@ export const ReceiverFields = ({
               onChange={(e) =>
                 setReceiver((state) => ({
                   ...state,
-                  country: e.target.value,
+                  country: e.target.value
                 }))
               }
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -140,7 +140,7 @@ export const ReceiverFields = ({
             data={cities}
             selectedItem={city}
             setSelectedItem={(name) =>
-              itemHandler(name, cities, "city", setReceiver)
+              itemHandler(name, cities, 'city', setReceiver)
             }
           />
           <div className="flex flex-col">
@@ -153,11 +153,11 @@ export const ReceiverFields = ({
             <input
               id="postCode"
               type="number"
-              value={city?.postCode || ""}
+              value={city?.postCode || ''}
               onChange={(e) =>
                 setReceiver((state) => ({
                   ...state,
-                  postCode: +e.target.value,
+                  postCode: +e.target.value
                 }))
               }
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -177,7 +177,7 @@ export const ReceiverFields = ({
               ref={officeRef}
               selectedItem={office}
               setSelectedItem={(name) =>
-                itemHandler(name, currentCityOffices, "office", setReceiver)
+                itemHandler(name, currentCityOffices, 'office', setReceiver)
               }
             />
           </CSSTransition>
@@ -203,14 +203,14 @@ export const ReceiverFields = ({
                   id="street"
                   type="text"
                   required
-                  value={address?.street || ""}
+                  value={address?.street || ''}
                   onChange={(e) =>
                     setReceiver((state) => ({
                       ...state,
                       address: {
                         ...state.address,
-                        street: e.target.value,
-                      },
+                        street: e.target.value
+                      }
                     }))
                   }
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -227,14 +227,14 @@ export const ReceiverFields = ({
                   id="number"
                   type="text"
                   required
-                  value={address?.num || ""}
+                  value={address?.num || ''}
                   onChange={(e) =>
                     setReceiver((state) => ({
                       ...state,
                       address: {
                         ...state.address,
-                        num: e.target.value,
-                      },
+                        num: e.target.value
+                      }
                     }))
                   }
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -250,14 +250,14 @@ export const ReceiverFields = ({
                 <input
                   id="district"
                   type="text"
-                  value={address?.quarter || ""}
+                  value={address?.quarter || ''}
                   onChange={(e) =>
                     setReceiver((state) => ({
                       ...state,
                       address: {
                         ...state.address,
-                        quarter: e.target.value,
-                      },
+                        quarter: e.target.value
+                      }
                     }))
                   }
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -275,14 +275,14 @@ export const ReceiverFields = ({
                 <input
                   id="Building"
                   type="text"
-                  value={address?.other || ""}
+                  value={address?.other || ''}
                   onChange={(e) =>
                     setReceiver((state) => ({
                       ...state,
                       address: {
                         ...state.address,
-                        other: e.target.value,
-                      },
+                        other: e.target.value
+                      }
                     }))
                   }
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -298,14 +298,14 @@ export const ReceiverFields = ({
                 <input
                   id="entrance"
                   type="text"
-                  value={address?.other || ""}
+                  value={address?.other || ''}
                   onChange={(e) =>
                     setReceiver((state) => ({
                       ...state,
                       address: {
                         ...state.address,
-                        other: e.target.value,
-                      },
+                        other: e.target.value
+                      }
                     }))
                   }
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -321,14 +321,14 @@ export const ReceiverFields = ({
                 <input
                   id="floor"
                   type="text"
-                  value={address?.other || ""}
+                  value={address?.other || ''}
                   onChange={(e) =>
                     setReceiver((state) => ({
                       ...state,
                       address: {
                         ...state.address,
-                        other: e.target.value,
-                      },
+                        other: e.target.value
+                      }
                     }))
                   }
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -344,14 +344,14 @@ export const ReceiverFields = ({
                 <input
                   id="apartment"
                   type="text"
-                  value={address?.other || ""}
+                  value={address?.other || ''}
                   onChange={(e) =>
                     setReceiver((state) => ({
                       ...state,
                       address: {
                         ...state.address,
-                        other: e.target.value,
-                      },
+                        other: e.target.value
+                      }
                     }))
                   }
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"

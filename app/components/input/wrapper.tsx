@@ -1,4 +1,4 @@
-import { GenericInput, GenericInputProps } from '.';
+import { GenericInput, GenericInputProps } from '../genericTable/genericInput';
 
 interface InputWrapperProps extends GenericInputProps<{ name: string }> {
   data: { name: string }[];

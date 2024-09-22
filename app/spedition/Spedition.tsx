@@ -13,7 +13,6 @@ interface SpeditionProps {
 
 export function Spedition({ econt }: SpeditionProps) {
   const [spedition, setSpedition] = useState<string>("Econt");
-  console.log(econt, "Econt");
 
   return (
     <section className="flex flex-col justify-center align-middle m-auto max-w-screen-lg">

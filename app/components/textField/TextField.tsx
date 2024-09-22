@@ -2,7 +2,7 @@ import { classNames } from "@/utils/classNames";
 import { ChangeEvent } from "react";
 
 interface TextFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  isFieldsDisabled: boolean;
+  isFieldsDisabled?: boolean;
   type: string;
   placeholder?: string;
   value: string | number;

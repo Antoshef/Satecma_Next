@@ -23,17 +23,6 @@ export interface Company {
   bankName: string;
 }
 
-export interface InvoiceReceiver {
-  email: string;
-  phone?: string;
-  company: string;
-  city: string;
-  address: string;
-  EIK: string;
-  VAT: string;
-  director: string;
-}
-
 export interface InvoiceData {
   client: string;
   eik: number;
@@ -45,11 +34,6 @@ export interface InvoiceData {
   total: number;
   type: InvoiceType;
   file_path?: string;
-}
-
-export interface LatestInvoices {
-  original: string;
-  proforma: string;
 }
 
 export enum InvoiceType {

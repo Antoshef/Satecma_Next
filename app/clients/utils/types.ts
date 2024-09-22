@@ -6,5 +6,5 @@ export interface Client {
   vat: string;
   director: string;
   email: string;
-  phone: string;
+  phone?: string;
 }

@@ -1,19 +1,32 @@
 import { baseUrl } from '@/constants';
+import { Suspense } from 'react';
 import InvoicesTable from './invoicesTable';
-import { withPageAuthRequired } from '@auth0/nextjs-auth0';
+import Loading from '@/loading';
 
-export default withPageAuthRequired(async function InvoicesPage() {
-  const invoices = await fetch(`${baseUrl}/api/create/invoice`)
-    .then((res) => res.json())
-    .catch((err) => {
-      console.error(err);
-      return [];
-    });
+export default async function InvoicesPage() {
+  let data = [];
+  let error = undefined;
+
+  try {
+    const response = await fetch(`${baseUrl}/api/create/invoice`);
+
+    if (!response.ok) {
+      throw new Error(
+        `Неуспешно зареждане на фактурите: ${response.statusText}`
+      );
+    }
+
+    data = await response.json();
+  } catch (err) {
+    console.error('Грешка при зареждане на фактурите:', err);
+    error = 'Неуспешно зареждане на фактурите';
+  }
 
   return (
-    <div>
-      <h1>Фактури</h1>
-      <InvoicesTable data={invoices} />
-    </div>
+    <section>
+      <Suspense fallback={<Loading />}>
+        <InvoicesTable data={data} error={error} />
+      </Suspense>
+    </section>
   );
-});
+}

@@ -10,8 +10,6 @@ export const CreateSpeedyPackage = () => {
 
   const query = useQuery({ queryKey: ["people"], queryFn: getStarWars });
 
-  console.log(query, "QUERY");
-
   return (
     <div className="container mx-auto p-4">
       <h6 className="text-xl font-semibold">Speedy</h6>

@@ -6,10 +6,9 @@ import { SelectField } from '@/components/selectField/SelectField';
 import { TextField } from '@/components/textField/TextField';
 import useToast from '@/products/utils/useToast';
 import Image from 'next/image';
-import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import { InvoiceRequestBody } from '../../../pages/api/create/types';
 import { TableItems } from '../table/tableItems';
-import { TableServices } from '../table/tableServices';
 import { useTableItems } from '../table/useTableItems';
 import { createInvoice, getClientData, updateProducts } from './actions';
 import CompanySuggestions from './CompanySuggestions';
@@ -19,20 +18,14 @@ import {
   SATECMA_LOGO,
   VAT_PREFIX
 } from './constants';
-import {
-  Company,
-  InvoiceData,
-  InvoiceReceiver,
-  InvoiceType,
-  LatestInvoices
-} from './types';
+import { Company, InvoiceData, InvoiceType } from './types';
 import { Product } from '@/products/utils/types';
 
 interface InvoiceTableProps {
   provider: Company;
   clients: Client[];
   products: Product[];
-  invoiceIds: LatestInvoices;
+  invoiceIds: string[];
 }
 
 export const InvoiceTable = ({
@@ -42,15 +35,14 @@ export const InvoiceTable = ({
   provider
 }: InvoiceTableProps) => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [invoiceNumber, setInvoiceNumber] = useState(invoiceIds[0]);
   const [wordPrice, setWordPrice] = useState('');
   const [reason, setReason] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('По Банка');
   const [email, setEmail] = useState('');
   const [sendMailToRecepient, setSendMailToRecepient] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
-  const [receiver, setReceiver] = useState<InvoiceReceiver>(INIT_RECEIVER);
-  const [latestInvoiceNumbers, setLatestInvoiceNumbers] =
-    useState<LatestInvoices>(invoiceIds);
+  const [receiver, setReceiver] = useState<Client>(INIT_RECEIVER);
   const [invoiceType, setInvoiceType] = useState<InvoiceType>(
     InvoiceType.proforma
   );
@@ -59,17 +51,7 @@ export const InvoiceTable = ({
   const [invoiceData, setInvoiceData] = useState<InvoiceData>(
     INVOICE_DATA_DEFAULT_VALUES
   );
-  const { Toast, notify } = useToast();
-
-  const invoiceNumber = useMemo(() => {
-    if (invoiceType === InvoiceType.proforma) {
-      return latestInvoiceNumbers.proforma;
-    }
-    if (invoiceType === InvoiceType.original) {
-      return latestInvoiceNumbers.original;
-    }
-    return latestInvoiceNumbers.original;
-  }, [latestInvoiceNumbers, invoiceType]);
+  const { ToastContainer, notify } = useToast();
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -109,14 +91,11 @@ export const InvoiceTable = ({
 
   const {
     items,
-    services,
     total,
     addItem,
     itemChangeHandler,
     itemSelectHandler,
-    removeItem,
-    serviceChangeHandler,
-    serviceSelectHandler
+    removeItem
   } = useTableItems({ selectedProduct, setSelectedProduct });
 
   const productChangeHandler = (item: { name: string }) => {
@@ -144,9 +123,9 @@ export const InvoiceTable = ({
   useEffect(() => {
     setReceiver((state) => ({
       ...state,
-      VAT: receiver.EIK ? `${VAT_PREFIX}${receiver.EIK}` : ''
+      VAT: receiver.eik ? `${VAT_PREFIX}${receiver.eik}` : ''
     }));
-  }, [receiver.EIK]);
+  }, [receiver.eik]);
 
   useEffect(() => {
     setError(!wordPrice || !invoiceNumber);
@@ -165,7 +144,7 @@ export const InvoiceTable = ({
   return (
     <div className="p-4">
       <form onSubmit={onSubmit} id="invoice">
-        <Toast />
+        <ToastContainer />
         <div ref={invoiceRef} className="send-box grid gap-4">
           {/* Header Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -197,12 +176,7 @@ export const InvoiceTable = ({
                   value={invoiceNumber}
                   isFieldsDisabled={isFieldsDisabled}
                   maxLength={10}
-                  onChange={(e) =>
-                    setLatestInvoiceNumbers((state) => ({
-                      ...state,
-                      manual: e.target.value
-                    }))
-                  }
+                  onChange={(e) => setInvoiceNumber(e.target.value)}
                 />
                 {invoiceNumber.length !== 10 && (
                   <>
@@ -298,15 +272,6 @@ export const InvoiceTable = ({
             removeItem={removeItem}
           />
 
-          <TableServices
-            services={services}
-            className="border-gray-800 border-b text-right"
-            isFieldsDisabled={isFieldsDisabled}
-            serviceChangeHandler={serviceChangeHandler}
-            serviceSelectHandler={serviceSelectHandler}
-            removeItem={removeItem}
-          />
-
           <InputWrapper
             data={products}
             isFieldsDisabled={isFieldsDisabled}
@@ -359,7 +324,7 @@ export const InvoiceTable = ({
                   name="EIK"
                   type="text"
                   placeholder="ЕИК"
-                  value={receiver.EIK}
+                  value={receiver.eik}
                   isFieldsDisabled={isFieldsDisabled}
                   onChange={onChange}
                 />
@@ -370,7 +335,7 @@ export const InvoiceTable = ({
                   name="VAT"
                   type="text"
                   placeholder="ДДС №"
-                  value={receiver.VAT}
+                  value={receiver.vat}
                   isFieldsDisabled={isFieldsDisabled}
                   onChange={onChange}
                 />

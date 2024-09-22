@@ -19,7 +19,7 @@ export const InputWrapper = ({
 }: InputWrapperProps) => {
   return (
     !isFieldsDisabled && (
-      <tr>
+      <>
         <td></td>
         <td colSpan={1}>
           <GenericInput
@@ -36,7 +36,7 @@ export const InputWrapper = ({
             Добави
           </button>
         </td>
-      </tr>
+      </>
     )
   );
 };

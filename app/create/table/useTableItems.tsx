@@ -125,12 +125,9 @@ export const useTableItems = ({
 
   return {
     items,
-    services,
     total,
     itemChangeHandler,
     itemSelectHandler,
-    serviceChangeHandler,
-    serviceSelectHandler,
     addItem,
     removeItem
   };

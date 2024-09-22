@@ -13,16 +13,10 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const { method } = req;
-  const { company } = req.query;
-  const table_name = 'eko_invoices_sent';
-
-  if (!table_name) {
-    return res.status(400).json({ message: 'Invalid company name' });
-  }
+  const table_name = 'satecma_invoices_sent';
 
   if (method === 'GET') {
     try {
-      console.log('GET');
       const results = await queryAsync<InvoiceData[]>(
         `SELECT * FROM ${table_name}`
       );

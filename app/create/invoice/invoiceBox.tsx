@@ -2,12 +2,6 @@
 
 import { Client } from '@/clients/utils/types';
 import { InputWrapper } from '@/components/input/wrapper';
-import { SelectField } from '@/components/selectField/SelectField';
-import { TextField } from '@/components/textField/TextField';
-import useToast from '@/products/utils/useToast';
-import Image from 'next/image';
-import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
-import { InvoiceRequestBody } from '../../../pages/api/create/types';
 import { TableItems } from '../table/tableItems';
 import { useTableItems } from '../table/useTableItems';
 import { createInvoice, getClientData, updateProducts } from './actions';
@@ -15,24 +9,24 @@ import ClientInvoiceData from './clientInvoiceData';
 import {
   INIT_RECEIVER,
   INVOICE_DATA_DEFAULT_VALUES,
-  SATECMA_LOGO,
   VAT_PREFIX
 } from './constants';
 import { InvoicePriceData } from './invoicePriceData';
-import {
-  Company,
-  InvoiceData,
-  InvoiceReceiver,
-  InvoiceType,
-  LatestInvoices
-} from './types';
+import { Company, InvoiceData, InvoiceType } from './types';
 import { Product } from '@/products/utils/types';
+import useToast from '@/products/utils/useToast';
+import { FormEvent, useEffect, useRef, useState } from 'react';
+import InvoiceDetails from './invoiceDetails';
+import ProviderDetails from './providerDetails';
+import { InvoiceRequestBody } from '../../../pages/api/create/types';
+import TableHeader from './tableHeader';
+import { ProviderContextProvider } from '@/context/ProviderContext';
 
 interface InvoiceBoxProps {
-  provider: Company;
+  provider: Company | null;
   clients: Client[];
   products: Product[];
-  invoiceIds: LatestInvoices;
+  invoiceIds: string[];
 }
 
 const InvoiceBox = ({
@@ -41,6 +35,7 @@ const InvoiceBox = ({
   products,
   provider
 }: InvoiceBoxProps) => {
+  const [company, setCompany] = useState<Company | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [wordPrice, setWordPrice] = useState('');
   const [reason, setReason] = useState('');
@@ -48,11 +43,10 @@ const InvoiceBox = ({
   const [email, setEmail] = useState('');
   const [sendMailToRecepient, setSendMailToRecepient] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
-  const [receiver, setReceiver] = useState<InvoiceReceiver>(INIT_RECEIVER);
-  const [latestInvoiceNumbers, setLatestInvoiceNumbers] =
-    useState<LatestInvoices>({
-      ...invoiceIds
-    });
+  const [receiver, setReceiver] = useState<Client>(INIT_RECEIVER);
+  const [invoiceNumber, setInvoiceNumber] = useState<string>(
+    invoiceIds[0] || ''
+  );
   const [invoiceType, setInvoiceType] = useState<InvoiceType>(
     InvoiceType.proforma
   );
@@ -61,14 +55,8 @@ const InvoiceBox = ({
   const [invoiceData, setInvoiceData] = useState<InvoiceData>(
     INVOICE_DATA_DEFAULT_VALUES
   );
-  const { ToastContainer, notify } = useToast();
 
-  const invoiceNumber = useMemo(() => {
-    if (invoiceType === InvoiceType.proforma) {
-      return latestInvoiceNumbers.proforma;
-    }
-    return latestInvoiceNumbers.original;
-  }, [latestInvoiceNumbers, invoiceType]);
+  const { ToastContainer, notify } = useToast();
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -94,7 +82,7 @@ const InvoiceBox = ({
         css,
         sendMailToRecepient,
         invoiceType,
-        providerName: provider?.name,
+        providerName: company?.name || '',
         client: invoiceData.client
       };
       await createInvoice({ invoiceRequest, invoiceData });
@@ -136,9 +124,9 @@ const InvoiceBox = ({
   useEffect(() => {
     setReceiver((state) => ({
       ...state,
-      VAT: receiver.EIK ? `${VAT_PREFIX}${receiver.EIK}` : ''
+      VAT: receiver.eik ? `${VAT_PREFIX}${receiver.eik}` : ''
     }));
-  }, [receiver.EIK]);
+  }, [receiver.eik]);
 
   useEffect(() => {
     setError(!wordPrice || !invoiceNumber);
@@ -154,125 +142,36 @@ const InvoiceBox = ({
     }));
   }, [receiver, total, invoiceNumber, items]);
 
+  useEffect(() => {
+    setCompany(provider);
+  }, [provider]);
+
   return (
     <div className="flex flex-col align-middle">
       <ToastContainer />
-      <form className="p-4 max-w-5xl w-full" onSubmit={onSubmit} id="invoice">
+      <form
+        autoComplete="off"
+        className="p-4 max-w-5xl w-full"
+        onSubmit={onSubmit}
+        id="invoice"
+      >
         <div ref={invoiceRef} className="send-box">
           <table cellPadding="0" cellSpacing="0">
             <tbody>
               <tr className="top">
-                <td colSpan={8}>
-                  <table>
-                    <tbody>
-                      <tr>
-                        <td className="title">
-                          <Image
-                            src={SATECMA_LOGO}
-                            alt="Satecma logo"
-                            width={300}
-                            height={65}
-                          />
-                          <br />
-                          <span>Фактура </span>
-                          <SelectField
-                            isFieldsDisabled={isFieldsDisabled}
-                            value={invoiceType}
-                            values={[
-                              InvoiceType.original,
-                              InvoiceType.proforma
-                            ]}
-                            displayValues={['Оригинал', 'Проформа']}
-                            className="mb-2"
-                            onChange={(e) =>
-                              setInvoiceType(e.target.value as InvoiceType)
-                            }
-                          />
-                          <br />
-
-                          <span>
-                            Фактура №:{' '}
-                            <TextField
-                              name="invoiceNumber"
-                              type="text"
-                              placeholder="0000000001"
-                              value={invoiceNumber}
-                              isFieldsDisabled={isFieldsDisabled}
-                              maxLength={10}
-                              className="mb-2"
-                              onChange={(e) =>
-                                setLatestInvoiceNumbers((state) => ({
-                                  ...state,
-                                  manual: e.target.value
-                                }))
-                              }
-                            />
-                            {invoiceNumber.length !== 10 && (
-                              <>
-                                <br />
-                                <span className="invoiceBox__error">
-                                  Номера трябва да съдържа 10 символа
-                                </span>
-                              </>
-                            )}
-                          </span>
-                          <br />
-                          <span>
-                            Създадена:{' '}
-                            <TextField
-                              isFieldsDisabled={isFieldsDisabled}
-                              value={invoiceData.date}
-                              type="date"
-                              name="date"
-                              onChange={(e) =>
-                                setInvoiceData((state) => ({
-                                  ...state,
-                                  date: e.target.value
-                                }))
-                              }
-                            />
-                          </span>
-                        </td>
-
-                        <td>
-                          Доставчик: <br />
-                          Фирма: {provider.name}
-                          <br />
-                          ЕИК: {provider.eik}
-                          <br />
-                          ДДС №: BG{provider.eik}
-                          <br />
-                          Град: {provider.city}
-                          <br />
-                          Адрес: {provider.address}
-                          <br />
-                          МОЛ: {provider.director}
-                          <br />
-                          Телефон: {provider.phone}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </td>
+                <InvoiceDetails
+                  invoiceType={invoiceType}
+                  setInvoiceType={setInvoiceType}
+                  invoiceNumber={invoiceNumber}
+                  setInvoiceNumber={setInvoiceNumber}
+                  invoiceData={invoiceData}
+                  setInvoiceData={setInvoiceData}
+                  isFieldsDisabled={isFieldsDisabled}
+                />
+                <ProviderDetails company={company} setCompany={setCompany} />
               </tr>
 
-              <InvoicePriceData
-                total={total}
-                wordPrice={wordPrice}
-                setWordPrice={setWordPrice}
-                isFieldsDisabled={isFieldsDisabled}
-              />
-
-              <tr className="bg-gray-700 text-white">
-                <td>№</td>
-                <td>Продукт / Услуга</td>
-                <td>Количество</td>
-                <td>Опаковка</td>
-                <td>Ед. цена</td>
-                <td>Отстъпка</td>
-                <td>ДДС</td>
-                <td>Стойност (без ДДС)</td>
-              </tr>
+              <TableHeader />
 
               <TableItems
                 items={items}
@@ -283,27 +182,34 @@ const InvoiceBox = ({
                 removeItem={removeItem}
               />
 
-              <InputWrapper
-                data={products}
-                isFieldsDisabled={isFieldsDisabled}
-                selectedItem={selectedProduct}
-                onSubmit={addItem}
-                setSelectedItem={productChangeHandler}
-                displayProperty="name"
-              />
+              <tr>
+                <InputWrapper
+                  data={products}
+                  isFieldsDisabled={isFieldsDisabled}
+                  selectedItem={selectedProduct}
+                  onSubmit={addItem}
+                  setSelectedItem={productChangeHandler}
+                  displayProperty="name"
+                />
+              </tr>
 
-              <ClientInvoiceData
-                clients={clients}
-                receiver={receiver}
-                setReceiver={setReceiver}
-                isFieldsDisabled={isFieldsDisabled}
-                paymentMethod={paymentMethod}
-                setPaymentMethod={setPaymentMethod}
-                provider={provider}
-                reason={reason}
-                setReason={setReason}
-                onChange={onChange}
-              />
+              <tr className="invoiceBox__companyData">
+                <InvoicePriceData
+                  total={total}
+                  wordPrice={wordPrice}
+                  setWordPrice={setWordPrice}
+                  isFieldsDisabled={isFieldsDisabled}
+                />
+                <ClientInvoiceData
+                  setReceiver={setReceiver}
+                  isFieldsDisabled={isFieldsDisabled}
+                  paymentMethod={paymentMethod}
+                  setPaymentMethod={setPaymentMethod}
+                  provider={provider}
+                  reason={reason}
+                  setReason={setReason}
+                />
+              </tr>
             </tbody>
           </table>
         </div>

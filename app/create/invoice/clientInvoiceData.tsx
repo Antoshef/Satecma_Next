@@ -29,7 +29,7 @@ const ClientInvoiceData: React.FC<ClientInvoiceDataProps> = ({
   };
 
   return (
-    <td colSpan={4}>
+    <td colSpan={4} className="text-left">
       <div>
         Начин на плащане:
         <SelectField

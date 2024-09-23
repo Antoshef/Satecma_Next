@@ -2,11 +2,11 @@ import { Button } from '@/components/button';
 import { SelectField } from '@/components/selectField/SelectField';
 import { TextField } from '@/components/textField/TextField';
 import { Item } from '../invoice/types';
+import Tooltip from '@/components/tooltip';
 
 interface TableItemsProps {
   items: Item[];
   isFieldsDisabled: boolean;
-  className?: string;
   itemChangeHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
   itemSelectHandler: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   removeItem: (code: string | number | null) => void;
@@ -15,7 +15,6 @@ interface TableItemsProps {
 export const TableItems = ({
   items,
   isFieldsDisabled,
-  className,
   itemChangeHandler,
   itemSelectHandler,
   removeItem
@@ -31,15 +30,31 @@ export const TableItems = ({
       totalPrice,
       unit
     }) => (
-      <tr className={className} key={`${code}_${name}`}>
+      <>
         <td>
-          <Button
-            isFieldsDisabled={isFieldsDisabled}
-            value={code}
-            onClick={removeItem}
-          />
+          <Tooltip text="Изтрий">
+            <Button
+              isFieldsDisabled={isFieldsDisabled}
+              value={code}
+              onClick={removeItem}
+            />
+          </Tooltip>
         </td>
-        <td>{name}</td>
+        <td>
+          {Number(code) >= 8000 && Number(code) < 9000 ? (
+            <TextField
+              smallField
+              name="name"
+              type="text"
+              value={name}
+              data-code={code}
+              isFieldsDisabled={isFieldsDisabled}
+              onChange={itemChangeHandler}
+            />
+          ) : (
+            name
+          )}
+        </td>
         <td>
           <TextField
             smallField
@@ -50,21 +65,39 @@ export const TableItems = ({
             isFieldsDisabled={isFieldsDisabled}
             onChange={itemChangeHandler}
           />
-          {unit}
         </td>
         <td>
-          {/* <SelectField
+          <TextField
+            smallField
             name="package"
             data-code={code}
             isFieldsDisabled={isFieldsDisabled}
-            value={pkg}
-            values={packing.split(', ')}
+            value={packing}
+            type="number"
+            onChange={itemChangeHandler}
+          />
+          <SelectField
+            name="unit"
+            data-code={code}
+            isFieldsDisabled={isFieldsDisabled}
+            value={unit}
+            values={['бр.', 'кг.', 'л.']}
             onChange={itemSelectHandler}
           />
-          {` ${unit}`} */}
         </td>
 
-        <td>{`${sellPrice.toFixed(2)} лв.`}</td>
+        <td>
+          <TextField
+            smallField
+            type="number"
+            name="sellPrice"
+            value={sellPrice}
+            data-code={code}
+            isFieldsDisabled={isFieldsDisabled}
+            onChange={itemChangeHandler}
+          />
+          {` лв.`}
+        </td>
         <td>
           <TextField
             smallField
@@ -79,7 +112,7 @@ export const TableItems = ({
         </td>
         <td>
           <SelectField
-            name="VAT"
+            name="vat"
             data-code={code}
             isFieldsDisabled={isFieldsDisabled}
             value="20"
@@ -88,10 +121,10 @@ export const TableItems = ({
           />
           {' %'}
         </td>
-        <td className={!Number(totalPrice) ? 'invoiceBox__zero-amount' : ''}>
+        <td className={!Number(totalPrice) ? 'text-red-500' : ''}>
           {totalPrice} лв.
         </td>
-      </tr>
+      </>
     )
   );
 };

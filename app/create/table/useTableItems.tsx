@@ -12,14 +12,14 @@ export const useTableItems = ({
   setSelectedProduct
 }: TableItemsProps) => {
   const [items, setItems] = useState<Item[]>([]);
-  const [services, setServices] = useState<Item[]>([]);
   const [total, setTotal] = useState({
     amountWithoutDiscount: 0,
     discount: 0,
     netAmount: 0,
-    VAT: 0,
+    vat: 0,
     paid: 0
   });
+  const [lastCustomItemCode, setLastCustomItemCode] = useState(8000);
 
   const itemChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, dataset } = e.target;
@@ -41,87 +41,70 @@ export const useTableItems = ({
     }
   };
 
-  const serviceChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, dataset } = e.target;
-    const newServices = [...services];
-    const currentService = newServices.find(
-      (item) => item.code === dataset.code
-    );
-    if (currentService) {
-      (currentService as any)[name] = value;
-      setServices(newServices);
-    }
-  };
-
-  const serviceSelectHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { value, dataset } = e.target;
-    const newServices = [...services];
-    const currentService = newServices.find(
-      (item) => item.code === dataset.code
-    );
-    if (currentService) {
-      setServices(newServices);
-    }
-  };
-
   const addItem = useCallback(() => {
     if (selectedProduct) {
       const { unit, code, name, sellPrice, packing } = selectedProduct;
-      const VAT = 20;
+      const vat = 20;
       const newItem: Item = {
-        code: code || (items.length + services.length + 8000).toString(),
+        rowIndex: items.length,
+        code: code || (items.length + 8000).toString(),
         name,
         packing,
         quantity: 1,
         unit,
         sellPrice,
         discount: 0,
-        VAT,
+        vat,
         totalPrice: 0
       };
       setItems((state) => [...state, newItem]);
       setSelectedProduct(null);
+    } else {
+      const newItem: Item = {
+        rowIndex: items.length,
+        code: lastCustomItemCode.toString(),
+        name: '',
+        packing: 0,
+        quantity: 1,
+        unit: '',
+        sellPrice: 0,
+        discount: 0,
+        vat: 0,
+        totalPrice: 0
+      };
+      setLastCustomItemCode((state) => state + 1);
+      setItems((state) => [...state, newItem]);
     }
-  }, [items, selectedProduct, services, setSelectedProduct]);
+  }, [items, selectedProduct, lastCustomItemCode, setSelectedProduct]);
 
   const removeItem = (code: string | number | null) => {
     setItems((state) => state.filter((item) => item.code !== code));
-    setServices((state) => state.filter((item) => item.code !== code));
   };
 
   useEffect(() => {
     setTotal(() => {
-      let amountWithoutDiscount = items.reduce(
+      const amountWithoutDiscount = items.reduce(
         (acc, item) => acc + Number(item.totalPrice),
         0
       );
-      amountWithoutDiscount += services.reduce(
-        (acc, item) => acc + Number(item.totalPrice),
-        0
-      );
-      let discount = items.reduce(
-        (acc, item) =>
-          acc + (Number(item.discount) / 100) * Number(item.totalPrice),
-        0
-      );
-      discount += services.reduce(
+      const discount = items.reduce(
         (acc, item) =>
           acc + (Number(item.discount) / 100) * Number(item.totalPrice),
         0
       );
       const netAmount = amountWithoutDiscount - discount;
-      const VAT = 0.2 * netAmount;
-      const paid = netAmount + VAT;
+      const vat = 0.2 * netAmount;
+      const paid = netAmount + vat;
 
       return {
         amountWithoutDiscount,
         discount,
         netAmount,
-        VAT,
+        vat,
         paid
       };
     });
-  }, [items, services]);
+  }, [items]);
 
   return {
     items,

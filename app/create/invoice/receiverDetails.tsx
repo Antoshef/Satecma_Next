@@ -26,10 +26,9 @@ const ReceiverDetails: React.FC<ReceiverDetailsProps> = ({
   };
 
   return (
-    <td colSpan={4}>
-      <div>Получател:</div>
-      <div>
-        Име на фирма:{' '}
+    <td colSpan={6} className="py-4 align-top text-right">
+      <div className="mb-1">
+        <span className="text-right">Получател:</span>
         <GenericInput
           data={clients}
           selectedItem={selectedClient}
@@ -37,8 +36,8 @@ const ReceiverDetails: React.FC<ReceiverDetailsProps> = ({
           displayProperty="name"
         />
       </div>
-      <div>
-        Град:{' '}
+      <div className="mb-1">
+        <span className="text-right">Град:</span>
         <TextField
           name="city"
           type="text"
@@ -48,8 +47,8 @@ const ReceiverDetails: React.FC<ReceiverDetailsProps> = ({
           onChange={onChange}
         />
       </div>
-      <div>
-        Адрес:{' '}
+      <div className="mb-1">
+        <span className="text-right">Адрес:</span>
         <TextField
           name="address"
           type="text"
@@ -59,8 +58,8 @@ const ReceiverDetails: React.FC<ReceiverDetailsProps> = ({
           onChange={onChange}
         />
       </div>
-      <div>
-        ЕИК:{' '}
+      <div className="mb-1">
+        <span className="text-right">ЕИК:</span>
         <TextField
           name="eik"
           type="text"
@@ -70,8 +69,8 @@ const ReceiverDetails: React.FC<ReceiverDetailsProps> = ({
           onChange={onChange}
         />
       </div>
-      <div>
-        ДДС №:{' '}
+      <div className="mb-1">
+        <span className="text-right">ДДС №:</span>
         <TextField
           name="vat"
           type="text"
@@ -81,8 +80,8 @@ const ReceiverDetails: React.FC<ReceiverDetailsProps> = ({
           onChange={onChange}
         />
       </div>
-      <div>
-        МОЛ:{' '}
+      <div className="mb-1">
+        <span className="text-right">МОЛ:</span>
         <TextField
           name="director"
           type="text"
@@ -93,7 +92,7 @@ const ReceiverDetails: React.FC<ReceiverDetailsProps> = ({
         />
       </div>
       <div>
-        Е-Поща:{' '}
+        <span className="text-right">Е-Поща:</span>
         <TextField
           name="email"
           type="text"

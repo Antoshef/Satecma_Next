@@ -1,15 +1,15 @@
 const TableHeader: React.FC = () => {
   return (
-    <tr className="bg-gray-700 text-white">
-      <td>№</td>
-      <td>Продукт / Услуга</td>
-      <td>Количество</td>
-      <td>Опаковка</td>
-      <td>Ед. цена</td>
-      <td>Отстъпка</td>
-      <td>ДДС</td>
-      <td>Стойност (без ДДС)</td>
-    </tr>
+    <>
+      <td className="text-center text-small">№</td>
+      <td className="text-right text-small">Продукт / Услуга</td>
+      <td className="text-right text-small">Количество</td>
+      <td className="text-right text-small">Опаковка</td>
+      <td className="text-right text-small">Ед. цена</td>
+      <td className="text-right text-small">Отстъпка</td>
+      <td className="text-right text-small">ДДС</td>
+      <td className="text-right text-small">Стойност (без ДДС)</td>
+    </>
   );
 };
 

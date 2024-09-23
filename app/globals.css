@@ -36,16 +36,6 @@ select:focus {
   box-shadow: none; /* Remove any additional shadow that might be applied */
 }
 
-.send-box {
-  min-width: max-content;
-  margin: auto;
-  padding: 30px;
-  border: 1px solid #eee;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-  font-size: 16px;
-  font-family: 'Arial', sans-serif;
-}
-
 .invoiceBox__button {
   cursor: pointer;
 }
@@ -65,16 +55,6 @@ select:focus {
   margin-bottom: 1rem;
 }
 
-.invoiceBox__error {
-  color: red;
-  font-size: 0.8rem;
-  text-align: center;
-}
-
-.invoiceBox__zero-amount {
-  color: red;
-}
-
 .invoiceBox__companyData {
   margin-top: 1rem;
 }
@@ -84,46 +64,6 @@ select:focus {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.invoice__button {
-  margin-top: 2rem;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.invoice__button > button {
-  width: 100%;
-  max-width: 300px;
-  padding: 0.5rem;
-  background-color: rgb(31 41 55 / 0.9);
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: bold;
-}
-
-.invoice__button > button:hover {
-  background-color: rgb(31 41 55 / 0.8);
-}
-
-.button {
-  padding: 0 0.5rem;
-  background-color: rgb(31 41 55 / 0.9);
-  color: rgb(233, 233, 233);
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.button:hover {
-  background-color: rgb(31 41 55 / 0.8);
 }
 
 .input-field {

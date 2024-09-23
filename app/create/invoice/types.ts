@@ -6,14 +6,15 @@ export interface Item
     'name' | 'code' | 'sellPrice' | 'unit' | 'packing' | 'quantity'
   > {
   totalPrice: number;
-  VAT: number;
+  vat: number;
   discount: number;
+  rowIndex?: number;
 }
 
 export interface Company {
   name: string;
   eik: number;
-  VAT: string;
+  vat: string;
   city: string;
   address: string;
   director: string;
@@ -37,6 +38,7 @@ export interface InvoiceData {
 }
 
 export enum InvoiceType {
+  none = 'none',
   original = 'original',
   proforma = 'proforma'
 }

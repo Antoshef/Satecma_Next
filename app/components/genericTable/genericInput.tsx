@@ -9,6 +9,7 @@ import {
   KeyboardEvent
 } from 'react';
 import { useMergedRef } from '../useMergedRefs/useMergedRefs';
+import { classNames } from '@/utils/classNames';
 
 export function itemHandler<T, K extends keyof T>(
   name: string,
@@ -139,8 +140,7 @@ export const GenericInput = forwardRef<unknown, GenericInputProps<any>>(
 
     return (
       <div
-        className={className}
-        style={{ position: 'relative' }}
+        className={classNames([`${className} relative inline-block`])}
         ref={mergedRefs}
       >
         {label && (

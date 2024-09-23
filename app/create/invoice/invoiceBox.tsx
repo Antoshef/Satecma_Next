@@ -20,7 +20,7 @@ import InvoiceDetails from './invoiceDetails';
 import ProviderDetails from './providerDetails';
 import { InvoiceRequestBody } from '../../../pages/api/create/types';
 import TableHeader from './tableHeader';
-import { ProviderContextProvider } from '@/context/ProviderContext';
+import ReceiverDetails from './receiverDetails';
 
 interface InvoiceBoxProps {
   provider: Company | null;
@@ -42,14 +42,15 @@ const InvoiceBox = ({
   const [paymentMethod, setPaymentMethod] = useState('По Банка');
   const [email, setEmail] = useState('');
   const [sendMailToRecepient, setSendMailToRecepient] = useState<boolean>(true);
-  const [error, setError] = useState<boolean>(false);
+  const [error, setError] = useState({
+    invoiceNumber: false,
+    wordPrice: false
+  });
   const [receiver, setReceiver] = useState<Client>(INIT_RECEIVER);
   const [invoiceNumber, setInvoiceNumber] = useState<string>(
     invoiceIds[0] || ''
   );
-  const [invoiceType, setInvoiceType] = useState<InvoiceType>(
-    InvoiceType.proforma
-  );
+  const [invoiceType, setInvoiceType] = useState<InvoiceType>(InvoiceType.none);
   const invoiceRef = useRef<HTMLTableElement>(null);
   const [isFieldsDisabled, setIsFieldsDisabled] = useState<boolean>(false);
   const [invoiceData, setInvoiceData] = useState<InvoiceData>(
@@ -124,13 +125,13 @@ const InvoiceBox = ({
   useEffect(() => {
     setReceiver((state) => ({
       ...state,
-      VAT: receiver.eik ? `${VAT_PREFIX}${receiver.eik}` : ''
+      vat: receiver.eik ? `${VAT_PREFIX}${receiver.eik}` : ''
     }));
   }, [receiver.eik]);
 
   useEffect(() => {
-    setError(!wordPrice || !invoiceNumber);
-  }, [wordPrice, invoiceNumber, setError]);
+    setError((state) => ({ ...state, invoiceNumber: false }));
+  }, [invoiceNumber]);
 
   useEffect(() => {
     setInvoiceData((state) => ({
@@ -149,16 +150,15 @@ const InvoiceBox = ({
   return (
     <div className="flex flex-col align-middle">
       <ToastContainer />
-      <form
-        autoComplete="off"
-        className="p-4 max-w-5xl w-full"
-        onSubmit={onSubmit}
-        id="invoice"
-      >
-        <div ref={invoiceRef} className="send-box">
-          <table cellPadding="0" cellSpacing="0">
+
+      <form autoComplete="off" className="p-4" onSubmit={onSubmit} id="invoice">
+        <div
+          ref={invoiceRef}
+          className="mx-auto p-4 border border-gray-200 shadow-md text-base font-sans"
+        >
+          <table className="w-full border-collapse">
             <tbody>
-              <tr className="top">
+              <tr>
                 <InvoiceDetails
                   invoiceType={invoiceType}
                   setInvoiceType={setInvoiceType}
@@ -167,39 +167,47 @@ const InvoiceBox = ({
                   invoiceData={invoiceData}
                   setInvoiceData={setInvoiceData}
                   isFieldsDisabled={isFieldsDisabled}
+                  error={error}
                 />
-                <ProviderDetails company={company} setCompany={setCompany} />
               </tr>
 
-              <TableHeader />
+              <tr>
+                <ProviderDetails company={company} setCompany={setCompany} />
+                <ReceiverDetails
+                  receiver={receiver}
+                  onChange={onChange}
+                  clients={clients}
+                  setReceiver={setReceiver}
+                  isFieldsDisabled={isFieldsDisabled}
+                />
+              </tr>
 
-              <TableItems
-                items={items}
-                className="border-gray-800 border-b text-right"
-                isFieldsDisabled={isFieldsDisabled}
-                itemChangeHandler={itemChangeHandler}
-                itemSelectHandler={itemSelectHandler}
-                removeItem={removeItem}
-              />
+              <tr className="bg-gray-700 text-white">
+                <TableHeader />
+              </tr>
+
+              <tr className="border-gray-800 border-b text-right">
+                <TableItems
+                  items={items}
+                  isFieldsDisabled={isFieldsDisabled}
+                  itemChangeHandler={itemChangeHandler}
+                  itemSelectHandler={itemSelectHandler}
+                  removeItem={removeItem}
+                />
+              </tr>
 
               <tr>
                 <InputWrapper
                   data={products}
+                  displayProperty="name"
                   isFieldsDisabled={isFieldsDisabled}
                   selectedItem={selectedProduct}
                   onSubmit={addItem}
                   setSelectedItem={productChangeHandler}
-                  displayProperty="name"
                 />
               </tr>
 
               <tr className="invoiceBox__companyData">
-                <InvoicePriceData
-                  total={total}
-                  wordPrice={wordPrice}
-                  setWordPrice={setWordPrice}
-                  isFieldsDisabled={isFieldsDisabled}
-                />
                 <ClientInvoiceData
                   setReceiver={setReceiver}
                   isFieldsDisabled={isFieldsDisabled}
@@ -208,6 +216,14 @@ const InvoiceBox = ({
                   provider={provider}
                   reason={reason}
                   setReason={setReason}
+                />
+
+                <InvoicePriceData
+                  error={error}
+                  total={total}
+                  wordPrice={wordPrice}
+                  setWordPrice={setWordPrice}
+                  isFieldsDisabled={isFieldsDisabled}
                 />
               </tr>
             </tbody>
@@ -229,10 +245,10 @@ const InvoiceBox = ({
           <span className="ml-2 text-sm">Изпрати до получател</span>
         </div>
       </div>
-      <div className="invoice__button">
+      <div className="mt-8 w-full flex flex-col items-center justify-center">
         <button
-          className="bg-blue-600 text-white py-2 px-4 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-          disabled={error || isFieldsDisabled}
+          className="py-2 px-12 bg-gray-800 bg-opacity-90 text-white border-none rounded cursor-pointer text-base font-bold hover:bg-opacity-80"
+          disabled={error.invoiceNumber || error.wordPrice || isFieldsDisabled}
           type="submit"
         >
           Създай

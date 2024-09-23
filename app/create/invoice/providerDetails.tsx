@@ -17,95 +17,91 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({
   };
 
   return (
-    <td>
-      <table className="w-full border-collapse">
-        <tbody>
-          <tr>
-            <td className="max-w-[80px] p-0 text-right">Доставчик:</td>
-            <td className="max-w-[120px] p-0">
-              <input
-                type="text"
-                name="name"
-                value={company?.name || ''}
-                onChange={handleInputChange}
-                className="w-full p-1 border border-gray-300 rounded"
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="max-w-[80px] p-0 text-right">ЕИК:</td>
-            <td className="max-w-[120px] p-0">
-              <input
-                type="text"
-                name="eik"
-                value={company?.eik || ''}
-                onChange={handleInputChange}
-                className="w-full p-1 border border-gray-300 rounded"
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="max-w-[80px] p-0 text-right">ДДС №:</td>
-            <td className="max-w-[120px] p-0">
-              <input
-                type="text"
-                name="vat"
-                value={company ? `BG${company.eik}` : ''}
-                onChange={handleInputChange}
-                className="w-full p-1 border border-gray-300 rounded"
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="max-w-[80px] p-0 text-right">Град:</td>
-            <td className="max-w-[120px] p-0">
-              <input
-                type="text"
-                name="city"
-                value={company?.city || ''}
-                onChange={handleInputChange}
-                className="w-full p-1 border border-gray-300 rounded"
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="max-w-[80px] p-0 text-right">Адрес:</td>
-            <td className="max-w-[120px] p-0">
-              <input
-                type="text"
-                name="address"
-                value={company?.address || ''}
-                onChange={handleInputChange}
-                className="w-full p-1 border border-gray-300 rounded"
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="max-w-[80px] p-0 text-right">МОЛ:</td>
-            <td className="max-w-[120px] p-0">
-              <input
-                type="text"
-                name="director"
-                value={company?.director || ''}
-                onChange={handleInputChange}
-                className="w-full p-1 border border-gray-300 rounded"
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="max-w-[80px] p-0 text-right">Телефон:</td>
-            <td className="max-w-[120px] p-0">
-              <input
-                type="text"
-                name="phone"
-                value={company?.phone || ''}
-                onChange={handleInputChange}
-                className="w-full p-1 border border-gray-300 rounded"
-              />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <td colSpan={2} className="py-4">
+      <div className="flex place-items-center">
+        <span className="basis-1/3 text-left">Доставчик:</span>
+        <span>
+          <input
+            type="text"
+            name="name"
+            value={company?.name || ''}
+            onChange={handleInputChange}
+            className="w-full p-1 border border-gray-300 rounded"
+          />
+        </span>
+      </div>
+      <div className="flex place-items-center">
+        <span className="basis-1/3 text-left">ЕИК:</span>
+        <span>
+          <input
+            type="text"
+            name="eik"
+            value={company?.eik || ''}
+            onChange={handleInputChange}
+            className="w-full p-1 border border-gray-300 rounded"
+          />
+        </span>
+      </div>
+      <div className="flex place-items-center">
+        <span className="basis-1/3 text-left">ДДС №:</span>
+        <span>
+          <input
+            type="text"
+            name="vat"
+            value={company ? `BG${company.eik}` : ''}
+            onChange={handleInputChange}
+            className="w-full p-1 border border-gray-300 rounded"
+          />
+        </span>
+      </div>
+      <div className="flex place-items-center">
+        <span className="basis-1/3 text-left">Град:</span>
+        <span>
+          <input
+            type="text"
+            name="city"
+            value={company?.city || ''}
+            onChange={handleInputChange}
+            className="w-full p-1 border border-gray-300 rounded"
+          />
+        </span>
+      </div>
+      <div className="flex place-items-center">
+        <span className="basis-1/3 text-left">Адрес:</span>
+        <span>
+          <input
+            type="text"
+            name="address"
+            value={company?.address || ''}
+            onChange={handleInputChange}
+            className="w-full p-1 border border-gray-300 rounded"
+          />
+        </span>
+      </div>
+      <div className="flex place-items-center">
+        <span className="basis-1/3 text-left">МОЛ:</span>
+        <span>
+          <input
+            type="text"
+            name="director"
+            value={company?.director || ''}
+            onChange={handleInputChange}
+            className="w-full p-1 border border-gray-300 rounded"
+          />
+        </span>
+      </div>
+      <div className="flex place-items-center">
+        <span className="basis-1/3 text-left">Телефон:</span>
+        <span>
+          <input
+            type="text"
+            name="phone"
+            value={company?.phone || ''}
+            onChange={handleInputChange}
+            className="w-full p-1 border border-gray-300 rounded"
+          />
+        </span>
+      </div>
     </td>
   );
 };

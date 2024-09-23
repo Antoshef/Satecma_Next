@@ -1,4 +1,5 @@
 import { GenericInput, GenericInputProps } from '../genericTable/genericInput';
+import Tooltip from '../tooltip';
 
 interface InputWrapperProps extends GenericInputProps<{ name: string }> {
   data: { name: string }[];
@@ -20,8 +21,18 @@ export const InputWrapper = ({
   return (
     !isFieldsDisabled && (
       <>
-        <td></td>
-        <td colSpan={1}>
+        <td colSpan={1} className="py-4 text-center">
+          <Tooltip text="Добави Ред">
+            <button
+              className="py-1.5 px-3.5 bg-gray-800 bg-opacity-90 text-gray-200 border-none rounded cursor-pointer text-base hover:bg-opacity-80"
+              type="button"
+              onClick={onSubmit}
+            >
+              +
+            </button>
+          </Tooltip>
+        </td>
+        <td colSpan={1} className="py-4 text-right">
           <GenericInput
             label={label}
             required={required}
@@ -31,10 +42,17 @@ export const InputWrapper = ({
             displayProperty="name"
           />
         </td>
-        <td colSpan={1}>
-          <button className="button" type="button" onClick={onSubmit}>
-            Добави
-          </button>
+        <td colSpan={1} className="py-4 text-center">
+          <Tooltip text="Добави Продукт">
+            <button
+              className="py-1.5 px-3.5 bg-gray-800 bg-opacity-90 text-gray-200 border-none rounded cursor-pointer text-base hover:bg-opacity-80"
+              type="button"
+              disabled={!selectedItem}
+              onClick={onSubmit}
+            >
+              Добави
+            </button>
+          </Tooltip>
         </td>
       </>
     )

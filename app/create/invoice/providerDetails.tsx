@@ -18,7 +18,7 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({
 
   return (
     <td colSpan={2} className="py-4">
-      <div className="flex place-items-center">
+      <div className="flex place-items-center mb-1">
         <span className="basis-1/3 text-left">Доставчик:</span>
         <span>
           <input
@@ -30,7 +30,7 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({
           />
         </span>
       </div>
-      <div className="flex place-items-center">
+      <div className="flex place-items-center mb-1">
         <span className="basis-1/3 text-left">ЕИК:</span>
         <span>
           <input
@@ -42,7 +42,7 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({
           />
         </span>
       </div>
-      <div className="flex place-items-center">
+      <div className="flex place-items-center mb-1">
         <span className="basis-1/3 text-left">ДДС №:</span>
         <span>
           <input
@@ -54,7 +54,7 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({
           />
         </span>
       </div>
-      <div className="flex place-items-center">
+      <div className="flex place-items-center mb-1">
         <span className="basis-1/3 text-left">Град:</span>
         <span>
           <input
@@ -66,7 +66,7 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({
           />
         </span>
       </div>
-      <div className="flex place-items-center">
+      <div className="flex place-items-center mb-1">
         <span className="basis-1/3 text-left">Адрес:</span>
         <span>
           <input
@@ -78,7 +78,7 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({
           />
         </span>
       </div>
-      <div className="flex place-items-center">
+      <div className="flex place-items-center mb-1">
         <span className="basis-1/3 text-left">МОЛ:</span>
         <span>
           <input
@@ -90,7 +90,7 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({
           />
         </span>
       </div>
-      <div className="flex place-items-center">
+      <div className="flex place-items-center mb-1">
         <span className="basis-1/3 text-left">Телефон:</span>
         <span>
           <input

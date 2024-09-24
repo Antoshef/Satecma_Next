@@ -9,7 +9,6 @@ import {
   KeyboardEvent
 } from 'react';
 import { useMergedRef } from '../useMergedRefs/useMergedRefs';
-import { classNames } from '@/utils/classNames';
 
 export function itemHandler<T, K extends keyof T>(
   name: string,
@@ -31,6 +30,7 @@ export interface GenericInputProps<T> {
   data: T[];
   selectedItem: T | null;
   className?: string;
+  variant?: 'simple' | 'outlined';
   setSelectedItem: (item: T) => void;
   displayProperty: keyof T;
 }
@@ -44,6 +44,7 @@ export const GenericInput = forwardRef<unknown, GenericInputProps<any>>(
       data,
       selectedItem,
       className,
+      variant = 'outlined',
       setSelectedItem,
       displayProperty
     },
@@ -139,10 +140,7 @@ export const GenericInput = forwardRef<unknown, GenericInputProps<any>>(
     }, [selectedItem, displayProperty]);
 
     return (
-      <div
-        className={classNames([`${className} relative inline-block`])}
-        ref={mergedRefs}
-      >
+      <div className={`${className} relative inline-block`} ref={mergedRefs}>
         {label && (
           <label className="block text-sm font-medium text-gray-700">
             {label}
@@ -153,7 +151,7 @@ export const GenericInput = forwardRef<unknown, GenericInputProps<any>>(
           placeholder={placeholder}
           value={input}
           required={required}
-          className="block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm sm:text-sm"
+          className={`${variant === 'simple' ? 'w-full border border-gray-300 rounded-md px-1 py-0.5' : 'block w-full p-1 border border-theme-light-secondary dark:border-theme-dark-secondary rounded-md shadow-sm sm:text-sm'} `}
           autoComplete="off"
           onFocus={() => setShowSuggestions(true)}
           onChange={onChange}

@@ -31,6 +31,8 @@ const ReceiverDetails: React.FC<ReceiverDetailsProps> = ({
         <span className="text-right">Получател:</span>
         <GenericInput
           data={clients}
+          className="w-1/3"
+          variant="simple"
           selectedItem={selectedClient}
           setSelectedItem={handleClientSelect}
           displayProperty="name"
@@ -41,6 +43,7 @@ const ReceiverDetails: React.FC<ReceiverDetailsProps> = ({
         <TextField
           name="city"
           type="text"
+          className="w-1/3"
           placeholder="Град"
           value={receiver.city}
           isFieldsDisabled={isFieldsDisabled}
@@ -52,6 +55,7 @@ const ReceiverDetails: React.FC<ReceiverDetailsProps> = ({
         <TextField
           name="address"
           type="text"
+          className="w-1/3"
           placeholder="Адрес"
           value={receiver.address}
           isFieldsDisabled={isFieldsDisabled}
@@ -63,6 +67,7 @@ const ReceiverDetails: React.FC<ReceiverDetailsProps> = ({
         <TextField
           name="eik"
           type="text"
+          className="w-1/3"
           placeholder="ЕИК"
           value={receiver.eik}
           isFieldsDisabled={isFieldsDisabled}
@@ -74,6 +79,7 @@ const ReceiverDetails: React.FC<ReceiverDetailsProps> = ({
         <TextField
           name="vat"
           type="text"
+          className="w-1/3"
           placeholder="ДДС №"
           value={receiver.vat}
           isFieldsDisabled={isFieldsDisabled}
@@ -85,6 +91,7 @@ const ReceiverDetails: React.FC<ReceiverDetailsProps> = ({
         <TextField
           name="director"
           type="text"
+          className="w-1/3"
           placeholder="МОЛ"
           value={receiver.director}
           isFieldsDisabled={isFieldsDisabled}
@@ -96,6 +103,7 @@ const ReceiverDetails: React.FC<ReceiverDetailsProps> = ({
         <TextField
           name="email"
           type="text"
+          className="w-1/3"
           placeholder="Е-Поща"
           value={receiver.email}
           isFieldsDisabled={isFieldsDisabled}

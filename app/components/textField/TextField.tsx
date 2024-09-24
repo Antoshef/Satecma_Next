@@ -1,5 +1,5 @@
-import { classNames } from "@/utils/classNames";
-import { ChangeEvent } from "react";
+import { classNames } from '@/utils/classNames';
+import { ChangeEvent } from 'react';
 
 interface TextFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   isFieldsDisabled?: boolean;
@@ -27,17 +27,16 @@ export const TextField = ({
   onChange,
   ...props
 }: TextFieldProps) => {
-  const classes = classNames([
-    smallField ? "max-w-12" : "",
-    "input-field",
-    className || "",
-  ]);
+  const classes = `
+    ${smallField && 'max-w-12'} 
+    'border border-gray-300 rounded-md px-1 py-0.5 focus:outline-none'
+    ${className}`;
 
   return (
     <>
       {isFieldsDisabled ? (
         <span className={textClass}>
-          {type === "number" ? Number(value).toFixed(2) : value}
+          {type === 'number' ? Number(value).toFixed(2) : value}
         </span>
       ) : (
         <input

@@ -55,7 +55,7 @@ export const useTableItems = ({
         sellPrice,
         discount: 0,
         vat,
-        totalPrice: 0
+        totalPrice: sellPrice
       };
       setItems((state) => [...state, newItem]);
       setSelectedProduct(null);
@@ -84,16 +84,16 @@ export const useTableItems = ({
   useEffect(() => {
     setTotal(() => {
       const amountWithoutDiscount = items.reduce(
-        (acc, item) => acc + Number(item.totalPrice),
+        (acc, item) => acc + item.sellPrice * item.quantity,
         0
       );
       const discount = items.reduce(
         (acc, item) =>
-          acc + (Number(item.discount) / 100) * Number(item.totalPrice),
+          acc + (item.discount / 100) * (item.sellPrice * item.quantity),
         0
       );
       const netAmount = amountWithoutDiscount - discount;
-      const vat = 0.2 * netAmount;
+      const vat = 0.2 * netAmount; // Assuming VAT is 20%
       const paid = netAmount + vat;
 
       return {

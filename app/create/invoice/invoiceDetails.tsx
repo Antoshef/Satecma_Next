@@ -31,7 +31,13 @@ const InvoiceHeader: React.FC<InvoiceDetailsProps> = ({
   return (
     <>
       <td colSpan={4}>
-        <Image src={SATECMA_LOGO} alt="Satecma logo" width={300} height={65} />
+        <Image
+          src={SATECMA_LOGO}
+          alt="Satecma logo"
+          width={220}
+          height={65}
+          style={{ width: 220, height: 'auto' }}
+        />
       </td>
       <td colSpan={4} className="pl-4 text-right">
         <div>
@@ -45,7 +51,7 @@ const InvoiceHeader: React.FC<InvoiceDetailsProps> = ({
               InvoiceType.proforma
             ]}
             displayValues={['Избери тип', 'Оригинал', 'Проформа']}
-            className="mb-2"
+            className="mb-2 w-5/12"
             onChange={(e) => setInvoiceType(e.target.value as InvoiceType)}
           />
         </div>
@@ -59,7 +65,7 @@ const InvoiceHeader: React.FC<InvoiceDetailsProps> = ({
               value={invoiceNumber}
               isFieldsDisabled={isFieldsDisabled}
               maxLength={10}
-              className="mb-2"
+              className="mb-2 w-5/12"
               onChange={(e) => setInvoiceNumber(e.target.value)}
             />
             {error.invoiceNumber && (
@@ -77,6 +83,7 @@ const InvoiceHeader: React.FC<InvoiceDetailsProps> = ({
               value={invoiceData.date}
               type="date"
               name="date"
+              className="w-5/12"
               onChange={(e) =>
                 setInvoiceData((state) => ({
                   ...state,

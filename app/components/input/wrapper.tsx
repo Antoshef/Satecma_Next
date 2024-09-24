@@ -24,7 +24,7 @@ export const InputWrapper = ({
         <td colSpan={1} className="py-4 text-center">
           <Tooltip text="Добави Ред">
             <button
-              className="py-1.5 px-3.5 bg-gray-800 bg-opacity-90 text-gray-200 border-none rounded cursor-pointer text-base hover:bg-opacity-80"
+              className="py-1 px-3 bg-gray-800 bg-opacity-90 text-gray-200 border-none rounded cursor-pointer text-base hover:bg-opacity-80"
               type="button"
               onClick={onSubmit}
             >
@@ -37,6 +37,8 @@ export const InputWrapper = ({
             label={label}
             required={required}
             data={data}
+            className="w-5/6"
+            variant="simple"
             selectedItem={selectedItem}
             setSelectedItem={setSelectedItem}
             displayProperty="name"
@@ -45,7 +47,7 @@ export const InputWrapper = ({
         <td colSpan={1} className="py-4 text-center">
           <Tooltip text="Добави Продукт">
             <button
-              className="py-1.5 px-3.5 bg-gray-800 bg-opacity-90 text-gray-200 border-none rounded cursor-pointer text-base hover:bg-opacity-80"
+              className="py-1 px-3 bg-gray-800 bg-opacity-90 text-gray-200 border-none rounded cursor-pointer text-base hover:bg-opacity-80"
               type="button"
               disabled={!selectedItem}
               onClick={onSubmit}

@@ -186,7 +186,6 @@ const InvoiceBox = ({
                 <TableHeader />
               </tr>
 
-              <tr className="border-gray-800 border-b text-right">
                 <TableItems
                   items={items}
                   isFieldsDisabled={isFieldsDisabled}
@@ -194,7 +193,6 @@ const InvoiceBox = ({
                   itemSelectHandler={itemSelectHandler}
                   removeItem={removeItem}
                 />
-              </tr>
 
               <tr>
                 <InputWrapper
@@ -239,7 +237,7 @@ const InvoiceBox = ({
             type="checkbox"
             checked={sendMailToRecepient}
             onChange={() => setSendMailToRecepient(!sendMailToRecepient)}
-            className="form-checkbox h-5 w-5 text-blue-600"
+            className="form-checkbox h-5 w-5 text-gray-800"
             aria-label="controlled"
           />
           <span className="ml-2 text-sm">Изпрати до получател</span>

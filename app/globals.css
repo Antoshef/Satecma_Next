@@ -66,12 +66,6 @@ select:focus {
   text-overflow: ellipsis;
 }
 
-.input-field {
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 0.1rem 0.25rem;
-}
-
 .select-field {
   border: 1px solid #ccc;
   border-radius: 5px;

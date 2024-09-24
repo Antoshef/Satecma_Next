@@ -30,8 +30,8 @@ export const TableItems = ({
       totalPrice,
       unit
     }) => (
-      <>
-        <td>
+      <tr key={code} className="border-gray-800 border-b text-right">
+        <td className="text-left py-1">
           <Tooltip text="Изтрий">
             <Button
               isFieldsDisabled={isFieldsDisabled}
@@ -40,10 +40,9 @@ export const TableItems = ({
             />
           </Tooltip>
         </td>
-        <td>
+        <td className="py-1">
           {Number(code) >= 8000 && Number(code) < 9000 ? (
             <TextField
-              smallField
               name="name"
               type="text"
               value={name}
@@ -55,7 +54,7 @@ export const TableItems = ({
             name
           )}
         </td>
-        <td>
+        <td className="py-1">
           <TextField
             smallField
             type="number"
@@ -66,7 +65,7 @@ export const TableItems = ({
             onChange={itemChangeHandler}
           />
         </td>
-        <td>
+        <td className="py-1">
           <TextField
             smallField
             name="package"
@@ -86,7 +85,7 @@ export const TableItems = ({
           />
         </td>
 
-        <td>
+        <td className="py-1">
           <TextField
             smallField
             type="number"
@@ -98,7 +97,7 @@ export const TableItems = ({
           />
           {` лв.`}
         </td>
-        <td>
+        <td className="py-1">
           <TextField
             smallField
             type="number"
@@ -110,7 +109,7 @@ export const TableItems = ({
           />
           {'  %'}
         </td>
-        <td>
+        <td className="py-1">
           <SelectField
             name="vat"
             data-code={code}
@@ -124,7 +123,7 @@ export const TableItems = ({
         <td className={!Number(totalPrice) ? 'text-red-500' : ''}>
           {totalPrice} лв.
         </td>
-      </>
+      </tr>
     )
   );
 };

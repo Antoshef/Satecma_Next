@@ -100,7 +100,7 @@ const InvoiceBox = ({
     total,
     addItem,
     itemChangeHandler,
-    itemSelectHandler,
+    // itemSelectHandler,
     removeItem
   } = useTableItems({ selectedProduct, setSelectedProduct });
 
@@ -186,13 +186,12 @@ const InvoiceBox = ({
                 <TableHeader />
               </tr>
 
-                <TableItems
-                  items={items}
-                  isFieldsDisabled={isFieldsDisabled}
-                  itemChangeHandler={itemChangeHandler}
-                  itemSelectHandler={itemSelectHandler}
-                  removeItem={removeItem}
-                />
+              <TableItems
+                items={items}
+                isFieldsDisabled={isFieldsDisabled}
+                itemChangeHandler={itemChangeHandler}
+                removeItem={removeItem}
+              />
 
               <tr>
                 <InputWrapper

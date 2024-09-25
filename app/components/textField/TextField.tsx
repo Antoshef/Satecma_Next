@@ -1,4 +1,3 @@
-import { classNames } from '@/utils/classNames';
 import { ChangeEvent } from 'react';
 
 interface TextFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -44,6 +43,7 @@ export const TextField = ({
           className={classes}
           type={type}
           name={name}
+          autoComplete="random-value"
           placeholder={placeholder}
           value={value}
           maxLength={maxLength}

@@ -1,14 +1,10 @@
-import { classNames } from '@/utils/classNames';
-import { ChangeEvent } from 'react';
-
-interface SelectFieldProps {
+interface SelectFieldProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   name?: string;
   isFieldsDisabled: boolean;
   value: string;
   values: string[];
   displayValues?: string[];
   className?: string;
-  onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
 }
 
 export const SelectField = ({
@@ -29,7 +25,7 @@ export const SelectField = ({
     ) : (
       <select
         {...props}
-        className={classNames(['select-field', className ? className : ''])}
+        className={`border border-gray-300 rounded-md px-2 py-0.5 pr-6 ${className}`}
         name={name}
         value={value}
         onChange={onChange}

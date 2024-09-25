@@ -7,8 +7,9 @@ import Tooltip from '@/components/tooltip';
 interface TableItemsProps {
   items: Item[];
   isFieldsDisabled: boolean;
-  itemChangeHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  itemSelectHandler: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  itemChangeHandler: (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => void;
   removeItem: (code: string | number | null) => void;
 }
 
@@ -16,9 +17,10 @@ export const TableItems = ({
   items,
   isFieldsDisabled,
   itemChangeHandler,
-  itemSelectHandler,
   removeItem
 }: TableItemsProps) => {
+  const isCustomItem = (code: string | number) =>
+    Number(code) >= 8000 && Number(code) < 9000;
   return items.map(
     ({
       code,
@@ -31,7 +33,7 @@ export const TableItems = ({
       unit
     }) => (
       <tr key={code} className="border-gray-800 border-b text-right">
-        <td className="text-left py-1">
+        <td className="text-center py-1">
           <Tooltip text="Изтрий">
             <Button
               isFieldsDisabled={isFieldsDisabled}
@@ -41,7 +43,7 @@ export const TableItems = ({
           </Tooltip>
         </td>
         <td className="py-1">
-          {Number(code) >= 8000 && Number(code) < 9000 ? (
+          {isCustomItem(code) ? (
             <TextField
               name="name"
               type="text"
@@ -56,9 +58,9 @@ export const TableItems = ({
         </td>
         <td className="py-1">
           <TextField
-            smallField
             type="number"
             name="quantity"
+            className="max-w-20"
             value={quantity}
             data-code={code}
             isFieldsDisabled={isFieldsDisabled}
@@ -70,18 +72,18 @@ export const TableItems = ({
             smallField
             name="package"
             data-code={code}
-            isFieldsDisabled={isFieldsDisabled}
+            isFieldsDisabled={!isCustomItem(code) || isFieldsDisabled}
             value={packing}
             type="number"
             onChange={itemChangeHandler}
-          />
+          />{' '}
           <SelectField
             name="unit"
             data-code={code}
-            isFieldsDisabled={isFieldsDisabled}
+            isFieldsDisabled={!isCustomItem(code) || isFieldsDisabled}
             value={unit}
             values={['бр.', 'кг.', 'л.']}
-            onChange={itemSelectHandler}
+            onChange={itemChangeHandler}
           />
         </td>
 
@@ -116,7 +118,7 @@ export const TableItems = ({
             isFieldsDisabled={isFieldsDisabled}
             value="20"
             values={['20']}
-            onChange={itemSelectHandler}
+            onChange={itemChangeHandler}
           />
           {' %'}
         </td>

@@ -21,22 +21,15 @@ export const useTableItems = ({
   });
   const [lastCustomItemCode, setLastCustomItemCode] = useState(8000);
 
-  const itemChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const itemChangeHandler = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value, dataset } = e.target;
     const newItems = [...items];
     const currentItem = newItems.find((item) => item.code === dataset.code);
     if (currentItem) {
       (currentItem as any)[name] = value;
-      setItems(newItems);
-    }
-  };
-
-  const itemSelectHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { value, dataset, name } = e.target;
-    const newItems = [...items];
-    const currentItem = newItems.find((item) => item.code === dataset.code);
-    if (currentItem) {
-      (currentItem as any)[name] = value;
+      currentItem.totalPrice = currentItem.quantity * currentItem.sellPrice;
       setItems(newItems);
     }
   };
@@ -84,12 +77,11 @@ export const useTableItems = ({
   useEffect(() => {
     setTotal(() => {
       const amountWithoutDiscount = items.reduce(
-        (acc, item) => acc + item.sellPrice * item.quantity,
+        (acc, item) => acc + item.totalPrice,
         0
       );
       const discount = items.reduce(
-        (acc, item) =>
-          acc + (item.discount / 100) * (item.sellPrice * item.quantity),
+        (acc, item) => acc + (item.discount / 100) * item.totalPrice,
         0
       );
       const netAmount = amountWithoutDiscount - discount;
@@ -110,7 +102,6 @@ export const useTableItems = ({
     items,
     total,
     itemChangeHandler,
-    itemSelectHandler,
     addItem,
     removeItem
   };

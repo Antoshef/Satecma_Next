@@ -29,36 +29,50 @@ const ClientInvoiceData: React.FC<ClientInvoiceDataProps> = ({
   };
 
   return (
-    <td colSpan={4} className="text-left">
-      <div>
-        Начин на плащане:
-        <SelectField
-          isFieldsDisabled={isFieldsDisabled}
-          value={paymentMethod}
-          values={['По Банка', 'В Брой']}
-          onChange={paymentMethodHandler}
-        />
+    <td colSpan={4} className="py-4">
+      <div className="flex place-items-center mb-1">
+        <span className="basis-1/3 text-left">Начин на плащане:</span>
+        <span>
+          <SelectField
+            isFieldsDisabled={isFieldsDisabled}
+            value={paymentMethod}
+            values={['По Банка', 'В Брой']}
+            onChange={paymentMethodHandler}
+            className="w-full p-1 border border-gray-300 rounded"
+          />
+        </span>
       </div>
       {paymentMethod === 'По Банка' && (
-        <div>
-          Банкови реквизити: {provider?.bankName}
-          <br />
-          BIC: {provider?.swift}
-          <br />
-          IBAN: {provider?.iban}
-          <br />
-        </div>
+        <>
+          <div className="flex place-items-center mb-1">
+            <span className="basis-1/3 text-left">Банкови реквизити:</span>
+            <span>{provider?.bankName}</span>
+          </div>
+          <div className="flex place-items-center mb-1">
+            <span className="basis-1/3 text-left">BIC:</span>
+            <span>{provider?.swift}</span>
+          </div>
+          <div className="flex place-items-center mb-1">
+            <span className="basis-1/3 text-left">IBAN:</span>
+            <span>{provider?.iban}</span>
+          </div>
+        </>
       )}
-      <div>
-        Основание на сделка по ЗДДС:
-        <TextField
-          name="reason"
-          type="text"
-          placeholder="Основание на сделка по ЗДДС"
-          value={reason}
-          isFieldsDisabled={isFieldsDisabled}
-          onChange={(e) => setReason(e.target.value)}
-        />
+      <div className="flex place-items-center mb-1">
+        <span className="basis-1/3 text-left">
+          Основание на сделка по ЗДДС:
+        </span>
+        <span>
+          <TextField
+            name="reason"
+            type="text"
+            placeholder="Основание на сделка по ЗДДС"
+            value={reason}
+            isFieldsDisabled={isFieldsDisabled}
+            onChange={(e) => setReason(e.target.value)}
+            className="w-full p-1 border border-gray-300 rounded"
+          />
+        </span>
       </div>
     </td>
   );

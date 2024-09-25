@@ -2,12 +2,10 @@
 
 import React from 'react';
 import { TextField } from '@/components/textField/TextField';
+import { InvoiceError } from './types';
 
-interface InvoicePriceDataProps {
-  error: {
-    wordPrice: boolean;
-    invoiceNumber: boolean;
-  };
+interface DocumentPriceDataProps {
+  error?: InvoiceError;
   total: {
     amountWithoutDiscount: number;
     discount: number;
@@ -15,12 +13,12 @@ interface InvoicePriceDataProps {
     vat: number;
     paid: number;
   };
-  wordPrice: string;
-  setWordPrice: (price: string) => void;
+  wordPrice?: string;
+  setWordPrice?: (price: string) => void;
   isFieldsDisabled: boolean;
 }
 
-export const InvoicePriceData: React.FC<InvoicePriceDataProps> = ({
+export const DocumentPriceData: React.FC<DocumentPriceDataProps> = ({
   error,
   total,
   wordPrice,
@@ -41,19 +39,23 @@ export const InvoicePriceData: React.FC<InvoicePriceDataProps> = ({
         <br />
         Сума за плащане: {total.paid.toFixed(2)} BGN
         <br />
-        Словом:{' '}
-        <TextField
-          name="wordPrice"
-          type="text"
-          placeholder="Сума на думи"
-          value={wordPrice}
-          isFieldsDisabled={isFieldsDisabled}
-          onChange={(e) => setWordPrice(e.target.value)}
-        />
-        {error.wordPrice && (
+        {wordPrice !== undefined && (
           <>
-            <br />
-            <p className="text-red-500 text-xs text-center">
+            {' '}
+            Словом:{' '}
+            <TextField
+              name="wordPrice"
+              type="text"
+              placeholder="Сума на думи"
+              value={wordPrice}
+              isFieldsDisabled={isFieldsDisabled}
+              onChange={(e) => setWordPrice?.(e.target.value)}
+            />{' '}
+          </>
+        )}
+        {error?.wordPrice && (
+          <>
+            <p className="text-red-500 text-xs text-right">
               Полето не може да бъде празно
             </p>
           </>

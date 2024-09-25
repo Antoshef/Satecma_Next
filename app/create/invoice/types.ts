@@ -42,3 +42,9 @@ export enum InvoiceType {
   original = 'original',
   proforma = 'proforma'
 }
+
+export interface InvoiceError {
+  invoiceNumber: boolean;
+  wordPrice: boolean;
+  invoiceType: boolean;
+}

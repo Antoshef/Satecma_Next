@@ -2,13 +2,10 @@ import { SelectField } from '@/components/selectField/SelectField';
 import { TextField } from '@/components/textField/TextField';
 import Image from 'next/image';
 import { SATECMA_LOGO } from './constants';
-import { InvoiceType, InvoiceData } from './types';
+import { InvoiceType, InvoiceData, InvoiceError } from './types';
 
 interface InvoiceDetailsProps {
-  error: {
-    invoiceNumber: boolean;
-    wordPrice: boolean;
-  };
+  error: InvoiceError;
   invoiceType: InvoiceType;
   setInvoiceType: React.Dispatch<React.SetStateAction<InvoiceType>>;
   invoiceNumber: string;
@@ -50,12 +47,17 @@ const InvoiceHeader: React.FC<InvoiceDetailsProps> = ({
               InvoiceType.original,
               InvoiceType.proforma
             ]}
-            displayValues={['Избери тип', 'Оригинал', 'Проформа']}
-            className="mb-2 w-5/12"
+            displayValues={['--избери тип--', 'Оригинал', 'Проформа']}
+            className="w-5/12"
             onChange={(e) => setInvoiceType(e.target.value as InvoiceType)}
           />
+          {error.invoiceType && (
+            <p className="text-red-500 text-xs text-right">
+              Избери тип на фактурата
+            </p>
+          )}
         </div>
-        <div>
+        <div className="mt-1">
           <p>
             Фактура №:{' '}
             <TextField
@@ -65,17 +67,17 @@ const InvoiceHeader: React.FC<InvoiceDetailsProps> = ({
               value={invoiceNumber}
               isFieldsDisabled={isFieldsDisabled}
               maxLength={10}
-              className="mb-2 w-5/12"
+              className="w-5/12"
               onChange={(e) => setInvoiceNumber(e.target.value)}
             />
             {error.invoiceNumber && (
-              <p className="text-red-500 text-xs text-center">
+              <p className="text-red-500 text-xs text-right">
                 Номера трябва да съдържа 10 символа
               </p>
             )}
           </p>
         </div>
-        <div>
+        <div className="mt-1">
           <span>
             Създадена:{' '}
             <TextField

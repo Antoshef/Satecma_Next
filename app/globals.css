@@ -55,9 +55,6 @@ select:focus {
   margin-bottom: 1rem;
 }
 
-.invoiceBox__companyData {
-  margin-top: 1rem;
-}
 .truncate {
   display: inline-block;
   width: 250px;

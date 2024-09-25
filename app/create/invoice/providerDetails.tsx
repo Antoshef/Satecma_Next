@@ -1,12 +1,15 @@
+import { TextField } from '@/components/textField/TextField';
 import { Company } from './types';
 
 interface ProviderDetailsProps {
   company: Company | null;
+  isFieldsDisabled?: boolean;
   setCompany: React.Dispatch<React.SetStateAction<Company | null>>;
 }
 
 const ProviderDetails: React.FC<ProviderDetailsProps> = ({
   company,
+  isFieldsDisabled,
   setCompany
 }) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,87 +23,87 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({
     <td colSpan={2} className="py-4">
       <div className="flex place-items-center mb-1">
         <span className="basis-1/3 text-left">Доставчик:</span>
-        <span>
-          <input
-            type="text"
-            name="name"
-            value={company?.name || ''}
-            onChange={handleInputChange}
-            className="w-full p-1 border border-gray-300 rounded"
-          />
-        </span>
+        <TextField
+          name="name"
+          type="text"
+          className="w-1/3"
+          placeholder="Фирма"
+          value={company?.city || ''}
+          isFieldsDisabled={isFieldsDisabled}
+          onChange={handleInputChange}
+        />
       </div>
       <div className="flex place-items-center mb-1">
         <span className="basis-1/3 text-left">ЕИК:</span>
-        <span>
-          <input
-            type="text"
-            name="eik"
-            value={company?.eik || ''}
-            onChange={handleInputChange}
-            className="w-full p-1 border border-gray-300 rounded"
-          />
-        </span>
+        <TextField
+          name="eik"
+          type="text"
+          className="w-1/3"
+          placeholder="ЕИК"
+          value={company?.eik || ''}
+          isFieldsDisabled={isFieldsDisabled}
+          onChange={handleInputChange}
+        />
       </div>
       <div className="flex place-items-center mb-1">
         <span className="basis-1/3 text-left">ДДС №:</span>
-        <span>
-          <input
-            type="text"
-            name="vat"
-            value={company ? `BG${company.eik}` : ''}
-            onChange={handleInputChange}
-            className="w-full p-1 border border-gray-300 rounded"
-          />
-        </span>
+        <TextField
+          name="vat"
+          type="text"
+          className="w-1/3"
+          placeholder="ДДС №"
+          value={company ? `BG${company.eik}` : ''}
+          isFieldsDisabled={isFieldsDisabled}
+          onChange={handleInputChange}
+        />
       </div>
       <div className="flex place-items-center mb-1">
         <span className="basis-1/3 text-left">Град:</span>
-        <span>
-          <input
-            type="text"
-            name="city"
-            value={company?.city || ''}
-            onChange={handleInputChange}
-            className="w-full p-1 border border-gray-300 rounded"
-          />
-        </span>
+        <TextField
+          name="city"
+          type="text"
+          className="w-1/3"
+          placeholder="Град"
+          value={company?.city || ''}
+          isFieldsDisabled={isFieldsDisabled}
+          onChange={handleInputChange}
+        />
       </div>
       <div className="flex place-items-center mb-1">
         <span className="basis-1/3 text-left">Адрес:</span>
-        <span>
-          <input
-            type="text"
-            name="address"
-            value={company?.address || ''}
-            onChange={handleInputChange}
-            className="w-full p-1 border border-gray-300 rounded"
-          />
-        </span>
+        <TextField
+          name="address"
+          type="text"
+          className="w-1/3"
+          placeholder="Адрес"
+          value={company?.address || ''}
+          isFieldsDisabled={isFieldsDisabled}
+          onChange={handleInputChange}
+        />
       </div>
       <div className="flex place-items-center mb-1">
         <span className="basis-1/3 text-left">МОЛ:</span>
-        <span>
-          <input
-            type="text"
-            name="director"
-            value={company?.director || ''}
-            onChange={handleInputChange}
-            className="w-full p-1 border border-gray-300 rounded"
-          />
-        </span>
+        <TextField
+          name="director"
+          type="text"
+          className="w-1/3"
+          placeholder="МОЛ"
+          value={company?.director || ''}
+          isFieldsDisabled={isFieldsDisabled}
+          onChange={handleInputChange}
+        />
       </div>
       <div className="flex place-items-center mb-1">
         <span className="basis-1/3 text-left">Телефон:</span>
-        <span>
-          <input
-            type="text"
-            name="phone"
-            value={company?.phone || ''}
-            onChange={handleInputChange}
-            className="w-full p-1 border border-gray-300 rounded"
-          />
-        </span>
+        <TextField
+          name="phone"
+          type="text"
+          className="w-1/3"
+          placeholder="Телефон"
+          value={company?.phone || ''}
+          isFieldsDisabled={isFieldsDisabled}
+          onChange={handleInputChange}
+        />
       </div>
     </td>
   );

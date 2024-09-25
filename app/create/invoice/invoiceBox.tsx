@@ -11,8 +11,8 @@ import {
   INVOICE_DATA_DEFAULT_VALUES,
   VAT_PREFIX
 } from './constants';
-import { InvoicePriceData } from './invoicePriceData';
-import { Company, InvoiceData, InvoiceType } from './types';
+import { DocumentPriceData } from './documentPriceData';
+import { Company, InvoiceData, InvoiceError, InvoiceType } from './types';
 import { Product } from '@/products/utils/types';
 import useToast from '@/products/utils/useToast';
 import { FormEvent, useEffect, useRef, useState } from 'react';
@@ -42,9 +42,10 @@ const InvoiceBox = ({
   const [paymentMethod, setPaymentMethod] = useState('По Банка');
   const [email, setEmail] = useState('');
   const [sendMailToRecepient, setSendMailToRecepient] = useState<boolean>(true);
-  const [error, setError] = useState({
+  const [error, setError] = useState<InvoiceError>({
     invoiceNumber: false,
-    wordPrice: false
+    wordPrice: false,
+    invoiceType: false
   });
   const [receiver, setReceiver] = useState<Client>(INIT_RECEIVER);
   const [invoiceNumber, setInvoiceNumber] = useState<string>(
@@ -61,21 +62,49 @@ const InvoiceBox = ({
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setIsFieldsDisabled(true);
-    const css = await fetch('/globals.css').then((res) => res.text());
+
+    const errorOccured = invoiceNumber.length !== 10 || !wordPrice.length;
+
+    if (invoiceNumber.length < 10) {
+      setError((prevError) => ({ ...prevError, invoiceNumber: true }));
+    }
+
+    if (!wordPrice.length) {
+      setError((prevError) => ({ ...prevError, wordPrice: true }));
+    }
+
+    if (invoiceType === InvoiceType.none) {
+      setError((prevError) => ({ ...prevError, invoiceType: true }));
+    }
+
+    if (errorOccured) return;
 
     try {
+      setIsFieldsDisabled(true);
+      const cssResponse = await fetch('/globals.css');
+      if (!cssResponse.ok) {
+        throw new Error('Failed to load CSS');
+      }
+      const css = await cssResponse.text();
+
       if (!invoiceRef.current?.outerHTML) {
-        notify('Възникна грешка при създаването на фактурата.', 'error');
-        return;
+        throw new Error('Invoice HTML is missing');
       }
 
       if (invoiceType === InvoiceType.original) {
         if (items.length > 0) {
-          await updateProducts(items);
+          const updateProductsResponse = await updateProducts(items);
+          if (!updateProductsResponse.ok) {
+            throw new Error('Failed to update products');
+          }
         }
       }
-      await getClientData(receiver);
+
+      const clientDataResponse = await getClientData(receiver);
+      if (!clientDataResponse.ok) {
+        throw new Error('Failed to get client data');
+      }
+
       const invoiceRequest: InvoiceRequestBody = {
         email,
         invoiceNumber,
@@ -86,7 +115,14 @@ const InvoiceBox = ({
         providerName: company?.name || '',
         client: invoiceData.client
       };
-      await createInvoice({ invoiceRequest, invoiceData });
+
+      const createInvoiceResponse = await createInvoice({
+        invoiceRequest,
+        invoiceData
+      });
+      if (!createInvoiceResponse.ok) {
+        throw new Error('Failed to create invoice');
+      }
 
       notify('Фактурата е създадена успешно!', 'success');
     } catch (error) {
@@ -95,14 +131,8 @@ const InvoiceBox = ({
     }
   };
 
-  const {
-    items,
-    total,
-    addItem,
-    itemChangeHandler,
-    // itemSelectHandler,
-    removeItem
-  } = useTableItems({ selectedProduct, setSelectedProduct });
+  const { items, total, addItem, itemChangeHandler, removeItem } =
+    useTableItems({ selectedProduct, setSelectedProduct });
 
   const productChangeHandler = (item: { name: string }) => {
     setSelectedProduct(
@@ -132,6 +162,14 @@ const InvoiceBox = ({
   useEffect(() => {
     setError((state) => ({ ...state, invoiceNumber: false }));
   }, [invoiceNumber]);
+
+  useEffect(() => {
+    setError((state) => ({ ...state, wordPrice: false }));
+  }, [wordPrice]);
+
+  useEffect(() => {
+    setError((state) => ({ ...state, invoiceType: false }));
+  }, [invoiceType]);
 
   useEffect(() => {
     setInvoiceData((state) => ({
@@ -172,7 +210,11 @@ const InvoiceBox = ({
               </tr>
 
               <tr>
-                <ProviderDetails company={company} setCompany={setCompany} />
+                <ProviderDetails
+                  company={company}
+                  setCompany={setCompany}
+                  isFieldsDisabled={isFieldsDisabled}
+                />
                 <ReceiverDetails
                   receiver={receiver}
                   onChange={onChange}
@@ -204,7 +246,7 @@ const InvoiceBox = ({
                 />
               </tr>
 
-              <tr className="invoiceBox__companyData">
+              <tr className="mt-4">
                 <ClientInvoiceData
                   setReceiver={setReceiver}
                   isFieldsDisabled={isFieldsDisabled}
@@ -215,7 +257,7 @@ const InvoiceBox = ({
                   setReason={setReason}
                 />
 
-                <InvoicePriceData
+                <DocumentPriceData
                   error={error}
                   total={total}
                   wordPrice={wordPrice}
@@ -226,31 +268,30 @@ const InvoiceBox = ({
             </tbody>
           </table>
         </div>
-      </form>
-      <div className="flex justify-center items-center my-2">
-        <div
-          className="cursor-pointer flex items-center"
-          onClick={() => setSendMailToRecepient(!sendMailToRecepient)}
-        >
-          <input
-            type="checkbox"
-            checked={sendMailToRecepient}
-            onChange={() => setSendMailToRecepient(!sendMailToRecepient)}
-            className="form-checkbox h-5 w-5 text-gray-800"
-            aria-label="controlled"
-          />
-          <span className="ml-2 text-sm">Изпрати до получател</span>
+        <div className="flex justify-center items-center my-4">
+          <div
+            className="cursor-pointer flex items-center"
+            onClick={() => setSendMailToRecepient(!sendMailToRecepient)}
+          >
+            <input
+              type="checkbox"
+              checked={sendMailToRecepient}
+              onChange={() => setSendMailToRecepient(!sendMailToRecepient)}
+              className="form-checkbox h-5 w-5 text-gray-800"
+              aria-label="controlled"
+            />
+            <span className="ml-2 text-sm">Изпрати до получател</span>
+          </div>
         </div>
-      </div>
-      <div className="mt-8 w-full flex flex-col items-center justify-center">
-        <button
-          className="py-2 px-12 bg-gray-800 bg-opacity-90 text-white border-none rounded cursor-pointer text-base font-bold hover:bg-opacity-80"
-          disabled={error.invoiceNumber || error.wordPrice || isFieldsDisabled}
-          type="submit"
-        >
-          Създай
-        </button>
-      </div>
+        <div className="mt-8 w-full flex flex-col items-center justify-center">
+          <button
+            className="py-2 px-12 bg-gray-800 bg-opacity-90 text-white border-none rounded cursor-pointer text-base font-bold hover:bg-opacity-80"
+            type="submit"
+          >
+            Създай
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

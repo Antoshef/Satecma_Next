@@ -29,14 +29,18 @@ const ReceiverDetails: React.FC<ReceiverDetailsProps> = ({
     <td colSpan={6} className="py-4 align-top text-right">
       <div className="mb-1">
         <span className="text-right">Получател:</span>
-        <GenericInput
-          data={clients}
-          className="w-1/3"
-          variant="simple"
-          selectedItem={selectedClient}
-          setSelectedItem={handleClientSelect}
-          displayProperty="name"
-        />
+        {isFieldsDisabled ? (
+          <span>{selectedClient?.name}</span>
+        ) : (
+          <GenericInput
+            data={clients}
+            className="w-1/3"
+            variant="simple"
+            selectedItem={selectedClient}
+            setSelectedItem={handleClientSelect}
+            displayProperty="name"
+          />
+        )}
       </div>
       <div className="mb-1">
         <span className="text-right">Град:</span>

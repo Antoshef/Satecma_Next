@@ -265,7 +265,6 @@ export const InvoiceTable = ({
 
           <TableItems
             items={items}
-            className="border-gray-800 border-b text-right"
             isFieldsDisabled={isFieldsDisabled}
             itemChangeHandler={itemChangeHandler}
             itemSelectHandler={itemSelectHandler}
@@ -284,7 +283,7 @@ export const InvoiceTable = ({
           />
 
           {/* Client Data */}
-          <div className="invoiceBox__companyData grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <h3 className="font-bold">Получател:</h3>
               <p>

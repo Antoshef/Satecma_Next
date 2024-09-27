@@ -1,6 +1,7 @@
-import { InvoiceData, InvoiceReceiver, Item } from './types';
+import { InvoiceData, Item } from './types';
 import { InvoiceRequestBody } from '../../../pages/api/create/types';
 import { baseUrl } from '@/constants';
+import { Client } from '@/clients/utils/types';
 
 export const updateProducts = async (items: Item[]) => {
   return await fetch(`${baseUrl}/api/products/update`, {
@@ -9,15 +10,15 @@ export const updateProducts = async (items: Item[]) => {
   });
 };
 
-export const getClientData = async (receiver: InvoiceReceiver) => {
+export const getClientData = async (receiver: Client) => {
   return await fetch(`${baseUrl}/api/clients`, {
     method: 'POST',
     body: JSON.stringify({
-      name: receiver.company,
+      name: receiver.name,
       city: receiver.city,
       address: receiver.address,
-      eik: receiver.EIK,
-      vat: receiver.VAT,
+      eik: receiver.eik,
+      vat: receiver.vat,
       director: receiver.director,
       email: receiver.email,
       phone: receiver.phone

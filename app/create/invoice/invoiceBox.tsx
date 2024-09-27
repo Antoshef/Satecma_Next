@@ -246,7 +246,7 @@ const InvoiceBox = ({
                 />
               </tr>
 
-              <tr className="mt-4">
+              <tr>
                 <ClientInvoiceData
                   setReceiver={setReceiver}
                   isFieldsDisabled={isFieldsDisabled}

@@ -26,7 +26,7 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({
         <TextField
           name="name"
           type="text"
-          className="w-1/3"
+          className="min-w-1/3"
           placeholder="Фирма"
           value={company?.city || ''}
           isFieldsDisabled={isFieldsDisabled}
@@ -38,7 +38,7 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({
         <TextField
           name="eik"
           type="text"
-          className="w-1/3"
+          className="min-w-1/3"
           placeholder="ЕИК"
           value={company?.eik || ''}
           isFieldsDisabled={isFieldsDisabled}
@@ -50,7 +50,7 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({
         <TextField
           name="vat"
           type="text"
-          className="w-1/3"
+          className="min-w-1/3"
           placeholder="ДДС №"
           value={company ? `BG${company.eik}` : ''}
           isFieldsDisabled={isFieldsDisabled}
@@ -62,7 +62,7 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({
         <TextField
           name="city"
           type="text"
-          className="w-1/3"
+          className="min-w-1/3"
           placeholder="Град"
           value={company?.city || ''}
           isFieldsDisabled={isFieldsDisabled}
@@ -74,7 +74,7 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({
         <TextField
           name="address"
           type="text"
-          className="w-1/3"
+          className="min-w-1/3"
           placeholder="Адрес"
           value={company?.address || ''}
           isFieldsDisabled={isFieldsDisabled}
@@ -86,7 +86,7 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({
         <TextField
           name="director"
           type="text"
-          className="w-1/3"
+          className="min-w-1/3"
           placeholder="МОЛ"
           value={company?.director || ''}
           isFieldsDisabled={isFieldsDisabled}
@@ -98,7 +98,7 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({
         <TextField
           name="phone"
           type="text"
-          className="w-1/3"
+          className="min-w-1/3"
           placeholder="Телефон"
           value={company?.phone || ''}
           isFieldsDisabled={isFieldsDisabled}

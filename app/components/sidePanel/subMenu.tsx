@@ -1,9 +1,9 @@
 'use client';
 
+import { classNames } from '@/utils/classNames';
 import Link from 'next/link';
 import { useState } from 'react';
-import { NavigationItem } from './ClientSideNavigation';
-import { classNames } from '@/utils/classNames';
+import { NavigationItem } from './clientSideNavigation';
 
 interface SubMenuProps {
   name: string;

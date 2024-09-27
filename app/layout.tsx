@@ -1,11 +1,10 @@
 import { UserProvider } from '@auth0/nextjs-auth0/client';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
-import SidePanel from './components/sidePanel';
-import './globals.css';
 import { ErrorBoundary } from 'next/dist/client/components/error-boundary';
 import GlobalError from './global-error';
 import Loading from './loading';
+import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Satecma - Industrias Químicas S.A.',
@@ -26,7 +25,6 @@ export default function RootLayout({
       <body className="h-full">
         <UserProvider>
           <div className="flex h-full">
-            <SidePanel />
             <ErrorBoundary errorComponent={GlobalError}>
               <div className="flex-1 relative">
                 <Suspense fallback={<Loading />}>

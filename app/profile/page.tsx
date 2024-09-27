@@ -4,8 +4,9 @@ import Loading from '@/loading';
 import CompanySearch from './companySearch';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { baseUrl } from '@/constants';
+import AppLayout from '@/clients/layout';
 
-export default withPageAuthRequired(async function ProfilePage() {
+async function ProfilePage() {
   const companies = await fetch(`${baseUrl}/api/company`)
     .then((data) => data.json())
     .catch((error) => {
@@ -21,4 +22,10 @@ export default withPageAuthRequired(async function ProfilePage() {
       </div>
     </Suspense>
   );
-});
+}
+
+ProfilePage.getLayout = function getLayout(page: React.ReactNode) {
+  return <AppLayout>{page}</AppLayout>;
+};
+
+export default withPageAuthRequired(ProfilePage);

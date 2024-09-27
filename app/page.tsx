@@ -1,12 +1,12 @@
-import { redirect } from 'next/navigation';
 import { Claims, getSession } from '@auth0/nextjs-auth0';
-import VerifyEmailModal from './verifyEmailModal';
+import { redirect } from 'next/navigation';
 import { Header } from './components/homePage/header';
-import { SEOAccordion } from './components/seoAccordion';
-import { ScrollableText } from './components/homePage/scrollableText';
 import { HeroBanner } from './components/homePage/heroBanner';
 import { Intro } from './components/homePage/intro';
+import { ScrollableText } from './components/homePage/scrollableText';
 import { StartNow } from './components/homePage/startNow';
+import { SEOAccordion } from './components/seoAccordion';
+import VerifyEmailModal from './verifyEmailModal';
 
 export default async function HomePage() {
   const session = await getSession();
@@ -58,7 +58,7 @@ export default async function HomePage() {
         body: JSON.stringify({ email: result.email, email_verified: true })
       });
     }
-    redirect('/products');
+    redirect('/clients');
   }
 
   return <Component user={session.user} />;

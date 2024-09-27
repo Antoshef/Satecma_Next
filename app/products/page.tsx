@@ -3,7 +3,7 @@ import { Suspense } from 'react';
 import ProductsTable from './productsTable';
 import Loading from '@/loading';
 
-export default async function ProductsPage() {
+async function ProductsPage() {
   let data = [];
   let error = undefined;
 
@@ -30,3 +30,5 @@ export default async function ProductsPage() {
     </section>
   );
 }
+
+export default ProductsPage;

@@ -1,16 +1,17 @@
-import fs from "fs";
-import Imap from "imap";
-import nodemailer from "nodemailer";
-import path from "path";
+import fs from 'fs';
+import Imap from 'imap';
+import nodemailer from 'nodemailer';
+import path from 'path';
 import {
   addTextToPDF,
-  convertHTMLToPDF,
-} from "../../../utils/createPdfFromHtml";
-import { createDir } from "../../../utils/utils";
-import { DocumentRequestBody } from "./types";
+  convertHTMLToPDF
+} from '../../../utils/createPdfFromHtml';
+import { createDir } from '../../../utils/utils';
+import { DocumentRequestBody } from './types';
+import { MailOptions } from 'nodemailer/lib/sendmail-transport';
 
 // Utility to load base directory from environment
-const BASE_DIR = process.env.DOCUMENT_BASE_DIR || "/default/path/to/documents";
+const BASE_DIR = process.env.DOCUMENT_BASE_DIR || '/default/path/to/documents';
 
 // Helper function to safely build file paths
 const safeJoin = (...segments: string[]) =>
@@ -18,10 +19,10 @@ const safeJoin = (...segments: string[]) =>
 
 // Validate and sanitize file and directory names
 const sanitizeFilename = (filename: string) =>
-  filename.replace(/[^a-zA-Z0-9-_.]/g, "_");
+  filename.replace(/[^a-zA-Z0-9-_.]/g, '_');
 
 export const generateAndSendDocument = async (
-  documentRequest: DocumentRequestBody,
+  documentRequest: DocumentRequestBody
 ) => {
   const {
     email,
@@ -32,10 +33,10 @@ export const generateAndSendDocument = async (
     documentType,
     providerName,
     client,
-    heading,
+    heading
   } = documentRequest;
 
-  if (!providerName) throw new Error("Provider name is missing.");
+  if (!providerName) throw new Error('Provider name is missing.');
 
   // Sanitize inputs to prevent directory traversal
   const sanitizedProviderName = sanitizeFilename(providerName);
@@ -44,17 +45,17 @@ export const generateAndSendDocument = async (
 
   const fileName = `${documentType}-${sanitizedClient}-${sanitizedHeading}.pdf`;
 
-  const currentMonth = new Date().toLocaleString("default", { month: "long" });
+  const currentMonth = new Date().toLocaleString('default', { month: 'long' });
   const currentYear = new Date().getFullYear();
 
   // Build the directory and file paths securely
   const baseDir = safeJoin(BASE_DIR, sanitizedProviderName);
   const sentDir = safeJoin(
     baseDir,
-    "Sent",
+    'Sent',
     documentType,
     currentYear.toString(),
-    currentMonth,
+    currentMonth
   );
   const localFilePathAndName = safeJoin(sentDir, fileName);
 
@@ -63,17 +64,17 @@ export const generateAndSendDocument = async (
 
   // Convert HTML to PDF and add any text as needed
   const pdfBuffer = await convertHTMLToPDF(html, css);
-  if (!pdfBuffer) throw new Error("Failed to generate PDF.");
+  if (!pdfBuffer) throw new Error('Failed to generate PDF.');
 
   const modifiedPdfBuffer = await addTextToPDF(pdfBuffer);
-  if (!modifiedPdfBuffer) throw new Error("Failed to modify PDF.");
+  if (!modifiedPdfBuffer) throw new Error('Failed to modify PDF.');
 
   // Write the PDF file to disk
   try {
     await fs.promises.writeFile(localFilePathAndName, modifiedPdfBuffer);
   } catch (error) {
-    console.error("Error writing PDF to disk:", error);
-    throw new Error("Failed to save document PDF.");
+    console.error('Error writing PDF to disk:', error);
+    throw new Error('Failed to save document PDF.');
   }
 
   if (sendMailToRecepient) {
@@ -84,8 +85,8 @@ export const generateAndSendDocument = async (
       secure: true,
       auth: {
         user: process.env.PROFILE_EMAIL, // Make sure this is not public (no NEXT_PUBLIC prefix)
-        pass: process.env.PROFILE_EMAIL_PASS,
-      },
+        pass: process.env.PROFILE_EMAIL_PASS
+      }
     });
 
     const mailOptions = {
@@ -97,20 +98,20 @@ export const generateAndSendDocument = async (
         {
           filename: fileName,
           path: localFilePathAndName,
-          contentType: "application/pdf",
-        },
-      ],
+          contentType: 'application/pdf'
+        }
+      ]
     };
 
     try {
       // Send the email
       const info = await transporter.sendMail(mailOptions);
-      console.log("Email sent: %s", info.messageId);
+      console.log('Email sent: %s', info.messageId);
 
       // IMAP configuration and saving the email to Sent folder
       await saveEmailToSent(mailOptions);
     } catch (error) {
-      console.error("Error sending email:", error);
+      console.error('Error sending email:', error);
       throw new Error(`Failed to send ${documentType} email.`);
     }
   }
@@ -119,50 +120,50 @@ export const generateAndSendDocument = async (
 };
 
 // Function to save the sent email to the IMAP Sent folder
-async function saveEmailToSent(mailOptions: any) {
+async function saveEmailToSent(mailOptions: MailOptions) {
   return new Promise<void>((resolve, reject) => {
     const imapConfig = {
       user: process.env.PROFILE_EMAIL as string,
-      password: process.env.PROFILE_EMAIL_PASS,
+      password: process.env.PROFILE_EMAIL_PASS as string,
       host: process.env.IMAP_HOST,
       port: 993,
       tls: true,
-      tlsOptions: { rejectUnauthorized: false },
+      tlsOptions: { rejectUnauthorized: false }
     };
 
     const imap = new Imap(imapConfig);
 
-    imap.once("ready", () => {
-      imap.openBox("INBOX.Sent", false, (err, box) => {
+    imap.once('ready', () => {
+      imap.openBox('INBOX.Sent', false, (err) => {
         if (err) {
-          console.error("Error opening inbox:", err);
+          console.error('Error opening inbox:', err);
           return reject(err);
         }
 
         const message = buildEmailMessage(mailOptions);
         imap.append(
           message,
-          { mailbox: "INBOX.Sent", flags: ["\\Seen"] },
+          { mailbox: 'INBOX.Sent', flags: ['\\Seen'] },
           (err) => {
             if (err) {
-              console.error("Error saving to Sent folder:", err);
+              console.error('Error saving to Sent folder:', err);
               return reject(err);
             }
-            console.log("Message saved to Sent folder");
+            console.log('Message saved to Sent folder');
             imap.end();
             resolve();
-          },
+          }
         );
       });
     });
 
-    imap.once("error", (err: any) => {
-      console.error("IMAP error:", err);
+    imap.once('error', (err: Error) => {
+      console.error('IMAP error:', err);
       reject(err);
     });
 
-    imap.once("end", () => {
-      console.log("IMAP connection ended");
+    imap.once('end', () => {
+      console.log('IMAP connection ended');
     });
 
     imap.connect();
@@ -170,7 +171,8 @@ async function saveEmailToSent(mailOptions: any) {
 }
 
 // Helper function to build raw email message
-function buildEmailMessage(mailOptions: any) {
+
+function buildEmailMessage(mailOptions: MailOptions) {
   const message = [
     `From: ${mailOptions.from}`,
     `To: ${mailOptions.to}`,
@@ -184,15 +186,18 @@ function buildEmailMessage(mailOptions: any) {
     mailOptions.text,
     ``,
     `--boundary`,
-    `Content-Type: application/pdf; name="${mailOptions.attachments[0].filename}"`,
-    `Content-Disposition: attachment; filename="${mailOptions.attachments[0].filename}"`,
+    `Content-Type: application/pdf; name="${mailOptions.attachments ? mailOptions.attachments[0].filename : ''}"`,
+    `Content-Disposition: attachment; filename="${mailOptions.attachments ? mailOptions.attachments[0].filename : ''}"`,
     `Content-Transfer-Encoding: base64`,
     ``,
-    fs.readFileSync(mailOptions.attachments[0].path).toString("base64"),
+    mailOptions.attachments &&
+      fs
+        .readFileSync(mailOptions.attachments[0].path as string)
+        .toString('base64'),
     ``,
     `--boundary--`,
-    ``,
-  ].join("\r\n");
+    ``
+  ].join('\r\n');
 
   return message;
 }

@@ -20,8 +20,8 @@ export default withApiAuthRequired(async function handler(
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: new URLSearchParams({
             grant_type: 'client_credentials',
-            client_id: process.env.AUTH0_CLIENT_ID!,
-            client_secret: process.env.AUTH0_CLIENT_SECRET!,
+            client_id: process.env.AUTH0_CLIENT_ID || '',
+            client_secret: process.env.AUTH0_CLIENT_SECRET || '',
             audience: `${process.env.AUTH0_ISSUER_BASE_URL}/api/v2/`,
             scope: 'update:users'
           })

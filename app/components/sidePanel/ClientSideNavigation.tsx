@@ -1,4 +1,4 @@
-'use client'; // Required to make this a client component
+'use client';
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';

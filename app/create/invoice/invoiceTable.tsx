@@ -11,7 +11,7 @@ import { InvoiceRequestBody } from '../../../pages/api/create/types';
 import { TableItems } from '../table/tableItems';
 import { useTableItems } from '../table/useTableItems';
 import { createInvoice, getClientData, updateProducts } from './actions';
-import CompanySuggestions from './CompanySuggestions';
+import CompanySuggestions from './companySuggestions';
 import {
   INIT_RECEIVER,
   INVOICE_DATA_DEFAULT_VALUES,
@@ -89,14 +89,8 @@ export const InvoiceTable = ({
     }
   };
 
-  const {
-    items,
-    total,
-    addItem,
-    itemChangeHandler,
-    itemSelectHandler,
-    removeItem
-  } = useTableItems({ selectedProduct, setSelectedProduct });
+  const { items, total, addItem, itemChangeHandler, removeItem } =
+    useTableItems({ selectedProduct, setSelectedProduct });
 
   const productChangeHandler = (item: { name: string }) => {
     setSelectedProduct(
@@ -227,7 +221,7 @@ export const InvoiceTable = ({
               </p>
               <p>Отстъпка: {total.discount.toFixed(2)} BGN</p>
               <p>Общо НЕТО: {total.netAmount.toFixed(2)} BGN</p>
-              <p>Начислен ДДС (20.00 %): {total.VAT.toFixed(2)} BGN</p>
+              <p>Начислен ДДС (20.00 %): {total.vat.toFixed(2)} BGN</p>
               <p>Сума за плащане: {total.paid.toFixed(2)} BGN</p>
               <p>
                 Словом:{' '}
@@ -267,7 +261,6 @@ export const InvoiceTable = ({
             items={items}
             isFieldsDisabled={isFieldsDisabled}
             itemChangeHandler={itemChangeHandler}
-            itemSelectHandler={itemSelectHandler}
             removeItem={removeItem}
           />
 

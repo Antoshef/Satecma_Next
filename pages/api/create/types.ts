@@ -24,7 +24,7 @@ export interface DocumentRequestBody {
   html: string;
   css: string;
   sendMailToRecepient: boolean;
-  documentType: "invoice" | "offer";
+  documentType: 'invoice' | 'offer';
   providerName: string;
   client: string;
   heading?: string;

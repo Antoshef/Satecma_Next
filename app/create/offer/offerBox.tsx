@@ -5,7 +5,7 @@ import { TextField } from '@/components/textField/TextField';
 import { baseUrl } from '@/constants';
 import useToast from '@/products/utils/useToast';
 import Image from 'next/image';
-import { FormEvent, useRef, useState } from 'react';
+import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { SATECMA_LOGO } from '../invoice/constants';
 import { TableItems } from '../table/tableItems';
 import { Product } from '@/products/utils/types';
@@ -15,6 +15,7 @@ import ProviderDetails from '../invoice/providerDetails';
 import TableHeader from '../invoice/tableHeader';
 import { DocumentPriceData } from '../invoice/documentPriceData';
 import ApplicationDetails from './applicationDetails';
+import RecipientDetails from './recepientDetails';
 
 interface OfferBoxProps {
   provider: Company | null;
@@ -22,12 +23,14 @@ interface OfferBoxProps {
 }
 
 export const OfferBox = ({ products, provider }: OfferBoxProps) => {
+  const [company, setCompany] = useState<Company | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [application, setApplication] = useState({
     warranty: 0,
     delivery: 0
   });
   const [showApplication, setShowApplication] = useState(false);
+  const [sendMailToRecepient, setSendMailToRecepient] = useState<boolean>(true);
   const offerRef = useRef<HTMLTableElement>(null);
   const [isFieldsDisabled, setIsFieldsDisabled] = useState<boolean>(false);
   const [heading, setHeading] = useState('Заглавие на офертата');
@@ -46,35 +49,44 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
     );
   };
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setRecipient((state) => ({
-      ...state,
-      [name]: value
-    }));
-  };
+  const onSubmit = useCallback(
+    async (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      setIsFieldsDisabled(true);
+      const css = await fetch('/globals.css').then((res) => res.text());
+      try {
+        await fetch(`${baseUrl}/api/create/offer`, {
+          method: 'POST',
+          body: JSON.stringify({
+            email: recipient.email,
+            name: recipient.name,
+            sendMailToRecepient,
+            html: offerRef.current?.outerHTML,
+            css,
+            providerName: provider?.name,
+            heading
+          })
+        });
+        notify('Офертата беше успешно изпратена.', 'success');
+      } catch (error) {
+        notify('Грешка при изпращането на офертата.', 'error');
+      }
+    },
+    [
+      recipient.email,
+      recipient.name,
+      sendMailToRecepient,
+      provider?.name,
+      heading,
+      notify
+    ]
+  );
 
-  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsFieldsDisabled(true);
-    const css = await fetch('/globals.css').then((res) => res.text());
-    try {
-      await fetch(`${baseUrl}/api/create/offer`, {
-        method: 'POST',
-        body: JSON.stringify({
-          email: recipient.email,
-          name: recipient.name,
-          html: offerRef.current?.outerHTML,
-          css,
-          providerName: provider?.name,
-          heading
-        })
-      });
-      notify('Офертата беше успешно изпратена.', 'success');
-    } catch (error) {
-      notify('Грешка при изпращането на офертата.', 'error');
+  useEffect(() => {
+    if (provider) {
+      setCompany(provider);
     }
-  };
+  }, [provider]);
 
   return (
     <div className="flex flex-col align-middle">
@@ -88,62 +100,25 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
           <table className="w-full border-collapse">
             <tbody>
               <tr>
-                <td colSpan={8}>
+                <td colSpan={4}>
                   <Image
-                    style={{ height: 'auto', width: 'auto' }}
                     src={SATECMA_LOGO}
                     alt="Satecma logo"
-                    width={420}
-                    height={95}
+                    className="mb-4"
+                    width={220}
+                    height={65}
+                    style={{ width: 220, height: 'auto' }}
                   />
                 </td>
               </tr>
 
               <tr>
-                <ProviderDetails company={provider} setCompany={() => {}} />
-                <td>
-                  Получател: <br />
-                  <TextField
-                    type="text"
-                    name="name"
-                    value={recipient.name}
-                    isFieldsDisabled={isFieldsDisabled}
-                    onChange={(e) =>
-                      setRecipient({
-                        ...recipient,
-                        name: e.target.value
-                      })
-                    }
-                  />
-                  <br />
-                  Телефон:{' '}
-                  <TextField
-                    type="text"
-                    name="phone"
-                    value={recipient.phone}
-                    isFieldsDisabled={isFieldsDisabled}
-                    onChange={(e) =>
-                      setRecipient({
-                        ...recipient,
-                        phone: e.target.value
-                      })
-                    }
-                  />
-                  <br />
-                  Е-Поща:{' '}
-                  <TextField
-                    type="text"
-                    name="email"
-                    value={recipient.email}
-                    isFieldsDisabled={isFieldsDisabled}
-                    onChange={(e) => {
-                      setRecipient({
-                        ...recipient,
-                        email: e.target.value
-                      });
-                    }}
-                  />
-                </td>
+                <ProviderDetails company={company} setCompany={setCompany} />
+                <RecipientDetails
+                  recipient={recipient}
+                  setRecipient={setRecipient}
+                  isFieldsDisabled={isFieldsDisabled}
+                />
               </tr>
 
               <tr>
@@ -160,8 +135,8 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
                     type="text"
                     name="offerNumber"
                     value={heading}
-                    className="text-md font-bold max-w-2xl w-full uppercase text-center"
-                    textClass="text-md font-bold uppercase"
+                    className="text-md max-w-2xl w-full uppercase text-center"
+                    textClass="text-md uppercase"
                     isFieldsDisabled={isFieldsDisabled}
                     onChange={(e) => setHeading(e.target.value)}
                   />
@@ -190,7 +165,27 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
                 />
               </tr>
 
-              <tr className="mt-4 invoiceBox__companyData">
+              <tr>
+                <td colSpan={4}>
+                  <div
+                    className="cursor-pointer flex items-center"
+                    onClick={() => setShowApplication(!showApplication)}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={showApplication}
+                      onChange={() => setShowApplication(!showApplication)}
+                      className="form-checkbox h-5 w-5 text-gray-800"
+                      aria-label="controlled"
+                    />
+                    <span className="ml-2 text-sm">
+                      Покажи гаранции и условия
+                    </span>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
                 <ApplicationDetails
                   showApplication={showApplication}
                   application={application}
@@ -208,26 +203,24 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
           </table>
         </div>
       </form>
-      <div className="flex justify-center items-center my-2">
+      <div className="flex justify-center items-center my-4">
         <div
           className="cursor-pointer flex items-center"
-          onClick={() => setShowApplication(!showApplication)}
+          onClick={() => setSendMailToRecepient(!sendMailToRecepient)}
         >
           <input
             type="checkbox"
-            checked={showApplication}
-            onChange={() => setShowApplication(!showApplication)}
+            checked={sendMailToRecepient}
+            onChange={() => setSendMailToRecepient(!sendMailToRecepient)}
             className="form-checkbox h-5 w-5 text-gray-800"
             aria-label="controlled"
           />
-          <span className="ml-2 text-sm">Покажи гаранции и условия</span>
+          <span className="ml-2 text-sm">Изпрати до получател</span>
         </div>
       </div>
-
       <div className="mt-8 w-full flex flex-col items-center justify-center">
         <button
           className="py-2 px-12 bg-gray-800 bg-opacity-90 text-white border-none rounded cursor-pointer text-base font-bold hover:bg-opacity-80"
-          disabled={isFieldsDisabled}
           type="submit"
         >
           Създай

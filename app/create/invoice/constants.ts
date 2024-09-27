@@ -8,7 +8,7 @@ export const SATECMA_LOGO =
 export const SATECMA_COMPANY: Company = {
   name: 'Сатекма ЕООД',
   eik: 207756461,
-  VAT: 'BG207756461',
+  vat: 'BG207756461',
   city: 'Ямбол, България',
   address: 'ул. Феризович №17',
   director: 'Антон Станев',
@@ -21,7 +21,7 @@ export const SATECMA_COMPANY: Company = {
 export const ECOHOME_COMPANY: Company = {
   name: 'Еко Хоум Трейд ЕООД',
   eik: 205711987,
-  VAT: 'BG205711987',
+  vat: 'BG205711987',
   city: 'София, България',
   address: 'р-н Овча купел, ул.641-ва №2',
   director: 'Атанас Караджов',
@@ -130,7 +130,7 @@ const mockInvoiceData: InvoiceData[] = [
 const mockProvider: Company = {
   name: 'Provider Company',
   eik: 123456789,
-  VAT: 'BG123456789',
+  vat: 'BG123456789',
   city: 'Provider City',
   address: 'Provider Address',
   director: 'Provider Director',

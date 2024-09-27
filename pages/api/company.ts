@@ -13,7 +13,7 @@ async function createTableIfNotExists() {
     CREATE TABLE IF NOT EXISTS ${tableName} (
       eik VARCHAR(255) PRIMARY KEY,
       name VARCHAR(255) NOT NULL,
-      VAT VARCHAR(255) NOT NULL,
+      vat VARCHAR(255) NOT NULL,
       city VARCHAR(255) NOT NULL,
       address VARCHAR(255) NOT NULL,
       director VARCHAR(255) NOT NULL,
@@ -52,7 +52,7 @@ export default async function handler(
       const requiredFields: (keyof Company)[] = [
         "name",
         "eik",
-        "VAT",
+        "vat",
         "city",
         "address",
         "director",
@@ -74,14 +74,14 @@ export default async function handler(
       }
 
       const insertQuery = `
-        INSERT INTO ${tableName} (eik, name, VAT, city, address, director, phone, iban, swift, bankName)
+        INSERT INTO ${tableName} (eik, name, vat, city, address, director, phone, iban, swift, bankName)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         RETURNING *;
       `;
       const values = [
         providerData.eik,
         providerData.name,
-        providerData.VAT,
+        providerData.vat,
         providerData.city,
         providerData.address,
         providerData.director,

@@ -26,7 +26,7 @@ export const DocumentPriceData: React.FC<DocumentPriceDataProps> = ({
   isFieldsDisabled
 }) => {
   return (
-    <td colSpan={4} className="text-right">
+    <td colSpan={4} className="text-right align-top">
       <div>
         Данъчна основа без отстъпка: {total.amountWithoutDiscount.toFixed(2)}{' '}
         BGN

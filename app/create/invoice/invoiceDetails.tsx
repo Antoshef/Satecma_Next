@@ -32,8 +32,7 @@ const InvoiceHeader: React.FC<InvoiceDetailsProps> = ({
           src={SATECMA_LOGO}
           alt="Satecma logo"
           width={220}
-          height={65}
-          style={{ width: 220, height: 'auto' }}
+          height={47}
         />
       </td>
       <td colSpan={4} className="pl-4 text-right">

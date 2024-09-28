@@ -1,14 +1,24 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Lottie from 'react-lottie-player';
+
+const lotties = [
+  '/assets/Lotties/singing-contract.json',
+  '/assets/Lotties/business-sales-profit.json'
+];
 
 const LottieAnimation = () => {
   const [animationData, setAnimationData] = useState(null);
 
   useEffect(() => {
+    const randomIndex = Math.floor(Math.random() * lotties.length);
+    const selectedLottie = lotties[randomIndex];
+
     const fetchAnimationData = async () => {
-      const res = await fetch('/assets/Lotties/business-chart.json');
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}${selectedLottie}`
+      );
       const data = await res.json();
       setAnimationData(data);
     };
@@ -16,7 +26,7 @@ const LottieAnimation = () => {
     fetchAnimationData();
   }, []);
 
-  if (!animationData) return null; // Ensure animation is loaded before rendering
+  if (!animationData) return null;
 
   return (
     <Lottie loop animationData={animationData} play style={{ width: 600 }} />

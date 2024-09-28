@@ -5,5 +5,5 @@ export default function ProductsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  <ClientsLayout>{children}</ClientsLayout>;
+  return <ClientsLayout>{children}</ClientsLayout>;
 }

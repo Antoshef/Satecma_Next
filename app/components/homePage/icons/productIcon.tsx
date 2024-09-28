@@ -8,70 +8,37 @@ export const ProductIcon = ({ isActive }: { isActive?: boolean }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      id="database"
       width="40"
       height="40"
-      viewBox="0 0 64 64"
-      id="productIcon"
       className={isActive ? activeClass : inactiveClass}
     >
       {/* Outer Circle */}
       <circle
-        cx="32"
-        cy="32"
-        r="30"
+        cx="10"
+        cy="10"
+        r="9"
         stroke="currentColor"
-        strokeWidth="2"
+        strokeWidth="0.6"
         fill="none"
         id="outerCircle"
       />
 
       {/* Inner Circle */}
       <circle
-        cx="32"
-        cy="32"
-        r="24"
+        cx="10"
+        cy="10"
+        r="7"
         fill={isActive ? 'currentColor' : 'none'}
         id="innerCircle"
       />
 
-      {/* Simple Offer Icon - Price Tag */}
-      <g transform="scale(0.5) translate(15, 15)">
+      <g transform="scale(0.8) translate(4, 4)">
         <path
           fill={isActive ? '#fff' : 'currentColor'}
-          strokeWidth="1"
-          d="M95.3684 86.7561V86.7561C94.9483 76.2757 93.5348 65.8588 91.1468 55.6454L88.9471 46.2376C88.6325 44.892 87.4941 43.895 86.1191 43.7573V43.7573C71.1496 42.2582 56.0381 42.2552 41.0686 43.7543V43.7543C39.6781 43.8935 38.5352 44.912 38.2372 46.2774L38.0878 46.9622C34.5984 62.9519 32.6221 79.2346 32.1849 95.5947L32.1174 98.1202C32.0516 100.581 33.9259 102.662 36.3804 102.853L48 103.756C58.6506 104.584 69.3494 104.584 80 103.756V103.756"
-        ></path>
-        <path
-          fill={isActive ? '#fff' : 'currentColor'}
-          strokeWidth="1"
-          d="M49 48.5V41.0508C49 32.7385 55.7157 26 64 26C72.2843 26 79 32.7385 79 41.0508V48.5"
-        ></path>
-        <circle
-          cx="49"
-          cy="54"
-          r="4"
-          fill={!isActive ? '#fff' : 'currentColor'}
-          strokeWidth="1"
-        ></circle>
-        <circle
-          cx="79"
-          cy="54"
-          r="4"
-          fill={!isActive ? '#fff' : 'currentColor'}
-          strokeWidth="1"
-        ></circle>
-        <circle
-          cx="89"
-          cy="97"
-          r="13"
-          fill={!isActive ? '#fff' : 'currentColor'}
-          strokeWidth="1"
-        ></circle>
-        <path
-          fill={!isActive ? '#fff' : 'currentColor'}
-          strokeLinecap="round"
-          strokeWidth="1"
-          d="M89 92L89 102M94 97H84"
+          strokeLinejoin="round"
+          d="M5.598 1.5a.57.57 0 0 0-.568.568v5.127c0 .443.362.805.805.805H8.03v1.5H5.71c-.939 0-1.703.77-1.703 1.719v.015l.5-.015c0-.672.54-1.219 1.203-1.219H8.03v1.25h.5V10h2.332c.664 0 1.205.547 1.205 1.227l.5-.008c0-.947-.764-1.719-1.703-1.719H8.53V8h2.195c.443 0 .805-.36.805-.805V2.068a.569.569 0 0 0-.569-.568H5.598zm.237.5h4.89c.168 0 .305.138.305.305v1.127c0 .038-.03.068-.069.068H5.598a.068.068 0 0 1-.068-.068V2.305c0-.167.137-.305.305-.305Zm-.237 2h5.363c.038 0 .069.03.069.068v1.364c0 .038-.03.066-.069.066H5.598a.066.066 0 0 1-.068-.066V4.068c0-.038.031-.068.068-.068ZM5.53 5.986c.024.003.043.014.068.014h5.363c.024 0 .045-.01.069-.014v1.21a.304.304 0 0 1-.303.304H5.835a.306.306 0 0 1-.305-.305V5.986zm-1.272 6.471c-.7 0-1.271.57-1.271 1.272 0 .7.57 1.271 1.271 1.271s1.272-.57 1.272-1.271-.57-1.272-1.272-1.272zm3.98 0A1.271 1.271 0 1 0 8.244 15a1.271 1.271 0 0 0-.004-2.543zm4.079 0c-.701 0-1.272.57-1.272 1.272 0 .7.57 1.271 1.272 1.271.7 0 1.271-.57 1.271-1.271s-.571-1.272-1.271-1.272zm-8.059.5a.773.773 0 0 1 0 1.543.772.772 0 0 1 0-1.543zm3.98 0a.773.773 0 0 1 0 1.543.771.771 0 0 1 0-1.543zm4.079 0a.773.773 0 0 1 0 1.543.772.772 0 0 1 0-1.543z"
         ></path>
       </g>
     </svg>

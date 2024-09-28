@@ -106,8 +106,7 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
                     alt="Satecma logo"
                     className="mb-4"
                     width={220}
-                    height={65}
-                    style={{ width: 220, height: 'auto' }}
+                    height={47}
                   />
                 </td>
               </tr>

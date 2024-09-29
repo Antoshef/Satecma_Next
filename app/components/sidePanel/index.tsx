@@ -26,7 +26,7 @@ const navigation: NavigationItem[] = [
   }
 ];
 
-export default function SidePanel() {
+export default function SidePanel({ logoUrl }: { logoUrl: string | null }) {
   const [isNavOpen, setIsNavOpen] = useState(true);
 
   const toggleNav = () => setIsNavOpen((prev) => !prev);
@@ -41,7 +41,18 @@ export default function SidePanel() {
             <div className="flex items-center justify-between p-4 bg-theme-light-secondary dark:bg-theme-dark-secondary">
               <Link href="/profile">
                 <span className="text-theme-light-white dark:text-theme-dark-primary text-lg font-semibold">
-                  Твоето лого
+                  {logoUrl ? (
+                    <Image
+                      src={logoUrl}
+                      alt="Company Logo"
+                      className="rounded-full"
+                      width={160}
+                      height={56}
+                      priority
+                    />
+                  ) : (
+                    'Твоето лого'
+                  )}
                 </span>
               </Link>
               <button

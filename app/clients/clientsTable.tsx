@@ -126,7 +126,8 @@ export default function ClientsTable({ data, error }: PageProps) {
   useEffect(() => {
     if (error) {
       notify(error, 'error');
-    } else {
+    } 
+    if (data) {
       setClients(data);
       setFilteredClients(data);
     }

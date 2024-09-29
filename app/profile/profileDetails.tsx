@@ -1,32 +1,64 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Company } from '@/create/invoice/types';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import Image from 'next/image';
 
 interface ProfileDetailsProps {
-  companies: Company;
+  company?: Company;
 }
 
-export const ProfileDetails: React.FC<ProfileDetailsProps> = ({
-  companies
-}) => {
+const inputFields = [
+  { name: 'name', label: 'Компания' },
+  { name: 'eik', label: 'ЕИК' },
+  { name: 'vat', label: 'ДДС' },
+  { name: 'city', label: 'Град' },
+  { name: 'address', label: 'Адрес' },
+  { name: 'director', label: 'Директор' },
+  { name: 'phone', label: 'Телефон' },
+  { name: 'bankName', label: 'Име на банката' },
+  { name: 'iban', label: 'IBAN' },
+  { name: 'swift', label: 'SWIFT' }
+];
+
+export const ProfileDetails: React.FC<ProfileDetailsProps> = ({ company }) => {
   const { user, isLoading } = useUser();
-  const [formData, setFormData] = useState<Company>(companies);
-  const [theme, setTheme] = useState<string>('light');
+  const [formData, setFormData] = useState<Company | undefined>(undefined);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value
-    }));
+    setFormData(
+      (prevData) =>
+        ({
+          ...prevData,
+          [name]: value || ''
+        }) as Company
+    );
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+      } else {
+        console.error('Failed to upload logo');
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await fetch('http://localhost:3000/api/profile/update', {
+    const response = await fetch('/api/profile/update', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -39,20 +71,11 @@ export const ProfileDetails: React.FC<ProfileDetailsProps> = ({
     }
   };
 
-  const toggleTheme = async () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    document.documentElement.classList.toggle('dark', newTheme === 'dark');
-
-    // Update the theme preference on the backend
-    await fetch('http://localhost:3000/api/user/theme', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ theme: newTheme })
-    });
-  };
+  useEffect(() => {
+    if (company) {
+      setFormData(company);
+    }
+  }, [company]);
 
   if (isLoading) {
     return (
@@ -93,19 +116,18 @@ export const ProfileDetails: React.FC<ProfileDetailsProps> = ({
             <div className="text-center">
               <strong>Псевдоним:</strong> {user?.nickname || ''}
             </div>
-            <div className="text-center">
-              <strong>Имейлът е потвърден:</strong>{' '}
-              {user?.email_verified ? 'Да' : 'Не'}
-            </div>
-            {/* Theme Switcher Button */}
+            {user?.email_verified && (
+              <div className="text-center">Имейлът е потвърден</div>
+            )}
             <div className="text-center mt-4">
-              <button
-                onClick={toggleTheme}
-                className="px-4 py-2 rounded-lg bg-theme-light-primary dark:bg-theme-dark-secondary text-white"
-              >
-                Превключване на тема (Текуща:{' '}
-                {theme === 'light' ? 'Светла' : 'Тъмна'})
-              </button>
+              <label className="block text-sm font-medium text-theme-light-secondary dark:text-theme-dark-quaternary">
+                Качване на лого
+              </label>
+              <input
+                type="file"
+                onChange={handleFileChange}
+                className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-quaternary rounded-md shadow-sm focus:ring-theme-light-primary focus:border-theme-light-primary sm:text-sm"
+              />
             </div>
           </div>
         </div>
@@ -117,126 +139,22 @@ export const ProfileDetails: React.FC<ProfileDetailsProps> = ({
           </h2>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-theme-light-secondary dark:text-theme-dark-quaternary">
-                  Компания
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-quaternary rounded-md shadow-sm focus:ring-theme-light-primary focus:border-theme-light-primary sm:text-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-theme-light-secondary dark:text-theme-dark-quaternary">
-                  ЕИК
-                </label>
-                <input
-                  type="text"
-                  name="eik"
-                  value={formData.eik}
-                  onChange={handleChange}
-                  className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-quaternary rounded-md shadow-sm focus:ring-theme-light-primary focus:border-theme-light-primary sm:text-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-theme-light-secondary dark:text-theme-dark-quaternary">
-                  ДДС
-                </label>
-                <input
-                  type="text"
-                  name="VAT"
-                  value={formData.VAT}
-                  onChange={handleChange}
-                  className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-quaternary rounded-md shadow-sm focus:ring-theme-light-primary focus:border-theme-light-primary sm:text-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-theme-light-secondary dark:text-theme-dark-quaternary">
-                  Град
-                </label>
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                  className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-quaternary rounded-md shadow-sm focus:ring-theme-light-primary focus:border-theme-light-primary sm:text-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-theme-light-secondary dark:text-theme-dark-quaternary">
-                  Адрес
-                </label>
-                <input
-                  type="text"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-quaternary rounded-md shadow-sm focus:ring-theme-light-primary focus:border-theme-light-primary sm:text-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-theme-light-secondary dark:text-theme-dark-quaternary">
-                  Директор
-                </label>
-                <input
-                  type="text"
-                  name="director"
-                  value={formData.director}
-                  onChange={handleChange}
-                  className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-quaternary rounded-md shadow-sm focus:ring-theme-light-primary focus:border-theme-light-primary sm:text-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-theme-light-secondary dark:text-theme-dark-quaternary">
-                  Телефон
-                </label>
-                <input
-                  type="text"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-quaternary rounded-md shadow-sm focus:ring-theme-light-primary focus:border-theme-light-primary sm:text-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-theme-light-secondary dark:text-theme-dark-quaternary">
-                  Име на банката
-                </label>
-                <input
-                  type="text"
-                  name="bankName"
-                  value={formData.bankName}
-                  onChange={handleChange}
-                  className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-quaternary rounded-md shadow-sm focus:ring-theme-light-primary focus:border-theme-light-primary sm:text-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-theme-light-secondary dark:text-theme-dark-quaternary">
-                  IBAN
-                </label>
-                <input
-                  type="text"
-                  name="iban"
-                  value={formData.iban}
-                  onChange={handleChange}
-                  className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-quaternary rounded-md shadow-sm focus:ring-theme-light-primary focus:border-theme-light-primary sm:text-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-theme-light-secondary dark:text-theme-dark-quaternary">
-                  SWIFT
-                </label>
-                <input
-                  type="text"
-                  name="swift"
-                  value={formData.swift}
-                  onChange={handleChange}
-                  className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-quaternary rounded-md shadow-sm focus:ring-theme-light-primary focus:border-theme-light-primary sm:text-sm"
-                />
-              </div>
+              {inputFields.map((field) => (
+                <div key={field.name}>
+                  <label className="block text-sm font-medium text-theme-light-secondary dark:text-theme-dark-quaternary">
+                    {field.label}
+                  </label>
+                  <input
+                    type="text"
+                    name={field.name}
+                    value={
+                      formData ? formData[field.name as keyof Company] : ''
+                    }
+                    onChange={handleChange}
+                    className="mt-1 block w-full p-2 border border-theme-light-secondary dark:border-theme-dark-quaternary rounded-md shadow-sm focus:ring-theme-light-primary focus:border-theme-light-primary sm:text-sm"
+                  />
+                </div>
+              ))}
               <div>
                 <button
                   type="submit"

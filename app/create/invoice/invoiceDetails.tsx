@@ -1,8 +1,9 @@
+import React from 'react';
 import { SelectField } from '@/components/selectField/SelectField';
 import { TextField } from '@/components/textField/TextField';
 import Image from 'next/image';
-import { SATECMA_LOGO } from './constants';
 import { InvoiceType, InvoiceData, InvoiceError } from './types';
+import { useLogo } from '@/context/logoContext';
 
 interface InvoiceDetailsProps {
   error: InvoiceError;
@@ -25,15 +26,11 @@ const InvoiceHeader: React.FC<InvoiceDetailsProps> = ({
   isFieldsDisabled,
   error
 }) => {
+  const { logoUrl } = useLogo();
   return (
     <>
       <td colSpan={4}>
-        <Image
-          src={SATECMA_LOGO}
-          alt="Satecma logo"
-          width={220}
-          height={47}
-        />
+        <Image src={logoUrl} alt="Satecma logo" width={220} height={47} />
       </td>
       <td colSpan={4} className="pl-4 text-right">
         <div>

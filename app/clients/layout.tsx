@@ -4,7 +4,7 @@ import { ErrorBoundary } from 'next/dist/client/components/error-boundary';
 import SidePanel from '@/components/sidePanel';
 import GlobalError from '@/global-error';
 import Loading from '@/loading';
-import { baseUrl } from '@/constants';
+import LogoProvider from '@/context/logoContext';
 
 export const metadata: Metadata = {
   title: 'Satecma - Industrias Químicas S.A.',
@@ -20,12 +20,11 @@ export default async function ClientLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { url } = await fetch(`${baseUrl}/api/upload`).then((res) =>
-    res.json()
-  );
   return (
     <div className="flex h-full">
-      <SidePanel logoUrl={url} />
+      <LogoProvider>
+        <SidePanel />
+      </LogoProvider>
       <ErrorBoundary errorComponent={GlobalError}>
         <div className="flex-1 relative">
           <Suspense fallback={<Loading />}>

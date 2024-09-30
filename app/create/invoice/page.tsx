@@ -10,6 +10,7 @@ import {
   mockProducts,
   mockProvider
 } from './constants';
+import LogoProvider from '@/context/logoContext';
 
 export default withPageAuthRequired(async function InvoicePage() {
   const products = mockProducts;
@@ -65,11 +66,13 @@ export default withPageAuthRequired(async function InvoicePage() {
   // }
 
   return (
-    <InvoiceBox
-      invoiceIds={invoiceIds}
-      products={products}
-      provider={provider}
-      clients={clients}
-    />
+    <LogoProvider>
+      <InvoiceBox
+        invoiceIds={invoiceIds}
+        products={products}
+        provider={provider}
+        clients={clients}
+      />
+    </LogoProvider>
   );
 });

@@ -1,12 +1,12 @@
-import { Company } from "@/create/invoice/types";
-import type { NextApiRequest, NextApiResponse } from "next";
-import { queryAsync } from "../../utils/db";
+import { Company } from '@/create/invoice/types';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { queryAsync } from '../../utils/db';
 
 interface TypedNextApiRequest extends NextApiRequest {
   body: Company;
 }
 
-const tableName = "company";
+const tableName = 'company';
 
 async function createTableIfNotExists() {
   const createTableQuery = `
@@ -28,38 +28,38 @@ async function createTableIfNotExists() {
 
 export default async function handler(
   req: TypedNextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
   const { method } = req;
 
   await createTableIfNotExists();
 
-  if (method === "GET") {
+  if (method === 'GET') {
     try {
       const results = await queryAsync<Company[]>(`SELECT * FROM ${tableName}`);
-      return res.status(200).json({ data: results || [] });
+      return res.status(200).json({ companies: results || [] });
     } catch (error) {
-      console.error("GET error:", error);
-      return res.status(500).json({ message: "Internal server error" });
+      console.error('GET error:', error);
+      return res.status(500).json({ message: 'Internal server error' });
     }
   }
 
-  if (method === "POST") {
+  if (method === 'POST') {
     try {
       const providerData: Company = req.body;
 
       // Validate required fields
       const requiredFields: (keyof Company)[] = [
-        "name",
-        "eik",
-        "vat",
-        "city",
-        "address",
-        "director",
-        "phone",
-        "iban",
-        "swift",
-        "bankName",
+        'name',
+        'eik',
+        'vat',
+        'city',
+        'address',
+        'director',
+        'phone',
+        'iban',
+        'swift',
+        'bankName'
       ];
       const missingFields: (keyof Company)[] = [];
 
@@ -69,7 +69,7 @@ export default async function handler(
 
       if (missingFields.length > 0) {
         return res.status(400).json({
-          message: `Missing required fields: ${missingFields.join(", ")}`,
+          message: `Missing required fields: ${missingFields.join(', ')}`
         });
       }
 
@@ -88,16 +88,16 @@ export default async function handler(
         providerData.phone,
         providerData.iban,
         providerData.swift,
-        providerData.bankName,
+        providerData.bankName
       ];
 
       const result = await queryAsync<Company>(insertQuery, values);
       return res.status(201).json({ data: result });
     } catch (error) {
-      console.error("POST error:", error);
-      return res.status(500).json({ message: "Internal server error" });
+      console.error('POST error:', error);
+      return res.status(500).json({ message: 'Internal server error' });
     }
   } else {
-    return res.status(405).json({ message: "Method Not Allowed" });
+    return res.status(405).json({ message: 'Method Not Allowed' });
   }
 }

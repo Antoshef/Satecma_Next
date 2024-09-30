@@ -6,7 +6,6 @@ import { baseUrl } from '@/constants';
 import useToast from '@/products/utils/useToast';
 import Image from 'next/image';
 import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
-import { SATECMA_LOGO } from '../invoice/constants';
 import { TableItems } from '../table/tableItems';
 import { Product } from '@/products/utils/types';
 import { useTableItems } from '../table/useTableItems';
@@ -16,6 +15,7 @@ import TableHeader from '../invoice/tableHeader';
 import { DocumentPriceData } from '../invoice/documentPriceData';
 import ApplicationDetails from './applicationDetails';
 import RecipientDetails from './recepientDetails';
+import { useLogo } from '@/context/logoContext';
 
 interface OfferBoxProps {
   provider: Company | null;
@@ -42,6 +42,7 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
   });
   const { items, total, addItem, itemChangeHandler, removeItem } =
     useTableItems({ selectedProduct, setSelectedProduct });
+  const { logoUrl } = useLogo();
 
   const productChangeHandler = (item: { name: string }) => {
     setSelectedProduct(
@@ -102,7 +103,7 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
               <tr>
                 <td colSpan={4}>
                   <Image
-                    src={SATECMA_LOGO}
+                    src={logoUrl}
                     alt="Satecma logo"
                     className="mb-4"
                     width={220}

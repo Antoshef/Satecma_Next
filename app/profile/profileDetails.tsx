@@ -1,9 +1,11 @@
+// FILE: profileDetails.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
 import { Company } from '@/create/invoice/types';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import Image from 'next/image';
+import { useLogo } from '@/context/logoContext';
 
 interface ProfileDetailsProps {
   company?: Company;
@@ -25,6 +27,7 @@ const inputFields = [
 export const ProfileDetails: React.FC<ProfileDetailsProps> = ({ company }) => {
   const { user, isLoading } = useUser();
   const [formData, setFormData] = useState<Company | undefined>(undefined);
+  const { setLogoUrl } = useLogo();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -50,8 +53,9 @@ export const ProfileDetails: React.FC<ProfileDetailsProps> = ({ company }) => {
 
       if (response.ok) {
         const data = await response.json();
+        setLogoUrl(data.url);
       } else {
-        console.error('Failed to upload logo');
+        console.error('Error updating the logo');
       }
     }
   };
@@ -90,7 +94,7 @@ export const ProfileDetails: React.FC<ProfileDetailsProps> = ({ company }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* User Data Column */}
         <div>
-          <h2 className="text-xl font-semibold mb-4 text-theme-light-primary dark:text-theme-dark-primary">
+          <h2 className="text-xl text-center font-semibold mb-4 text-theme-light-primary dark:text-theme-dark-primary">
             Информация за потребителя
           </h2>
           <div className="grid grid-cols-1 gap-2">

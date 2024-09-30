@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import ClientSideNavigation from './clientSideNavigation';
 import Tooltip from '../tooltip';
+import { useLogo } from '@/context/logoContext';
 
 export interface NavigationItem {
   name: string;
@@ -26,8 +27,10 @@ const navigation: NavigationItem[] = [
   }
 ];
 
-export default function SidePanel({ logoUrl }: { logoUrl: string | null }) {
+export default function SidePanel() {
   const [isNavOpen, setIsNavOpen] = useState(true);
+  const { logoUrl } = useLogo();
+  console.log('logoUrl', logoUrl);
 
   const toggleNav = () => setIsNavOpen((prev) => !prev);
 

@@ -1,7 +1,7 @@
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
-import { baseUrl } from '@/constants';
 import { OfferBox } from './offerBox';
 import { mockProducts, mockProvider } from '../invoice/constants';
+import LogoProvider from '@/context/logoContext';
 
 export default withPageAuthRequired(async function OfferPage() {
   const products = mockProducts;
@@ -29,8 +29,8 @@ export default withPageAuthRequired(async function OfferPage() {
   // }
 
   return (
-    <div>
+    <LogoProvider>
       <OfferBox products={products} provider={provider} />
-    </div>
+    </LogoProvider>
   );
 });

@@ -30,7 +30,7 @@ export async function Header() {
 
       {/* Right-side image */}
       <div className="hidden md:block relative z-10 w-2/5 h-full">
-        <div className="absolute">
+        <div className="absolute top-48">
           <Lottie />
         </div>
       </div>

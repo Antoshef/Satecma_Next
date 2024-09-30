@@ -6,6 +6,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Client } from './types';
 import { EnhancedMode } from '@/products/utils/types';
 import { GenericFormActions } from '@/components/genericTable/genericFormActions';
+import React from 'react';
 
 interface ClientEditorProps {
   selected?: Client;

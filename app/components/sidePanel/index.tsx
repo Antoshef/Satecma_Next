@@ -30,7 +30,6 @@ const navigation: NavigationItem[] = [
 export default function SidePanel() {
   const [isNavOpen, setIsNavOpen] = useState(true);
   const { logoUrl } = useLogo();
-  console.log('logoUrl', logoUrl);
 
   const toggleNav = () => setIsNavOpen((prev) => !prev);
 

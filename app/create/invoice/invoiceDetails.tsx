@@ -30,7 +30,9 @@ const InvoiceHeader: React.FC<InvoiceDetailsProps> = ({
   return (
     <>
       <td colSpan={4}>
-        <Image src={logoUrl} alt="Satecma logo" width={220} height={47} />
+        {logoUrl && (
+          <Image src={logoUrl} alt="Satecma logo" width={220} height={47} />
+        )}
       </td>
       <td colSpan={4} className="pl-4 text-right">
         <div>

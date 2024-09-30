@@ -1,3 +1,4 @@
+import { Client } from '@/clients/utils/types';
 import { Product } from '@/products/utils/types';
 
 export interface Item
@@ -47,4 +48,25 @@ export interface InvoiceError {
   invoiceNumber: boolean;
   wordPrice: boolean;
   invoiceType: boolean;
+}
+
+export interface InvoiceMetaData {
+  provider: Company | null;
+  receiver: Client;
+  invoiceNumber: string;
+  invoiceType: InvoiceType;
+  items: Item[];
+  total: {
+    amountWithoutDiscount: number;
+    discount: number;
+    netAmount: number;
+    vat: number;
+    paid: number;
+  };
+  wordPrice: string;
+  reason: string;
+  paymentMethod: string;
+  email: string;
+  sendMailToRecepient: boolean;
+  date: string;
 }

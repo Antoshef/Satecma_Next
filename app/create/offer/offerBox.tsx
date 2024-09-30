@@ -102,13 +102,16 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
             <tbody>
               <tr>
                 <td colSpan={4}>
-                  <Image
-                    src={logoUrl}
-                    alt="Satecma logo"
-                    className="mb-4"
-                    width={220}
-                    height={47}
-                  />
+                  {logoUrl && (
+                    <Image
+                      src={logoUrl}
+                      alt="Satecma logo"
+                      className="mb-4"
+                      width={220}
+                      height={47}
+                      priority
+                    />
+                  )}
                 </td>
               </tr>
 

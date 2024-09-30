@@ -1,5 +1,4 @@
-'use client';
-
+import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import { Client } from '@/clients/utils/types';
 import { InputWrapper } from '@/components/input/wrapper';
 import { TableItems } from '../table/tableItems';
@@ -12,15 +11,21 @@ import {
   VAT_PREFIX
 } from './constants';
 import { DocumentPriceData } from './documentPriceData';
-import { Company, InvoiceData, InvoiceError, InvoiceType } from './types';
+import {
+  Company,
+  InvoiceData,
+  InvoiceError,
+  InvoiceMetaData,
+  InvoiceType
+} from './types';
 import { Product } from '@/products/utils/types';
 import useToast from '@/products/utils/useToast';
-import { FormEvent, useEffect, useRef, useState } from 'react';
 import InvoiceDetails from './invoiceDetails';
 import ProviderDetails from './providerDetails';
 import { InvoiceRequestBody } from '../../../pages/api/create/types';
 import TableHeader from './tableHeader';
 import ReceiverDetails from './receiverDetails';
+import HintIcon from '@/components/genericTable/hintIcon';
 
 interface InvoiceBoxProps {
   provider: Company | null;
@@ -124,6 +129,35 @@ const InvoiceBox = ({
         throw new Error('Failed to create invoice');
       }
 
+      // Collect all data to send to the API endpoint
+      const invoiceMetaData: InvoiceMetaData = {
+        provider: company,
+        receiver,
+        invoiceNumber,
+        invoiceType,
+        items,
+        total,
+        wordPrice,
+        reason,
+        paymentMethod,
+        email,
+        sendMailToRecepient,
+        date: new Date().toISOString()
+      };
+
+      // Send data to the API endpoint
+      const saveInvoiceResponse = await fetch('/api/save-invoice', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(invoiceMetaData)
+      });
+
+      if (!saveInvoiceResponse.ok) {
+        throw new Error('Failed to save invoice metadata');
+      }
+
       notify('Фактурата е създадена успешно!', 'success');
     } catch (error) {
       notify('Възникна грешка при създаването на фактурата.', 'error');
@@ -192,7 +226,7 @@ const InvoiceBox = ({
       <form autoComplete="off" className="p-4" onSubmit={onSubmit} id="invoice">
         <div
           ref={invoiceRef}
-          className="mx-auto p-4 border border-gray-200 shadow-md text-base font-sans"
+          className="max-w-7xl min-w-max mx-auto p-4 border border-gray-200 shadow-md text-base font-sans"
         >
           <table className="w-full border-collapse">
             <tbody>
@@ -282,6 +316,10 @@ const InvoiceBox = ({
             />
             <span className="ml-2 text-sm">Изпрати до получател</span>
           </div>
+          <HintIcon
+            hint="Когато е избрано, изпраща фактурата до пощата на получателя"
+            fieldName="Изпрати"
+          />
         </div>
         <div className="mt-8 w-full flex flex-col items-center justify-center">
           <button

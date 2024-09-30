@@ -67,7 +67,7 @@ export const DashedLineIcon: React.FC<DashedLineIconProps> = ({
             {/* Solid Line - Height changes dynamically */}
             <span
               ref={lineRef}
-              className="absolute top-10 left-1/2 transform -translate-x-1/2 border-l border-solid border-theme-light-primary dark:border-theme-dark-primary transition-all duration-100 ease-linear"
+              className="absolute top-10 left-1/2 transform -translate-x-1/2 border-l border-solid border-theme-light-primary dark:border-theme-dark-primary transition-all ease-linear"
               style={{ height: `${solidHeight}%`, maxHeight: '80px' }} // Dynamic height for the solid line
             />
           </>

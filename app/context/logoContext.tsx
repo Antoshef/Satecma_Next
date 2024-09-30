@@ -10,15 +10,14 @@ import {
 } from 'react';
 
 interface LogoContextProps {
-  logoUrl: string;
+  logoUrl: string | null;
   setLogoUrl: (url: string) => void;
 }
 
 const LogoContext = createContext<LogoContextProps | undefined>(undefined);
 
 const LogoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [logoUrl, setLogoUrl] = useState<string>('');
-  console.log('context', logoUrl);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchLogo = async () => {

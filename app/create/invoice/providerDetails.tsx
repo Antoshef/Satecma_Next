@@ -7,6 +7,22 @@ interface ProviderDetailsProps {
   setCompany: React.Dispatch<React.SetStateAction<Company | null>>;
 }
 
+const inputFields = [
+  { name: 'name', label: 'Доставчик:', placeholder: 'Фирма' },
+  { name: 'eik', label: 'ЕИК:', placeholder: 'ЕИК' },
+  {
+    name: 'vat',
+    label: 'ДДС №:',
+    placeholder: 'ДДС №',
+    formatValue: (company: Company | null) =>
+      company ? `BG${company.eik}` : ''
+  },
+  { name: 'city', label: 'Град:', placeholder: 'Град' },
+  { name: 'address', label: 'Адрес:', placeholder: 'Адрес' },
+  { name: 'director', label: 'МОЛ:', placeholder: 'МОЛ' },
+  { name: 'phone', label: 'Телефон:', placeholder: 'Телефон' }
+];
+
 const ProviderDetails: React.FC<ProviderDetailsProps> = ({
   company,
   isFieldsDisabled,
@@ -21,90 +37,24 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({
 
   return (
     <td colSpan={2} className="py-4">
-      <div className="flex place-items-center mb-1">
-        <span className="basis-1/3 text-left">Доставчик:</span>
-        <TextField
-          name="name"
-          type="text"
-          className="min-w-1/3"
-          placeholder="Фирма"
-          value={company?.city || ''}
-          isFieldsDisabled={isFieldsDisabled}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div className="flex place-items-center mb-1">
-        <span className="basis-1/3 text-left">ЕИК:</span>
-        <TextField
-          name="eik"
-          type="text"
-          className="min-w-1/3"
-          placeholder="ЕИК"
-          value={company?.eik || ''}
-          isFieldsDisabled={isFieldsDisabled}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div className="flex place-items-center mb-1">
-        <span className="basis-1/3 text-left">ДДС №:</span>
-        <TextField
-          name="vat"
-          type="text"
-          className="min-w-1/3"
-          placeholder="ДДС №"
-          value={company ? `BG${company.eik}` : ''}
-          isFieldsDisabled={isFieldsDisabled}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div className="flex place-items-center mb-1">
-        <span className="basis-1/3 text-left">Град:</span>
-        <TextField
-          name="city"
-          type="text"
-          className="min-w-1/3"
-          placeholder="Град"
-          value={company?.city || ''}
-          isFieldsDisabled={isFieldsDisabled}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div className="flex place-items-center mb-1">
-        <span className="basis-1/3 text-left">Адрес:</span>
-        <TextField
-          name="address"
-          type="text"
-          className="min-w-1/3"
-          placeholder="Адрес"
-          value={company?.address || ''}
-          isFieldsDisabled={isFieldsDisabled}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div className="flex place-items-center mb-1">
-        <span className="basis-1/3 text-left">МОЛ:</span>
-        <TextField
-          name="director"
-          type="text"
-          className="min-w-1/3"
-          placeholder="МОЛ"
-          value={company?.director || ''}
-          isFieldsDisabled={isFieldsDisabled}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div className="flex place-items-center mb-1">
-        <span className="basis-1/3 text-left">Телефон:</span>
-        <TextField
-          name="phone"
-          type="text"
-          className="min-w-1/3"
-          placeholder="Телефон"
-          value={company?.phone || ''}
-          isFieldsDisabled={isFieldsDisabled}
-          onChange={handleInputChange}
-        />
-      </div>
+      {inputFields.map((field) => (
+        <div key={field.name} className="flex place-items-center mb-1">
+          <span className="basis-1/3 text-left">{field.label}</span>
+          <TextField
+            name={field.name}
+            type="text"
+            className="min-w-1/3"
+            placeholder={field.placeholder}
+            value={
+              field.formatValue
+                ? field.formatValue(company)
+                : company?.[field.name as keyof Company] || ''
+            }
+            isFieldsDisabled={company ? true : isFieldsDisabled}
+            onChange={handleInputChange}
+          />
+        </div>
+      ))}
     </td>
   );
 };

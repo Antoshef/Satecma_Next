@@ -25,6 +25,30 @@ const ReceiverDetails: React.FC<ReceiverDetailsProps> = ({
     setReceiver(client);
   };
 
+  const fields = [
+    { label: 'Град:', name: 'city', placeholder: 'Град', value: receiver.city },
+    {
+      label: 'Адрес:',
+      name: 'address',
+      placeholder: 'Адрес',
+      value: receiver.address
+    },
+    { label: 'ЕИК:', name: 'eik', placeholder: 'ЕИК', value: receiver.eik },
+    { label: 'ДДС №:', name: 'vat', placeholder: 'ДДС №', value: receiver.vat },
+    {
+      label: 'МОЛ:',
+      name: 'director',
+      placeholder: 'МОЛ',
+      value: receiver.director
+    },
+    {
+      label: 'Е-Поща:',
+      name: 'email',
+      placeholder: 'Е-Поща',
+      value: receiver.email
+    }
+  ];
+
   return (
     <td colSpan={6} className="py-4 align-top text-right">
       <div className="mb-1">
@@ -34,86 +58,30 @@ const ReceiverDetails: React.FC<ReceiverDetailsProps> = ({
         ) : (
           <GenericInput
             data={clients}
+            hint="Започни да пишеш за показване на списък с клиенти"
             className="w-1/3"
             variant="simple"
+            placeholder="Избери получател"
             selectedItem={selectedClient}
             setSelectedItem={handleClientSelect}
             displayProperty="name"
           />
         )}
       </div>
-      <div className="mb-1">
-        <span className="text-right">Град:</span>
-        <TextField
-          name="city"
-          type="text"
-          className="w-1/3"
-          placeholder="Град"
-          value={receiver.city}
-          isFieldsDisabled={isFieldsDisabled}
-          onChange={onChange}
-        />
-      </div>
-      <div className="mb-1">
-        <span className="text-right">Адрес:</span>
-        <TextField
-          name="address"
-          type="text"
-          className="w-1/3"
-          placeholder="Адрес"
-          value={receiver.address}
-          isFieldsDisabled={isFieldsDisabled}
-          onChange={onChange}
-        />
-      </div>
-      <div className="mb-1">
-        <span className="text-right">ЕИК:</span>
-        <TextField
-          name="eik"
-          type="text"
-          className="w-1/3"
-          placeholder="ЕИК"
-          value={receiver.eik}
-          isFieldsDisabled={isFieldsDisabled}
-          onChange={onChange}
-        />
-      </div>
-      <div className="mb-1">
-        <span className="text-right">ДДС №:</span>
-        <TextField
-          name="vat"
-          type="text"
-          className="w-1/3"
-          placeholder="ДДС №"
-          value={receiver.vat}
-          isFieldsDisabled={isFieldsDisabled}
-          onChange={onChange}
-        />
-      </div>
-      <div className="mb-1">
-        <span className="text-right">МОЛ:</span>
-        <TextField
-          name="director"
-          type="text"
-          className="w-1/3"
-          placeholder="МОЛ"
-          value={receiver.director}
-          isFieldsDisabled={isFieldsDisabled}
-          onChange={onChange}
-        />
-      </div>
-      <div>
-        <span className="text-right">Е-Поща:</span>
-        <TextField
-          name="email"
-          type="text"
-          className="w-1/3"
-          placeholder="Е-Поща"
-          value={receiver.email}
-          isFieldsDisabled={isFieldsDisabled}
-          onChange={onChange}
-        />
-      </div>
+      {fields.map((field) => (
+        <div key={field.name} className="mb-1">
+          <span className="text-right">{field.label}</span>
+          <TextField
+            name={field.name}
+            type="text"
+            className="w-1/3"
+            placeholder={field.placeholder}
+            value={field.value}
+            isFieldsDisabled={isFieldsDisabled}
+            onChange={onChange}
+          />
+        </div>
+      ))}
     </td>
   );
 };

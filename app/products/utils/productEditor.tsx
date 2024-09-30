@@ -5,6 +5,7 @@ import {
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { EnhancedMode, Product } from './types';
 import { GenericFormActions } from '@/components/genericTable/genericFormActions';
+import React from 'react';
 
 interface ProductEditorProps {
   selected?: Product;

@@ -1,5 +1,5 @@
 import { classNames } from '@/utils/classNames';
-import { useState } from 'react';
+import HintIcon from './hintIcon';
 
 export interface GenericFormField<T> {
   label: string;
@@ -25,7 +25,6 @@ export const GenericForm = <T,>({
   handleChange,
   ProductActions
 }: GenericFormProps<T>) => {
-  const [hoveredField, setHoveredField] = useState<keyof T | null>(null);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-theme-light-background dark:bg-theme-dark-background">
@@ -34,38 +33,7 @@ export const GenericForm = <T,>({
           <div className="text-sm font-medium text-theme-light-tertiary dark:text-theme-dark-tertiary flex items-center">
             <label>{field.label}</label>
             {field.hint && (
-              <div
-                className="ml-2 relative text-theme-light-secondary"
-                onMouseEnter={() => setHoveredField(field.name)}
-                onMouseLeave={() => setHoveredField(null)}
-              >
-                <svg
-                  className="w-4 h-4 cursor-pointer"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <circle
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  ></circle>
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 16v-4m0-4h.01"
-                  />
-                </svg>
-                {hoveredField === field.name && (
-                  <div className="absolute left-1/2 -top-3 transform -translate-x-1/2 -translate-y-full mt-2 w-48 p-2 bg-white border border-gray-300 rounded-md shadow-lg text-sm text-theme-light-primary z-10">
-                    {field.hint}
-                  </div>
-                )}
-              </div>
+              <HintIcon hint={field.hint} fieldName={String(field.name)} />
             )}
           </div>
           {field.render?.()}

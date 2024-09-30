@@ -9,6 +9,7 @@ import {
   KeyboardEvent
 } from 'react';
 import { useMergedRef } from '../useMergedRefs/useMergedRefs';
+import HintIcon from './hintIcon';
 
 export function itemHandler<T, K extends keyof T>(
   name: string,
@@ -24,6 +25,7 @@ export function itemHandler<T, K extends keyof T>(
 }
 
 export interface GenericInputProps<T> {
+  hint?: string;
   label?: string;
   placeholder?: string;
   required?: boolean;
@@ -38,6 +40,7 @@ export interface GenericInputProps<T> {
 export const GenericInput = forwardRef<unknown, GenericInputProps<any>>(
   (
     {
+      hint,
       label,
       placeholder,
       required,
@@ -141,6 +144,7 @@ export const GenericInput = forwardRef<unknown, GenericInputProps<any>>(
 
     return (
       <div className={`${className} relative inline-block`} ref={mergedRefs}>
+        {/* {hint && <HintIcon hint={hint} fieldName={String(displayProperty)} />} */}
         {label && (
           <label className="block text-sm font-medium text-gray-700">
             {label}

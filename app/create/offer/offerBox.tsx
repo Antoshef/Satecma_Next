@@ -1,11 +1,17 @@
 'use client';
 
+import React, {
+  FormEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from 'react';
 import { InputWrapper } from '@/components/input/wrapper';
 import { TextField } from '@/components/textField/TextField';
 import { baseUrl } from '@/constants';
 import useToast from '@/products/utils/useToast';
 import Image from 'next/image';
-import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { TableItems } from '../table/tableItems';
 import { Product } from '@/products/utils/types';
 import { useTableItems } from '../table/useTableItems';
@@ -16,6 +22,7 @@ import { DocumentPriceData } from '../invoice/documentPriceData';
 import ApplicationDetails from './applicationDetails';
 import RecipientDetails from './recepientDetails';
 import { useLogo } from '@/context/logoContext';
+import { OfferMetaData } from './types';
 
 interface OfferBoxProps {
   provider: Company | null;
@@ -68,6 +75,32 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
             heading
           })
         });
+
+        // Collect all data to send to the API endpoint
+        const offerMetaData: OfferMetaData = {
+          provider: provider?.name || null,
+          recipient,
+          offerNumber: heading,
+          items,
+          total,
+          heading,
+          sendMailToRecepient,
+          date: new Date().toISOString()
+        };
+
+        // Send data to the API endpoint
+        const saveOfferResponse = await fetch('/api/save-offer', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(offerMetaData)
+        });
+
+        if (!saveOfferResponse.ok) {
+          throw new Error('Failed to save offer metadata');
+        }
+
         notify('Офертата беше успешно изпратена.', 'success');
       } catch (error) {
         notify('Грешка при изпращането на офертата.', 'error');
@@ -79,7 +112,9 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
       sendMailToRecepient,
       provider?.name,
       heading,
-      notify
+      notify,
+      items,
+      total
     ]
   );
 

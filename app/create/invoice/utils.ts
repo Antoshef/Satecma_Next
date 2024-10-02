@@ -14,6 +14,8 @@ const bankCodes = {
   UBBS: { name: 'Обединена Българска Банка', swift: 'UBBSBGSF' }
 };
 
+// BG16BPBI79341038837501
+
 export const getBankDetailsFromIban = (iban: string) => {
   const error = iban.length !== 22;
   const bankCode = iban.substring(4, 8);

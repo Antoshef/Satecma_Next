@@ -1,14 +1,14 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs';
 import path from 'path';
-import { InvoiceMetaData } from '@/create/invoice/types';
+import { OfferMetaData } from '@/create/offer/types';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method === 'POST') {
-    const invoiceData = req.body as InvoiceMetaData;
+    const offerData = req.body as OfferMetaData;
 
     const date = new Date();
     const year = date.getFullYear().toString();
@@ -18,11 +18,11 @@ export default async function handler(
       process.cwd(),
       'public',
       'sent',
-      invoiceData.invoiceType,
+      'offers',
       year,
       month
     );
-    const filePath = path.join(dirPath, invoiceData.invoiceNumber + '.json');
+    const filePath = path.join(dirPath, offerData.offerNumber + '.json');
 
     // Ensure the directory exists
     try {
@@ -31,24 +31,24 @@ export default async function handler(
       return res.status(500).json({ error: 'Failed to create directories' });
     }
 
-    let invoices = [];
+    let offers = [];
 
     try {
       if (fs.existsSync(filePath)) {
         const fileData = fs.readFileSync(filePath, 'utf8');
-        invoices = JSON.parse(fileData);
+        offers = JSON.parse(fileData);
       }
     } catch (error) {
-      return res.status(500).json({ error: 'Failed to read invoices file' });
+      return res.status(500).json({ error: 'Failed to read offers file' });
     }
 
-    invoices.push(invoiceData);
+    offers.push(offerData);
 
     try {
-      fs.writeFileSync(filePath, JSON.stringify(invoices, null, 2));
-      return res.status(200).json({ message: 'Invoice saved successfully' });
+      fs.writeFileSync(filePath, JSON.stringify(offers, null, 2));
+      return res.status(200).json({ message: 'Offer saved successfully' });
     } catch (error) {
-      return res.status(500).json({ error: 'Failed to save invoice' });
+      return res.status(500).json({ error: 'Failed to save offer' });
     }
   } else {
     res.setHeader('Allow', ['POST']);

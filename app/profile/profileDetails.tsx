@@ -62,8 +62,11 @@ export const ProfileDetails: React.FC<ProfileDetailsProps> = ({ company }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await fetch('/api/profile/update', {
-      method: 'POST',
+
+    const requestMethod = company ? 'PUT' : 'POST';
+
+    const response = await fetch('/api/company', {
+      method: requestMethod,
       headers: {
         'Content-Type': 'application/json'
       },

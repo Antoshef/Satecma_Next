@@ -1,3 +1,5 @@
+'use client';
+
 import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import { Client } from '@/clients/utils/types';
 import { InputWrapper } from '@/components/input/wrapper';

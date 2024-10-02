@@ -97,7 +97,63 @@ export default async function handler(
       console.error('POST error:', error);
       return res.status(500).json({ message: 'Internal server error' });
     }
-  } else {
-    return res.status(405).json({ message: 'Method Not Allowed' });
   }
+
+  if (method === 'PUT') {
+    try {
+      const providerData: Company = req.body;
+
+      // Validate required fields
+      const requiredFields: (keyof Company)[] = [
+        'name',
+        'eik',
+        'vat',
+        'city',
+        'address',
+        'director',
+        'phone',
+        'iban',
+        'swift',
+        'bankName'
+      ];
+      const missingFields: (keyof Company)[] = [];
+
+      requiredFields.forEach((field) => {
+        if (!providerData[field]) missingFields.push(field);
+      });
+
+      if (missingFields.length > 0) {
+        return res.status(400).json({
+          message: `Missing required fields: ${missingFields.join(', ')}`
+        });
+      }
+
+      const updateQuery = `
+        UPDATE ${tableName}
+        SET name = ?, vat = ?, city = ?, address = ?, director = ?, phone = ?, iban = ?, swift = ?, bankName = ?
+        WHERE eik = ?
+        RETURNING *;
+      `;
+      const values = [
+        providerData.name,
+        providerData.vat,
+        providerData.city,
+        providerData.address,
+        providerData.director,
+        providerData.phone,
+        providerData.iban,
+        providerData.swift,
+        providerData.bankName,
+        providerData.eik
+      ];
+
+      const result = await queryAsync<Company>(updateQuery, values);
+      return res.status(200).json({ data: result });
+    } catch (error) {
+      console.error('PUT error:', error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+  }
+
+  return res.status(405).json({ message: 'Method Not Allowed' });
 }

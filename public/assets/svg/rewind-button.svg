@@ -1,0 +1,21 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="361.932"
+  height="348.561"
+  enable-background="new 0 0 361.932 348.561"
+  viewBox="0 0 361.932 348.561"
+  id="rewind-button"
+>
+  <path
+    fill="#002538"
+    fill-rule="evenodd"
+    d="M361.932,348.561l-232.935-174.28L361.932,0V348.561z"
+    clip-rule="evenodd"
+  ></path>
+  <polygon
+    fill="purple"
+    fill-rule="evenodd"
+    points="232.934 348.561 232.934 270.796 103.937 174.281 232.934 77.766 232.934 0 0 174.281"
+    clip-rule="evenodd"
+  ></polygon>
+</svg>

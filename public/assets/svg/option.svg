@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="option">
+  <g>
+    <path
+      fill="#1b1a3d"
+      d="M2 5.5H20a1 1 0 000-2H2a1 1 0 000 2zM2 10.5H22a1 1 0 000-2H2a1 1 0 000 2zM2 15.5H20a1 1 0 000-2H2a1 1 0 000 2z"
+    ></path>
+    <path fill="#81d4fa" d="M22,18.5H2a1,1,0,0,0,0,2H22a1,1,0,0,0,0-2Z"></path>
+  </g>
+</svg>

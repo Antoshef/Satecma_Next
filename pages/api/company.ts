@@ -8,35 +8,19 @@ interface TypedNextApiRequest extends NextApiRequest {
 
 const tableName = 'company';
 
-async function createTableIfNotExists() {
-  const createTableQuery = `
-    CREATE TABLE IF NOT EXISTS ${tableName} (
-      eik VARCHAR(255) PRIMARY KEY,
-      name VARCHAR(255) NOT NULL,
-      vat VARCHAR(255) NOT NULL,
-      city VARCHAR(255) NOT NULL,
-      address VARCHAR(255) NOT NULL,
-      director VARCHAR(255) NOT NULL,
-      phone VARCHAR(255) NOT NULL,
-      iban VARCHAR(255) NOT NULL,
-      swift VARCHAR(255) NOT NULL,
-      bankName VARCHAR(255) NOT NULL
-    );
-  `;
-  await queryAsync(createTableQuery);
-}
-
 export default async function handler(
   req: TypedNextApiRequest,
   res: NextApiResponse
 ) {
   const { method } = req;
 
-  await createTableIfNotExists();
-
   if (method === 'GET') {
     try {
-      const results = await queryAsync<Company[]>(`SELECT * FROM ${tableName}`);
+      const user_id = (req as any).user.sub; // Assuming `sub` from Auth0
+      const results = await queryAsync<Company[]>(
+        `SELECT * FROM ${tableName} WHERE user_id = ?`,
+        [user_id]
+      );
       return res.status(200).json({ companies: results || [] });
     } catch (error) {
       console.error('GET error:', error);
@@ -46,9 +30,9 @@ export default async function handler(
 
   if (method === 'POST') {
     try {
+      const user_id = (req as any).user.sub; // Get Auth0 user ID from token
       const providerData: Company = req.body;
-
-      // Validate required fields
+  
       const requiredFields: (keyof Company)[] = [
         'name',
         'eik',
@@ -62,23 +46,24 @@ export default async function handler(
         'bankName'
       ];
       const missingFields: (keyof Company)[] = [];
-
+  
       requiredFields.forEach((field) => {
         if (!providerData[field]) missingFields.push(field);
       });
-
+  
       if (missingFields.length > 0) {
         return res.status(400).json({
           message: `Missing required fields: ${missingFields.join(', ')}`
         });
       }
-
+  
       const insertQuery = `
-        INSERT INTO ${tableName} (eik, name, vat, city, address, director, phone, iban, swift, bankName)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO ${tableName} (user_id, eik, name, vat, city, address, director, phone, iban, swift, bankName)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         RETURNING *;
       `;
       const values = [
+        user_id,
         providerData.eik,
         providerData.name,
         providerData.vat,
@@ -90,7 +75,7 @@ export default async function handler(
         providerData.swift,
         providerData.bankName
       ];
-
+  
       const result = await queryAsync<Company>(insertQuery, values);
       return res.status(201).json({ data: result });
     } catch (error) {
@@ -101,9 +86,9 @@ export default async function handler(
 
   if (method === 'PUT') {
     try {
+      const user_id = (req as any).user.sub; // Get Auth0 user ID from token
       const providerData: Company = req.body;
-
-      // Validate required fields
+  
       const requiredFields: (keyof Company)[] = [
         'name',
         'eik',
@@ -117,21 +102,31 @@ export default async function handler(
         'bankName'
       ];
       const missingFields: (keyof Company)[] = [];
-
+  
       requiredFields.forEach((field) => {
         if (!providerData[field]) missingFields.push(field);
       });
-
+  
       if (missingFields.length > 0) {
         return res.status(400).json({
           message: `Missing required fields: ${missingFields.join(', ')}`
         });
       }
-
+  
+      // Ensure the company belongs to the current user
+      const checkCompanyQuery = `
+        SELECT * FROM ${tableName} WHERE eik = ? AND user_id = ?;
+      `;
+      const existingCompany = await queryAsync<Company[]>(checkCompanyQuery, [providerData.eik, user_id]);
+  
+      if (existingCompany.length === 0) {
+        return res.status(403).json({ message: 'You do not own this company' });
+      }
+  
       const updateQuery = `
         UPDATE ${tableName}
         SET name = ?, vat = ?, city = ?, address = ?, director = ?, phone = ?, iban = ?, swift = ?, bankName = ?
-        WHERE eik = ?
+        WHERE eik = ? AND user_id = ?
         RETURNING *;
       `;
       const values = [
@@ -144,9 +139,10 @@ export default async function handler(
         providerData.iban,
         providerData.swift,
         providerData.bankName,
-        providerData.eik
+        providerData.eik,
+        user_id
       ];
-
+  
       const result = await queryAsync<Company>(updateQuery, values);
       return res.status(200).json({ data: result });
     } catch (error) {

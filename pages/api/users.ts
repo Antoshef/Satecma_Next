@@ -6,33 +6,14 @@ interface TypedNextApiRequest extends NextApiRequest {
   body: Claims;
 }
 
-const tableName = 'profile';
+const tableName = 'users'; // Renamed to users
 
-async function createTableIfNotExists() {
-  const createTableQuery = `
-    CREATE TABLE IF NOT EXISTS ${tableName} (
-      sub VARCHAR(255) PRIMARY KEY,
-      given_name VARCHAR(255),
-      family_name VARCHAR(255),
-      nickname VARCHAR(255) NOT NULL,
-      name VARCHAR(255) NOT NULL,
-      picture VARCHAR(255),
-      updated_at VARCHAR(255) NOT NULL,
-      email VARCHAR(255) NOT NULL,
-      email_verified BOOLEAN NOT NULL
-    );
-  `;
-  await queryAsync(createTableQuery);
-}
-
+// Validate the Claims object to ensure required fields are present
 function isValidUser(user: Claims): boolean {
   return (
     !!user.sub &&
-    !!user.nickname &&
-    !!user.name &&
-    !!user.picture &&
-    !!user.updated_at &&
-    !!user.email
+    !!user.email &&
+    !!user.nickname // Assuming Auth0 provides the nickname as username
   );
 }
 
@@ -41,8 +22,6 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const { method } = req;
-
-  await createTableIfNotExists();
 
   if (method === 'POST') {
     try {
@@ -53,33 +32,29 @@ export default async function handler(
       }
 
       // Check if user already exists
-      const checkUserQuery = `SELECT * FROM ${tableName} WHERE sub = ?`;
-      const existingUser = await queryAsync<Claims[]>(checkUserQuery, [
-        userData.sub
-      ]);
+      const checkUserQuery = `SELECT * FROM ${tableName} WHERE id = ?`;
+      const existingUser = await queryAsync<Claims[]>(checkUserQuery, [userData.sub]);
 
       if (existingUser.length > 0) {
         return res.status(409).json({ message: 'User already exists' });
       }
 
+      // Insert the new user into the users table
       const insertQuery = `
-        INSERT INTO ${tableName} (sub, given_name, family_name, nickname, name, picture, updated_at, email, email_verified)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+        INSERT INTO ${tableName} (id, given_name, family_name, username, email, email_verified)
+        VALUES (?, ?, ?, ?, ?, ?);
       `;
       const values = [
-        userData.sub,
-        userData.given_name,
-        userData.family_name,
-        userData.nickname,
-        userData.name,
-        userData.picture,
-        userData.updated_at,
-        userData.email,
-        userData.email_verified
+        userData.sub, // Auth0 sub used as id
+        userData.given_name || null, // First name
+        userData.family_name || null, // Last name
+        userData.nickname, // Username (coming from Auth0 nickname)
+        userData.email, // Email
+        userData.email_verified || false // Email verified status
       ];
 
-      const result = await queryAsync<Claims>(insertQuery, values);
-      return res.status(201).json({ data: result });
+      await queryAsync(insertQuery, values);
+      return res.status(201).json({ message: 'User created successfully' });
     } catch (error) {
       console.error('POST error:', error);
       return res.status(500).json({ message: 'Internal server error' });
@@ -95,7 +70,7 @@ export default async function handler(
       const user = await queryAsync<Claims[]>(getUserQuery, [email]);
 
       if (user.length === 0) {
-        return res.status(200).json({});
+        return res.status(404).json({ message: 'User not found' });
       }
 
       return res.status(200).json(user[0]);

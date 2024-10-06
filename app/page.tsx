@@ -12,7 +12,7 @@ export default async function HomePage() {
   const session = await getSession();
 
   if (!session) {
-    // If no session, you can render the component without a user or handle accordingly
+    // Render the homepage without user context if no session
     return <Component user={null} />;
   }
 
@@ -21,8 +21,8 @@ export default async function HomePage() {
   // Fetch user data from Auth0 `/userinfo`
   const response = await fetch(`https://${process.env.AUTH0_DOMAIN}/userinfo`, {
     headers: {
-      Authorization: `Bearer ${accessToken}`
-    }
+      Authorization: `Bearer ${accessToken}`,
+    },
   });
 
   if (!response.ok) {
@@ -35,29 +35,30 @@ export default async function HomePage() {
   if (result.email_verified) {
     // Check if the user exists in your database
     const userExistsResponse = await fetch(
-      `${process.env.AUTH0_BASE_URL}/api/profile?email=${result.email}`
+      `${process.env.AUTH0_BASE_URL}/api/users?email=${result.email}`
     );
     const userExistsData = await userExistsResponse.json();
 
     if (userExistsResponse.ok && Object.keys(userExistsData).length === 0) {
       // If user doesn't exist, create the user in the database
-      await fetch(`${process.env.AUTH0_BASE_URL}/api/profile`, {
+      await fetch(`${process.env.AUTH0_BASE_URL}/api/users`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(result)
+        body: JSON.stringify(result),
       });
     } else if (userExistsResponse.ok) {
       // If user exists, update the email_verified field
-      await fetch(`${process.env.AUTH0_BASE_URL}/api/profile`, {
+      await fetch(`${process.env.AUTH0_BASE_URL}/api/users`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email: result.email, email_verified: true })
+        body: JSON.stringify({ email: result.email, email_verified: true }),
       });
     }
+    // Redirect the user to the clients page once authenticated
     redirect('/clients');
   }
 
@@ -81,20 +82,5 @@ const Component = ({ user }: { user: Claims | null }) => (
         <SEOAccordion />
       </div>
     </div>
-    <a
-      href="https://iconscout.com/illustrations/business"
-      className="text-underline font-size-sm"
-      target="_blank"
-    >
-      Illustrations provided
-    </a>{' '}
-    by{' '}
-    <a
-      href="https://iconscout.com/contributors/vectory"
-      className="text-underline font-size-sm"
-      target="_blank"
-    >
-      Iconscout
-    </a>
   </div>
 );

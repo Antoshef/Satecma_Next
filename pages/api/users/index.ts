@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { queryAsync } from '../../utils/db';
+import { queryAsync } from '../../../utils/db';
 import { Claims } from '@auth0/nextjs-auth0';
 
 interface TypedNextApiRequest extends NextApiRequest {

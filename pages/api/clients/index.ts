@@ -1,6 +1,6 @@
 import { Client } from '@/clients/utils/types';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { queryAsync } from '../../utils/db';
+import { queryAsync } from '../../../utils/db';
 import { authMiddleware } from '@/utils/auth';
 
 export default async function handler(
@@ -10,7 +10,7 @@ export default async function handler(
   await new Promise<void>((resolve) => authMiddleware(req, res, resolve));
 
   // Extract the user's Auth0 ID from the JWT token (req.user.sub)
-  const user_id = (req as any).user.sub; 
+  const user_id = (req as any).user.sub;
 
   const { method } = req;
 

@@ -1,5 +1,5 @@
+import { HeadCell, Order } from '@/products/utils/types';
 import { MouseEvent, ChangeEvent } from 'react';
-import { HeadCell, Order } from './types';
 
 interface EnhancedTableHeadProps<T> {
   order: Order;

@@ -1,9 +1,3 @@
-const demoEndpoint = "http://demo.econt.com/ee/services";
-const demoCredentials = {
-  username: "iasp-dev",
-  password: "1Asp-dev",
-};
-
 const productionEndpoint = "http://ee.econt.com/services";
 const productionCredentials = {
   username: process.env.NEXT_PUBLIC_ECONT_USER,

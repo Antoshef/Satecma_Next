@@ -39,6 +39,7 @@ const CompanySuggestions = ({
 
   const handleSuggestionClick = (client: Client) => {
     setReceiver({
+      user_id: receiver.user_id, // Ensure to include the user_id
       name: client.name,
       city: client.city,
       address: client.address,

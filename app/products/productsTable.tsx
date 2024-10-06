@@ -98,7 +98,6 @@ export default function ProductsTable({ data, error }: Props) {
   const visibleRows = useMemo(
     () =>
       filteredProducts
-        // @ts-expect-error ts-migrate(2531) FIXME: Object is possibly 'null'.
         .sort(getComparator(order, orderBy))
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
     [order, orderBy, page, rowsPerPage, filteredProducts]
@@ -200,13 +199,13 @@ export default function ProductsTable({ data, error }: Props) {
         break;
     }
   };
-
-  useEffect(() => {
+  
+useEffect(() => {
     const uniqueCategories = Array.from(
-      new Set(products.map((p) => p.category).filter((c) => c !== undefined))
+      new Set(products.map((p) => p.category).filter((c): c is string => c !== undefined))
     );
     setFilteredProducts(products);
-    setCategories(uniqueCategories);
+    uniqueCategories && setCategories(uniqueCategories);
     sortAndFilterProducts(products, 'all');
   }, [products]);
 

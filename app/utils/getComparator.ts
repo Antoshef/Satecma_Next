@@ -1,16 +1,14 @@
 import { Order } from '@/products/utils/types';
 
-export function getComparator<T, Key extends keyof T>(
+export function getComparator<T>(
   order: Order,
-  orderBy: Key
-): (
-  a: { [key in Key]: number | string | undefined },
-  b: { [key in Key]: number | string | undefined }
-) => number {
+  orderBy: keyof T
+): (a: T, b: T) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
+
 
 export function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {

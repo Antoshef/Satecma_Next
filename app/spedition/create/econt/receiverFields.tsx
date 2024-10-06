@@ -1,4 +1,4 @@
-import { Input, itemHandler } from '@/components/genericTable/genericInput';
+import { GenericInput, itemHandler } from '@/components/genericTable/genericInput';
 import { useRef } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import { City } from './services/shipments/types';
@@ -134,7 +134,7 @@ export const ReceiverFields = ({
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
           </div>
-          <Input
+          <GenericInput
             label="Град"
             required
             data={cities}
@@ -142,6 +142,7 @@ export const ReceiverFields = ({
             setSelectedItem={(name) =>
               itemHandler(name, cities, 'city', setReceiver)
             }
+            displayProperty="name"
           />
           <div className="flex flex-col">
             <label
@@ -170,7 +171,7 @@ export const ReceiverFields = ({
             unmountOnExit
             nodeRef={officeRef}
           >
-            <Input
+            <GenericInput
               label="Офис"
               required
               data={currentCityOffices}
@@ -179,6 +180,7 @@ export const ReceiverFields = ({
               setSelectedItem={(name) =>
                 itemHandler(name, currentCityOffices, 'office', setReceiver)
               }
+              displayProperty="name"
             />
           </CSSTransition>
         </div>

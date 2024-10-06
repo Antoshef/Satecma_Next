@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { AdditionalServices, Package, Receiver, Sender } from "./types";
 import {
   INIT_SENDER,
@@ -8,8 +8,8 @@ import {
 } from "./constants";
 
 export const useCreateEcontPackage = () => {
-  const cities = [];
-  const offices = [];
+  const cities: { name: string; id?: number }[] = [];
+  const offices = useMemo<{ name: string; address?: { city?: { id?: number } } }[]>(() => [], []);
   const [sender, setSender] = useState<Sender>(INIT_SENDER);
   const [receiver, setReceiver] = useState<Receiver>(INIT_RECEIVER);
   const [packageData, setPackageData] = useState<Package>(INIT_PACKAGE);
@@ -55,7 +55,7 @@ export const useCreateEcontPackage = () => {
         (office) => office?.address?.city?.id === sender.city?.id,
       ),
     }));
-  }, [sender.city]);
+  }, [sender.city, offices]);
 
   useEffect(() => {
     setReceiver((state) => ({
@@ -64,7 +64,7 @@ export const useCreateEcontPackage = () => {
         (office) => office?.address?.city?.id === receiver.city?.id,
       ),
     }));
-  }, [receiver.city]);
+  }, [offices, receiver.city]);
 
   return {
     sender,

@@ -166,7 +166,10 @@ export default function InvoicesTable({ data, error }: InvoicesTableProps) {
           title="Фактури"
           isSelected={!!selected.length}
           setMode={setMode}
-          deleteHandler={() => {}}
+          deleteHandler={() => {
+            // Implement delete functionality here
+            console.log('Delete handler triggered');
+          }}
           selectedCount={selected.length}
         />
         <div className="flex justify-end mb-4">

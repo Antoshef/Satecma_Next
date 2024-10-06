@@ -1,4 +1,4 @@
-import { Input, itemHandler } from '@/components/genericTable/genericInput';
+import { GenericInput, itemHandler } from '@/components/genericTable/genericInput';
 import { City } from './services/shipments/types';
 import { Sender } from './types';
 
@@ -36,7 +36,7 @@ export const SenderFields = ({
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           />
         </div>
-        <Input
+        <GenericInput
           label="Град"
           required
           data={cities}
@@ -44,8 +44,9 @@ export const SenderFields = ({
           setSelectedItem={(name) =>
             itemHandler(name, cities, 'city', setSender)
           }
+          displayProperty="name"
         />
-        <Input
+        <GenericInput
           label="Офис"
           required
           data={currentCityOffices}
@@ -53,6 +54,7 @@ export const SenderFields = ({
           setSelectedItem={(name) =>
             itemHandler(name, currentCityOffices, 'office', setSender)
           }
+          displayProperty="name"
         />
       </section>
     </article>

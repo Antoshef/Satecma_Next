@@ -9,7 +9,6 @@ import {
   KeyboardEvent
 } from 'react';
 import { useMergedRef } from '../useMergedRefs/useMergedRefs';
-import HintIcon from './hintIcon';
 
 export function itemHandler<T, K extends keyof T>(
   name: string,

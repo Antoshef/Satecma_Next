@@ -107,8 +107,7 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
       }
     },
     [
-      recipient.email,
-      recipient.name,
+      recipient,
       sendMailToRecepient,
       provider?.name,
       heading,

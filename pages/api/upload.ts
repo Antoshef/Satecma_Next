@@ -8,7 +8,7 @@ interface NextApiRequestWithFile extends NextApiRequest {
   file?: Express.Multer.File;
 }
 
-const logoDir: string = path.join(process.cwd(), 'public', 'assets', 'logo');
+const logoDir: string = path.join(process.cwd(), 'public', 'images', 'logo');
 
 // Helper function to delete all files in a folder
 async function deleteAllFilesInFolder(folderPath: string): Promise<void> {

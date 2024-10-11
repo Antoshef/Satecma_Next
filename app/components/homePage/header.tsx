@@ -1,6 +1,6 @@
-import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import './styles.css';
+import { HeaderActions } from './headerActions';
 
 const Lottie = dynamic(() => import('./Lottie'), { ssr: false });
 
@@ -18,14 +18,7 @@ export async function Header() {
         </p>
 
         {/* Buttons for Sign Up and Book a Demo */}
-        <div className="mt-4 flex gap-2">
-          <button className="bg-theme-light-quaternary px-8 py-2 rounded-lg text-theme-light-primary text-lg dark:bg-theme-dark-primary hover:bg-theme-light-primary hover:text-theme-light-white dark:hover:bg-theme-dark-secondary dark:hover:text-theme-dark-primary">
-            <Link href="/api/auth/login">Вход</Link>
-          </button>
-          <button className="border border-theme-light-white text-theme-light-white px-8 py-2 rounded-lg text-lg dark:border-theme-dark-primary dark:text-theme-dark-primary hover:bg-theme-light-white hover:text-theme-light-secondary dark:hover:bg-theme-dark-secondary dark:hover:text-theme-dark-primary">
-            <Link href="">Виж Демо</Link>
-          </button>
-        </div>
+        <HeaderActions />
       </div>
 
       {/* Right-side image */}

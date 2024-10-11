@@ -1,19 +1,18 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { queryAsync } from '../../../utils/db';
 import { Claims } from '@auth0/nextjs-auth0';
+import { Profile } from '@/profile/types';
 
 interface TypedNextApiRequest extends NextApiRequest {
   body: Claims;
 }
 
-const tableName = 'users'; // Renamed to users
+const tableName = 'users';
 
 // Validate the Claims object to ensure required fields are present
 function isValidUser(user: Claims): boolean {
   return (
-    !!user.sub &&
-    !!user.email &&
-    !!user.nickname // Assuming Auth0 provides the nickname as username
+    !!user.sub && !!user.email && !!user.nickname // Assuming Auth0 provides the nickname as username
   );
 }
 
@@ -32,29 +31,36 @@ export default async function handler(
       }
 
       // Check if user already exists
-      const checkUserQuery = `SELECT * FROM ${tableName} WHERE id = ?`;
-      const existingUser = await queryAsync<Claims[]>(checkUserQuery, [userData.sub]);
+      const checkUserQuery = `SELECT * FROM ${tableName} WHERE sub = ?`;
+      const existingUser = await queryAsync<Profile[]>(checkUserQuery, [
+        userData.sub
+      ]);
 
       if (existingUser.length > 0) {
-        return res.status(409).json({ message: 'User already exists' });
+        return res.status(202).json({
+          user: existingUser[0],
+          message: 'User already exists'
+        });
       }
 
       // Insert the new user into the users table
       const insertQuery = `
-        INSERT INTO ${tableName} (id, given_name, family_name, username, email, email_verified)
+        INSERT INTO ${tableName} (sub, given_name, family_name, nickname, email, email_verified)
         VALUES (?, ?, ?, ?, ?, ?);
       `;
       const values = [
-        userData.sub, // Auth0 sub used as id
-        userData.given_name || null, // First name
-        userData.family_name || null, // Last name
-        userData.nickname, // Username (coming from Auth0 nickname)
-        userData.email, // Email
-        userData.email_verified || false // Email verified status
+        userData.sub,
+        userData.given_name || null,
+        userData.family_name || null,
+        userData.nickname,
+        userData.email,
+        userData.email_verified || 0
       ];
 
-      await queryAsync(insertQuery, values);
-      return res.status(201).json({ message: 'User created successfully' });
+      const user = await queryAsync<Profile>(insertQuery, values);
+      return res
+        .status(201)
+        .json({ user, message: 'User created successfully' });
     } catch (error) {
       console.error('POST error:', error);
       return res.status(500).json({ message: 'Internal server error' });

@@ -1,6 +1,5 @@
 'use client';
 
-import { baseUrl } from '@/constants';
 import {
   createContext,
   useState,
@@ -21,16 +20,14 @@ const LogoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
   useEffect(() => {
     const fetchLogo = async () => {
-      const logoUrl = await fetch(`${baseUrl}/api/upload`)
+      const logoUrl = await fetch('/api/upload')
         .then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+          if (response.ok) {
+            return response.json();
           }
-          return response.json();
         })
         .then((data) => data.url)
-        .catch((error) => {
-          console.error('Error fetching logo:', error);
+        .catch(() => {
           return null;
         });
       setLogoUrl(logoUrl);

@@ -1,15 +1,13 @@
-import { baseUrl } from '@/constants';
 import { Suspense } from 'react';
 import ClientsTable from './clientsTable';
 import Loading from '@/loading';
-import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 
-export default withPageAuthRequired(async function ClientsPage() {
+export default async function ClientsPage() {
   let data = [];
   let error = undefined;
 
   try {
-    const response = await fetch(`${baseUrl}/api/clients`);
+    const response = await fetch('/api/clients');
 
     if (!response.ok) {
       throw new Error(
@@ -30,4 +28,4 @@ export default withPageAuthRequired(async function ClientsPage() {
       </Suspense>
     </section>
   );
-});
+}

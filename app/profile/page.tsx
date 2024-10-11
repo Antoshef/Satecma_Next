@@ -2,23 +2,32 @@ import { ProfileDetails } from './profileDetails';
 import { Suspense } from 'react';
 import Loading from '@/loading';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
-import { baseUrl } from '@/constants';
 import AppLayout from '@/clients/layout';
 import LogoProvider from '@/context/logoContext';
 
 async function ProfilePage() {
-  const data = await fetch(`${baseUrl}/api/company`)
+  const data = await fetch('/api/company')
     .then((data) => data.json())
     .catch((error) => {
       console.error(error);
       return null;
     });
 
+  const user = await fetch('/api/user')
+    .then((data) => data.json())
+    .catch((error) => {
+      console.error(error);
+      return null;
+    });
+  console.log(user);
+
   return (
     <LogoProvider>
       <Suspense fallback={<Loading />}>
         <div className="container mx-auto p-4">
-          <ProfileDetails company={data?.companies[0]} />
+          <ProfileDetails
+            company={data?.companies ? data?.companies[0] : undefined}
+          />
         </div>
       </Suspense>
     </LogoProvider>

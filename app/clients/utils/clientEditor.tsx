@@ -158,7 +158,7 @@ export const ClientEditor = ({
     switch (mode) {
       case EnhancedMode.Create:
         setClient({
-          user_id: 0, // or any default value
+          user_id: '',
           name: '',
           city: '',
           address: '',

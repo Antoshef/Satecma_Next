@@ -1,6 +1,6 @@
 import { Company } from '@/create/invoice/types';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { queryAsync } from '../../utils/db';
+import { queryAsync } from '../../../utils/db';
 
 interface TypedNextApiRequest extends NextApiRequest {
   body: Company;
@@ -32,7 +32,7 @@ export default async function handler(
     try {
       const user_id = (req as any).user.sub; // Get Auth0 user ID from token
       const providerData: Company = req.body;
-  
+
       const requiredFields: (keyof Company)[] = [
         'name',
         'eik',
@@ -46,17 +46,17 @@ export default async function handler(
         'bankName'
       ];
       const missingFields: (keyof Company)[] = [];
-  
+
       requiredFields.forEach((field) => {
         if (!providerData[field]) missingFields.push(field);
       });
-  
+
       if (missingFields.length > 0) {
         return res.status(400).json({
           message: `Missing required fields: ${missingFields.join(', ')}`
         });
       }
-  
+
       const insertQuery = `
         INSERT INTO ${tableName} (user_id, eik, name, vat, city, address, director, phone, iban, swift, bankName)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -75,7 +75,7 @@ export default async function handler(
         providerData.swift,
         providerData.bankName
       ];
-  
+
       const result = await queryAsync<Company>(insertQuery, values);
       return res.status(201).json({ data: result });
     } catch (error) {
@@ -88,7 +88,7 @@ export default async function handler(
     try {
       const user_id = (req as any).user.sub; // Get Auth0 user ID from token
       const providerData: Company = req.body;
-  
+
       const requiredFields: (keyof Company)[] = [
         'name',
         'eik',
@@ -102,27 +102,30 @@ export default async function handler(
         'bankName'
       ];
       const missingFields: (keyof Company)[] = [];
-  
+
       requiredFields.forEach((field) => {
         if (!providerData[field]) missingFields.push(field);
       });
-  
+
       if (missingFields.length > 0) {
         return res.status(400).json({
           message: `Missing required fields: ${missingFields.join(', ')}`
         });
       }
-  
+
       // Ensure the company belongs to the current user
       const checkCompanyQuery = `
         SELECT * FROM ${tableName} WHERE eik = ? AND user_id = ?;
       `;
-      const existingCompany = await queryAsync<Company[]>(checkCompanyQuery, [providerData.eik, user_id]);
-  
+      const existingCompany = await queryAsync<Company[]>(checkCompanyQuery, [
+        providerData.eik,
+        user_id
+      ]);
+
       if (existingCompany.length === 0) {
         return res.status(403).json({ message: 'You do not own this company' });
       }
-  
+
       const updateQuery = `
         UPDATE ${tableName}
         SET name = ?, vat = ?, city = ?, address = ?, director = ?, phone = ?, iban = ?, swift = ?, bankName = ?
@@ -142,7 +145,7 @@ export default async function handler(
         providerData.eik,
         user_id
       ];
-  
+
       const result = await queryAsync<Company>(updateQuery, values);
       return res.status(200).json({ data: result });
     } catch (error) {

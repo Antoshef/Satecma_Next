@@ -17,7 +17,7 @@ export default async function handler(
   if (method === 'GET') {
     try {
       const results = await queryAsync<Client[]>(
-        `SELECT * FROM clients WHERE user_id = ?`, 
+        `SELECT * FROM clients WHERE user_id = ?`,
         [user_id]
       );
       if (!results) {
@@ -34,28 +34,39 @@ export default async function handler(
 
   if (method === 'POST') {
     try {
-      const { name, city, address, eik, vat, director, email, phone } = req.body as Client;
+      const { name, city, address, eik, vat, director, email, phone } =
+        req.body as Client;
       if (!eik) {
         return res.status(400).json({ message: 'Missing required fields' });
       }
-  
+
       // Check if the client already exists
       const existingClients = await queryAsync<Client[]>(
-        `SELECT * FROM clients WHERE eik = ? AND user_id = ?`, 
+        `SELECT * FROM clients WHERE eik = ? AND user_id = ?`,
         [eik, user_id]
       );
-      
+
       if (existingClients.length > 0) {
         return res.status(200).json({ message: 'Client already exists' });
       } else {
-        await queryAsync(
+        // Insert the new client
+        const result = await queryAsync(
           `
           INSERT INTO clients (user_id, name, city, address, eik, vat, director, email, phone)
           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
           `,
           [user_id, name, city, address, eik, vat, director, email, phone]
         );
-        return res.status(200).json({ message: 'Client created' });
+
+        // Retrieve the new client with the generated UUID
+        const [newClient] = await queryAsync<Client[]>(
+          `SELECT id, client_uuid FROM clients WHERE id = ?`,
+          [result.insertId]
+        );
+
+        return res
+          .status(200)
+          .json({ message: 'Client created', client: newClient });
       }
     } catch (error) {
       console.error('POST error:', error);
@@ -67,11 +78,12 @@ export default async function handler(
 
   if (method === 'PUT') {
     try {
-      const { name, city, address, eik, vat, director, email, phone } = req.body as Client;
+      const { name, city, address, eik, vat, director, email, phone } =
+        req.body as Client;
       if (!eik) {
         return res.status(400).json({ message: 'Missing required fields' });
       }
-  
+
       await queryAsync(
         `
         UPDATE clients

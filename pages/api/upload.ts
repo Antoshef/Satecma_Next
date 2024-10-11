@@ -81,11 +81,11 @@ router.get(async (req: NextApiRequest, res: NextApiResponse) => {
     );
 
     if (!logoFile) {
-      return res.status(404).json({ error: 'Logo not found' });
+      return res.status(200).json({ message: 'No logo found' });
     }
 
     // Return the URL to the logo file
-    const logoUrl = `/assets/logo/${logoFile}`;
+    const logoUrl = `/images/logo/${logoFile}`;
     res.status(200).json({ url: logoUrl });
   } catch (error) {
     console.error('Error retrieving logo:', error);

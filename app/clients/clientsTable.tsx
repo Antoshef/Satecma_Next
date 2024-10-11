@@ -69,31 +69,41 @@ export default function ClientsTable({ data, error }: PageProps) {
 
   const onEditSubmit = async (client: Client) => {
     try {
-      const response = await fetch('/api/clients', {
+      // Make sure the client object has a client_uuid
+      if (!client.client_uuid) {
+        throw new Error('Missing client identifier');
+      }
+
+      // Send the PUT request with the client_uuid in the URL
+      const response = await fetch(`/api/clients/${client.client_uuid}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(client)
+        body: JSON.stringify({ client })
       });
 
       if (!response.ok) {
         const data = await response.json();
         const errorMessage =
-          data.message || 'Възникна грешка при редакция на клиента';
+          data.message || 'An error occurred while editing the client';
         throw new Error(errorMessage + ` (Status ${response.status})`);
       }
 
-      const index = filteredClients.findIndex((c) => c.eik === client.eik);
+      // Update the local state if the request was successful
+      const index = filteredClients.findIndex(
+        (c) => c.client_uuid === client.client_uuid
+      );
       if (index >= 0) {
         const newClients = [...filteredClients];
         newClients[index] = client;
         setFilteredClients(newClients);
       }
       setMode(EnhancedMode.None);
-      notify('Клиентът е редактиран успешно', 'success');
+      notify('The client was successfully edited', 'success');
     } catch (error) {
-      notify('Грешка при редакцията на клиента', 'error');
+      console.error('Error editing client:', error);
+      notify('An error occurred while editing the client', 'error');
     }
   };
 
@@ -126,7 +136,7 @@ export default function ClientsTable({ data, error }: PageProps) {
   useEffect(() => {
     if (error) {
       notify(error, 'error');
-    } 
+    }
     if (data) {
       setClients(data);
       setFilteredClients(data);

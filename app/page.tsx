@@ -7,6 +7,8 @@ import { ScrollableText } from './components/homePage/scrollableText';
 import { StartNow } from './components/homePage/startNow';
 import { SEOAccordion } from './components/seoAccordion';
 import VerifyEmailModal from './verifyEmailModal';
+import { baseUrl } from './constants';
+import { Profile } from './profile/types';
 
 export default async function HomePage() {
   const session = await getSession();
@@ -21,8 +23,8 @@ export default async function HomePage() {
   // Fetch user data from Auth0 `/userinfo`
   const response = await fetch(`https://${process.env.AUTH0_DOMAIN}/userinfo`, {
     headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
+      Authorization: `Bearer ${accessToken}`
+    }
   });
 
   if (!response.ok) {
@@ -31,6 +33,18 @@ export default async function HomePage() {
   }
 
   const result = await response.json();
+
+  const userResponse = await fetch(`${baseUrl}/api/users`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(result)
+  });
+  const { user } = (await userResponse.json()) as {
+    user: Profile;
+    message: string;
+  };
 
   if (result.email_verified) {
     // Check if the user exists in your database
@@ -44,22 +58,22 @@ export default async function HomePage() {
       await fetch(`${process.env.AUTH0_BASE_URL}/api/users`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(result),
+        body: JSON.stringify(result)
       });
     } else if (userExistsResponse.ok) {
       // If user exists, update the email_verified field
       await fetch(`${process.env.AUTH0_BASE_URL}/api/users`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email: result.email, email_verified: true }),
+        body: JSON.stringify({ email: result.email, email_verified: true })
       });
     }
     // Redirect the user to the clients page once authenticated
-    redirect('/clients');
+    redirect('/create/invoice');
   }
 
   return <Component user={session.user} />;

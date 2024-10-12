@@ -2,6 +2,8 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { queryAsync } from '../../../utils/db';
 import { Claims } from '@auth0/nextjs-auth0';
 import { Profile } from '@/profile/types';
+import { generateToken } from '@/utils/cookies';
+import { serialize } from 'cookie';
 
 interface TypedNextApiRequest extends NextApiRequest {
   body: Claims;
@@ -37,6 +39,21 @@ export default async function handler(
       ]);
 
       if (existingUser.length > 0) {
+        const user = existingUser[0];
+
+        if (user) {
+          const token = generateToken(user.id);
+          res.setHeader(
+            'Set-Cookie',
+            serialize('token', token, {
+              httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
+              secure: process.env.NODE_ENV === 'production', // Use HTTPS only in production
+              sameSite: 'strict', // Prevents CSRF attacks
+              path: '/',
+              maxAge: 60 * 60 * 24 * 7 // 1 week
+            })
+          );
+        }
         return res.status(202).json({
           user: existingUser[0],
           message: 'User already exists'

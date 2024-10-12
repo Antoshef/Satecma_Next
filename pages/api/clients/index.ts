@@ -7,10 +7,11 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  // Apply the authentication middleware
   await new Promise<void>((resolve) => authMiddleware(req, res, resolve));
 
-  // Extract the user's Auth0 ID from the JWT token (req.user.sub)
-  const user_id = (req as any).user.sub;
+  // Extract the user's ID from the JWT token (req.user.userId)
+  const user_id = (req as any).user.userId;
 
   const { method } = req;
 
@@ -20,7 +21,7 @@ export default async function handler(
         `SELECT * FROM clients WHERE user_id = ?`,
         [user_id]
       );
-      if (!results) {
+      if (!results.length) {
         return res.status(404).json({ message: 'Clients not found' });
       }
       return res.status(200).json(results);
@@ -49,7 +50,6 @@ export default async function handler(
       if (existingClients.length > 0) {
         return res.status(200).json({ message: 'Client already exists' });
       } else {
-        // Insert the new client
         const result = await queryAsync(
           `
           INSERT INTO clients (user_id, name, city, address, eik, vat, director, email, phone)
@@ -60,12 +60,13 @@ export default async function handler(
 
         // Retrieve the new client with the generated UUID
         const [newClient] = await queryAsync<Client[]>(
-          `SELECT id, client_uuid FROM clients WHERE id = ?`,
-          [result.insertId]
+          `SELECT id, client_uuid, name, city, address, eik, vat, director, email, phone
+           FROM clients WHERE id = ?`,
+          [result.id]
         );
 
         return res
-          .status(200)
+          .status(201)
           .json({ message: 'Client created', client: newClient });
       }
     } catch (error) {
@@ -84,7 +85,7 @@ export default async function handler(
         return res.status(400).json({ message: 'Missing required fields' });
       }
 
-      await queryAsync(
+      const updateResult = await queryAsync(
         `
         UPDATE clients
         SET name = ?, city = ?, address = ?, vat = ?, director = ?, email = ?, phone = ?
@@ -92,6 +93,13 @@ export default async function handler(
         `,
         [name, city, address, vat, director, email, phone, eik, user_id]
       );
+
+      if (updateResult.affectedRows === 0) {
+        return res
+          .status(404)
+          .json({ message: 'Client not found or not owned by user' });
+      }
+
       return res.status(200).json({ message: 'Client updated' });
     } catch (error) {
       console.error('PUT error:', error);
@@ -100,4 +108,7 @@ export default async function handler(
       });
     }
   }
+
+  // If the method is not supported
+  return res.status(405).json({ message: 'Method Not Allowed' });
 }

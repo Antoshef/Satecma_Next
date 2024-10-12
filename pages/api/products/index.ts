@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { queryAsync } from '../../../utils/db';
 import { Product } from '@/products/utils/types';
 
+// Fetch products for a specific user and company
 const getProducts = async (req: NextApiRequest, res: NextApiResponse) => {
   const { user_id, company_eik } = req.query;
 
@@ -12,7 +13,8 @@ const getProducts = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    const query = 'SELECT * FROM products WHERE user_id = ? AND company_eik = ?';
+    const query =
+      'SELECT * FROM products WHERE user_id = ? AND company_eik = ?';
     const results = await queryAsync<Product[]>(query, [user_id, company_eik]);
 
     return res.json(results);
@@ -25,14 +27,19 @@ const getProducts = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-
+// Update products for a specific user and company
 const updateProducts = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { items, user_id, company_eik }: { items: Product[], user_id: number, company_eik: number} = req.body;
+  const {
+    items,
+    user_id,
+    company_eik
+  }: { items: Product[]; user_id: string; company_eik: string } = req.body;
 
   if (!items || items.length === 0 || !user_id || !company_eik) {
-    return res
-      .status(400)
-      .json({ message: 'Items, User ID, and Company EIK are required', status: 400 });
+    return res.status(400).json({
+      message: 'Items, User ID, and Company EIK are required',
+      status: 400
+    });
   }
 
   const filteredItems = items.filter((item) => item.quantity > 0);
@@ -50,15 +57,18 @@ const updateProducts = async (req: NextApiRequest, res: NextApiResponse) => {
           .json({ message: 'Missing required fields', status: 400 });
       }
 
-      const productToUpdate = products.find((product) => product.code === item.code);
+      const productToUpdate = products.find(
+        (product) => product.code === item.code
+      );
 
       if (!productToUpdate) {
         console.error('Product not found', item.code);
         continue;
       }
 
-      const query = 'UPDATE products SET quantity = ? WHERE code = ?';
-      await queryAsync(query, [item.quantity, item.code]);
+      const query =
+        'UPDATE products SET quantity = ? WHERE code = ? AND user_id = ? AND company_eik = ?';
+      await queryAsync(query, [item.quantity, item.code, user_id, company_eik]);
     }
 
     return res
@@ -73,33 +83,35 @@ const updateProducts = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
+// Delete products for a specific user and company
 const deleteProducts = async (req: NextApiRequest, res: NextApiResponse) => {
   const { products } = req.body as { products: Product[] };
 
   if (!products || products.length === 0) {
     return res
       .status(400)
-      .json({ message: 'Няма предоставени продукти', status: 400 });
+      .json({ message: 'No products provided', status: 400 });
   }
 
   try {
     const codes = products.map((product) => product.code);
     const placeholders = codes.map(() => '?').join(',');
-    const query = `DELETE FROM products_test WHERE code IN (${placeholders})`;
-    await queryAsync(query, codes);
+    const query = `DELETE FROM products WHERE code IN (${placeholders}) AND user_id = ? AND company_eik = ?`;
+    await queryAsync(query, [...codes, req.body.user_id, req.body.company_eik]);
 
     return res
       .status(200)
-      .json({ message: 'Продуктите са изтрити', status: 200 });
+      .json({ message: 'Products deleted successfully', status: 200 });
   } catch (error) {
     console.error('DELETE error:', error);
     return res.status(500).json({
-      message: 'Грешка при изтриване на продуктите',
-      error: error instanceof Error ? error.message : 'Неизвестна грешка'
+      message: 'Error deleting products',
+      error: error instanceof Error ? error.message : 'Unknown error'
     });
   }
 };
 
+// Create a new product
 const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
   const { product } = req.body as { product: Product };
 
@@ -125,7 +137,6 @@ const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    // Get user ID and company EIK from request (these should be passed in the request body or session)
     const { user_id, company_eik } = req.body;
 
     if (!user_id || !company_eik) {
@@ -135,9 +146,13 @@ const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     // Check if a product with the same code already exists
-    const checkQuery = 'SELECT COUNT(*) as count FROM products WHERE code = ?';
-    const checkValues = [product.code];
-    const result = await queryAsync<{ count: number }[]>(checkQuery, checkValues);
+    const checkQuery =
+      'SELECT COUNT(*) as count FROM products WHERE code = ? AND user_id = ? AND company_eik = ?';
+    const checkValues = [product.code, user_id, company_eik];
+    const result = await queryAsync<{ count: number }[]>(
+      checkQuery,
+      checkValues
+    );
     const count = result[0].count;
 
     if (count > 0) {
@@ -149,12 +164,12 @@ const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // Insert the new product with user_id and company_eik
     const query = `
-      INSERT INTO products (user_id, company_eik, code, name, packing, unit, color, category, buyPrice, sellPrice, percentageIncrease, quantity)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO products (product_uuid, user_id, company_eik, code, name, packing, unit, color, category, buyPrice, sellPrice, percentageIncrease, quantity)
+      VALUES (UUID(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const values = [
-      user_id, // Auth0 user ID
-      company_eik, // Company EIK
+      user_id,
+      company_eik,
       product.code,
       product.name,
       product.packing,
@@ -181,7 +196,6 @@ const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -198,6 +212,6 @@ export default async function handler(
     case 'POST':
       return await createProduct(req, res);
     default:
-      return res.status(405).json({ message: 'Методът не е разрешен' });
+      return res.status(405).json({ message: 'Method not allowed' });
   }
 }

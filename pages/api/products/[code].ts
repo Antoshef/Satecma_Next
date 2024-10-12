@@ -1,17 +1,25 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { queryAsync } from '../../../utils/db';
 import { Product } from '@/products/utils/types';
+import { authMiddleware } from '@/utils/auth';
 
-const fetchProductByCode = async (code: string): Promise<Product | null> => {
+const fetchProductByCode = async (
+  code: string,
+  user_id: string
+): Promise<Product | null> => {
   const results = await queryAsync<Product[]>(
-    'SELECT * FROM products_test WHERE code = ?',
-    [code]
+    'SELECT * FROM products_test WHERE code = ? AND user_id = ?',
+    [code, user_id]
   );
   return results.length > 0 ? results[0] : null;
 };
 
-const updateProduct = async (product: Product, code: string) => {
-  const productToUpdate = await fetchProductByCode(code);
+const updateProduct = async (
+  product: Product,
+  code: string,
+  user_id: string
+) => {
+  const productToUpdate = await fetchProductByCode(code, user_id);
   if (!productToUpdate) {
     throw new Error('Продуктът не е намерен');
   }
@@ -28,7 +36,7 @@ const updateProduct = async (product: Product, code: string) => {
       percentageIncrease = ?, 
       sellPrice = ?, 
       category = ? 
-    WHERE code = ?`;
+    WHERE code = ? AND user_id = ?`;
 
   const values = [
     product.name,
@@ -40,13 +48,18 @@ const updateProduct = async (product: Product, code: string) => {
     product.percentageIncrease,
     product.sellPrice,
     product.category,
-    code
+    code,
+    user_id
   ];
 
   await queryAsync<Product>(query, values);
 };
 
 const handlePutRequest = async (req: NextApiRequest, res: NextApiResponse) => {
+  await new Promise<void>((resolve) => authMiddleware(req, res, resolve));
+
+  // Extract the user's ID from the JWT token
+  const user_id = (req as any).user.userId;
   const { code } = req.query;
   const { product } = req.body as { product: Product };
 
@@ -57,7 +70,7 @@ const handlePutRequest = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    await updateProduct(product, code as string);
+    await updateProduct(product, code as string, user_id);
     return res.status(201).json({ message: 'Продуктът е актуализиран' });
   } catch (error) {
     return res.status(500).json({

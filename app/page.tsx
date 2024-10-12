@@ -8,7 +8,6 @@ import { StartNow } from './components/homePage/startNow';
 import { SEOAccordion } from './components/seoAccordion';
 import VerifyEmailModal from './verifyEmailModal';
 import { baseUrl } from './constants';
-import { Profile } from './profile/types';
 
 export default async function HomePage() {
   const session = await getSession();
@@ -34,17 +33,13 @@ export default async function HomePage() {
 
   const result = await response.json();
 
-  const userResponse = await fetch(`${baseUrl}/api/users`, {
+  await fetch(`${baseUrl}/api/users`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(result)
   });
-  const { user } = (await userResponse.json()) as {
-    user: Profile;
-    message: string;
-  };
 
   if (result.email_verified) {
     // Check if the user exists in your database

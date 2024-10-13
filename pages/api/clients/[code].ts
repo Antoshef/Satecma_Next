@@ -1,28 +1,15 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { queryAsync } from '../../../utils/db';
 import { Client } from '@/clients/utils/types';
+import { ResponseQuery } from '../types';
 
-// Fetch client by client_uuid and user_id
-const fetchClientByCode = async (
-  code: string,
+const updateClient = async (
+  client: Client,
+  client_uuid: string,
   user_id: string
-): Promise<Client | null> => {
-  const results = await queryAsync<Client[]>(
-    'SELECT * FROM clients WHERE client_uuid = ? AND user_id = ?',
-    [code, user_id]
-  );
-  return results.length > 0 ? results[0] : null;
-};
-
-// Update client information
-const updateClient = async (client: Client, code: string, user_id: string) => {
-  const clientToUpdate = await fetchClientByCode(code, user_id);
-  if (!clientToUpdate) {
-    throw new Error('Client not found');
-  }
-
+) => {
   const query = `
-    UPDATE clients
+    UPDATE clients_test
     SET 
       name = ?, 
       city = ?, 
@@ -43,36 +30,38 @@ const updateClient = async (client: Client, code: string, user_id: string) => {
     client.director,
     client.email,
     client.phone,
-    code,
+    client_uuid,
     user_id
   ];
 
-  await queryAsync<Client>(query, values);
+  return await queryAsync<ResponseQuery>(query, values);
 };
 
 // Delete client by client_uuid and user_id
-const deleteClient = async (code: string, user_id: string) => {
-  const clientToDelete = await fetchClientByCode(code, user_id);
-  if (!clientToDelete) {
-    throw new Error('Client not found');
-  }
-
-  await queryAsync(
-    `DELETE FROM clients WHERE client_uuid = ? AND user_id = ?`,
-    [code, user_id]
+const deleteClient = async (client_uuid: string, user_id: string) => {
+  return await queryAsync<ResponseQuery>(
+    `DELETE FROM clients_test WHERE client_uuid = ? AND user_id = ?`,
+    [client_uuid, user_id]
   );
 };
 
 // Handle GET request
 const handleGetRequest = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { userId, code } = req.query;
+  const { user_id, client_uuid } = req.query;
 
-  if (!userId) {
+  if (!user_id) {
     return res.status(400).json({ message: 'Missing user ID' });
+  }
+  if (!client_uuid) {
+    return res.status(400).json({ message: 'Missing client identifier' });
   }
 
   try {
-    const client = await fetchClientByCode(code as string, userId as string);
+    const [client] = await queryAsync<Client[]>(
+      `SELECT * FROM clients_test WHERE client_uuid = ? AND user_id = ?`,
+      [client_uuid, user_id]
+    );
+
     if (!client) {
       return res.status(404).json({ message: 'Client not found' });
     }
@@ -88,16 +77,23 @@ const handleGetRequest = async (req: NextApiRequest, res: NextApiResponse) => {
 
 // Handle PUT request
 const handlePutRequest = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { code, userId } = req.query;
-  const { client } = req.body as { client: Client };
+  const { user_id, ...client } = req.body as Client;
+  const { code: client_uuid } = req.query;
 
-  if (!client || !code) {
+  if (!client || !client_uuid || !user_id) {
     return res.status(400).json({ message: 'Missing required client fields' });
   }
 
   try {
-    await updateClient(client, code as string, userId as string);
-    return res.status(200).json({ message: 'Client updated' });
+    await updateClient(client, client_uuid as string, user_id as string);
+    const [updatedClient] = await queryAsync<Client[]>(
+      `SELECT * FROM clients_test WHERE client_uuid = ?`,
+      [client_uuid]
+    );
+
+    return res
+      .status(200)
+      .json({ message: 'Client updated', client: updatedClient });
   } catch (error) {
     console.error('PUT error:', error);
     return res.status(500).json({
@@ -112,17 +108,17 @@ const handleDeleteRequest = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
-  const { userId, code } = req.query;
+  const { user_id, client_uuid } = req.query;
 
-  if (!userId) {
+  if (!user_id) {
     return res.status(400).json({ message: 'Missing user ID' });
   }
-  if (!code) {
+  if (!client_uuid) {
     return res.status(400).json({ message: 'Missing client identifier' });
   }
 
   try {
-    await deleteClient(code as string, userId as string);
+    await deleteClient(client_uuid as string, user_id as string);
     return res.status(200).json({ message: 'Client deleted' });
   } catch (error) {
     console.error('DELETE error:', error);

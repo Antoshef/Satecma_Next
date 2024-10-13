@@ -1,32 +1,21 @@
 import { Client } from '@/clients/utils/types';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { queryAsync } from '../../../utils/db';
-
-interface Result {
-  fieldCount: number;
-  affectedRows: number;
-  insertId: number;
-  serverStatus: number;
-  warningCount: number;
-  message: string;
-  protocol41: boolean;
-  changedRows: number;
-}
+import { ResponseQuery } from '../types';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { userId } = req.query;
-
-  if (!userId) {
-    return res.status(400).json({ message: 'Missing user ID' });
-  }
-
   try {
     const { method } = req;
 
     if (method === 'GET') {
+      const { userId } = req.query;
+
+      if (!userId) {
+        return res.status(400).json({ message: 'Missing user ID' });
+      }
       try {
         // Fetch clients related to the authenticated user
         const results = await queryAsync<Client[]>(
@@ -45,8 +34,17 @@ export default async function handler(
 
     if (method === 'POST') {
       try {
-        const { name, city, address, eik, vat, director, email, phone } =
-          req.body as Client;
+        const {
+          name,
+          city,
+          address,
+          eik,
+          vat,
+          director,
+          email,
+          phone,
+          user_id
+        } = req.body as Client;
         if (!eik || !name || !city || !address || !director || !email) {
           return res.status(400).json({ message: 'Missing required fields' });
         }
@@ -54,25 +52,23 @@ export default async function handler(
         // Check if the client already exists
         const existingClients = await queryAsync<Client[]>(
           `SELECT * FROM clients_test WHERE eik = ? AND user_id = ?`,
-          [eik, userId]
+          [eik, user_id]
         );
 
         if (existingClients.length > 0) {
           return res.status(200).json({ message: 'Client already exists' });
         } else {
-          const result = await queryAsync<Result>(
+          const result = await queryAsync<ResponseQuery>(
             `
             INSERT INTO clients_test (user_id, name, city, address, eik, vat, director, email, phone)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             `,
-            [userId, name, city, address, eik, vat, director, email, phone]
+            [user_id, name, city, address, eik, vat, director, email, phone]
           );
-          console.log('result:', result);
 
           // Retrieve the new client with the generated UUID
           const [newClient] = await queryAsync<Client[]>(
-            `SELECT id, client_uuid, name, city, address, eik, vat, director, email, phone
-             FROM clients_test WHERE id = ?`,
+            `SELECT * FROM clients_test WHERE id = ?`,
             [result.insertId]
           );
 
@@ -90,19 +86,27 @@ export default async function handler(
 
     if (method === 'PUT') {
       try {
-        const { name, city, address, eik, vat, director, email, phone } =
-          req.body as Client;
-        if (!eik) {
-          return res.status(400).json({ message: 'Missing required fields' });
+        const {
+          name,
+          city,
+          address,
+          eik,
+          vat,
+          director,
+          email,
+          phone,
+          user_id
+        } = req.body as Client;
+        if (user_id) {
+          return res.status(400).json({ message: 'Missing User ID' });
         }
-
-        const updateResult = await queryAsync<Result>(
+        const updateResult = await queryAsync<ResponseQuery>(
           `
           UPDATE clients_test
           SET name = ?, city = ?, address = ?, vat = ?, director = ?, email = ?, phone = ?
           WHERE eik = ? AND user_id = ?
           `,
-          [name, city, address, vat, director, email, phone, eik, userId]
+          [name, city, address, vat, director, email, phone, eik, user_id]
         );
 
         if (updateResult.affectedRows === 0) {

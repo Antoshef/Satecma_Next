@@ -10,7 +10,7 @@ import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from 'react';
 import { ClientEditor } from './utils/clientEditor';
 import { headCells } from './utils/constants';
 import { Client } from './utils/types';
-import { useUser } from '@auth0/nextjs-auth0/client';
+import { useUser, UserProfile } from '@auth0/nextjs-auth0/client';
 
 interface PageProps {
   data: Client[];
@@ -69,70 +69,103 @@ export default function ClientsTable({ data, error }: PageProps) {
     setPage(0);
   };
 
+  const createClient = async (
+    client: Client,
+    user: UserProfile | undefined,
+    setFilteredClients: React.Dispatch<React.SetStateAction<Client[]>>,
+    setMode: React.Dispatch<React.SetStateAction<EnhancedMode>>,
+    notify: (message: string, type: 'success' | 'error') => void
+  ) => {
+    try {
+      setFilteredClients((prevClients) => [...prevClients, client]);
+
+      // Send the POST request to create a new client
+      const response = await fetch(`/api/clients`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ ...client, user_id: user?.sub })
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        const errorMessage =
+          data.message || 'Възникна грешка при създаването на клиента';
+        throw new Error(errorMessage + ` (Статус ${response.status})`);
+      }
+
+      // Update the local state if the request was successful
+      const newClient = await response.json();
+      setFilteredClients((prevClients) =>
+        prevClients.map((c) => (c.eik === client.eik ? newClient.client : c))
+      );
+      setMode(EnhancedMode.None);
+      notify('Клиентът беше успешно създаден', 'success');
+    } catch (error) {
+      console.error('Грешка при създаване на клиента:', error);
+      notify('Възникна грешка при създаването на клиента', 'error');
+      throw error;
+    }
+  };
+
+  const editClient = async (
+    client: Client,
+    user: UserProfile | undefined,
+    setFilteredClients: React.Dispatch<React.SetStateAction<Client[]>>,
+    setMode: React.Dispatch<React.SetStateAction<EnhancedMode>>,
+    notify: (message: string, type: 'success' | 'error') => void
+  ) => {
+    try {
+      setFilteredClients((prevClients) =>
+        prevClients.map((c) =>
+          c.client_uuid === client.client_uuid ? client : c
+        )
+      );
+
+      // Send the PUT request with the client_uuid in the URL
+      const response = await fetch(`/api/clients/${client.client_uuid}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ ...client, user_id: user?.sub })
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        const errorMessage =
+          data.message || 'Възникна грешка при редактирането на клиента';
+        throw new Error(errorMessage + ` (Статус ${response.status})`);
+      }
+
+      // Update the local state if the request was successful
+      const { client: updatedClient } = await response.json();
+      console.log('updatedClient:', updatedClient);
+      setFilteredClients((prevClients) =>
+        prevClients.map((c) =>
+          c.client_uuid === client.client_uuid ? updatedClient : c
+        )
+      );
+      setMode(EnhancedMode.None);
+      notify('Клиентът беше успешно редактиран', 'success');
+    } catch (error) {
+      console.error('Грешка при редактиране на клиента:', error);
+      notify('Възникна грешка при редактирането на клиента', 'error');
+      throw error;
+    }
+  };
+
   const onSubmit = async (client: Client) => {
+    const previousClients = [...filteredClients];
     try {
       if (mode === EnhancedMode.Create) {
-        // Send the POST request to create a new client
-        const response = await fetch(`/api/clients?userId=${user?.sub}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(client)
-        });
-
-        if (!response.ok) {
-          const data = await response.json();
-          const errorMessage =
-            data.message || 'An error occurred while creating the client';
-          throw new Error(errorMessage + ` (Status ${response.status})`);
-        }
-
-        // Update the local state if the request was successful
-        const newClient = await response.json();
-        setFilteredClients((prevClients) => [...prevClients, newClient.client]);
-        setMode(EnhancedMode.None);
-        notify('The client was successfully created', 'success');
+        await createClient(client, user, setFilteredClients, setMode, notify);
       } else if (mode === EnhancedMode.Edit) {
-        // Make sure the client object has a client_uuid
-        if (!client.client_uuid) {
-          throw new Error('Missing client identifier');
-        }
-
-        // Send the PUT request with the client_uuid in the URL
-        const response = await fetch(
-          `/api/clients/${client.client_uuid}?userId=${user?.sub}`,
-          {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(client)
-          }
-        );
-
-        if (!response.ok) {
-          const data = await response.json();
-          const errorMessage =
-            data.message || 'An error occurred while editing the client';
-          throw new Error(errorMessage + ` (Status ${response.status})`);
-        }
-
-        // Update the local state if the request was successful
-        const index = filteredClients.findIndex(
-          (c) => c.client_uuid === client.client_uuid
-        );
-        if (index >= 0) {
-          const newClients = [...filteredClients];
-          newClients[index] = client;
-          setFilteredClients(newClients);
-        }
-        setMode(EnhancedMode.None);
-        notify('The client was successfully edited', 'success');
+        await editClient(client, user, setFilteredClients, setMode, notify);
       }
     } catch (error) {
-      console.error('Error submitting client:', error);
-      notify('An error occurred while submitting the client', 'error');
+      setFilteredClients(previousClients);
     }
   };
 

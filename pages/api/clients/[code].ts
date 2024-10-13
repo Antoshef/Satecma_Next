@@ -77,8 +77,8 @@ const handleGetRequest = async (req: NextApiRequest, res: NextApiResponse) => {
 
 // Handle PUT request
 const handlePutRequest = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { user_id, ...client } = req.body as Client;
-  const { code: client_uuid } = req.query;
+  const client = req.body as Client;
+  const { code: client_uuid, user_id } = req.query;
 
   if (!client || !client_uuid || !user_id) {
     return res.status(400).json({ message: 'Missing required client fields' });

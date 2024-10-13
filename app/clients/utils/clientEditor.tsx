@@ -108,12 +108,8 @@ export const ClientEditor = ({
       name: 'eik',
       error: errors.eik || '',
       type: 'text',
-      hint:
-        mode === EnhancedMode.Edit
-          ? 'ЕИК не може да бъде променен след като веднъж е създаден.'
-          : 'ЕИК трябва да бъде уникален',
-      required: true,
-      disabled: mode === EnhancedMode.Edit
+      hint: 'ЕИК трябва да бъде уникален',
+      required: true
     },
     {
       label: 'ДДС №',
@@ -122,8 +118,7 @@ export const ClientEditor = ({
       error: errors.vat || '',
       type: 'text',
       hint: 'Въведете ДДС № на клиента',
-      required: true,
-      disabled: mode === EnhancedMode.Edit
+      required: true
     },
     {
       label: 'Директор',

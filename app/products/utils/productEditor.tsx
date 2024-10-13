@@ -38,21 +38,10 @@ export const ProductEditor = ({
 
   const validateFields = () => {
     const newErrors: Partial<Record<keyof Product, string>> = {};
-    const requiredFields: (keyof Product)[] = [
-      'code',
-      'name',
-      'packing',
-      'quantity',
-      'category',
-      'unit',
-      'color',
-      'percentageIncrease',
-      'sellPrice'
-    ];
 
-    requiredFields.forEach((field) => {
-      if (!product || !product[field]) {
-        newErrors[field] = 'Полето не може да бъде празно';
+    fields.forEach((field) => {
+      if (!product || (field.required && !product[field.name])) {
+        newErrors[field.name] = 'Полето не може да бъде празно';
       }
     });
 
@@ -78,12 +67,8 @@ export const ProductEditor = ({
       name: 'code',
       error: errors.code || '',
       type: 'text',
-      hint:
-        mode === EnhancedMode.Edit
-          ? 'Кодът не може да бъде променен след като веднъж е създаден.'
-          : 'Кодът трябва да бъде уникален',
-      required: true,
-      disabled: mode === EnhancedMode.Edit
+      hint: 'Кодът трябва да бъде уникален',
+      required: true
     },
     {
       label: 'Име',

@@ -64,7 +64,8 @@ const GenericTable = <T,>({
                   <input
                     type="checkbox"
                     checked={isItemSelected}
-                    onChange={(e) => e.preventDefault()}
+                    // eslint-disable-next-line @typescript-eslint/no-empty-function
+                    onChange={() => {}}
                     className="form-checkbox h-5 w-5 text-theme-light-primary dark:text-theme-dark-primary"
                     aria-labelledby={labelId}
                   />

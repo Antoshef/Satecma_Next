@@ -2,13 +2,17 @@ import { baseUrl } from '@/constants';
 import { Suspense } from 'react';
 import ProductsTable from './productsTable';
 import Loading from '@/loading';
+import { getSession } from '@auth0/nextjs-auth0';
 
 async function ProductsPage() {
   let data = [];
   let error = undefined;
 
   try {
-    const response = await fetch(`${baseUrl}/api/products`);
+    const session = await getSession();
+    const response = await fetch(
+      `${baseUrl}/api/products?user_id=${session?.user.sub}`
+    );
 
     if (!response.ok) {
       throw new Error(

@@ -80,12 +80,12 @@ export default function ClientsTable({ data, error }: PageProps) {
       setFilteredClients((prevClients) => [...prevClients, client]);
 
       // Send the POST request to create a new client
-      const response = await fetch(`/api/clients`, {
+      const response = await fetch(`/api/clients?user_id=${user?.sub}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ ...client, user_id: user?.sub })
+        body: JSON.stringify(client)
       });
 
       if (!response.ok) {
@@ -96,9 +96,9 @@ export default function ClientsTable({ data, error }: PageProps) {
       }
 
       // Update the local state if the request was successful
-      const newClient = await response.json();
+      const { client: newClient } = await response.json();
       setFilteredClients((prevClients) =>
-        prevClients.map((c) => (c.eik === client.eik ? newClient.client : c))
+        prevClients.map((c) => (c.eik === client.eik ? newClient : c))
       );
       setMode(EnhancedMode.None);
       notify('Клиентът беше успешно създаден', 'success');
@@ -124,13 +124,16 @@ export default function ClientsTable({ data, error }: PageProps) {
       );
 
       // Send the PUT request with the client_uuid in the URL
-      const response = await fetch(`/api/clients/${client.client_uuid}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ ...client, user_id: user?.sub })
-      });
+      const response = await fetch(
+        `/api/clients/${client.client_uuid}?user_id=${user?.sub}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(client)
+        }
+      );
 
       if (!response.ok) {
         const data = await response.json();

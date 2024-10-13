@@ -11,16 +11,16 @@ export default async function handler(
     const { method } = req;
 
     if (method === 'GET') {
-      const { userId } = req.query;
+      const { user_id } = req.query;
 
-      if (!userId) {
+      if (!user_id) {
         return res.status(400).json({ message: 'Missing user ID' });
       }
       try {
         // Fetch clients related to the authenticated user
         const results = await queryAsync<Client[]>(
           `SELECT * FROM clients_test WHERE user_id = ?`,
-          [userId]
+          [user_id]
         );
 
         return res.status(200).json(results || []);
@@ -34,17 +34,9 @@ export default async function handler(
 
     if (method === 'POST') {
       try {
-        const {
-          name,
-          city,
-          address,
-          eik,
-          vat,
-          director,
-          email,
-          phone,
-          user_id
-        } = req.body as Client;
+        const { user_id } = req.query;
+        const { name, city, address, eik, vat, director, email, phone } =
+          req.body as Client;
         if (!eik || !name || !city || !address || !director || !email) {
           return res.status(400).json({ message: 'Missing required fields' });
         }

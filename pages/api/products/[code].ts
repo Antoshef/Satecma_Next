@@ -1,25 +1,24 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { queryAsync } from '../../../utils/db';
 import { Product } from '@/products/utils/types';
-import { authMiddleware } from '@/utils/auth';
 
 const fetchProductByCode = async (
-  code: string,
+  product_uuid: string,
   user_id: string
 ): Promise<Product | null> => {
   const results = await queryAsync<Product[]>(
-    'SELECT * FROM products_test WHERE code = ? AND user_id = ?',
-    [code, user_id]
+    'SELECT * FROM products_test WHERE product_uuid = ? AND user_id = ?',
+    [product_uuid, user_id]
   );
   return results.length > 0 ? results[0] : null;
 };
 
 const updateProduct = async (
   product: Product,
-  code: string,
+  product_uuid: string,
   user_id: string
 ) => {
-  const productToUpdate = await fetchProductByCode(code, user_id);
+  const productToUpdate = await fetchProductByCode(product_uuid, user_id);
   if (!productToUpdate) {
     throw new Error('Продуктът не е намерен');
   }
@@ -27,6 +26,7 @@ const updateProduct = async (
   const query = `
     UPDATE products_test
     SET 
+      code = ?,
       name = ?, 
       unit = ?, 
       packing = ?, 
@@ -36,9 +36,10 @@ const updateProduct = async (
       percentageIncrease = ?, 
       sellPrice = ?, 
       category = ? 
-    WHERE code = ? AND user_id = ?`;
+    WHERE product_uuid = ? AND user_id = ?`;
 
   const values = [
+    product.code,
     product.name,
     product.unit,
     product.packing,
@@ -48,7 +49,7 @@ const updateProduct = async (
     product.percentageIncrease,
     product.sellPrice,
     product.category,
-    code,
+    product_uuid,
     user_id
   ];
 
@@ -56,22 +57,20 @@ const updateProduct = async (
 };
 
 const handlePutRequest = async (req: NextApiRequest, res: NextApiResponse) => {
-  await new Promise<void>((resolve) => authMiddleware(req, res, resolve));
+  const { code: product_uuid, user_id } = req.query;
+  const product = req.body as Product;
 
-  // Extract the user's ID from the JWT token
-  const user_id = (req as any).user.userId;
-  const { code } = req.query;
-  const { product } = req.body as { product: Product };
-
-  if (!product.name || !product.code || !code) {
+  if (!product_uuid || !user_id) {
     return res
       .status(400)
       .json({ message: 'Липсват задължителни полета на продукта' });
   }
 
   try {
-    await updateProduct(product, code as string, user_id);
-    return res.status(201).json({ message: 'Продуктът е актуализиран' });
+    await updateProduct(product, product_uuid as string, user_id as string);
+    return res
+      .status(201)
+      .json({ message: 'Продуктът е актуализиран', product });
   } catch (error) {
     return res.status(500).json({
       message: 'Грешка при актуализиране на продукта',

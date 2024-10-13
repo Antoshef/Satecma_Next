@@ -10,6 +10,7 @@ import { EnhancedMode, Order, Product } from '@/products/utils/types';
 import { getComparator } from '@/utils/getComparator';
 import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from 'react';
 import useToast from './utils/useToast';
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 interface Props {
   data: Product[];
@@ -28,6 +29,7 @@ export default function ProductsTable({ data, error }: Props) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [mode, setMode] = useState<EnhancedMode>(EnhancedMode.None);
+  const { user } = useUser();
 
   const { ToastContainer, notify } = useToast();
 
@@ -104,14 +106,23 @@ export default function ProductsTable({ data, error }: Props) {
   );
 
   const onEditSubmit = async (product: Product) => {
+    const previousProducts = [...filteredProducts];
     try {
-      const response = await fetch(`${baseUrl}/api/products/${product.code}`, {
-        method: 'PUT',
-        body: JSON.stringify({ product }),
-        headers: {
-          'Content-Type': 'application/json'
+      setFilteredProducts((state) =>
+        state.map((p) =>
+          p.product_uuid === product.product_uuid ? product : p
+        )
+      );
+      const response = await fetch(
+        `/api/products/${product.product_uuid}?user_id=${user?.sub}`,
+        {
+          method: 'PUT',
+          body: JSON.stringify(product),
+          headers: {
+            'Content-Type': 'application/json'
+          }
         }
-      });
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -120,8 +131,9 @@ export default function ProductsTable({ data, error }: Props) {
         );
       }
 
+      const { product: updatedProduct } = await response.json();
       const updatedProducts = products.map((p) =>
-        p.code === product.code ? product : p
+        p.product_uuid === product.product_uuid ? updatedProduct : p
       );
       setFilteredProducts(updatedProducts);
       setSelected([]);
@@ -132,6 +144,7 @@ export default function ProductsTable({ data, error }: Props) {
           'Възникна грешка при обновяване на продукт',
         'error'
       );
+      setFilteredProducts(previousProducts);
     }
   };
 
@@ -162,14 +175,20 @@ export default function ProductsTable({ data, error }: Props) {
   };
 
   const createHandler = async (product: Product) => {
+    const previousProducts = [...filteredProducts];
     try {
-      const response = await fetch(`${baseUrl}/api/products`, {
-        method: 'POST',
-        body: JSON.stringify({ product }),
-        headers: {
-          'Content-Type': 'application/json'
+      setFilteredProducts((state) => [product, ...state]);
+
+      const response = await fetch(
+        `${baseUrl}/api/products?user_id=${user?.sub}`,
+        {
+          method: 'POST',
+          body: JSON.stringify({ product }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
         }
-      });
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -178,12 +197,14 @@ export default function ProductsTable({ data, error }: Props) {
         );
       }
 
-      const updatedProducts = [...products, product];
+      const { product: newProduct } = await response.json();
+      const updatedProducts = [...products, newProduct];
       setFilteredProducts(updatedProducts);
       setSelected([]);
       notify('Успешно създадохте продукт', 'success');
     } catch (error) {
       notify('Възникна грешка при създаване на продукт', 'error');
+      setFilteredProducts(previousProducts);
     }
   };
 
@@ -199,10 +220,14 @@ export default function ProductsTable({ data, error }: Props) {
         break;
     }
   };
-  
-useEffect(() => {
+
+  useEffect(() => {
     const uniqueCategories = Array.from(
-      new Set(products.map((p) => p.category).filter((c): c is string => c !== undefined))
+      new Set(
+        products
+          .map((p) => p.category)
+          .filter((c): c is string => c !== undefined)
+      )
     );
     setFilteredProducts(products);
     uniqueCategories && setCategories(uniqueCategories);

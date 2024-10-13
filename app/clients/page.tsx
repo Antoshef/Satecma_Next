@@ -11,13 +11,13 @@ export default async function ClientsPage() {
   try {
     // Fetch the session to get the user information
     const session = await getSession();
-    const userId = session?.user.sub;
+    const user_id = session?.user.sub;
 
-    if (!userId) {
+    if (!user_id) {
       throw new Error('User not authenticated');
     }
 
-    const response = await fetch(`${baseUrl}/api/clients?userId=${userId}`, {
+    const response = await fetch(`${baseUrl}/api/clients?user_id=${user_id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'

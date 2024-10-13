@@ -6,6 +6,9 @@ export interface ToastMessage {
 
 export interface Product {
   code: string;
+  product_uuid?: string;
+  id?: number;
+  user_id?: string;
   name: string;
   unit: string;
   packing: number;
@@ -18,7 +21,10 @@ export interface Product {
 }
 
 export interface InvoiceProductData
-  extends Pick<Product, 'code' | 'packing' | 'quantity' | 'unit'>,
+  extends Pick<
+      Product,
+      'product_uuid' | 'packing' | 'quantity' | 'unit' | 'user_id'
+    >,
     Pick<Product, 'sellPrice'> {
   totalQuantity: number;
   totalPrice: number;

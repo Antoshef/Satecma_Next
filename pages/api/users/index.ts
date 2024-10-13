@@ -2,20 +2,15 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { queryAsync } from '../../../utils/db';
 import { Claims } from '@auth0/nextjs-auth0';
 import { Profile } from '@/profile/types';
-import { generateToken } from '@/utils/cookies';
-import { serialize } from 'cookie';
 
 interface TypedNextApiRequest extends NextApiRequest {
-  body: Claims;
+  body: Profile;
 }
 
 const tableName = 'users';
 
-// Validate the Claims object to ensure required fields are present
 function isValidUser(user: Claims): boolean {
-  return (
-    !!user.sub && !!user.email && !!user.nickname // Assuming Auth0 provides the nickname as username
-  );
+  return !!user.sub && !!user.email;
 }
 
 export default async function handler(
@@ -26,7 +21,7 @@ export default async function handler(
 
   if (method === 'POST') {
     try {
-      const userData: Claims = req.body;
+      const userData: Profile = req.body;
 
       if (!isValidUser(userData)) {
         return res.status(400).json({ message: 'Invalid user data' });
@@ -40,27 +35,12 @@ export default async function handler(
 
       if (existingUser.length > 0) {
         const user = existingUser[0];
-
-        if (user) {
-          const token = generateToken(user.id);
-          res.setHeader(
-            'Set-Cookie',
-            serialize('token', token, {
-              httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
-              secure: process.env.NODE_ENV === 'production', // Use HTTPS only in production
-              sameSite: 'strict', // Prevents CSRF attacks
-              path: '/',
-              maxAge: 60 * 60 * 24 * 7 // 1 week
-            })
-          );
-        }
         return res.status(202).json({
-          user: existingUser[0],
+          user,
           message: 'User already exists'
         });
       }
 
-      // Insert the new user into the users table
       const insertQuery = `
         INSERT INTO ${tableName} (sub, given_name, family_name, nickname, email, email_verified)
         VALUES (?, ?, ?, ?, ?, ?);

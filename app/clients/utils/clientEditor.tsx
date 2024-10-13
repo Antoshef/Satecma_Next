@@ -59,14 +59,18 @@ export const ClientEditor = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
-    if (validateFields() && client) {
-      onSubmit(client);
-      if (mode === EnhancedMode.Create) {
-        setClient(undefined);
-      } else if (mode === EnhancedMode.Edit) {
-        setMode(EnhancedMode.None);
+  const handleSubmit = async () => {
+    try {
+      if (validateFields() && client) {
+        await onSubmit(client);
+        if (mode === EnhancedMode.Create) {
+          setClient(undefined);
+        } else if (mode === EnhancedMode.Edit) {
+          setMode(EnhancedMode.None);
+        }
       }
+    } catch (err) {
+      console.error('Грешка при запис на клиент:', err);
     }
   };
 
@@ -158,7 +162,6 @@ export const ClientEditor = ({
     switch (mode) {
       case EnhancedMode.Create:
         setClient({
-          user_id: '',
           name: '',
           city: '',
           address: '',

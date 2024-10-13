@@ -1,9 +1,10 @@
+import { Profile } from '@/profile/types';
 import jwt from 'jsonwebtoken';
 
 const jwtSecret = process.env.JWT_SECRET;
 
-export function generateToken(userId: string) {
-  const payload = { userId };
+export function generateToken(user: Profile) {
+  const payload = { userId: user.sub };
   if (!jwtSecret) {
     throw new Error('JWT_SECRET environment variable is not set');
   }

@@ -1,7 +1,7 @@
 export interface Client {
   id?: number; // Optional, will be auto-assigned
   client_uuid?: string; // The UUID of the client
-  user_id: string;
+  user_id?: string;
   name: string;
   city: string;
   address: string;

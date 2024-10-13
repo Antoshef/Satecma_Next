@@ -1,24 +1,35 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { verifyToken } from './cookies';
+import jwt from 'jsonwebtoken';
 
-export function authMiddleware(
+export const authMiddleware = (
   req: NextApiRequest,
   res: NextApiResponse,
   next: () => void
-) {
-  const token = req.cookies.token;
+) => {
+  const authHeader = req.headers.authorization;
 
-  if (!token) {
-    return res.status(401).json({ message: 'Unauthorized' });
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res
+      .status(401)
+      .json({ message: 'Authorization token is missing or invalid' });
   }
+
+  const token = authHeader.split(' ')[1];
+  console.log(token, 'token');
 
   try {
-    // Verify the token and attach the user data to the request object
-    const decoded = verifyToken(token);
-    (req as any).user = decoded; // Attach the decoded user info to the request
-    next();
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      throw new Error('JWT secret is not defined');
+    }
+    // Verify the token using your JWT secret
+    // console.log('VERIFY');
+    // console.log(jwtSecret, 'JWT');
+    const decoded = jwt.verify(token, jwtSecret);
+    // console.log(decoded, 'decoded');
+    (req as any).user = decoded; // Attach the decoded user data to the request object
+    next(); // Proceed to the next middleware or request handler
   } catch (error) {
-    console.error('JWT verification failed:', error);
     return res.status(401).json({ message: 'Invalid token' });
   }
-}
+};

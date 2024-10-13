@@ -1,9 +1,8 @@
-import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { OfferBox } from './offerBox';
 import { mockProducts, mockProvider } from '../invoice/constants';
 import LogoProvider from '@/context/logoContext';
 
-export default withPageAuthRequired(async function OfferPage() {
+export default async function OfferPage() {
   const products = mockProducts;
   const provider = mockProvider;
 
@@ -33,4 +32,4 @@ export default withPageAuthRequired(async function OfferPage() {
       <OfferBox products={products} provider={provider} />
     </LogoProvider>
   );
-});
+}

@@ -1,5 +1,4 @@
 import { Client } from '@/clients/utils/types';
-import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { Company, InvoiceData } from './types';
 import { Product } from '@/products/utils/types';
 import { baseUrl } from '@/constants';
@@ -12,7 +11,7 @@ import {
 } from './constants';
 import LogoProvider from '@/context/logoContext';
 
-export default withPageAuthRequired(async function InvoicePage() {
+export default async function InvoicePage() {
   const products = mockProducts;
   const clients = mockClients;
   const invoiceIds = mockInvoiceData.map((item) => item.invoice_id);
@@ -75,4 +74,4 @@ export default withPageAuthRequired(async function InvoicePage() {
       />
     </LogoProvider>
   );
-});
+}

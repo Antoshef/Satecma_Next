@@ -31,20 +31,18 @@ export default async function HomePage() {
     return <Component user={null} />;
   }
 
-  const result = await response.json();
-
   await fetch(`${baseUrl}/api/users`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(result)
+    body: JSON.stringify(session.user)
   });
 
-  if (result.email_verified) {
+  if (session.user.email_verified) {
     // Check if the user exists in your database
     const userExistsResponse = await fetch(
-      `${process.env.AUTH0_BASE_URL}/api/users?email=${result.email}`
+      `${process.env.AUTH0_BASE_URL}/api/users?email=${session.user.email}`
     );
     const userExistsData = await userExistsResponse.json();
 
@@ -55,7 +53,7 @@ export default async function HomePage() {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(result)
+        body: JSON.stringify(session.user)
       });
     } else if (userExistsResponse.ok) {
       // If user exists, update the email_verified field
@@ -64,7 +62,10 @@ export default async function HomePage() {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email: result.email, email_verified: true })
+        body: JSON.stringify({
+          email: session.user.email,
+          email_verified: true
+        })
       });
     }
     // Redirect the user to the clients page once authenticated
@@ -74,7 +75,6 @@ export default async function HomePage() {
   return <Component user={session.user} />;
 }
 
-// Main component definition
 const Component = ({ user }: { user: Claims | null }) => (
   <div className="bg-gray-100 min-h-screen">
     {user && !user.email_verified && <VerifyEmailModal user={user} />}

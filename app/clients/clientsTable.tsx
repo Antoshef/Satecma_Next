@@ -10,6 +10,7 @@ import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from 'react';
 import { ClientEditor } from './utils/clientEditor';
 import { headCells } from './utils/constants';
 import { Client } from './utils/types';
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 interface PageProps {
   data: Client[];
@@ -27,6 +28,7 @@ export default function ClientsTable({ data, error }: PageProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [mode, setMode] = useState<EnhancedMode>(EnhancedMode.None);
   const { ToastContainer, notify } = useToast();
+  const { user } = useUser();
 
   const isSelected = (eik: string) =>
     selected.some((client) => client.eik === eik);
@@ -67,43 +69,70 @@ export default function ClientsTable({ data, error }: PageProps) {
     setPage(0);
   };
 
-  const onEditSubmit = async (client: Client) => {
+  const onSubmit = async (client: Client) => {
     try {
-      // Make sure the client object has a client_uuid
-      if (!client.client_uuid) {
-        throw new Error('Missing client identifier');
-      }
+      if (mode === EnhancedMode.Create) {
+        // Send the POST request to create a new client
+        const response = await fetch(`/api/clients?userId=${user?.sub}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(client)
+        });
 
-      // Send the PUT request with the client_uuid in the URL
-      const response = await fetch(`/api/clients/${client.client_uuid}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ client })
-      });
+        if (!response.ok) {
+          const data = await response.json();
+          const errorMessage =
+            data.message || 'An error occurred while creating the client';
+          throw new Error(errorMessage + ` (Status ${response.status})`);
+        }
 
-      if (!response.ok) {
-        const data = await response.json();
-        const errorMessage =
-          data.message || 'An error occurred while editing the client';
-        throw new Error(errorMessage + ` (Status ${response.status})`);
-      }
+        // Update the local state if the request was successful
+        const newClient = await response.json();
+        setFilteredClients((prevClients) => [...prevClients, newClient.client]);
+        setMode(EnhancedMode.None);
+        notify('The client was successfully created', 'success');
+      } else if (mode === EnhancedMode.Edit) {
+        // Make sure the client object has a client_uuid
+        if (!client.client_uuid) {
+          throw new Error('Missing client identifier');
+        }
 
-      // Update the local state if the request was successful
-      const index = filteredClients.findIndex(
-        (c) => c.client_uuid === client.client_uuid
-      );
-      if (index >= 0) {
-        const newClients = [...filteredClients];
-        newClients[index] = client;
-        setFilteredClients(newClients);
+        // Send the PUT request with the client_uuid in the URL
+        const response = await fetch(
+          `/api/clients/${client.client_uuid}?userId=${user?.sub}`,
+          {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(client)
+          }
+        );
+
+        if (!response.ok) {
+          const data = await response.json();
+          const errorMessage =
+            data.message || 'An error occurred while editing the client';
+          throw new Error(errorMessage + ` (Status ${response.status})`);
+        }
+
+        // Update the local state if the request was successful
+        const index = filteredClients.findIndex(
+          (c) => c.client_uuid === client.client_uuid
+        );
+        if (index >= 0) {
+          const newClients = [...filteredClients];
+          newClients[index] = client;
+          setFilteredClients(newClients);
+        }
+        setMode(EnhancedMode.None);
+        notify('The client was successfully edited', 'success');
       }
-      setMode(EnhancedMode.None);
-      notify('The client was successfully edited', 'success');
     } catch (error) {
-      console.error('Error editing client:', error);
-      notify('An error occurred while editing the client', 'error');
+      console.error('Error submitting client:', error);
+      notify('An error occurred while submitting the client', 'error');
     }
   };
 
@@ -156,7 +185,7 @@ export default function ClientsTable({ data, error }: PageProps) {
         <ClientEditor
           mode={mode}
           selected={selected[0]}
-          onSubmit={onEditSubmit}
+          onSubmit={onSubmit}
           setMode={setMode}
         />
         <div className="flex items-baseline p-4">

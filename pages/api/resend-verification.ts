@@ -44,7 +44,6 @@ export default withApiAuthRequired(async function handler(
       const myHeaders = new Headers();
       myHeaders.append('Content-Type', 'application/json');
       myHeaders.append('Accept', 'application/json');
-      myHeaders.append('Authorization', `Bearer ${token.access_token}`);
 
       const raw = JSON.stringify({
         user_id: user.sub

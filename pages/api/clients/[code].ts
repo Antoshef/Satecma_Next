@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { queryAsync } from '../../../utils/db';
 import { Client } from '@/clients/utils/types';
-import { authMiddleware } from '@/utils/auth';
 
 // Fetch client by client_uuid and user_id
 const fetchClientByCode = async (
@@ -66,13 +65,14 @@ const deleteClient = async (code: string, user_id: string) => {
 
 // Handle GET request
 const handleGetRequest = async (req: NextApiRequest, res: NextApiResponse) => {
-  await new Promise<void>((resolve) => authMiddleware(req, res, resolve));
+  const { userId, code } = req.query;
 
-  const user_id = (req as any).user.userId;
-  const { code } = req.query;
+  if (!userId) {
+    return res.status(400).json({ message: 'Missing user ID' });
+  }
 
   try {
-    const client = await fetchClientByCode(code as string, user_id);
+    const client = await fetchClientByCode(code as string, userId as string);
     if (!client) {
       return res.status(404).json({ message: 'Client not found' });
     }
@@ -88,10 +88,7 @@ const handleGetRequest = async (req: NextApiRequest, res: NextApiResponse) => {
 
 // Handle PUT request
 const handlePutRequest = async (req: NextApiRequest, res: NextApiResponse) => {
-  await new Promise<void>((resolve) => authMiddleware(req, res, resolve));
-
-  const user_id = (req as any).user.userId;
-  const { code } = req.query;
+  const { code, userId } = req.query;
   const { client } = req.body as { client: Client };
 
   if (!client || !code) {
@@ -99,7 +96,7 @@ const handlePutRequest = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    await updateClient(client, code as string, user_id);
+    await updateClient(client, code as string, userId as string);
     return res.status(200).json({ message: 'Client updated' });
   } catch (error) {
     console.error('PUT error:', error);
@@ -115,17 +112,17 @@ const handleDeleteRequest = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
-  await new Promise<void>((resolve) => authMiddleware(req, res, resolve));
+  const { userId, code } = req.query;
 
-  const user_id = (req as any).user.userId;
-  const { code } = req.query;
-
+  if (!userId) {
+    return res.status(400).json({ message: 'Missing user ID' });
+  }
   if (!code) {
     return res.status(400).json({ message: 'Missing client identifier' });
   }
 
   try {
-    await deleteClient(code as string, user_id);
+    await deleteClient(code as string, userId as string);
     return res.status(200).json({ message: 'Client deleted' });
   } catch (error) {
     console.error('DELETE error:', error);

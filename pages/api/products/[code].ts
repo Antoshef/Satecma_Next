@@ -7,7 +7,7 @@ const fetchProductByCode = async (
   user_id: string
 ): Promise<Product | null> => {
   const results = await queryAsync<Product[]>(
-    'SELECT * FROM products_test WHERE product_uuid = ? AND user_id = ?',
+    'SELECT * FROM products WHERE product_uuid = ? AND user_id = ?',
     [product_uuid, user_id]
   );
   return results.length > 0 ? results[0] : null;
@@ -24,7 +24,7 @@ const updateProduct = async (
   }
 
   const query = `
-    UPDATE products_test
+    UPDATE products
     SET 
       code = ?,
       name = ?, 

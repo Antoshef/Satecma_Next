@@ -19,7 +19,7 @@ export default async function handler(
       try {
         // Fetch clients related to the authenticated user
         const results = await queryAsync<Client[]>(
-          `SELECT * FROM clients_test WHERE user_id = ?`,
+          `SELECT * FROM clients WHERE user_id = ?`,
           [user_id]
         );
 
@@ -43,7 +43,7 @@ export default async function handler(
 
         // Check if the client already exists
         const existingClients = await queryAsync<Client[]>(
-          `SELECT * FROM clients_test WHERE eik = ? AND user_id = ?`,
+          `SELECT * FROM clients WHERE eik = ? AND user_id = ?`,
           [eik, user_id]
         );
 
@@ -52,7 +52,7 @@ export default async function handler(
         } else {
           const result = await queryAsync<ResponseQuery>(
             `
-            INSERT INTO clients_test (user_id, name, city, address, eik, vat, director, email, phone)
+            INSERT INTO clients (user_id, name, city, address, eik, vat, director, email, phone)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             `,
             [user_id, name, city, address, eik, vat, director, email, phone]
@@ -60,7 +60,7 @@ export default async function handler(
 
           // Retrieve the new client with the generated UUID
           const [newClient] = await queryAsync<Client[]>(
-            `SELECT * FROM clients_test WHERE id = ?`,
+            `SELECT * FROM clients WHERE id = ?`,
             [result.insertId]
           );
 
@@ -94,7 +94,7 @@ export default async function handler(
         }
         const updateResult = await queryAsync<ResponseQuery>(
           `
-          UPDATE clients_test
+          UPDATE clients
           SET name = ?, city = ?, address = ?, vat = ?, director = ?, email = ?, phone = ?
           WHERE eik = ? AND user_id = ?
           `,

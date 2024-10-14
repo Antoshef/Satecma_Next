@@ -6,7 +6,7 @@ interface TypedNextApiRequest extends NextApiRequest {
   body: Company;
 }
 
-const tableName = 'company';
+const tableName = 'companies';
 
 export default async function handler(
   req: TypedNextApiRequest,

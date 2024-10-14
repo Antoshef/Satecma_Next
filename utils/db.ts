@@ -1,7 +1,7 @@
 import mysql from "mysql";
 
 const pool = mysql.createPool({
-  host: process.env.HOST,
+  host: process.env.HOST || 'localhost',
   user: process.env.DATABASE_USER,
   password: process.env.DATABASE_PASS,
   database: process.env.DATABASE,

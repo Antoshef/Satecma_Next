@@ -9,7 +9,7 @@ const updateClient = async (
   user_id: string
 ) => {
   const query = `
-    UPDATE clients_test
+    UPDATE clients
     SET 
       name = ?, 
       city = ?, 
@@ -40,7 +40,7 @@ const updateClient = async (
 // Delete client by client_uuid and user_id
 const deleteClient = async (client_uuid: string, user_id: string) => {
   return await queryAsync<ResponseQuery>(
-    `DELETE FROM clients_test WHERE client_uuid = ? AND user_id = ?`,
+    `DELETE FROM clients WHERE client_uuid = ? AND user_id = ?`,
     [client_uuid, user_id]
   );
 };
@@ -58,7 +58,7 @@ const handleGetRequest = async (req: NextApiRequest, res: NextApiResponse) => {
 
   try {
     const [client] = await queryAsync<Client[]>(
-      `SELECT * FROM clients_test WHERE client_uuid = ? AND user_id = ?`,
+      `SELECT * FROM clients WHERE client_uuid = ? AND user_id = ?`,
       [client_uuid, user_id]
     );
 
@@ -87,7 +87,7 @@ const handlePutRequest = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     await updateClient(client, client_uuid as string, user_id as string);
     const [updatedClient] = await queryAsync<Client[]>(
-      `SELECT * FROM clients_test WHERE client_uuid = ?`,
+      `SELECT * FROM clients WHERE client_uuid = ?`,
       [client_uuid]
     );
 

@@ -15,7 +15,7 @@ const getProducts = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    const query = 'SELECT * FROM products_test WHERE user_id = ?';
+    const query = 'SELECT * FROM products WHERE user_id = ?';
     const results = await queryAsync<Product[]>(query, [user_id]);
 
     return res.json(results);
@@ -46,7 +46,7 @@ const updateProducts = async (req: NextApiRequest, res: NextApiResponse) => {
 
   try {
     const products = await queryAsync<Product[]>(
-      'SELECT * FROM products_test WHERE user_id = ?',
+      'SELECT * FROM products WHERE user_id = ?',
       [user_id]
     );
 
@@ -67,7 +67,7 @@ const updateProducts = async (req: NextApiRequest, res: NextApiResponse) => {
       }
 
       const query =
-        'UPDATE products_test SET quantity = ? WHERE product_uuid = ? AND user_id = ?';
+        'UPDATE products SET quantity = ? WHERE product_uuid = ? AND user_id = ?';
       await queryAsync(query, [item.quantity, item.product_uuid, user_id]);
     }
 
@@ -100,7 +100,7 @@ const deleteProducts = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const uuids = products.map((product) => product.product_uuid);
     const placeholders = uuids.map(() => '?').join(',');
-    const query = `DELETE FROM products_test WHERE code IN (${placeholders}) AND user_id = ? `;
+    const query = `DELETE FROM products WHERE code IN (${placeholders}) AND user_id = ? `;
     await queryAsync(query, [...uuids, user_id]);
 
     return res
@@ -153,7 +153,7 @@ const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     // Check if a product with the same code already exists
     const checkQuery =
-      'SELECT COUNT(*) as count FROM products_test WHERE code = ? AND user_id = ?';
+      'SELECT COUNT(*) as count FROM products WHERE code = ? AND user_id = ?';
     const checkValues = [product.code, user_id];
     const response = await queryAsync<{ count: number }[]>(
       checkQuery,
@@ -170,7 +170,7 @@ const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // Insert the new product with user_id and company_eik
     const query = `
-      INSERT INTO products_test (user_id, code, name, packing, unit, color, category, buyPrice, sellPrice, percentageIncrease, quantity)
+      INSERT INTO products (user_id, code, name, packing, unit, color, category, buyPrice, sellPrice, percentageIncrease, quantity)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const values = [
@@ -190,7 +190,7 @@ const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
     const result = await queryAsync<ResponseQuery>(query, values);
 
     const [newClient] = await queryAsync<Product[]>(
-      `SELECT * FROM products_test WHERE id = ?`,
+      `SELECT * FROM products WHERE id = ?`,
       [result.insertId]
     );
 

@@ -30,7 +30,6 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
   invoiceIds
 }) => {
   const [receiver, setReceiver] = useState<Client>({
-    user_id: 0, // Add a default user_id
     name: '',
     city: '',
     address: '',

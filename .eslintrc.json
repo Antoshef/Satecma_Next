@@ -1,0 +1,13 @@
+{
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:@typescript-eslint/recommended"  // Add this for TypeScript-specific linting
+  ],
+  "plugins": [
+    "@typescript-eslint"  // Ensure the TypeScript plugin is included
+  ],
+  "rules": {
+    "@typescript-eslint/no-empty-function": "warn",  // Add the missing rule
+    "@typescript-eslint/no-explicit-any": "warn"     // Add the missing rule
+  }
+}

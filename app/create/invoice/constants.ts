@@ -44,7 +44,6 @@ export const INVOICE_DATA_DEFAULT_VALUES: InvoiceData = {
 };
 
 export const INIT_RECEIVER: Client = {
-  user_id: 0, // Default user_id
   email: '',
   phone: '',
   name: '',
@@ -80,7 +79,6 @@ const mockProducts: Product[] = [
 // Mock data for Client
 const mockClients: Client[] = [
   {
-    user_id: 1,
     name: 'Client 1',
     city: 'City 1',
     address: 'Address 1',
@@ -91,7 +89,6 @@ const mockClients: Client[] = [
     phone: '123-456-7890'
   },
   {
-    user_id: 2,
     name: 'Client 2',
     city: 'City 2',
     address: 'Address 2',

@@ -8,24 +8,24 @@ const unusedImports = require('eslint-plugin-unused-imports');
 
 const compat = new FlatCompat({
   baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended
+  recommendedConfig: js.configs.recommended,
 });
 
 module.exports = [
   {
     files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
-      parser: typescriptParser, // Correct parser reference
+      parser: typescriptParser,
       globals: {
-        browser: true, // Define globals here instead of "env"
+        browser: true,
         es2021: true,
-        node: true
-      }
+        node: true,
+      },
     },
     plugins: {
       react: reactPlugin,
       '@typescript-eslint': typescriptPlugin,
-      'unused-imports': unusedImports
+      'unused-imports': unusedImports,
     },
     rules: {
       'no-unused-vars': 'warn',
@@ -36,17 +36,17 @@ module.exports = [
           vars: 'all',
           varsIgnorePattern: '^_',
           args: 'after-used',
-          argsIgnorePattern: '^_'
-        }
+          argsIgnorePattern: '^_',
+        },
       ],
-      '@next/next/no-duplicate-head': 'off'
-    }
+      '@next/next/no-duplicate-head': 'off',
+    },
   },
   ...compat.extends(
     'eslint:recommended',
     'plugin:react/recommended',
     'plugin:@typescript-eslint/recommended',
     'next',
-    'next/core-web-vitals'
-  )
+    'next/core-web-vitals',
+  ),
 ];

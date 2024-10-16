@@ -28,7 +28,7 @@ export default async function handler(
       }
 
       // Check if user already exists
-      const checkUserQuery = `SELECT * FROM ${tableName} WHERE sub = ?`;
+      const checkUserQuery = `SELECT * FROM ${tableName} WHERE user_id = ?`;
       const existingUser = await queryAsync<Profile[]>(checkUserQuery, [
         userData.sub
       ]);
@@ -42,8 +42,8 @@ export default async function handler(
       }
 
       const insertQuery = `
-        INSERT INTO ${tableName} (sub, given_name, family_name, nickname, email, email_verified)
-        VALUES (?, ?, ?, ?, ?, ?);
+        INSERT INTO ${tableName} (user_id, given_name, family_name, nickname, email, email_verified, name, picture)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?);
       `;
       const values = [
         userData.sub,
@@ -51,7 +51,9 @@ export default async function handler(
         userData.family_name || null,
         userData.nickname,
         userData.email,
-        userData.email_verified || 0
+        userData.email_verified || 0,
+        userData.name,
+        userData.picture
       ];
 
       const user = await queryAsync<Profile>(insertQuery, values);

@@ -18,7 +18,7 @@ export default async function HomePage() {
   }
 
   const { accessToken } = session;
-  
+
   // Fetch user data from Auth0 `/userinfo`
   const response = await fetch(`https://${process.env.AUTH0_DOMAIN}/userinfo`, {
     headers: {

@@ -30,6 +30,7 @@ export default function ProductsTable({ data, error }: Props) {
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [mode, setMode] = useState<EnhancedMode>(EnhancedMode.None);
   const { user } = useUser();
+  console.log(products, 'PRODUCTS');
 
   const { ToastContainer, notify } = useToast();
 

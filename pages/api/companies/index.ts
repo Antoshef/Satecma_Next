@@ -13,15 +13,19 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const { method } = req;
+  const { user_id } = req.query;
 
   if (method === 'GET') {
     try {
-      const user_id = (req as any).user.sub; // Assuming `sub` from Auth0
       const results = await queryAsync<Company[]>(
         `SELECT * FROM ${tableName} WHERE user_id = ?`,
         [user_id]
       );
-      return res.status(200).json({ companies: results || [] });
+      if (results.length === 0) {
+        return res.status(200).json(undefined);
+      }
+
+      return res.status(200).json(results[0]);
     } catch (error) {
       console.error('GET error:', error);
       return res.status(500).json({ message: 'Internal server error' });
@@ -30,7 +34,6 @@ export default async function handler(
 
   if (method === 'POST') {
     try {
-      const user_id = (req as any).user.sub; // Get Auth0 user ID from token
       const providerData: Company = req.body;
 
       const requiredFields: (keyof Company)[] = [
@@ -86,7 +89,6 @@ export default async function handler(
 
   if (method === 'PUT') {
     try {
-      const user_id = (req as any).user.sub; // Get Auth0 user ID from token
       const providerData: Company = req.body;
 
       const requiredFields: (keyof Company)[] = [

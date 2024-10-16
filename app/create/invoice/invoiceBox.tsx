@@ -33,7 +33,7 @@ interface InvoiceBoxProps {
   provider: Company | null;
   clients: Client[];
   products: Product[];
-  invoiceIds: string[];
+  invoiceIds?: string[];
 }
 
 const InvoiceBox = ({
@@ -56,7 +56,7 @@ const InvoiceBox = ({
   });
   const [receiver, setReceiver] = useState<Client>(INIT_RECEIVER);
   const [invoiceNumber, setInvoiceNumber] = useState<string>(
-    invoiceIds[0] || ''
+    invoiceIds ? invoiceIds[0] : ''
   );
   const [invoiceType, setInvoiceType] = useState<InvoiceType>(InvoiceType.none);
   const invoiceRef = useRef<HTMLTableElement>(null);

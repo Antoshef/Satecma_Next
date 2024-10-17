@@ -36,6 +36,7 @@ export default async function handler(
     try {
       const providerData: Company = req.body;
 
+      // Check for missing required fields
       const requiredFields: (keyof Company)[] = [
         'name',
         'eik',
@@ -62,8 +63,7 @@ export default async function handler(
 
       const insertQuery = `
         INSERT INTO ${tableName} (user_id, eik, name, vat, city, address, director, phone, iban, swift, bankName)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        RETURNING *;
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
       `;
       const values = [
         user_id,
@@ -79,8 +79,18 @@ export default async function handler(
         providerData.bankName
       ];
 
-      const result = await queryAsync<Company>(insertQuery, values);
-      return res.status(201).json({ data: result });
+      // Execute the insert query
+      await queryAsync(insertQuery, values);
+
+      // Retrieve the inserted record by a unique identifier, like `user_id`
+      const selectQuery = `SELECT * FROM ${tableName} WHERE user_id = ?`;
+      const insertedCompany = await queryAsync<Company>(selectQuery, [user_id]);
+
+      // Respond with the inserted record
+      return res.status(201).json({
+        message: 'Company created successfully',
+        data: insertedCompany
+      });
     } catch (error) {
       console.error('POST error:', error);
       return res.status(500).json({ message: 'Internal server error' });
@@ -149,7 +159,7 @@ export default async function handler(
       ];
 
       const result = await queryAsync<Company>(updateQuery, values);
-      return res.status(200).json({ data: result });
+      return res.status(200).json(result);
     } catch (error) {
       console.error('PUT error:', error);
       return res.status(500).json({ message: 'Internal server error' });

@@ -2,23 +2,26 @@ import { TextField } from '@/components/textField/TextField';
 import { Company } from './types';
 
 interface ProviderDetailsProps {
-  company: Company | null;
+  company: Company;
   isFieldsDisabled?: boolean;
-  setCompany: React.Dispatch<React.SetStateAction<Company | null>>;
+  setCompany: React.Dispatch<React.SetStateAction<Company>>;
 }
 
-const inputFields = [
-  { name: 'name', label: 'Доставчик:', placeholder: 'Фирма' },
-  { name: 'eik', label: 'ЕИК:', placeholder: 'ЕИК' },
+const inputFields: {
+  name: keyof Company;
+  label: string;
+  placeholder: string;
+  required?: boolean;
+}[] = [
+  { name: 'name', label: 'Доставчик:', placeholder: 'Фирма', required: true },
+  { name: 'eik', label: 'ЕИК:', placeholder: 'ЕИК', required: true },
   {
     name: 'vat',
     label: 'ДДС №:',
-    placeholder: 'ДДС №',
-    formatValue: (company: Company | null) =>
-      company ? `BG${company.eik}` : ''
+    placeholder: 'ДДС №'
   },
-  { name: 'city', label: 'Град:', placeholder: 'Град' },
-  { name: 'address', label: 'Адрес:', placeholder: 'Адрес' },
+  { name: 'city', label: 'Град:', placeholder: 'Град', required: true },
+  { name: 'address', label: 'Адрес:', placeholder: 'Адрес', required: true },
   { name: 'director', label: 'МОЛ:', placeholder: 'МОЛ' },
   { name: 'phone', label: 'Телефон:', placeholder: 'Телефон' }
 ];
@@ -30,9 +33,10 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({
 }) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setCompany((prevCompany) =>
-      prevCompany ? { ...prevCompany, [name]: value } : null
-    );
+    if (name === 'eik' && typeof value === 'string') {
+      return;
+    }
+    setCompany((prevCompany) => ({ ...prevCompany, [name]: value }));
   };
 
   return (
@@ -45,12 +49,9 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({
             type="text"
             className="min-w-1/3"
             placeholder={field.placeholder}
-            value={
-              field.formatValue
-                ? field.formatValue(company)
-                : company?.[field.name as keyof Company] || ''
-            }
-            isFieldsDisabled={company ? true : isFieldsDisabled}
+            required={field.required}
+            value={company[field.name as keyof Company] || ''}
+            isFieldsDisabled={isFieldsDisabled}
             onChange={handleInputChange}
           />
         </div>

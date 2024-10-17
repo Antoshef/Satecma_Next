@@ -27,7 +27,7 @@ export const DocumentPriceData: React.FC<DocumentPriceDataProps> = ({
 }) => {
   return (
     <td colSpan={4} className="text-right align-top">
-      <div>
+      <div className='mt-4'>
         Данъчна основа без отстъпка: {total.amountWithoutDiscount.toFixed(2)}{' '}
         BGN
         <br />

@@ -29,7 +29,6 @@ export default function ClientsTable({ data, error }: PageProps) {
   const [mode, setMode] = useState<EnhancedMode>(EnhancedMode.None);
   const { ToastContainer, notify } = useToast();
   const { user } = useUser();
-  console.log(clients, 'DATA');
 
   const isSelected = (eik: string) =>
     selected.some((client) => client.eik === eik);

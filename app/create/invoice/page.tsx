@@ -1,23 +1,16 @@
-import { Client } from '@/clients/utils/types';
-import { Company, InvoiceData } from './types';
-import { Product } from '@/products/utils/types';
+import { InvoiceData } from './types';
 import { baseUrl } from '@/constants';
 import InvoiceBox from './invoiceBox';
-import {
-  mockClients,
-  mockInvoiceData,
-  mockProducts,
-  mockProvider
-} from './constants';
 import LogoProvider from '@/context/logoContext';
 import { getSession } from '@auth0/nextjs-auth0';
+import { INIT_PROVIDER } from './constants';
 
 export default async function InvoicePage() {
   const session = await getSession();
-  let products;
-  let clients;
+  let products = [];
+  let clients = [];
   let invoiceIds;
-  let provider;
+  let provider = INIT_PROVIDER;
 
   try {
     const productsResponse = await fetch(

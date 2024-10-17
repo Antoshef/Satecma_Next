@@ -1,4 +1,5 @@
-interface SelectFieldProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+interface SelectFieldProps
+  extends React.SelectHTMLAttributes<HTMLSelectElement> {
   name?: string;
   isFieldsDisabled: boolean;
   value: string;

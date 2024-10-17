@@ -6,7 +6,7 @@ import { TextField } from '@/components/textField/TextField';
 import { SelectField } from '@/components/selectField/SelectField';
 import { Company } from './types';
 
-export interface ClientInvoiceDataProps {
+export interface ProviderInvoiceDataProps {
   setReceiver: Dispatch<SetStateAction<Client>>;
   isFieldsDisabled: boolean;
   paymentMethod: string;
@@ -14,12 +14,14 @@ export interface ClientInvoiceDataProps {
   provider: Company | null;
   reason: string;
   setReason: (reason: string) => void;
+  setCompany: Dispatch<SetStateAction<Company>>;
 }
 
-const ClientInvoiceData: React.FC<ClientInvoiceDataProps> = ({
+const ProviderInvoiceData: React.FC<ProviderInvoiceDataProps> = ({
   isFieldsDisabled,
   paymentMethod,
   setPaymentMethod,
+  setCompany,
   provider,
   reason,
   setReason
@@ -30,7 +32,7 @@ const ClientInvoiceData: React.FC<ClientInvoiceDataProps> = ({
 
   return (
     <td colSpan={4}>
-      <div className="flex place-items-center mb-1">
+      <div className="flex place-items-center mb-1 mt-4">
         <span className="basis-1/3 text-left">Начин на плащане:</span>
         <span>
           <SelectField
@@ -46,15 +48,54 @@ const ClientInvoiceData: React.FC<ClientInvoiceDataProps> = ({
         <>
           <div className="flex place-items-center mb-1">
             <span className="basis-1/3 text-left">Банкови реквизити:</span>
-            <span>{provider?.bankName}</span>
+            <TextField
+              name="bankName"
+              type="text"
+              placeholder="Банка"
+              value={provider?.bankName || ''}
+              isFieldsDisabled={isFieldsDisabled}
+              className="p-1 border border-gray-300 rounded"
+              onChange={(e) =>
+                setCompany((prevCompany) => ({
+                  ...prevCompany,
+                  bankName: e.target.value
+                }))
+              }
+            />
           </div>
           <div className="flex place-items-center mb-1">
-            <span className="basis-1/3 text-left">BIC:</span>
-            <span>{provider?.swift}</span>
+            <span className="basis-1/3 text-left">SWIFT:</span>
+            <TextField
+              name="swift"
+              type="text"
+              placeholder="Swift"
+              value={provider?.swift || ''}
+              isFieldsDisabled={isFieldsDisabled}
+              className="p-1 border border-gray-300 rounded"
+              onChange={(e) =>
+                setCompany((prevCompany) => ({
+                  ...prevCompany,
+                  swift: e.target.value
+                }))
+              }
+            />
           </div>
           <div className="flex place-items-center mb-1">
             <span className="basis-1/3 text-left">IBAN:</span>
-            <span>{provider?.iban}</span>
+            <TextField
+              name="iban"
+              type="text"
+              placeholder="IBAN"
+              value={provider?.iban || ''}
+              isFieldsDisabled={isFieldsDisabled}
+              className="p-1 border border-gray-300 rounded"
+              onChange={(e) =>
+                setCompany((prevCompany) => ({
+                  ...prevCompany,
+                  iban: e.target.value
+                }))
+              }
+            />
           </div>
         </>
       )}
@@ -78,4 +119,4 @@ const ClientInvoiceData: React.FC<ClientInvoiceDataProps> = ({
   );
 };
 
-export default ClientInvoiceData;
+export default ProviderInvoiceData;

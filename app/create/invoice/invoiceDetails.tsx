@@ -40,6 +40,7 @@ const InvoiceHeader: React.FC<InvoiceDetailsProps> = ({
           <SelectField
             isFieldsDisabled={isFieldsDisabled}
             value={invoiceType}
+            required
             values={[
               InvoiceType.none,
               InvoiceType.original,
@@ -60,6 +61,7 @@ const InvoiceHeader: React.FC<InvoiceDetailsProps> = ({
             Фактура №:{' '}
             <TextField
               name="invoiceNumber"
+              required
               type="text"
               placeholder="0000000001"
               value={invoiceNumber}
@@ -81,6 +83,7 @@ const InvoiceHeader: React.FC<InvoiceDetailsProps> = ({
             <TextField
               isFieldsDisabled={isFieldsDisabled}
               value={invoiceData.date}
+              required
               type="date"
               name="date"
               className="w-5/12"

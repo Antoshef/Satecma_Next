@@ -43,6 +43,19 @@ export const INVOICE_DATA_DEFAULT_VALUES: InvoiceData = {
   type: InvoiceType.proforma
 };
 
+export const INIT_PROVIDER: Company = {
+  name: '',
+  eik: 0,
+  vat: '',
+  city: '',
+  address: '',
+  director: '',
+  phone: '',
+  bankName: '',
+  iban: '',
+  swift: ''
+};
+
 export const INIT_RECEIVER: Client = {
   email: '',
   phone: '',

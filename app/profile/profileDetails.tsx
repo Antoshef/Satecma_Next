@@ -65,7 +65,7 @@ export const ProfileDetails: React.FC<ProfileDetailsProps> = ({ company }) => {
 
     const requestMethod = company ? 'PUT' : 'POST';
 
-    const response = await fetch('/api/company', {
+    const response = await fetch(`/api/companies?user_id=${user?.sub}`, {
       method: requestMethod,
       headers: {
         'Content-Type': 'application/json'

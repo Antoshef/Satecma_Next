@@ -9,20 +9,19 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     const invoiceData = req.body as InvoiceMetaData;
-
-    const date = new Date();
-    const year = date.getFullYear().toString();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-
+    const year = new Date().getFullYear();
     const dirPath = path.join(
       process.cwd(),
-      'public',
+      'databases',
+      `${invoiceData.provider?.name}_${invoiceData.provider?.eik}`,
       'sent',
       invoiceData.invoiceType,
-      year,
-      month
+      year.toString()
     );
-    const filePath = path.join(dirPath, invoiceData.invoiceNumber + '.json');
+    const filePath = path.join(
+      dirPath,
+      `${invoiceData.invoiceType}-${year}.json`
+    );
 
     // Ensure the directory exists
     try {
@@ -36,10 +35,14 @@ export default async function handler(
     try {
       if (fs.existsSync(filePath)) {
         const fileData = fs.readFileSync(filePath, 'utf8');
-        invoices = JSON.parse(fileData);
+        if (fileData) {
+          invoices = JSON.parse(fileData);
+        }
       }
     } catch (error) {
-      return res.status(500).json({ error: 'Failed to read invoices file' });
+      console.warn(
+        'Failed to read or parse invoices file, initializing with empty array'
+      );
     }
 
     invoices.push(invoiceData);

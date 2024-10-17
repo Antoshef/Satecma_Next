@@ -1,0 +1,56 @@
+[
+  {
+    "receiver": {
+      "email": "",
+      "phone": "",
+      "name": "",
+      "city": "",
+      "address": "",
+      "eik": "",
+      "vat": "",
+      "director": ""
+    },
+    "invoiceNumber": "1231321231",
+    "invoiceType": "proforma",
+    "items": [
+      {
+        "rowIndex": 0,
+        "code": "8000",
+        "name": "fwqfqwfwq",
+        "packing": 0,
+        "quantity": 1,
+        "unit": "",
+        "sellPrice": "6",
+        "discount": "3",
+        "vat": 0,
+        "totalPrice": 6,
+        "package": "1"
+      },
+      {
+        "rowIndex": 1,
+        "code": "312232",
+        "name": "dwqdqw",
+        "packing": 1,
+        "quantity": 1,
+        "unit": "л",
+        "sellPrice": 21,
+        "discount": 0,
+        "vat": 20,
+        "totalPrice": 21
+      }
+    ],
+    "total": {
+      "amountWithoutDiscount": 27,
+      "discount": 0.18,
+      "netAmount": 26.82,
+      "vat": 5.364000000000001,
+      "paid": 32.184
+    },
+    "wordPrice": "dwqdw",
+    "reason": "",
+    "paymentMethod": "По Банка",
+    "email": "",
+    "sendMailToRecepient": true,
+    "date": "2024-10-17T17:19:47.972Z"
+  }
+]

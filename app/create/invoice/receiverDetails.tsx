@@ -26,14 +26,27 @@ const ReceiverDetails: React.FC<ReceiverDetailsProps> = ({
   };
 
   const fields = [
-    { label: 'Град:', name: 'city', placeholder: 'Град', value: receiver.city },
+    {
+      label: 'Град:',
+      name: 'city',
+      placeholder: 'Град',
+      value: receiver.city,
+      required: true
+    },
     {
       label: 'Адрес:',
       name: 'address',
       placeholder: 'Адрес',
-      value: receiver.address
+      value: receiver.address,
+      required: true
     },
-    { label: 'ЕИК:', name: 'eik', placeholder: 'ЕИК', value: receiver.eik },
+    {
+      label: 'ЕИК:',
+      name: 'eik',
+      placeholder: 'ЕИК',
+      value: receiver.eik,
+      required: true
+    },
     { label: 'ДДС №:', name: 'vat', placeholder: 'ДДС №', value: receiver.vat },
     {
       label: 'МОЛ:',
@@ -61,6 +74,7 @@ const ReceiverDetails: React.FC<ReceiverDetailsProps> = ({
             hint="Започни да пишеш за показване на списък с клиенти"
             className="w-1/3"
             variant="simple"
+            required
             placeholder="Избери получател"
             selectedItem={selectedClient}
             setSelectedItem={handleClientSelect}
@@ -73,6 +87,7 @@ const ReceiverDetails: React.FC<ReceiverDetailsProps> = ({
           <span className="text-right">{field.label}</span>
           <TextField
             name={field.name}
+            required={field.required}
             type="text"
             className="w-1/3"
             placeholder={field.placeholder}

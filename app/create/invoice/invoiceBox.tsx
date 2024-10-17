@@ -5,9 +5,9 @@ import { Client } from '@/clients/utils/types';
 import { InputWrapper } from '@/components/input/wrapper';
 import { TableItems } from '../table/tableItems';
 import { useTableItems } from '../table/useTableItems';
-import { createInvoice, getClientData, updateProducts } from './actions';
-import ClientInvoiceData from './clientInvoiceData';
+import ProviderInvoiceData from './providerInvoiceData';
 import {
+  INIT_PROVIDER,
   INIT_RECEIVER,
   INVOICE_DATA_DEFAULT_VALUES,
   VAT_PREFIX
@@ -24,13 +24,14 @@ import { Product } from '@/products/utils/types';
 import useToast from '@/products/utils/useToast';
 import InvoiceDetails from './invoiceDetails';
 import ProviderDetails from './providerDetails';
-import { InvoiceRequestBody } from '../../../pages/api/create/types';
 import TableHeader from './tableHeader';
 import ReceiverDetails from './receiverDetails';
 import HintIcon from '@/components/genericTable/hintIcon';
+import { baseUrl } from '@/constants';
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 interface InvoiceBoxProps {
-  provider: Company | null;
+  provider: Company;
   clients: Client[];
   products: Product[];
   invoiceIds?: string[];
@@ -42,7 +43,7 @@ const InvoiceBox = ({
   products,
   provider
 }: InvoiceBoxProps) => {
-  const [company, setCompany] = useState<Company | null>(null);
+  const [company, setCompany] = useState<Company>(INIT_PROVIDER);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [wordPrice, setWordPrice] = useState('');
   const [reason, setReason] = useState('');
@@ -64,6 +65,7 @@ const InvoiceBox = ({
   const [invoiceData, setInvoiceData] = useState<InvoiceData>(
     INVOICE_DATA_DEFAULT_VALUES
   );
+  const { user } = useUser();
 
   const { ToastContainer, notify } = useToast();
 
@@ -92,7 +94,7 @@ const InvoiceBox = ({
       if (!cssResponse.ok) {
         throw new Error('Failed to load CSS');
       }
-      const css = await cssResponse.text();
+      // const css = await cssResponse.text();
 
       if (!invoiceRef.current?.outerHTML) {
         throw new Error('Invoice HTML is missing');
@@ -100,38 +102,61 @@ const InvoiceBox = ({
 
       if (invoiceType === InvoiceType.original) {
         if (items.length > 0) {
-          const updateProductsResponse = await updateProducts(items);
+          const updateProductsResponse = await fetch(
+            `${baseUrl}/api/products/update?user_id=${user?.sub}`,
+            {
+              method: 'PUT',
+              body: JSON.stringify({ items })
+            }
+          );
           if (!updateProductsResponse.ok) {
             throw new Error('Failed to update products');
           }
         }
       }
 
-      const clientDataResponse = await getClientData(receiver);
-      if (!clientDataResponse.ok) {
-        throw new Error('Failed to get client data');
-      }
+      // const clientDataResponse = await fetch(
+      //   `${baseUrl}/api/clients?user_id=${user?.sub}`,
+      //   {
+      //     method: 'POST',
+      //     body: JSON.stringify({
+      //       name: receiver.name,
+      //       city: receiver.city,
+      //       address: receiver.address,
+      //       eik: receiver.eik,
+      //       vat: receiver.vat,
+      //       director: receiver.director,
+      //       email: receiver.email,
+      //       phone: receiver.phone
+      //     })
+      //   }
+      // );
+      // if (!clientDataResponse.ok) {
+      //   throw new Error('Failed to get client data');
+      // }
 
-      const invoiceRequest: InvoiceRequestBody = {
-        email,
-        invoiceNumber,
-        html: invoiceRef.current.outerHTML,
-        css,
-        sendMailToRecepient,
-        invoiceType,
-        providerName: company?.name || '',
-        client: invoiceData.client
-      };
+      // const invoiceRequest: InvoiceRequestBody = {
+      //   email,
+      //   invoiceNumber,
+      //   html: invoiceRef.current.outerHTML,
+      //   css,
+      //   sendMailToRecepient,
+      //   invoiceType,
+      //   providerName: company?.name || '',
+      //   client: invoiceData.client
+      // };
 
-      const createInvoiceResponse = await createInvoice({
-        invoiceRequest,
-        invoiceData
-      });
-      if (!createInvoiceResponse.ok) {
-        throw new Error('Failed to create invoice');
-      }
+      // const createInvoiceResponse = await fetch(
+      //   `${baseUrl}/api/create/invoice?user_id=${user?.sub}`,
+      //   {
+      //     method: 'POST',
+      //     body: JSON.stringify({ invoiceRequest, invoiceData })
+      //   }
+      // );
+      // if (!createInvoiceResponse.ok) {
+      //   throw new Error('Failed to create invoice');
+      // }
 
-      // Collect all data to send to the API endpoint
       const invoiceMetaData: InvoiceMetaData = {
         provider: company,
         receiver,
@@ -148,13 +173,16 @@ const InvoiceBox = ({
       };
 
       // Send data to the API endpoint
-      const saveInvoiceResponse = await fetch('/api/save-invoice', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(invoiceMetaData)
-      });
+      const saveInvoiceResponse = await fetch(
+        `/api/save-invoice?user_id=${user?.sub}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(invoiceMetaData)
+        }
+      );
 
       if (!saveInvoiceResponse.ok) {
         throw new Error('Failed to save invoice metadata');
@@ -162,6 +190,7 @@ const InvoiceBox = ({
 
       notify('Фактурата е създадена успешно!', 'success');
     } catch (error) {
+      console.error(error);
       notify('Възникна грешка при създаването на фактурата.', 'error');
       setIsFieldsDisabled(false);
     }
@@ -218,7 +247,9 @@ const InvoiceBox = ({
   }, [receiver, total, invoiceNumber, items]);
 
   useEffect(() => {
-    setCompany(provider);
+    if (provider) {
+      setCompany(provider);
+    }
   }, [provider]);
 
   return (
@@ -283,12 +314,13 @@ const InvoiceBox = ({
               </tr>
 
               <tr>
-                <ClientInvoiceData
+                <ProviderInvoiceData
                   setReceiver={setReceiver}
                   isFieldsDisabled={isFieldsDisabled}
                   paymentMethod={paymentMethod}
                   setPaymentMethod={setPaymentMethod}
-                  provider={provider}
+                  provider={company}
+                  setCompany={setCompany}
                   reason={reason}
                   setReason={setReason}
                 />

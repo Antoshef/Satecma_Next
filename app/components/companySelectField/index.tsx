@@ -6,8 +6,7 @@ import { classNames } from "../header";
 import { useAppDispatch, useAppSelector } from "../../../lib/hooks";
 import { updateProvider } from "../../../lib/features/app";
 
-const satecma =
-  "https://satecma.bg/wp-content/uploads/2024/04/favico-transparent.png";
+const satecma = "/images/logo/favico.png";
 const eko =
   "https://satecma.bg/wp-content/uploads/2024/04/eco-home-group-logo-square.png";
 
@@ -29,7 +28,7 @@ export const CompanySelectField = () => {
   return (
     <Menu as="div" className="relative ml-3">
       <div>
-        <Menu.Button className="overflow-hidden relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+        <Menu.Button className="w-12 overflow-hidden relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
           <span className="absolute -inset-1.5" />
           <span className="sr-only">Open company menu</span>
           <Image

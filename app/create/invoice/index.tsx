@@ -442,3 +442,5 @@ export const InvoiceBox = forwardRef<HTMLDivElement, InvoiceBoxProps>(
     );
   },
 );
+
+InvoiceBox.displayName = "InvoiceBox";

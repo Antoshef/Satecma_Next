@@ -33,7 +33,7 @@ export const ECOHOME_COMPANY: Company = {
 
 export const INVOICE_DATA_DEFAULT_VALUES: InvoiceData = {
   amount: 0,
-  client: '',
+  clientName: '',
   date: new Date().toISOString().split('T')[0],
   eik: 0,
   invoice_id: '',
@@ -116,7 +116,7 @@ const mockClients: Client[] = [
 // Mock data for InvoiceData
 const mockInvoiceData: InvoiceData[] = [
   {
-    client: 'Client 1',
+    clientName: 'Client 1',
     eik: 123456789,
     vat_number: 'BG123456789',
     date: '2023-10-01',
@@ -127,7 +127,7 @@ const mockInvoiceData: InvoiceData[] = [
     type: InvoiceType.original
   },
   {
-    client: 'Client 2',
+    clientName: 'Client 2',
     eik: 987654321,
     vat_number: 'BG987654321',
     date: '2023-10-02',

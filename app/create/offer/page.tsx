@@ -1,10 +1,10 @@
 import { OfferBox } from './offerBox';
-import { mockProducts, mockProvider } from '../invoice/constants';
+import { INIT_PROVIDER, mockProducts } from '../invoice/constants';
 import LogoProvider from '@/context/logoContext';
 
 export default async function OfferPage() {
   const products = mockProducts;
-  const provider = mockProvider;
+  const provider = INIT_PROVIDER;
 
   // Uncomment and use the following code if you want to fetch data from the API instead of using mocks
   // try {

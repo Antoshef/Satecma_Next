@@ -70,7 +70,7 @@ export const TableItems = ({
         <td className="py-1">
           <TextField
             smallField
-            name="package"
+            name="packing"
             data-code={code}
             isFieldsDisabled={!isCustomItem(code) || isFieldsDisabled}
             value={packing}

@@ -23,14 +23,15 @@ import ApplicationDetails from './applicationDetails';
 import RecipientDetails from './recepientDetails';
 import { useLogo } from '@/context/logoContext';
 import { OfferMetaData } from './types';
+import { INIT_PROVIDER } from '../invoice/constants';
 
 interface OfferBoxProps {
-  provider: Company | null;
+  provider: Company;
   products: Product[];
 }
 
 export const OfferBox = ({ products, provider }: OfferBoxProps) => {
-  const [company, setCompany] = useState<Company | null>(null);
+  const [company, setCompany] = useState<Company>(INIT_PROVIDER);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [application, setApplication] = useState({
     warranty: 0,
@@ -103,6 +104,7 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
 
         notify('Офертата беше успешно изпратена.', 'success');
       } catch (error) {
+        console.error(error);
         notify('Грешка при изпращането на офертата.', 'error');
       }
     },
@@ -130,7 +132,7 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
       <form autoComplete="off" className="p-4" onSubmit={onSubmit} id="offer">
         <div
           ref={offerRef}
-          className="mx-auto p-4 border border-gray-200 shadow-md text-base font-sans"
+          className="mx-auto min-w-max p-4 border border-gray-200 shadow-md text-base font-sans"
         >
           <table className="w-full border-collapse">
             <tbody>

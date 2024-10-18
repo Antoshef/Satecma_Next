@@ -33,7 +33,7 @@ const ProviderDetails: React.FC<ProviderDetailsProps> = ({
 }) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (name === 'eik' && typeof value === 'string') {
+    if (name === 'eik' && !Number(value)) {
       return;
     }
     setCompany((prevCompany) => ({ ...prevCompany, [name]: value }));

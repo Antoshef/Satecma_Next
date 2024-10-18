@@ -25,6 +25,9 @@ export const useTableItems = ({
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value, dataset } = e.target;
+    console.log('dataset', dataset);
+    console.log('name', name);
+    console.log('value', value);
     const newItems = [...items];
     const currentItem = newItems.find((item) => item.code === dataset.code);
     if (currentItem) {

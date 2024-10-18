@@ -26,7 +26,7 @@ export default async function handler(
     // Ensure the directory exists
     try {
       fs.mkdirSync(dirPath, { recursive: true });
-    } catch (error) {
+    } catch {
       return res.status(500).json({ error: 'Failed to create directories' });
     }
 
@@ -39,7 +39,7 @@ export default async function handler(
           invoices = JSON.parse(fileData);
         }
       }
-    } catch (error) {
+    } catch {
       console.warn(
         'Failed to read or parse invoices file, initializing with empty array'
       );
@@ -50,7 +50,7 @@ export default async function handler(
     try {
       fs.writeFileSync(filePath, JSON.stringify(invoices, null, 2));
       return res.status(200).json({ message: 'Invoice saved successfully' });
-    } catch (error) {
+    } catch {
       return res.status(500).json({ error: 'Failed to save invoice' });
     }
   } else {

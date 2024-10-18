@@ -29,6 +29,7 @@ import ReceiverDetails from './receiverDetails';
 import HintIcon from '@/components/genericTable/hintIcon';
 import { baseUrl } from '@/constants';
 import { useUser } from '@auth0/nextjs-auth0/client';
+import { InvoiceRequestBody } from '../../../pages/api/create/types';
 
 interface InvoiceBoxProps {
   provider: Company;
@@ -135,27 +136,27 @@ const InvoiceBox = ({
       //   throw new Error('Failed to get client data');
       // }
 
-      // const invoiceRequest: InvoiceRequestBody = {
-      //   email,
-      //   invoiceNumber,
-      //   html: invoiceRef.current.outerHTML,
-      //   css,
-      //   sendMailToRecepient,
-      //   invoiceType,
-      //   providerName: company?.name || '',
-      //   client: invoiceData.client
-      // };
+      const invoiceRequest: InvoiceRequestBody = {
+        email,
+        invoiceNumber,
+        html: invoiceRef.current.outerHTML,
+        css,
+        sendMailToRecepient,
+        invoiceType,
+        provider: company,
+        clientName: invoiceData.clientName
+      };
 
-      // const createInvoiceResponse = await fetch(
-      //   `${baseUrl}/api/create/invoice?user_id=${user?.sub}`,
-      //   {
-      //     method: 'POST',
-      //     body: JSON.stringify({ invoiceRequest, invoiceData })
-      //   }
-      // );
-      // if (!createInvoiceResponse.ok) {
-      //   throw new Error('Failed to create invoice');
-      // }
+      const createInvoiceResponse = await fetch(
+        `${baseUrl}/api/create/invoice?user_id=${user?.sub}`,
+        {
+          method: 'POST',
+          body: JSON.stringify({ invoiceRequest, invoiceData })
+        }
+      );
+      if (!createInvoiceResponse.ok) {
+        throw new Error('Failed to create invoice');
+      }
 
       const invoiceMetaData: InvoiceMetaData = {
         provider: company,

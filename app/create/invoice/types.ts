@@ -26,7 +26,7 @@ export interface Company {
 }
 
 export interface InvoiceData {
-  client: string;
+  clientName: string;
   eik: number;
   vat_number: string;
   date: string;

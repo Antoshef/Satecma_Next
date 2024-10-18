@@ -11,7 +11,7 @@ import { DocumentRequestBody } from './types';
 import { MailOptions } from 'nodemailer/lib/sendmail-transport';
 
 // Utility to load base directory from environment
-const BASE_DIR = process.env.DOCUMENT_BASE_DIR || '/default/path/to/documents';
+const BASE_DIR = process.env.DOCUMENT_BASE_DIR || '/databases';
 
 // Helper function to safely build file paths
 const safeJoin = (...segments: string[]) =>
@@ -26,33 +26,32 @@ export const generateAndSendDocument = async (
 ) => {
   const {
     email,
-    name,
     html,
+    invoiceNumber,
     css,
     sendMailToRecepient,
     documentType,
-    providerName,
-    client,
-    heading
+    provider: { name: providerName, eik },
+    clientName
   } = documentRequest;
 
   if (!providerName) throw new Error('Provider name is missing.');
 
   // Sanitize inputs to prevent directory traversal
-  const sanitizedProviderName = sanitizeFilename(providerName);
-  const sanitizedClient = sanitizeFilename(client);
-  const sanitizedHeading = sanitizeFilename(heading || name);
+  const sanitizedProviderName = sanitizeFilename(`${providerName}_${eik}`);
+  const sanitizedClientName = sanitizeFilename(clientName);
+  const sanitizedInvoiceNumber = sanitizeFilename(invoiceNumber);
 
-  const fileName = `${documentType}-${sanitizedClient}-${sanitizedHeading}.pdf`;
+  const fileName = `${documentType}-${sanitizedClientName}-${sanitizedInvoiceNumber}.pdf`;
 
   const currentMonth = new Date().toLocaleString('default', { month: 'long' });
   const currentYear = new Date().getFullYear();
 
   // Build the directory and file paths securely
-  const baseDir = safeJoin(BASE_DIR, sanitizedProviderName);
   const sentDir = safeJoin(
-    baseDir,
-    'Sent',
+    BASE_DIR,
+    sanitizedProviderName,
+    'sent',
     documentType,
     currentYear.toString(),
     currentMonth

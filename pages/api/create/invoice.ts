@@ -13,6 +13,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const { method } = req;
+  const { user_id } = req.query;
   const table_name = 'satecma_invoices_sent';
 
   if (method === 'GET') {
@@ -37,13 +38,13 @@ export default async function handler(
       // Validate required fields
       const requiredFields: (keyof DocumentRequestBody)[] = [
         'email',
-        'name',
+        'invoiceNumber',
         'html',
         'css',
         'sendMailToRecepient',
         'documentType',
-        'providerName',
-        'client'
+        'provider',
+        'clientName'
       ];
       const missingFields: (keyof DocumentRequestBody)[] = [];
 
@@ -58,15 +59,16 @@ export default async function handler(
       }
 
       // Generate and send the document
-      const { path: filePath } = await generateAndSendDocument(documentRequest);
-      if (!filePath) {
+      const { path: filePath, fileName } =
+        await generateAndSendDocument(documentRequest);
+      if (!filePath || !fileName) {
         return res.status(500).json({ message: 'Error generating document' });
       }
 
       // Successfully saved the document
       return res.status(200).json({
         message: 'Document generated and sent',
-        file_path: filePath
+        file_path: `${filePath}/${fileName}`
       });
     } catch (error) {
       console.error('POST error:', error);

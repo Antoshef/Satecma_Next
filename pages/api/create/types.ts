@@ -1,4 +1,4 @@
-import { Company } from '@/create/invoice/types';
+import { Company, InvoiceData } from '@/create/invoice/types';
 
 export interface InvoiceRequestBody {
   email: string;
@@ -6,7 +6,7 @@ export interface InvoiceRequestBody {
   html: string;
   css: string;
   sendMailToRecepient: boolean;
-  invoiceType: string;
+  documentType: string;
   provider: Company;
   clientName: string;
 }
@@ -21,14 +21,6 @@ export interface OfferRequestBody {
 }
 
 export interface DocumentRequestBody {
-  email: string;
-  name: string;
-  html: string;
-  css: string;
-  sendMailToRecepient: boolean;
-  documentType: 'invoice' | 'offer';
-  invoiceNumber: string;
-  provider: Company;
-  clientName: string;
-  heading?: string;
+  invoiceRequest: InvoiceRequestBody;
+  invoiceData: InvoiceData;
 }

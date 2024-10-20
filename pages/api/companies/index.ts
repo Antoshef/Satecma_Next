@@ -18,8 +18,8 @@ export default async function handler(
   if (method === 'GET') {
     try {
       const results = await queryAsync<Company[]>(
-        `SELECT * FROM ${tableName} WHERE user_id = ?`,
-        [user_id]
+        `SELECT * FROM ?? WHERE user_id = ?`,
+        [tableName, user_id]
       );
       if (results.length === 0) {
         return res.status(200).json(undefined);
@@ -62,10 +62,11 @@ export default async function handler(
       }
 
       const insertQuery = `
-        INSERT INTO ${tableName} (user_id, eik, name, vat, city, address, director, phone, iban, swift, bankName)
+        INSERT INTO ?? (user_id, eik, name, vat, city, address, director, phone, iban, swift, bankName)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
       `;
       const values = [
+        tableName,
         user_id,
         providerData.eik,
         providerData.name,
@@ -83,8 +84,11 @@ export default async function handler(
       await queryAsync(insertQuery, values);
 
       // Retrieve the inserted record by a unique identifier, like `user_id`
-      const selectQuery = `SELECT * FROM ${tableName} WHERE user_id = ?`;
-      const insertedCompany = await queryAsync<Company>(selectQuery, [user_id]);
+      const selectQuery = `SELECT * FROM ?? WHERE user_id = ?`;
+      const insertedCompany = await queryAsync<Company>(selectQuery, [
+        tableName,
+        user_id
+      ]);
 
       // Respond with the inserted record
       return res.status(201).json({
@@ -127,9 +131,10 @@ export default async function handler(
 
       // Ensure the company belongs to the current user
       const checkCompanyQuery = `
-        SELECT * FROM ${tableName} WHERE eik = ? AND user_id = ?;
+        SELECT * FROM ?? WHERE eik = ? AND user_id = ?;
       `;
       const existingCompany = await queryAsync<Company[]>(checkCompanyQuery, [
+        tableName,
         providerData.eik,
         user_id
       ]);
@@ -139,12 +144,13 @@ export default async function handler(
       }
 
       const updateQuery = `
-        UPDATE ${tableName}
+        UPDATE ??
         SET name = ?, vat = ?, city = ?, address = ?, director = ?, phone = ?, iban = ?, swift = ?, bankName = ?
         WHERE eik = ? AND user_id = ?
         RETURNING *;
       `;
       const values = [
+        tableName,
         providerData.name,
         providerData.vat,
         providerData.city,

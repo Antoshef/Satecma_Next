@@ -1,19 +1,18 @@
-import dynamic from 'next/dynamic';
 import './styles.css';
 import { HeaderActions } from './headerActions';
 
-const Lottie = dynamic(() => import('./Lottie'), { ssr: false });
-
 export async function Header() {
   return (
-    <header className="relative dash-background w-full h-[80vh] flex items-center justify-around p-4 bg-theme-light-background dark:bg-theme-dark-background">
+    <header className="pl-4 md:pl-12 relative dash-background w-full h-[80vh] flex items-center p-4 bg-theme-light-background dark:bg-theme-dark-background">
       {/* Left-side content */}
-      <div className="relative z-10 max-w-2xl text-theme-light-primary dark:text-theme-dark-primary p-4">
-        <p className="text-8xl text-theme-light-white">ОРГАНИЗАТОР.БГ</p>
-        <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-theme-light-quaternary to-theme-light-danger bg-clip-text text-transparent dark:from-theme-dark-primary dark:to-theme-dark-secondary">
+      <div className="relative z-10 max-w-full md:max-w-2xl text-theme-light-primary dark:text-theme-dark-primary p-4 md:p-8 lg:p-12">
+        <p className="text-4xl lg:text-8xl text-theme-light-white">
+          ОРГАНИЗАТОР.БГ
+        </p>
+        <h1 className="text-xl md:text-3xl font-bold bg-gradient-to-r from-theme-light-quaternary to-theme-light-danger bg-clip-text text-transparent dark:from-theme-dark-primary dark:to-theme-dark-secondary">
           Професионално приложение за управление на вашия бизнес
         </h1>
-        <p className="mt-2 text-lg md:text-xl text-theme-light-white bg-gradient-to-r from-theme-light-primary to-theme-light-secondary bg-clip-text dark:text-theme-dark-tertiary dark:from-theme-dark-primary dark:to-theme-dark-secondary">
+        <p className="mt-2 text-base md:text-xl text-theme-light-white bg-gradient-to-r from-theme-light-primary to-theme-light-secondary bg-clip-text dark:text-theme-dark-tertiary dark:from-theme-dark-primary dark:to-theme-dark-secondary">
           Оптимизирайте бизнес операциите си с лекота
         </p>
 
@@ -22,11 +21,11 @@ export async function Header() {
       </div>
 
       {/* Right-side image */}
-      <div className="hidden md:block relative z-10 w-2/5 h-full">
+      {/* <div className="hidden md:block relative z-10 w-2/5 h-full">
         <div className="absolute top-48">
           <Lottie />
         </div>
-      </div>
+      </div> */}
     </header>
   );
 }

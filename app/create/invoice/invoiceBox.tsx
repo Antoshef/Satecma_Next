@@ -142,7 +142,7 @@ const InvoiceBox = ({
         html: invoiceRef.current.outerHTML,
         css,
         sendMailToRecepient,
-        invoiceType,
+        documentType: invoiceType,
         provider: company,
         clientName: invoiceData.clientName
       };

@@ -24,15 +24,11 @@ export default function RootLayout({
     <html lang="en">
       <body className="h-full">
         <UserProvider>
-          <div className="flex h-full">
-            <ErrorBoundary errorComponent={GlobalError}>
-              <div className="flex-1 relative">
-                <Suspense fallback={<Loading />}>
-                  <main>{children}</main>
-                </Suspense>
-              </div>
-            </ErrorBoundary>
-          </div>
+          <ErrorBoundary errorComponent={GlobalError}>
+            <Suspense fallback={<Loading />}>
+              <main>{children}</main>
+            </Suspense>
+          </ErrorBoundary>
         </UserProvider>
       </body>
     </html>

@@ -27,7 +27,7 @@ export default async function handler(
     // Ensure the directory exists
     try {
       fs.mkdirSync(dirPath, { recursive: true });
-    } catch (error) {
+    } catch {
       return res.status(500).json({ error: 'Failed to create directories' });
     }
 
@@ -38,7 +38,7 @@ export default async function handler(
         const fileData = fs.readFileSync(filePath, 'utf8');
         offers = JSON.parse(fileData);
       }
-    } catch (error) {
+    } catch {
       return res.status(500).json({ error: 'Failed to read offers file' });
     }
 
@@ -47,7 +47,7 @@ export default async function handler(
     try {
       fs.writeFileSync(filePath, JSON.stringify(offers, null, 2));
       return res.status(200).json({ message: 'Offer saved successfully' });
-    } catch (error) {
+    } catch {
       return res.status(500).json({ error: 'Failed to save offer' });
     }
   } else {

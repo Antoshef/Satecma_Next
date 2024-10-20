@@ -64,19 +64,19 @@ export const ScrollableText = () => {
   }, []);
 
   return (
-    <div className="my-40 rounded-none shadow-none">
-      <div className="container px-16 min-h-[50vh] flex flex-wrap  mx-auto">
+    <div className="my-20 md:my-40 rounded-none shadow-none">
+      <div className="container px-4 md:px-16 min-h-[50vh] flex flex-col md:flex-row gap-8 mx-auto">
         {/* Left Column: Large Title */}
         <div className="w-full md:w-1/2">
           <div className="sticky top-[40%] z-10 transform -translate-y-1/10">
-            <h2 className="text-5xl font-bold text-theme-light-primary dark:text-theme-dark-primary tracking-wide">
+            <h2 className="text-3xl md:text-5xl font-bold text-theme-light-primary dark:text-theme-dark-primary tracking-wide">
               Процес на управление на проекти
             </h2>
           </div>
         </div>
 
         {/* Right Column: Icons with Titles/Subtitles */}
-        <div className="w-full md:w-1/2 pl-12 flex flex-col justify-center">
+        <div className="w-full md:w-1/2 pl-4 md:pl-12 flex flex-col justify-center">
           <ul>
             {items.map((item, index) => (
               <DashedLineIcon

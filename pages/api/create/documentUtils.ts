@@ -7,7 +7,7 @@ import {
   convertHTMLToPDF
 } from '../../../utils/createPdfFromHtml';
 import { createDir } from '../../../utils/utils';
-import { DocumentRequestBody } from './types';
+import { InvoiceRequestBody } from './types';
 import { MailOptions } from 'nodemailer/lib/sendmail-transport';
 
 // Utility to load base directory from environment
@@ -22,7 +22,7 @@ const sanitizeFilename = (filename: string) =>
   filename.replace(/[^a-zA-Z0-9-_.]/g, '_');
 
 export const generateAndSendDocument = async (
-  documentRequest: DocumentRequestBody
+  documentRequest: InvoiceRequestBody
 ) => {
   const {
     email,

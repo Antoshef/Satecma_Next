@@ -18,7 +18,7 @@ import {
   InvoiceData,
   InvoiceError,
   InvoiceMetaData,
-  InvoiceType
+  DocumentType
 } from './types';
 import { Product } from '@/products/utils/types';
 import useToast from '@/products/utils/useToast';
@@ -29,7 +29,7 @@ import ReceiverDetails from './receiverDetails';
 import HintIcon from '@/components/genericTable/hintIcon';
 import { baseUrl } from '@/constants';
 import { useUser } from '@auth0/nextjs-auth0/client';
-import { InvoiceRequestBody } from '../../../pages/api/create/types';
+import { DocumentRequest } from '../../../pages/api/create/types';
 
 interface InvoiceBoxProps {
   provider: Company;
@@ -60,7 +60,7 @@ const InvoiceBox = ({
   const [invoiceNumber, setInvoiceNumber] = useState<string>(
     invoiceIds ? invoiceIds[0] : ''
   );
-  const [invoiceType, setInvoiceType] = useState<InvoiceType>(InvoiceType.none);
+  const [invoiceType, setInvoiceType] = useState<DocumentType>(DocumentType.none);
   const invoiceRef = useRef<HTMLTableElement>(null);
   const [isFieldsDisabled, setIsFieldsDisabled] = useState<boolean>(false);
   const [invoiceData, setInvoiceData] = useState<InvoiceData>(
@@ -83,7 +83,7 @@ const InvoiceBox = ({
       setError((prevError) => ({ ...prevError, wordPrice: true }));
     }
 
-    if (invoiceType === InvoiceType.none) {
+    if (invoiceType === DocumentType.none) {
       setError((prevError) => ({ ...prevError, invoiceType: true }));
     }
 
@@ -95,13 +95,13 @@ const InvoiceBox = ({
       if (!cssResponse.ok) {
         throw new Error('Failed to load CSS');
       }
-      // const css = await cssResponse.text();
+      const css = await cssResponse.text();
 
       if (!invoiceRef.current?.outerHTML) {
         throw new Error('Invoice HTML is missing');
       }
 
-      if (invoiceType === InvoiceType.original) {
+      if (invoiceType === DocumentType.original) {
         if (items.length > 0) {
           const updateProductsResponse = await fetch(
             `${baseUrl}/api/products/update?user_id=${user?.sub}`,
@@ -136,9 +136,9 @@ const InvoiceBox = ({
       //   throw new Error('Failed to get client data');
       // }
 
-      const invoiceRequest: InvoiceRequestBody = {
+      const invoiceRequest: DocumentRequest = {
         email,
-        invoiceNumber,
+        documentNumber: invoiceNumber,
         html: invoiceRef.current.outerHTML,
         css,
         sendMailToRecepient,

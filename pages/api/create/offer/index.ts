@@ -1,21 +1,20 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { generateAndSendDocument } from './documentUtils';
-import { DocumentRequestBody, InvoiceRequestBody } from './types';
-import { queryAsync } from '../../../utils/db';
-import { InvoiceData } from '@/create/invoice/types';
+import { DocumentRequest, DocumentRequestBody } from '../types';
+import { generateAndSendDocument } from '../utils-deprecated';
+import { queryAsync } from '../../../../utils/db';
 
 interface TypedNextApiRequest extends NextApiRequest {
   body: DocumentRequestBody;
 }
 
-const table_name = 'invoices_sent';
+const table_name = 'offers_sent';
 
 // Helper function to validate missing fields
 const validateRequiredFields = (
-  requiredFields: (keyof InvoiceRequestBody)[],
-  data: InvoiceRequestBody
+  requiredFields: (keyof DocumentRequest)[],
+  data: DocumentRequest
 ) => {
-  const missingFields: (keyof InvoiceRequestBody)[] = [];
+  const missingFields: (keyof DocumentRequest)[] = [];
   requiredFields.forEach((field) => {
     if (!data[field]) missingFields.push(field);
   });
@@ -30,32 +29,17 @@ export default async function handler(
   const { user_id } = req.query;
 
   switch (method) {
-    case 'GET':
-      try {
-        const results = await queryAsync<InvoiceData[]>(
-          `SELECT * FROM ?? WHERE user_id = ?`,
-          [table_name, user_id]
-        );
-        if (!results || results.length === 0) {
-          return res.status(404).json({ message: 'Invoices not found' });
-        }
-        return res.status(200).json(results);
-      } catch (error) {
-        console.error('GET error:', error);
-        return res.status(500).json({
-          message: 'Internal server error',
-          error: (error as Error).message
-        });
-      }
-
     case 'POST':
       try {
-        const { invoiceRequest, invoiceData } = req.body;
+        const { documentRequest, offerData } = req.body;
+        if (!documentRequest || !offerData) {
+          return res.status(400).json({ message: 'Missing request body' });
+        }
 
         // Validate required fields
-        const requiredFields: (keyof InvoiceRequestBody)[] = [
+        const requiredFields: (keyof DocumentRequest)[] = [
           'email',
-          'invoiceNumber',
+          'documentNumber',
           'html',
           'css',
           'sendMailToRecepient',
@@ -65,7 +49,7 @@ export default async function handler(
         ];
         const missingFields = validateRequiredFields(
           requiredFields,
-          invoiceRequest
+          documentRequest
         );
 
         if (missingFields.length > 0) {
@@ -76,7 +60,7 @@ export default async function handler(
 
         // Generate and send the document
         const { path: filePath, fileName } =
-          await generateAndSendDocument(invoiceRequest);
+          await generateAndSendDocument(documentRequest);
         if (!filePath || !fileName) {
           return res.status(500).json({ message: 'Error generating document' });
         }
@@ -85,24 +69,20 @@ export default async function handler(
           amount,
           clientName,
           date,
-          eik,
-          invoice_id,
+          offer_id,
           total,
           type,
           vat,
-          vat_number
-        } = invoiceData;
+        } = offerData;
 
         const insertQuery = `
           INSERT INTO ?? 
-          (invoice_id, client_name, eik, vat_number, date, amount, vat, total, type, file_path, user_id) 
+          (offer_id, client_name, date, amount, vat, total, type, file_path, user_id) 
           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
         const values = [
           table_name,
-          invoice_id,
+          offer_id,
           clientName,
-          eik,
-          vat_number,
           date,
           amount,
           vat,

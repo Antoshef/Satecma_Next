@@ -20,3 +20,14 @@ export interface OfferMetaData {
   sendMailToRecepient: boolean;
   date: string;
 }
+
+export interface OfferData {
+  clientName: string;
+  date: string;
+  offer_id: string;
+  amount: number;
+  vat: number;
+  total: number;
+  type: DocumentType;
+  file_path?: string;
+}

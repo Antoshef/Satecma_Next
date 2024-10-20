@@ -1,5 +1,5 @@
 import { Client } from '@/clients/utils/types';
-import { InvoiceData, InvoiceType, Company } from './types';
+import { InvoiceData, Company, DocumentType } from './types';
 import { Product } from '@/products/utils/types';
 export const VAT_PREFIX = 'BG';
 export const SATECMA_LOGO =
@@ -40,7 +40,7 @@ export const INVOICE_DATA_DEFAULT_VALUES: InvoiceData = {
   total: 0,
   vat: 0,
   vat_number: '',
-  type: InvoiceType.proforma
+  type: DocumentType.proforma
 };
 
 export const INIT_PROVIDER: Company = {
@@ -124,7 +124,7 @@ const mockInvoiceData: InvoiceData[] = [
     amount: 500,
     vat: 100,
     total: 600,
-    type: InvoiceType.original
+    type: DocumentType.original
   },
   {
     clientName: 'Client 2',
@@ -135,7 +135,7 @@ const mockInvoiceData: InvoiceData[] = [
     amount: 1000,
     vat: 200,
     total: 1200,
-    type: InvoiceType.proforma
+    type: DocumentType.proforma
   }
 ];
 

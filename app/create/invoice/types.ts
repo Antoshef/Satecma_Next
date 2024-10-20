@@ -34,14 +34,15 @@ export interface InvoiceData {
   amount: number;
   vat: number;
   total: number;
-  type: InvoiceType;
+  type: DocumentType;
   file_path?: string;
 }
 
-export enum InvoiceType {
+export enum DocumentType {
   none = 'none',
-  original = 'original',
-  proforma = 'proforma'
+  original = 'invoice-original',
+  proforma = 'invoice-proforma',
+  offer = 'offer'
 }
 
 export interface InvoiceError {
@@ -54,7 +55,7 @@ export interface InvoiceMetaData {
   provider: Company | null;
   receiver: Client;
   invoiceNumber: string;
-  invoiceType: InvoiceType;
+  invoiceType: DocumentType;
   items: Item[];
   total: {
     amountWithoutDiscount: number;

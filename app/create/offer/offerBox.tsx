@@ -24,6 +24,7 @@ import RecipientDetails from './recepientDetails';
 import { useLogo } from '@/context/logoContext';
 import { OfferMetaData } from './types';
 import { INIT_PROVIDER } from '../invoice/constants';
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 interface OfferBoxProps {
   provider: Company;
@@ -42,6 +43,7 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
   const offerRef = useRef<HTMLTableElement>(null);
   const [isFieldsDisabled, setIsFieldsDisabled] = useState<boolean>(false);
   const [heading, setHeading] = useState('Заглавие на офертата');
+  const [offerNumber, setOfferNumber] = useState('');
   const { ToastContainer, notify } = useToast();
   const [recipient, setRecipient] = useState({
     name: '',
@@ -51,6 +53,7 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
   const { items, total, addItem, itemChangeHandler, removeItem } =
     useTableItems({ selectedProduct, setSelectedProduct });
   const { logoUrl } = useLogo();
+  const { user } = useUser();
 
   const productChangeHandler = (item: { name: string }) => {
     setSelectedProduct(
@@ -64,16 +67,18 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
       setIsFieldsDisabled(true);
       const css = await fetch('/globals.css').then((res) => res.text());
       try {
-        await fetch(`${baseUrl}/api/create/offer`, {
+        await fetch(`${baseUrl}/api/create/offer?user_id=${user?.sub}`, {
           method: 'POST',
           body: JSON.stringify({
             email: recipient.email,
-            name: recipient.name,
             sendMailToRecepient,
             html: offerRef.current?.outerHTML,
             css,
-            providerName: provider?.name,
-            heading
+            heading,
+            clientName: recipient.name,
+            documentType: 'offer',
+            provider: provider || null,
+            offerNumber
           })
         });
 
@@ -90,13 +95,16 @@ export const OfferBox = ({ products, provider }: OfferBoxProps) => {
         };
 
         // Send data to the API endpoint
-        const saveOfferResponse = await fetch('/api/save-offer', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(offerMetaData)
-        });
+        const saveOfferResponse = await fetch(
+          `/api/save-offer?user_id=${user?.sub}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(offerMetaData)
+          }
+        );
 
         if (!saveOfferResponse.ok) {
           throw new Error('Failed to save offer metadata');

@@ -1,14 +1,14 @@
 import fs from 'fs';
 import Imap from 'imap';
+import { MailOptions } from 'nodemailer/lib/sendmail-transport';
 import nodemailer from 'nodemailer';
 import path from 'path';
+import { DocumentRequest } from './types';
+import { createDir } from '../../../utils/utils';
 import {
   addTextToPDF,
   convertHTMLToPDF
 } from '../../../utils/createPdfFromHtml';
-import { createDir } from '../../../utils/utils';
-import { InvoiceRequestBody } from './types';
-import { MailOptions } from 'nodemailer/lib/sendmail-transport';
 
 // Utility to load base directory from environment
 const BASE_DIR = process.env.DOCUMENT_BASE_DIR || '/databases';
@@ -22,12 +22,12 @@ const sanitizeFilename = (filename: string) =>
   filename.replace(/[^a-zA-Z0-9-_.]/g, '_');
 
 export const generateAndSendDocument = async (
-  documentRequest: InvoiceRequestBody
+  documentRequest: DocumentRequest
 ) => {
   const {
     email,
     html,
-    invoiceNumber,
+    documentNumber,
     css,
     sendMailToRecepient,
     documentType,
@@ -40,7 +40,7 @@ export const generateAndSendDocument = async (
   // Sanitize inputs to prevent directory traversal
   const sanitizedProviderName = sanitizeFilename(`${providerName}_${eik}`);
   const sanitizedClientName = sanitizeFilename(clientName);
-  const sanitizedInvoiceNumber = sanitizeFilename(invoiceNumber);
+  const sanitizedInvoiceNumber = sanitizeFilename(documentNumber);
 
   const fileName = `${documentType}-${sanitizedClientName}-${sanitizedInvoiceNumber}.pdf`;
 
@@ -119,7 +119,7 @@ export const generateAndSendDocument = async (
 };
 
 // Function to save the sent email to the IMAP Sent folder
-async function saveEmailToSent(mailOptions: MailOptions) {
+export async function saveEmailToSent(mailOptions: MailOptions) {
   return new Promise<void>((resolve, reject) => {
     const imapConfig = {
       user: process.env.PROFILE_EMAIL as string,
